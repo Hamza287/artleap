@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_button.dart';
 import 'package:photoroomapp/shared/constants/app_assets.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
+import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/shared.dart';
+
+import '../../../../../providers/user_profile_provider.dart';
 
 class ProfilePicAndInfoWidget extends ConsumerWidget {
   const ProfilePicAndInfoWidget({super.key});
@@ -13,34 +16,50 @@ class ProfilePicAndInfoWidget extends ConsumerWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(
-          AppAssets.profilepic,
-          scale: 5,
-        ),
+        ref.watch(userProfileProvider).userPersonalData!["profile_image"] !=
+                null
+            ? Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(ref
+                            .watch(userProfileProvider)
+                            .userPersonalData!["profile_image"])),
+                    shape: BoxShape.circle,
+                    color: AppColors.white),
+              )
+            : Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(UserData.ins.userProfilePic!),
+                        fit: BoxFit.cover),
+                    shape: BoxShape.circle,
+                    color: AppColors.white),
+              ),
+        10.spaceY,
         Text(
-          "User Name",
+          UserData.ins.userName.toString(),
           style: AppTextstyle.interMedium(color: AppColors.white, fontSize: 14),
         ),
-        Text(
-          "@useremail",
-          style:
-              AppTextstyle.interRegular(color: AppColors.white, fontSize: 11),
-        ),
+
         20.spaceY,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ProfileButton(
-              title: "Share",
-              color: AppColors.blueColor,
-            ),
-            5.spaceX,
-            ProfileButton(
-              title: "Edit",
-              color: AppColors.indigo.withOpacity(0.5),
-            )
-          ],
-        )
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     ProfileButton(
+        //       title: "Share",
+        //       color: AppColors.blueColor,
+        //     ),
+        //     5.spaceX,
+        //     ProfileButton(
+        //       title: "Edit",
+        //       color: AppColors.indigo.withOpacity(0.5),
+        //     )
+        //   ],
+        // )
       ],
     );
   }

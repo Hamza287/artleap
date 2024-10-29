@@ -3,17 +3,21 @@ import '../../shared/console.dart';
 import 'api_response.dart';
 
 class HandlingResponse {
-  static ApiResponse returnResponse(Response response) =>
-      switch (response.statusCode) {
-        200 => ApiResponse.completed(response),
-        400 => ApiResponse.error('Some Error Occured'),
-        401 => ApiResponse.unAuthorised('Un Authorized'),
-        403 => ApiResponse.error('Un Authorized'),
-        404 => ApiResponse.error('Un Authorized'),
-        500 => ApiResponse.error('Some Error Occured'),
-        -6 => ApiResponse.error('No Internet Connection'),
-        _ => ApiResponse.error('Some Error Occured')
-      };
+  static ApiResponse returnResponse(Response response) {
+    var data = response.data;
+
+    // Fallback to handling based on HTTP status codes
+    return switch (response.statusCode) {
+      200 => ApiResponse.completed(data),
+      400 => ApiResponse.error('Some Error Occurred'),
+      401 => ApiResponse.unAuthorised('Unauthorized'),
+      403 => ApiResponse.error('Forbidden'),  
+      404 => ApiResponse.error('Not Found'),
+      500 => ApiResponse.error('Internal Server Error'),
+      -6 => ApiResponse.error('No Internet Connection'),
+      _ => ApiResponse.error('Unknown Error')
+    };
+  }
 
   static ApiResponse returnException(DioException exception) {
     console(exception);

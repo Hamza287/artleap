@@ -10,7 +10,7 @@ class ArtStyleWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+    return Column(          
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,15 +35,15 @@ class ArtStyleWidget extends ConsumerWidget {
             children: [
               ...artsStyleImagesLIst.map(
                 (e) {
-                  return Container(
+                  return Container( 
                     height: 65,
                     width: 62,
-                    margin: EdgeInsets.only(right: 5),
+                    margin: const EdgeInsets.only(right: 5),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: AppColors.lightIndigo),
                     child: e["image"] == ""
-                        ? Column(
+                        ? const Column(
                             children: [
                               Text("No Style"),
                             ],

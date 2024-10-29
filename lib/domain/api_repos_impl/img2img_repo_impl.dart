@@ -20,7 +20,11 @@ class GenerateImg2ImgImpl extends GenerateImg2ImgRepo {
       ApiResponse result = HandlingResponse.returnResponse(res);
       console('REPO : ${result.status}');
       print(res.data);
-      if (result.status == Status.completed) {
+      if (result.status == Status.processing) {
+        print("daaaaaaaaaaaaaa");
+        return ApiResponse.processing(res.data);
+      } else if (result.status == Status.completed) {
+        print("jjjjjjjjjjjjjjjjj");
         ImageToImageModel data =
             await Isolate.run(() => ImageToImageModel.fromJson(res.data));
         return ApiResponse.completed(data);

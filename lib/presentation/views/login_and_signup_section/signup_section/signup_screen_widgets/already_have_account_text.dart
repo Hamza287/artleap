@@ -11,19 +11,19 @@ class AlreadyHaveAccountText extends ConsumerWidget {
   const AlreadyHaveAccountText({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {  
     return Column(
       children: [
         RichText(
             text: TextSpan(
                 style: AppTextstyle.interRegular(
-                    color: AppColors.white, fontSize: 12),
+                    color: AppColors.black.withOpacity(0.4), fontSize: 12),
                 text: "Already have an account? ",
                 children: [
               TextSpan(
                   text: "Login",
                   style: AppTextstyle.interRegular(
-                      color: AppColors.pinkColor, fontSize: 12),
+                      color: AppColors.darkIndigo, fontSize: 12),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);

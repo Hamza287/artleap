@@ -15,20 +15,19 @@ class NotHaveAccountText extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        RichText(
+        RichText(     
             text: TextSpan(
                 style: AppTextstyle.interRegular(
                     color: AppColors.white, fontSize: 12),
-                text: "Not have an account? ",
+                text: "Not have an account?  ",
                 children: [
               TextSpan(
                   text: "Sign up",
-                  style: AppTextstyle.interRegular(
-                      color: AppColors.pinkColor, fontSize: 12),
+                  style: AppTextstyle.interBold(
+                      color: AppColors.indigo, fontSize: 13),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Navigation.pushNamedAndRemoveUntil(
-                          SignUpScreen.routeName);
+                      Navigation.pushNamed(SignUpScreen.routeName);
                     })
             ])),
       ],

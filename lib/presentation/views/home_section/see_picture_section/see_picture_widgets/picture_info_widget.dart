@@ -8,24 +8,54 @@ class PictureInfoWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 55,
+      height: 120,
       margin: EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5), color: AppColors.lightIndigo),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Column(
         children: [
-          InfoText(
-            title: "Present",
-            info: "Dynamic",
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              InfoText(
+                title: "Input Resolution",
+                info: "512 × 984px",
+              ),
+              InfoText(
+                title: "Created on",
+                info: "21 Aug 2024",
+              ),
+            ],
           ),
-          InfoText(
-            title: "Resolution",
-            info: "512 × 984px",
-          ),
-          InfoText(
-            title: "Pipeline",
-            info: "Alchemy",
+          10.spaceY,
+          Row(
+            children: [
+              Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: AppColors.lightIndigo),
+              ),
+              10.spaceX,
+              Text(
+                "Category Name",
+                style: AppTextstyle.interRegular(
+                    fontSize: 14, color: AppColors.white),
+              ),
+              20.spaceX,
+              Image.asset(
+                AppAssets.galleryicon,
+                scale: 2,
+              ),
+              10.spaceX,
+              Text(
+                "Image reference",
+                style: AppTextstyle.interRegular(
+                    fontSize: 14, color: AppColors.white),
+              ),
+            ],
           )
         ],
       ),
@@ -45,8 +75,8 @@ class InfoText extends ConsumerWidget {
       children: [
         Text(
           title!,
-          style: AppTextstyle.interRegular(
-              fontSize: 11, color: AppColors.lightgrey),
+          style:
+              AppTextstyle.interRegular(fontSize: 16, color: AppColors.white),
         ),
         Text(
           info!,

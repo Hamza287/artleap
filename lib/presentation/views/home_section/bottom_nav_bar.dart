@@ -1,164 +1,216 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/presentation/base_widgets/common_appbar.dart';
 import 'package:photoroomapp/presentation/views/home_section/favourites_screen/favourites_screen.dart';
 import 'package:photoroomapp/presentation/views/home_section/home_screen/home_screen.dart';
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen.dart';
 import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_or_ref_screen.dart';
+import 'package:photoroomapp/providers/bottom_nav_bar_provider.dart';
+import 'package:photoroomapp/providers/user_profile_provider.dart';
+import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/shared.dart';
 
-class BottomNavBar extends StatefulWidget {
-  static const String routeName = 'homescreen';
-  BottomNavBar({Key? key, required this.title}) : super(key: key);
-  final String title;
+import '../../../providers/home_screen_provider.dart';
+import '../global_widgets/search_textfield.dart';
+
+class BottomNavBar extends ConsumerStatefulWidget {
+  static const String routeName = "bottom_nav_bar_screen";
+
+  const BottomNavBar({super.key});
 
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar>
-    with SingleTickerProviderStateMixin {
-  late int currentPage;
-  late TabController tabController;
-  // final List<Color> colors = [
-  //   Colors.yellow,
-  //   Colors.red,
-  //   Colors.green,
-  //   Colors.blue,
-  // ];
-
+class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   @override
   void initState() {
-    currentPage = 0;
-    tabController = TabController(length: 4, vsync: this);
-    tabController.animation!.addListener(
-      () {
-        final value = tabController.animation!.value.round();
-        if (value != currentPage && mounted) {
-          changePage(value);
-        }
-      },
-    );
+    // TODO: implement initState
     super.initState();
-  }
-
-  void changePage(int newPage) {
-    setState(() {
-      currentPage = newPage;
-    });
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
+    ref.read(homeScreenProvider).getUserInfo();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final Color unselectedColor = colors[currentPage].computeLuminance() < 0.4
-    //     ? Colors.black
-    //     : Colors.white;
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.purple,
-          leading: const SizedBox(),
-          title: Text(
-            "Imaginary Verse",
-            style: AppTextstyle.interBold(color: AppColors.white, fontSize: 20),
-          ),
-          centerTitle: true,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Container(
-                height: 35,
-                width: 35,
-                decoration: BoxDecoration(
-                    color: AppColors.mediumIndigo, shape: BoxShape.circle),
-                child: Icon(
-                  Icons.notifications_none,
-                  size: 21,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+        } else {
+          bool shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: AppColors.blue,
+                  title: Text('Confirm Exit'),
+                  content: Text('Are you sure you want to leave?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(
+                        'No',
+                        style: AppTextstyle.interBold(color: AppColors.white),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(
+                        'Yes',
+                        style: AppTextstyle.interBold(color: AppColors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+
+          if (shouldExit) {
+            SystemNavigator.pop();
+          }
+        }
+      },
+      child: SafeArea(
+        child: Scaffold(
+            appBar: CommonAppBar(
+              title: ref.watch(bottomNavBarProvider).pageIndex == 1
+                  ? "Image Generation"
+                  : ref.watch(bottomNavBarProvider).pageIndex == 2
+                      ? "Your Favourites"
+                      : "",
+              listOfColors: ref.watch(bottomNavBarProvider).pageIndex == 3
+                  ? [AppColors.lightIndigo, AppColors.darkIndigo]
+                  : [AppColors.darkBlue, AppColors.darkBlue],
+              actions: [
+                if (ref.watch(bottomNavBarProvider).pageIndex == 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: const SearchTextfield(),
+                  ),
+                if (ref.watch(bottomNavBarProvider).pageIndex == 0) 20.spaceX,
+                // if (ref.watch(bottomNavBarProvider).pageIndex == 0)
+                //   Padding(
+                //     padding: const EdgeInsets.only(right: 20, top: 10),
+                //     child: Image.asset(
+                //       AppAssets.notificationicon,
+                //       scale: 2,
+                //     ),
+                //   )
+              ],
+            ),
+            resizeToAvoidBottomInset: false,
+            bottomNavigationBar: Container(
+              height: 55,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.lightBlue, AppColors.blue],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
-            )
-          ],
-        ),
-        resizeToAvoidBottomInset: false,
-        body: BottomBar(
-          fit: StackFit.expand,
-          borderRadius: BorderRadius.circular(500),
-          duration: Duration(seconds: 1),
-          showIcon: false,
-          width: MediaQuery.of(context).size.width * 0.8,
-          barColor: AppColors.purple.withOpacity(0.6),
-          start: 2,
-          end: 0,
-          offset: 10,
-          barAlignment: Alignment.bottomCenter,
-          iconHeight: 35,
-          iconWidth: 35,
-          reverse: false,
-          hideOnScroll: false,
-          scrollOpposite: false,
-          body: (context, controller) => TabBarView(
-            controller: tabController,
-            dragStartBehavior: DragStartBehavior.down,
-            physics: const BouncingScrollPhysics(),
-            children: const [
-              HomeScreen(),
-              PrompOrReferenceScreen(),
-              FavouritesScreen(),
-              ProfileScreen()
-            ],
-          ),
-          child: TabBar(
-            indicatorPadding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-            controller: tabController,
-            indicatorColor: Colors.transparent,
-            dividerColor: Colors.transparent,
-            tabs: [
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                    child: Icon(
-                  Icons.home,
-                  color:
-                      currentPage == 0 ? AppColors.white : AppColors.lightgrey,
-                )),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      ref.watch(bottomNavBarProvider).setPageIndex(0);
+                    },
+                    child: SizedBox(
+                      height: 55,
+                      width: 40,
+                      child: Center(
+                          child: Icon(
+                        Icons.home,
+                        size: 30,
+                        color: ref.watch(bottomNavBarProvider).pageIndex == 0
+                            ? AppColors.white
+                            : AppColors.lightgrey,
+                      )),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      ref.watch(bottomNavBarProvider).setPageIndex(1);
+                    },
+                    child: SizedBox(
+                      height: 55,
+                      width: 40,
+                      child: Center(
+                          child: Icon(
+                        Icons.add,
+                        size: 30,
+                        color: ref.watch(bottomNavBarProvider).pageIndex == 1
+                            ? AppColors.white
+                            : AppColors.lightgrey,
+                      )),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      ref.watch(bottomNavBarProvider).setPageIndex(2);
+                    },
+                    child: SizedBox(
+                      height: 55,
+                      width: 40,
+                      child: Center(
+                          child: Icon(
+                        Icons.favorite,
+                        size: 30,
+                        color: ref.watch(bottomNavBarProvider).pageIndex == 2
+                            ? AppColors.white
+                            : AppColors.lightgrey,
+                      )),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      ref.watch(bottomNavBarProvider).setPageIndex(3);
+                    },
+                    child: ref.watch(userProfileProvider).userPersonalData ==
+                            null
+                        ? Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.darkIndigo,
+                            ),
+                          )
+                        : ref
+                                    .watch(userProfileProvider)
+                                    .userPersonalData!["profile_image"] !=
+                                null
+                            ? Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(ref
+                                                .watch(userProfileProvider)
+                                                .userPersonalData![
+                                            "profile_image"])),
+                                    shape: BoxShape.circle,
+                                    color: AppColors.white),
+                              )
+                            : Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(AppAssets.artstyle1),
+                                    ),
+                                    shape: BoxShape.circle,
+                                    color: AppColors.white),
+                              ),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                    child: Icon(
-                  Icons.add,
-                  color:
-                      currentPage == 1 ? AppColors.white : AppColors.lightgrey,
-                )),
-              ),
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                    child: Icon(
-                  Icons.favorite,
-                  color:
-                      currentPage == 2 ? AppColors.white : AppColors.lightgrey,
-                )),
-              ),
-              Container(
-                height: 35,
-                width: 35,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: AppColors.white),
-              ),
-            ],
-          ),
-        ),
+            ),
+            body: ref
+                .watch(bottomNavBarProvider)
+                .widgets[ref.watch(bottomNavBarProvider).pageIndex]),
       ),
     );
   }

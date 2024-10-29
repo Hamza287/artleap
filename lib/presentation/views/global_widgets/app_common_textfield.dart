@@ -11,22 +11,23 @@ class AppCommonTextfield extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 35,
-      width: 240,
+      height: 46,
+      width: double.infinity,
       decoration: BoxDecoration(
-          color: AppColors.lightIndigo.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: AppColors.white, width: 0.50)),
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(8),
+          border:
+              Border.all(color: AppColors.black.withOpacity(0.2), width: 0.50)),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(left: 8, bottom: 15),
+            contentPadding: EdgeInsets.only(left: 8, bottom: 8),
             disabledBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
             hintText: hintText,
-            hintStyle: AppTextstyle.interRegular(
-                color: AppColors.white, fontSize: 14)),
+            hintStyle: AppTextstyle.interMedium(
+                color: AppColors.black.withOpacity(0.5), fontSize: 14)),
       ),
     );
   }

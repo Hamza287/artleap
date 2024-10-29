@@ -14,20 +14,20 @@ class ORwidget extends ConsumerWidget {
       children: [
         Container(
           height: 1,
-          width: 120,
-          color: AppColors.white.withOpacity(0.5),
+          width: 100,
+          color: AppColors.white,
         ),
         5.spaceX,
         Text(
-          "or",
-          style: AppTextstyle.interRegular(
-              color: AppColors.white.withOpacity(0.5)),
+          "or login with",
+          style:
+              AppTextstyle.interRegular(color: AppColors.white, fontSize: 12),
         ),
         5.spaceX,
         Container(
           height: 1,
-          width: 120,
-          color: AppColors.white.withOpacity(0.5),
+          width: 100,
+          color: AppColors.white,
         ),
       ],
     );

@@ -5,11 +5,16 @@ import 'package:photoroomapp/presentation/views/global_widgets/app_common_button
 import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen_widgets/login_screen_text.dart';
 import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen_widgets/login_textfields_section.dart';
 import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen_widgets/not_have_account_text.dart';
+import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen_widgets/remember_me_forgot_widget.dart';
+import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen_widgets/social_logins_widget.dart';
+import 'package:photoroomapp/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/or_widget.dart';
 import 'package:photoroomapp/presentation/views/onboarding_section/onboarding_screen.dart';
 import 'package:photoroomapp/providers/auth_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 import 'package:photoroomapp/shared/shared.dart';
+
+import '../../global_widgets/error_widget.dart';
 
 class LoginScreen extends ConsumerWidget {
   static const String routeName = "login_screen";
@@ -21,22 +26,37 @@ class LoginScreen extends ConsumerWidget {
       widget: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          100.spaceY,
-          LoginScreenText(),
+          125.spaceY,
+          const LoginScreenText(),
           20.spaceY,
-          LoginScreenTextfieldsSection(),
+          const Padding(
+            padding: EdgeInsets.only(left: 36, right: 36),
+            child: LoginScreenTextfieldsSection(),
+          ),
+          15.spaceY,
+          const RememberMeForgotPassWidget(),
           20.spaceY,
-          ref.watch(authprovider).isLoading
+          CustomErrorWidget(
+              isShow: true,
+              message: ref.watch(authprovider).authError?.message,
+              authResultState:
+                  ref.watch(authprovider).authError?.authResultState),
+          ref.watch(authprovider).isLoading(LoginMethod.email)
               ? const CircularProgressIndicator(
                   color: AppColors.indigo,
                 )
               : CommonButton(
-                  title: "Login",
+                  title: "Log In",
                   color: AppColors.indigo,
                   onpress: () {
                     ref.read(authprovider).signInWithEmail();
                   },
                 ),
+
+          20.spaceY,
+          ORwidget(),
+          20.spaceY,
+          SocialLoginsWidget(),
           20.spaceY,
           NotHaveAccountText(),
           // 180.spaceY

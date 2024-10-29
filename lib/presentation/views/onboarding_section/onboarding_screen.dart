@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:photoroomapp/presentation/views/onboarding_section/onboarding_widgets/continue_button.dart';
 import 'package:photoroomapp/providers/onboarding_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
@@ -22,8 +23,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    ref.watch(onboardingProvider).startAutoPageView();
+    ref.read(onboardingProvider).startAutoPageView();
   }
+
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   ref.read(onboardingProvider).stopAutoPageView();
+  //   ref.read(onboardingProvider).pageController.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +111,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   alignment: Alignment.bottomCenter,
                   child: ContinueButton(
                     onpress: () {
-                      Navigation.pushNamed(BottomNavBar.routeName);
+                      Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+                      ref.read(onboardingProvider).stopAutoPageView();
+                      ref.read(onboardingProvider).pageController.dispose();
                     },
                   )),
             )

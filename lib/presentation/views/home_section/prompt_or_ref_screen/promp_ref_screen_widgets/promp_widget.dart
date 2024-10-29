@@ -15,15 +15,17 @@ class PromptWidget extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Prompt",
-          style: AppTextstyle.interBold(color: AppColors.white, fontSize: 14),
+          "Write your prompt for the image",
+          style:
+              AppTextstyle.interRegular(color: AppColors.white, fontSize: 12),
         ),
-        5.spaceY,
+        8.spaceY,
         Container(
           height: 120,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: AppColors.lightIndigo),
+              color: AppColors.darkBlue,
+              border: Border.all(color: AppColors.white.withOpacity(0.4))),
           child: TextField(
             controller: ref.watch(generateImageProvider).promptTextController,
             decoration: InputDecoration(
@@ -31,9 +33,9 @@ class PromptWidget extends ConsumerWidget {
                 enabledBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: "Write your prompt for the image",
+                hintText: "Type a prompt",
                 hintStyle: AppTextstyle.interMedium(
-                    color: AppColors.white, fontSize: 12)),
+                    color: AppColors.white.withOpacity(0.4), fontSize: 12)),
           ),
         )
       ],

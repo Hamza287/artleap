@@ -17,9 +17,9 @@ class SignupTextfieldSection extends ConsumerWidget {
       children: [
         Text(
           "Sign Up",
-          style: AppTextstyle.interBold(color: AppColors.white, fontSize: 14),
+          style: AppTextstyle.interBold(color: AppColors.black, fontSize: 32),
         ),
-        10.spaceY,
+        30.spaceY,
         AppCommonTextfield(
           hintText: "Username",
           controller: ref.watch(authprovider).userNameController,

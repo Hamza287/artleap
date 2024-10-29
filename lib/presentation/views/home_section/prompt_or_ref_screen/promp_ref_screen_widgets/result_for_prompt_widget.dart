@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/public_private_dialog.dart';
+import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:photoroomapp/providers/generate_image_provider.dart';
+import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/shared.dart';
 
 class ResultForPromptWidget extends ConsumerWidget {
@@ -12,17 +15,42 @@ class ResultForPromptWidget extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-            text: TextSpan(children: [
-          TextSpan(
-              text: "Results for your",
-              style:
-                  AppTextstyle.interBold(fontSize: 14, color: AppColors.white)),
-          TextSpan(
-              text: " Prompt",
-              style:
-                  AppTextstyle.interBold(fontSize: 14, color: AppColors.indigo))
-        ])),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: "Results",
+                  style: AppTextstyle.interMedium(
+                      fontSize: 16, color: AppColors.white)),
+            ])),
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return PublicPrivateDialog();
+                  },
+                );
+              },
+              child: Container(
+                child: Row(
+                  children: [
+                    Text("Public",
+                        style: AppTextstyle.interMedium(
+                            fontSize: 16, color: AppColors.white)),
+                    5.spaceX,
+                    Image.asset(
+                      AppAssets.questionmark,
+                      scale: 2,
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
         10.spaceY,
 
         // ref.watch(generateImageProvider).generatedData == null ||
@@ -30,37 +58,132 @@ class ResultForPromptWidget extends ConsumerWidget {
         //     ? const SizedBox()
         //     : ref.watch(generateImageProvider).generatedData != null
         //         ?
-        if (ref.watch(generateImageProvider).generatedData != null)
-          Wrap(
-            runSpacing: 10,
-            spacing: 10,
-            children: [
-              ...ref.watch(generateImageProvider).generatedData!.output.map(
-                (e) {
-                  return Container(
-                    height: 200,
-                    width: 155,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                            image: NetworkImage(e), fit: BoxFit.fill)),
-                  );
-                },
-              )
-            ],
-          ),
+        if (ref.watch(generateImageProvider).generatedFreePikData.isNotEmpty)
+          Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.blue),
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, right: 10, left: 10, bottom: 10),
+                  child: ref
+                              .watch(generateImageProvider)
+                              .listOfImagesBytes
+                              .length ==
+                          1
+                      ? GestureDetector(
+                          onTap: () {
+                            print(UserData.ins.userName);
+                            Navigation.pushNamed(SeePictureScreen.routeName,
+                                arguments: SeePictureParams(
+                                    profileName: UserData.ins.userName,
+                                    isRecentGeneration: true,
+                                    modelName: ref
+                                        .watch(generateImageProvider)
+                                        .selectedStyle,
+                                    prompt: ref
+                                        .watch(generateImageProvider)
+                                        .promptTextController
+                                        .text,
+                                    uint8ListImage: ref
+                                        .watch(generateImageProvider)
+                                        .listOfImagesBytes[0],
+                                    isHomeScreenNavigation: false));
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: AppColors.blue),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10, right: 10, left: 10, bottom: 10),
+                              child: Container(
+                                height: 380,
+                                margin: EdgeInsets.only(left: 0, right: 0),
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: MemoryImage(ref
+                                            .watch(generateImageProvider)
+                                            .listOfImagesBytes[0]),
+                                        fit: BoxFit.fill)),
+                              ),
+                            ),
+                          ),
+                        )
+                      : GridView.builder(
+                          shrinkWrap:
+                              true, // Required if GridView is inside a scrollable parent
+                          physics:
+                              NeverScrollableScrollPhysics(), // Disable GridView's own scrolling
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            childAspectRatio:
+                                1, // Square items; adjust as needed
+                          ),
+                          itemCount: ref
+                              .watch(generateImageProvider)
+                              .listOfImagesBytes
+                              .length,
+                          itemBuilder: (context, index) {
+                            var e = ref
+                                .watch(generateImageProvider)
+                                .listOfImagesBytes[index];
+                            return GestureDetector(
+                              onTap: () {
+                                print(UserData.ins.userName);
+                                Navigation.pushNamed(SeePictureScreen.routeName,
+                                    arguments: SeePictureParams(
+                                        profileName: UserData.ins.userName,
+                                        isRecentGeneration: true,
+                                        modelName: ref
+                                            .watch(generateImageProvider)
+                                            .selectedStyle,
+                                        prompt: ref
+                                            .watch(generateImageProvider)
+                                            .promptTextController
+                                            .text,
+                                        uint8ListImage: e,
+                                        isHomeScreenNavigation: false));
+                              },
+                              child: Container(
+                                height: 155,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: MemoryImage(e),
+                                        fit: BoxFit.fill)),
+                              ),
+                            );
+                          },
+                        ))),
+
         10.spaceY,
         if (ref.watch(generateImageProvider).generatedImage != null)
           Container(
-            height: 400,
-            margin: EdgeInsets.only(left: 0, right: 0),
+            width: double.infinity,
             decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(ref
-                        .watch(generateImageProvider)
-                        .generatedImage!
-                        .output[0]),
-                    fit: BoxFit.fill)),
+                borderRadius: BorderRadius.circular(10), color: AppColors.blue),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 10, right: 10, left: 10, bottom: 10),
+              child: Container(
+                height: 380,
+                margin: EdgeInsets.only(left: 0, right: 0),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(ref
+                            .watch(generateImageProvider)
+                            .generatedImage!
+                            .output[0]),
+                        fit: BoxFit.fill)),
+              ),
+            ),
           ),
         80.spaceY,
       ],

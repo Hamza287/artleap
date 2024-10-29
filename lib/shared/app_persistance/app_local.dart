@@ -27,3 +27,9 @@ class AppLocal {
   getUSerData(String key) => userBox.get(key);
   clearUSerData(String key) => userBox.delete(key);
 }
+
+class Hivekey {
+  static const userId = "USER_ID";
+  static const userName = 'USER_NAME';
+  static const userProfielPic = 'USER_PROFILE_IMAGE';
+}

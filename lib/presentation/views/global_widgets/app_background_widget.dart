@@ -18,11 +18,12 @@ class AppBackgroundWidget extends ConsumerWidget {
           height: double.infinity,
           width: double.infinity,
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-                    AppAssets.appHomeBg,
-                  ),
-                  fit: BoxFit.cover)),
+              // image: DecorationImage(
+              //     image: AssetImage(
+              //       AppAssets.appHomeBg,
+              //     ),
+              // fit: BoxFit.cover)
+              color: AppColors.darkBlue),
           child: widget,
         ),
       ),

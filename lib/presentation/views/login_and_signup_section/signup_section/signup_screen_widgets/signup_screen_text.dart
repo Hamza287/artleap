@@ -10,19 +10,8 @@ class SignupScreenText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+    return Column( 
       children: [
-        RichText(
-            text: TextSpan(
-                style: AppTextstyle.interRegular(
-                    color: AppColors.white, fontSize: 22),
-                text: "Welcome to ",
-                children: [
-              TextSpan(
-                  text: ".Imaginary Verse",
-                  style: AppTextstyle.interRegular(
-                      color: AppColors.pinkColor, fontSize: 22))
-            ])),
         5.spaceY,
         Text(
           "Sign up to convert your imagination into reality",

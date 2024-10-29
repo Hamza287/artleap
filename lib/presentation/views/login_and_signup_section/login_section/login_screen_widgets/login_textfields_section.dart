@@ -15,16 +15,11 @@ class LoginScreenTextfieldsSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Login",
-          style: AppTextstyle.interBold(color: AppColors.white, fontSize: 14),
-        ),
-        10.spaceY,
         AppCommonTextfield(
           hintText: "Email",
           controller: ref.watch(authprovider).emailController,
         ),
-        20.spaceY,
+        10.spaceY,
         AppCommonTextfield(
           hintText: "Password",
           controller: ref.watch(authprovider).passwordController,

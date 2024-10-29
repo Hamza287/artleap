@@ -12,22 +12,11 @@ class LoginScreenText extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        RichText(
-            text: TextSpan(
-                style: AppTextstyle.interRegular(
-                    color: AppColors.white, fontSize: 22),
-                text: "Welcome to ",
-                children: [
-              TextSpan(
-                  text: ".Imaginary Verse",
-                  style: AppTextstyle.interRegular(
-                      color: AppColors.pinkColor, fontSize: 22))
-            ])),
         5.spaceY,
         Text(
-          "Sign in to convert your imagination into reality",
+          "Enter your email and password to log in ",
           style:
-              AppTextstyle.interRegular(color: AppColors.white, fontSize: 10),
+              AppTextstyle.interRegular(color: AppColors.white, fontSize: 12),
         )
       ],
     );

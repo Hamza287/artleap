@@ -1,53 +1,146 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/domain/api_models/generate_high_q_model.dart';
 import 'package:photoroomapp/domain/api_models/generate_image_model.dart';
 import 'package:photoroomapp/domain/api_services/api_response.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/constants/app_constants.dart';
-
+import 'package:uuid/uuid.dart';
 import '../domain/api_models/Image_to_Image_model.dart';
+import '../domain/api_models/models_list_model.dart';
+import '../shared/constants/user_data.dart';
 import '../shared/utilities/pickers.dart';
+import 'package:http/http.dart' as http;
+import '../domain/api_models/freepik_image_gen_model.dart' as freePik;
 
 final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
     (ref) => GenerateImageProvider());
 
 class GenerateImageProvider extends ChangeNotifier with BaseRepo {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
 
-  GenerateImageModel? generatedData;
-  ImageToImageModel? generatedImage;
-
+  ImageToImageModel? _generatedImage;
+  ImageToImageModel? get generatedImage => _generatedImage;
+  GenerateHighQualityImageModel? _generatedHighQualityImage;
+  GenerateHighQualityImageModel? get generatedHighQualityImage =>
+      _generatedHighQualityImage;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  generateImage() async {
-    Map<String, dynamic> data = {
-      "key": AppConstants.stableDefKey,
-      "prompt": _promptTextController.text,
-      "negative_prompt": "bad quality",
-      "width": "1080",
-      "height": "1080",
-      "safety_checker": false,
-      "seed": null,
-      "samples": 2,
-      "base64": false,
-      "webhook": null,
-      "track_id": null
-    };
+  bool _isGenerateImageLoading = false;
+  bool get isGenerateImageLoading => _isGenerateImageLoading;
+  bool _isImageReferenceLoading = false;
+  bool get isImageReferenceLoading => _isImageReferenceLoading;
 
-    ApiResponse generateImageRes = await generateImageRepo.generateImage(data);
+  ModelsListModel? _selectedModelName;
+  ModelsListModel? get selectedModeldata => _selectedModelName; // Getter
+  int? _selectedItem;
+  int? get selectedImageNumber => _selectedItem;
+  final List<int> _dropdownItems = [1, 2, 3, 4];
+  List<int> get imageNumber => _dropdownItems;
+
+  var uuid = const Uuid().v1();
+  List<freePik.Data> generatedFreePikData = [];
+  List<Uint8List> listOfImagesBytes = [];
+  // set userId(String? val) {
+  //   _userId = val;
+  //   notifyListeners();
+  // }
+
+  // getUserId() {
+  //   _userId = AppLocal.ins.getUSerData(Hivekey.userId);
+  //   _userName = AppLocal.ins.getUSerData(Hivekey.userName);
+
+  //   print(_userId);
+  //   notifyListeners();
+  // }
+  String? _selectedStyle;
+  String? get selectedStyle => _selectedStyle;
+  set selectedStyle(String? value) {
+    _selectedStyle = value;
+    notifyListeners();
+  }
+
+  set selectedImageNumber(int? value) {
+    _selectedItem = value;
+    notifyListeners();
+  }
+
+  set selectedModeldata(ModelsListModel? value) {
+    _selectedModelName = value;
+    notifyListeners();
+  }
+
+  setGenerateImageLoader(bool value) {
+    _isGenerateImageLoading = value;
+    notifyListeners();
+  }
+
+  setImageRefLoader(bool value) {
+    _isImageReferenceLoading = value;
+    notifyListeners();
+  }
+
+  clearVarData() {
+    // _generatedData = null;
+    // _generatedImage = null;
+    _selectedModelName = null;
+    _selectedItem = null;
+    notifyListeners();
+  }
+
+  String? dataUrl;
+  generateFreePikImage() async {
+    setGenerateImageLoader(true);
+    Map<String, dynamic> mapdata = {
+      "prompt": promptTextController.text,
+      "negative_prompt": "b&w, earth, cartoon, ugly",
+      "styling": {
+        "style": selectedStyle,
+        "color": "pastel",
+        "lightning": "warm",
+        "framing": "portrait"
+      },
+      "guidance_scale": "2",
+      "seed": 42,
+      "num_images": selectedImageNumber,
+      "image": {"size": "square"}
+    };
+    var data = jsonEncode(mapdata);
+    print(data);
+    ApiResponse generateImageRes = await freePikRepo.generateImage(data);
     if (generateImageRes.status == Status.completed) {
-      generatedImage == null;
-      generatedData = generateImageRes.data as GenerateImageModel;
-      print(generatedData!.output);
+      var _generatedData = generateImageRes.data as freePik.FreePikAIGenModel;
+      generatedFreePikData = _generatedData.data;
+      for (var item in generatedFreePikData) {
+        String base64String = item.base64;
+        Uint8List imageBytes = base64Decode(base64String);
+        listOfImagesBytes.add(imageBytes);
+        print(listOfImagesBytes.length);
+        print(listOfImagesBytes);
+        setGenerateImageLoader(false);
+      }
+      String? imageUrl = await uploadGeneratedImageToFirebase(
+          generatedFreePikData.first.base64);
+      if (imageUrl != null) {
+        uploadImageToCommunityCreations(imageUrl, promptTextController.text,
+            _selectedStyle ?? "AI generated");
+        userCreationsForProfile(imageUrl, promptTextController.text,
+            _selectedStyle ?? "AI generated");
+      }
+      // imageBytes = base64Decode(generatedFreePikData);
+      print(_generatedData.data);
     } else {
+      setGenerateImageLoader(false);
       print(generateImageRes.status);
     }
-
     notifyListeners();
   }
 
@@ -57,6 +150,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
     if (imagePath != null && imagePath.isNotEmpty) {
       // Upload the image to Firebase and get the URL
+      setImageRefLoader(true);
+
       String? imageUrl = await uploadImageToFirebase(imagePath);
       if (imageUrl != null) {
         generateImgToImg(imageUrl);
@@ -86,11 +181,11 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   Future<void> generateImgToImg(String imageUrl) async {
     Map<String, dynamic> data = {
       "key": AppConstants.stableDefKey,
-      "prompt": _promptTextController.text,
-      "negative_prompt": "bad quality",
+      "prompt": promptTextController.text,
       "init_image": imageUrl,
-      "width": "1080",
-      "height": "1080",
+      "negative_prompt": "bad quality",
+      "width": "824",
+      "height": "824",
       "samples": "1",
       "temp": false,
       "safety_checker": false,
@@ -104,12 +199,129 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     ApiResponse generateImageRes =
         await generateImgToImgRepo.generateImgToImg(data);
     if (generateImageRes.status == Status.completed) {
-      generatedData == null;
-      generatedImage = generateImageRes.data as ImageToImageModel;
+      clearVarData();
+      _generatedImage = generateImageRes.data as ImageToImageModel;
       print(generatedImage!.output);
+      setImageRefLoader(false);
     } else {
       print(generateImageRes.status);
+      setImageRefLoader(false);
     }
     notifyListeners();
+  }
+
+  uploadImageToCommunityCreations(
+      String imageUrl, String prompt, String modelName) async {
+    try {
+      await firestore
+          .collection('CommunityCreations')
+          .doc("usersCreations")
+          .set({
+        'userData': FieldValue.arrayUnion([
+          {
+            "id": uuid,
+            'creator_name': UserData.ins.userName,
+            "imageUrl": imageUrl,
+            'timestamp': DateTime.now(),
+            'userid': UserData.ins.userId,
+            'prompt': prompt,
+            'model_name': modelName
+          }
+        ])
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print('Error saving image URL to Firestore: $e');
+    }
+  }
+
+  userCreationsForProfile(
+      String imageUrl, String prompt, String modelName) async {
+    try {
+      await firestore
+          .collection('usersProfileData')
+          .doc(UserData.ins.userId)
+          .set({
+        'userData': FieldValue.arrayUnion([
+          {
+            "creator_name": UserData.ins.userName,
+            "id": uuid,
+            "imageUrl": imageUrl,
+            'timestamp': DateTime.now(),
+            'userid': UserData.ins.userId,
+            'prompt': prompt,
+            'model_name': modelName
+          }
+        ])
+      }, SetOptions(merge: true));
+      clearVarData();
+    } catch (e) {
+      print('Error saving image URL to Firestore: $e');
+    }
+  }
+
+  Future<String?> uploadGeneratedImageToFirebase(String base64Image) async {
+    try {
+      print("Starting image upload to Firebase Storage...");
+
+      // Default MIME type and file extension
+      String mimeType = 'image/png';
+      String fileExtension = 'png';
+
+      // Remove data URI prefix if present and extract MIME type
+      if (base64Image.contains(',')) {
+        final RegExp dataUriRegex = RegExp(r'data:(.*?);base64,(.*)');
+        final Match? match = dataUriRegex.firstMatch(base64Image);
+
+        if (match != null) {
+          mimeType = match.group(1) ?? 'image/png';
+          base64Image = match.group(2) ?? '';
+
+          // Determine the file extension from MIME type
+          if (mimeType.contains('/')) {
+            fileExtension = mimeType.split('/').last;
+          }
+        } else {
+          // Remove any prefix before the comma
+          base64Image = base64Image.substring(base64Image.indexOf(',') + 1);
+        }
+      }
+
+      // Decode the Base64 string into bytes
+      Uint8List imageBytes = base64Decode(base64Image);
+
+      // Create a reference to Firebase Storage
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference ref = _storage.ref().child('images/$fileName.$fileExtension');
+
+      // Upload the image data
+      UploadTask uploadTask = ref.putData(
+        imageBytes,
+        SettableMetadata(contentType: mimeType),
+      );
+
+      // Wait for the upload to complete
+      TaskSnapshot snapshot = await uploadTask;
+
+      // Get the download URL
+      String downloadURL = await snapshot.ref.getDownloadURL();
+      print("Image uploaded successfully. Download URL: $downloadURL");
+
+      return downloadURL;
+    } catch (e, stackTrace) {
+      print('Failed to upload image: $e');
+      print('Stack trace: $stackTrace');
+      return null;
+    }
+  }
+
+// Helper function to check if a string is a valid URL
+  bool isValidUrl(String url) {
+    try {
+      Uri uri = Uri.parse(url);
+      return uri.isAbsolute &&
+          (uri.hasScheme && (uri.scheme == 'http' || uri.scheme == 'https'));
+    } catch (e) {
+      return false;
+    }
   }
 }

@@ -4,6 +4,7 @@ class ApiResponse<T> {
   String? message;
 
   ApiResponse.loading({this.message}) : status = Status.loading;
+  ApiResponse.processing(this.data) : status = Status.processing;
   ApiResponse.completed(this.data) : status = Status.completed;
   ApiResponse.error(this.message, {this.data}) : status = Status.error;
   ApiResponse.noInternet(this.message) : status = Status.noInternet;
@@ -16,4 +17,12 @@ class ApiResponse<T> {
   }
 }
 
-enum Status { loading, completed, error, noInternet, unAuthorised, timeout }
+enum Status {
+  loading,
+  processing,
+  completed,
+  error,
+  noInternet,
+  unAuthorised,
+  timeout
+}

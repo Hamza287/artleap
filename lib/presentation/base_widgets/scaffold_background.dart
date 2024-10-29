@@ -5,7 +5,9 @@ import '../../shared/constants/app_assets.dart';
 
 class RegistrationBackgroundWidget extends ConsumerWidget {
   final Widget widget;
-  const RegistrationBackgroundWidget({super.key, required this.widget});
+  final String? bgImage;
+  const RegistrationBackgroundWidget(
+      {super.key, required this.widget, this.bgImage});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +20,7 @@ class RegistrationBackgroundWidget extends ConsumerWidget {
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(
-                    AppAssets.backgroundImage,
+                    bgImage ?? AppAssets.backgroundImage,
                   ),
                   fit: BoxFit.cover)),
           child: widget,

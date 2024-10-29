@@ -8,11 +8,11 @@ class ProdResponseInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     console('PRODUCTION_INTERCEPTORRRRRRRRRRRRR');
-    // console('Status Code: ${response.statusCode}');
-    // console('Data: ${response.data.runtimeType}');
-    // console(response.requestOptions.extra);
-    // console("response.extra");
-    // console('end Production interceptorrrrrrrrrrrrrrrr--- Response ---');
+    console('Status Code: ${response.statusCode}');
+    console('Data: ${response.data.runtimeType}');
+    console(response.requestOptions.extra);
+    console("response.extra");
+    console('end Production interceptorrrrrrrrrrrrrrrr--- Response ---');
     if (response.requestOptions.extra[localDataStorageEnabled]) {
       AppLocal.ins.dataBox
           .put(response.requestOptions.path, jsonEncode(response.data));

@@ -6,7 +6,10 @@ import 'dio_core.dart';
 
 class ApiServices extends DioCore {
   ApiServices({required String baseUrl}) : super(baseUrl);
-
+  var headers = {
+    'Content-Type': 'application/json',
+    'x-freepik-api-key': 'FPSX3f652ef8c69a425cbc4b19e9299c2000'
+  };
   Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters,
       bool enableLocalPersistence = false}) async {
@@ -18,7 +21,8 @@ class ApiServices extends DioCore {
   Future<Response> postJson(String path, dynamic data,
       {bool enableLocalPersistence = false}) async {
     return await dio.post(path,
-        data: data, options: _options(enableLocalPersistence));
+        data: data,
+        options: _options(enableLocalPersistence, headers: headers));
   }
 
   Future<Response> postFormData(String path,
@@ -51,6 +55,9 @@ class ApiServices extends DioCore {
     return await dio.download(url, savePath);
   }
 
-  Options _options(bool enableLocalPersistence) =>
-      Options(extra: {localDataStorageEnabled: enableLocalPersistence});
+  Options _options(bool enableLocalPersistence,
+          {Map<String, dynamic>? headers}) =>
+      Options(
+          extra: {localDataStorageEnabled: enableLocalPersistence},
+          headers: headers);
 }

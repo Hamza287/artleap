@@ -1,11 +1,23 @@
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/views/global_widgets/app_background_widget.dart';
+import 'package:photoroomapp/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_widgets/picture_container.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_widgets/picture_info_widget.dart';
+import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_widgets/picture_options_widget.dart';
+import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_widgets/profile_name_follow_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_widgets/prompt_text_widget.dart';
+import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:photoroomapp/shared/navigation/navigation.dart';
 import 'package:photoroomapp/shared/navigation/screen_params.dart';
+
+import '../../../../shared/constants/app_colors.dart';
+import '../../../../shared/constants/app_textstyle.dart';
 
 class SeePictureScreen extends ConsumerStatefulWidget {
   static const routeName = "see_picture_screen";
@@ -20,18 +32,139 @@ class SeePictureScreen extends ConsumerStatefulWidget {
 class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   @override
   Widget build(BuildContext context) {
-    return AppBackgroundWidget(
-      widget: Column(
-        children: [
-          20.spaceY,
-          PictureInfoWidget(),
-          20.spaceY,
-          PictureWidget(
-            image: widget.params!.image,
+    return Scaffold(
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [AppColors.lightIndigo, AppColors.darkIndigo])),
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          margin: EdgeInsets.only(top: 70),
+          decoration: BoxDecoration(
+              color: AppColors.darkBlue,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                20.spaceY,
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("In A mystical field",
+                          style: AppTextstyle.interMedium(
+                              fontSize: 16, color: AppColors.white)),
+                      GestureDetector(
+                        onTap: () {
+                          Navigation.pop();
+                        },
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          child: Image.asset(
+                            AppAssets.cross,
+                            scale: 1.50,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                if (widget.params!.isHomeScreenNavigation == true) 20.spaceY,
+                if (widget.params!.isHomeScreenNavigation == true &&
+                    widget.params!.userId != UserData.ins.userId)
+                  ProfileNameFollowWidget(
+                    profileName: widget.params!.profileName,
+                    userId: widget.params!.userId,
+                  ),
+                20.spaceY,
+                widget.params!.isHomeScreenNavigation
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigation.pushNamed(FullImageViewerScreen.routeName,
+                              arguments: FullImageScreenParams(
+                                Image: widget.params!.image!,
+                              ));
+                        },
+                        child: Container(
+                          height: 350,
+                          margin: EdgeInsets.only(left: 15, right: 15),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.params!.image!,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                      )
+                    : widget.params!.uint8ListImage != null
+                        ? GestureDetector(
+                            onTap: () {
+                              Navigation.pushNamed(
+                                  FullImageViewerScreen.routeName,
+                                  arguments: FullImageScreenParams(
+                                    uint8list: widget.params!.uint8ListImage!,
+                                  ));
+                            },
+                            child: Container(
+                              height: 350,
+                              margin: EdgeInsets.only(left: 15, right: 15),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: Image.memory(
+                                  widget.params!.uint8ListImage!,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              Navigation.pushNamed(
+                                  FullImageViewerScreen.routeName,
+                                  arguments: FullImageScreenParams(
+                                    Image: widget.params!.image!,
+                                  ));
+                            },
+                            child: Container(
+                              height: 350,
+                              margin: EdgeInsets.only(left: 15, right: 15),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.params!.image!,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          ),
+                20.spaceY,
+                PictureOptionsWidget(
+                  creatorName: widget.params!.profileName,
+                  imageUrl: widget.params!.image ?? "",
+                  prompt: widget.params!.prompt,
+                  modelName: widget.params!.modelName,
+                  isRecentGeneration: widget.params!.isRecentGeneration,
+                  uint8ListImage: widget.params!.uint8ListImage ?? null,
+                  currentUserId: widget.params!.userId,
+                ),
+                20.spaceY,
+                PromptTextWidget(
+                  prompt: widget.params!.prompt,
+                ),
+                20.spaceY,
+                PictureInfoWidget(),
+                20.spaceY,
+              ],
+            ),
           ),
-          20.spaceY,
-          PromptTextWidget()
-        ],
+        ),
       ),
     );
   }

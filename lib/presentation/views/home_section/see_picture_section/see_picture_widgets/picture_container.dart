@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:like_button/like_button.dart';
 import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:photoroomapp/shared/constants/app_colors.dart';
 
 class PictureWidget extends ConsumerWidget {
   final String? image;
@@ -9,38 +12,23 @@ class PictureWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 470,
-      margin: EdgeInsets.only(left: 20, right: 20),
+      height: 370,
+      margin: const EdgeInsets.only(left: 12, right: 12),
       decoration: BoxDecoration(
+        color: AppColors.black,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: InteractiveViewer(
+        // Set the desired transformation properties
+        boundaryMargin: EdgeInsets.all(double.infinity),
+        minScale: 0.1,
+        maxScale: 5.0,
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          image: DecorationImage(image: AssetImage(image!), fit: BoxFit.fill)),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Image.asset(
-              AppAssets.upscaleicon,
-              height: 28,
-              width: 28,
-            ),
-            Image.asset(
-              AppAssets.downloadicon,
-              height: 28,
-              width: 28,
-            ),
-            Image.asset(
-              AppAssets.saveicon,
-              height: 28,
-              width: 28,
-            ),
-            Image.asset(
-              AppAssets.shareicon,
-              height: 28,
-              width: 28,
-            ),
-          ],
+          child: CachedNetworkImage(
+            imageUrl: image!,
+            fit: BoxFit.fill,
+          ),
         ),
       ),
     );
