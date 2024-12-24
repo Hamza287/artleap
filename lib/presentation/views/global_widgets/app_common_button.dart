@@ -19,7 +19,7 @@ class CommonButton extends StatelessWidget {
   final double? iconsize;
   final Color? iconColor;
 
-  CommonButton(
+  const CommonButton(
       {super.key,
       this.title,
       this.onpress,

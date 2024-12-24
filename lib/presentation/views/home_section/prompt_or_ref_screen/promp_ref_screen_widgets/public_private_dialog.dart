@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+// import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
@@ -12,7 +12,7 @@ class PublicPrivateDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inAppPurchase = ref.watch(inAppPurchaseProvider);
+    // final inAppPurchase = ref.watch(inAppPurchaseProvider);
 
     return Container(
       margin: const EdgeInsets.only(left: 50, right: 50, top: 265, bottom: 265),
@@ -73,16 +73,17 @@ class PublicPrivateDialog extends ConsumerWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                inAppPurchase.products.add(ProductDetails(
-                    id: "1",
-                    title: "premium",
-                    description: "premium",
-                    price: "1",
-                    rawPrice: 1,
-                    currencyCode: "usd"));
-                ref
-                    .read(inAppPurchaseProvider)
-                    .buyProduct(inAppPurchase.products.first);
+                // inAppPurchase.products.add(
+                //   ProductDetails(
+                //     id: "1",
+                //     title: "premium",
+                //     description: "premium",
+                //     price: "1",
+                //     rawPrice: 1,
+                //     currencyCode: "usd"));
+                // ref
+                //     .read(inAppPurchaseProvider)
+                //     .buyProduct(inAppPurchase.products.first);
               },
               child: Container(
                 decoration: const BoxDecoration(
@@ -128,22 +129,22 @@ class PublicPrivateDialog extends ConsumerWidget {
                       ),
                       10.spaceY,
                       // Handle products list
-                      if (inAppPurchase.products.isNotEmpty)
-                        Text(
-                          'Price: ${inAppPurchase.products.first.price}',
-                          style: AppTextstyle.interMedium(
-                            color: AppColors.white,
-                            fontSize: 14,
-                          ),
-                        )
-                      else
-                        Text(
-                          'Loading price...',
-                          style: AppTextstyle.interMedium(
-                            color: AppColors.white,
-                            fontSize: 14,
-                          ),
-                        ),
+                      // if (inAppPurchase.products.isNotEmpty)
+                      //   Text(
+                      //     'Price: ${inAppPurchase.products.first.price}',
+                      //     style: AppTextstyle.interMedium(
+                      //       color: AppColors.white,
+                      //       fontSize: 14,
+                      //     ),
+                      //   )
+                      // else
+                      //   Text(
+                      //     'Loading price...',
+                      //     style: AppTextstyle.interMedium(
+                      //       color: AppColors.white,
+                      //       fontSize: 14,
+                      //     ),
+                      //   ),
                     ],
                   ),
                 ),

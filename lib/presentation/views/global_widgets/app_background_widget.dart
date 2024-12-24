@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../shared/constants/app_assets.dart';
 import '../../../shared/constants/app_colors.dart';
-import '../../../shared/constants/app_textstyle.dart';
 
 class AppBackgroundWidget extends ConsumerWidget {
   final Widget widget;

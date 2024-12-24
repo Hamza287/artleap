@@ -12,19 +12,23 @@ class SeePictureParams {
   final String? image;
   final String? prompt;
   final String? modelName;
+  final String? creatorEmail;
   final Uint8List? uint8ListImage;
   bool isHomeScreenNavigation = false;
   bool isRecentGeneration = false;
+  final int? index;
 
   SeePictureParams(
       {this.userId,
       this.profileName,
+      this.creatorEmail,
       this.image,
       this.prompt,
       this.modelName,
       this.uint8ListImage,
       required this.isHomeScreenNavigation,
-      required this.isRecentGeneration});
+      required this.isRecentGeneration,
+      this.index});
 }
 
 class OtherUserProfileParams {

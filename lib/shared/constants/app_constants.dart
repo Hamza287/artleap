@@ -2,7 +2,7 @@ class AppConstants {
   static const String textToImageUrl =
       "https://modelslab.com/api/v6/images/text2img";
   static const String imgToimgUrl =
-      "https://modelslab.com/api/v6/realtime/img2img";
+      "https://api.stability.ai/v2beta/stable-image/generate/sd3";
 
   static const String generateHighQualityImage =
       "https://modelslab.com/api/v6/realtime/text2img";

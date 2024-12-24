@@ -6,6 +6,8 @@ import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 
+import '../../../../../shared/app_snack_bar.dart';
+
 class PromptTextWidget extends ConsumerWidget {
   final String? prompt;
   const PromptTextWidget({super.key, this.prompt});
@@ -27,7 +29,12 @@ class PromptTextWidget extends ConsumerWidget {
               ),
               InkWell(
                 onTap: () {
-                  Clipboard.setData(ClipboardData(text: prompt!));
+                  Clipboard.setData(ClipboardData(text: prompt!)).whenComplete(
+                    () {
+                      appSnackBar("Copied", "Prompt copied to clipboard",
+                          AppColors.green);
+                    },
+                  );
                 },
                 child: Image.asset(
                   AppAssets.copyicon,

@@ -6,16 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/domain/api_models/generate_high_q_model.dart';
-import 'package:photoroomapp/domain/api_models/generate_image_model.dart';
 import 'package:photoroomapp/domain/api_services/api_response.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
-import 'package:photoroomapp/shared/constants/app_constants.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/api_models/Image_to_Image_model.dart';
 import '../domain/api_models/models_list_model.dart';
+import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
 import '../shared/utilities/pickers.dart';
-import 'package:http/http.dart' as http;
 import '../domain/api_models/freepik_image_gen_model.dart' as freePik;
 
 final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
@@ -27,8 +25,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
 
-  ImageToImageModel? _generatedImage;
-  ImageToImageModel? get generatedImage => _generatedImage;
+  List<ImageToImageModel?> _generatedImage = [];
+  List<ImageToImageModel?> get generatedImage => _generatedImage;
   GenerateHighQualityImageModel? _generatedHighQualityImage;
   GenerateHighQualityImageModel? get generatedHighQualityImage =>
       _generatedHighQualityImage;
@@ -49,18 +47,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   var uuid = const Uuid().v1();
   List<freePik.Data> generatedFreePikData = [];
   List<Uint8List> listOfImagesBytes = [];
-  // set userId(String? val) {
-  //   _userId = val;
-  //   notifyListeners();
-  // }
+  List<File> images = [];
 
-  // getUserId() {
-  //   _userId = AppLocal.ins.getUSerData(Hivekey.userId);
-  //   _userName = AppLocal.ins.getUSerData(Hivekey.userName);
-
-  //   print(_userId);
-  //   notifyListeners();
-  // }
   String? _selectedStyle;
   String? get selectedStyle => _selectedStyle;
   set selectedStyle(String? value) {
@@ -68,6 +56,12 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+  GenerateImageProvider() {
+    // Automatically select the first style if available
+    if (freePikStyles.isNotEmpty) {
+      _selectedStyle = freePikStyles[0]['title'];
+    }
+  }
   set selectedImageNumber(int? value) {
     _selectedItem = value;
     notifyListeners();
@@ -89,10 +83,13 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   }
 
   clearVarData() {
-    // _generatedData = null;
-    // _generatedImage = null;
     _selectedModelName = null;
     _selectedItem = null;
+    notifyListeners();
+  }
+
+  clearImagesList() {
+    images = [];
     notifyListeners();
   }
 
@@ -101,7 +98,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     setGenerateImageLoader(true);
     Map<String, dynamic> mapdata = {
       "prompt": promptTextController.text,
-      "negative_prompt": "b&w, earth, cartoon, ugly",
+      "negative_prompt":
+          "b&w, earth, cartoon, ugly,mutated hands,mutated foots, not recognizing the prompt",
       "styling": {
         "style": selectedStyle,
         "color": "pastel",
@@ -109,7 +107,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
         "framing": "portrait"
       },
       "guidance_scale": "2",
-      "seed": 42,
+      "seed": null,
       "num_images": selectedImageNumber,
       "image": {"size": "square"}
     };
@@ -135,7 +133,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
         userCreationsForProfile(imageUrl, promptTextController.text,
             _selectedStyle ?? "AI generated");
       }
-      // imageBytes = base64Decode(generatedFreePikData);
       print(_generatedData.data);
     } else {
       setGenerateImageLoader(false);
@@ -145,22 +142,15 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   }
 
   Future<void> pickImage() async {
-    // Pick an image using your existing picker class
     String? imagePath = await Pickers.ins.pickImage();
-
-    if (imagePath != null && imagePath.isNotEmpty) {
-      // Upload the image to Firebase and get the URL
-      setImageRefLoader(true);
-
-      String? imageUrl = await uploadImageToFirebase(imagePath);
-      if (imageUrl != null) {
-        generateImgToImg(imageUrl);
-      } else {
-        print("Failed to upload image to Firebase.");
-      }
-    } else {
-      print("No image selected or path is invalid.");
+    File imageData = File(imagePath!);
+    print(imageData);
+    print("ddddddddddd");
+    if (images.isNotEmpty) {
+      images = [];
     }
+    images.add(imageData);
+    notifyListeners();
   }
 
   Future<String?> uploadImageToFirebase(String filePath) async {
@@ -178,40 +168,43 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     }
   }
 
-  Future<void> generateImgToImg(String imageUrl) async {
+  Future<void> generateImgToImg() async {
+    setGenerateImageLoader(true);
+    print(images);
     Map<String, dynamic> data = {
-      "key": AppConstants.stableDefKey,
-      "prompt": promptTextController.text,
-      "init_image": imageUrl,
-      "negative_prompt": "bad quality",
-      "width": "824",
-      "height": "824",
-      "samples": "1",
-      "temp": false,
-      "safety_checker": false,
-      "strength": 0.7,
-      "seed": null,
-      "webhook": null,
-      "track_id": null
+      "prompt":
+          "${promptTextController.text},ultra HD, high qualit,4k, high resolution",
+      "strength": "0.60",
+      "mode": "image-to-image",
+      "model ": "sd3-large",
+      "negative_prompt":
+          "bad quality, result is opposite of prompt, not following the prompt, ",
+      "cfg_scale": "10"
     };
     print(data);
     print("Sending request to API...");
     ApiResponse generateImageRes =
-        await generateImgToImgRepo.generateImgToImg(data);
+        await generateImgToImgRepo.generateImgToImg(data, images);
     if (generateImageRes.status == Status.completed) {
-      clearVarData();
-      _generatedImage = generateImageRes.data as ImageToImageModel;
-      print(generatedImage!.output);
-      setImageRefLoader(false);
+      // clearVarData();
+      _generatedImage.add(generateImageRes.data as ImageToImageModel);
+
+      setGenerateImageLoader(false);
+      images = [];
     } else {
       print(generateImageRes.status);
-      setImageRefLoader(false);
+      images = [];
+
+      setGenerateImageLoader(false);
     }
     notifyListeners();
   }
 
   uploadImageToCommunityCreations(
-      String imageUrl, String prompt, String modelName) async {
+    String imageUrl,
+    String prompt,
+    String modelName,
+  ) async {
     try {
       await firestore
           .collection('CommunityCreations')
@@ -221,6 +214,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
           {
             "id": uuid,
             'creator_name': UserData.ins.userName,
+            'creator_email': UserData.ins.userEmail,
             "imageUrl": imageUrl,
             'timestamp': DateTime.now(),
             'userid': UserData.ins.userId,

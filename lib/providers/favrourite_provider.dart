@@ -1,26 +1,24 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/app_snack_bar.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
+import 'package:saver_gallery/saver_gallery.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 import '../shared/constants/user_data.dart';
 
 final favouriteProvider =
     ChangeNotifierProvider<FavouriteProvider>((ref) => FavouriteProvider());
 
 class FavouriteProvider extends ChangeNotifier with BaseRepo {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   var uuid = const Uuid().v1();
   List<Map<String, dynamic>> _userFavourites = [];
   List<Map<String, dynamic>> get usersFavourites => _userFavourites;
@@ -33,7 +31,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
   }
 
   Future<bool> addImageToFavourite(String creatorName, String prompt,
-      String modelName, bool isRecentGeneratedImage,
+      String modelName, bool isRecentGeneratedImage, String? uid,
       {String? imageUrl, Uint8List? imagesBytes}) async {
     String uploadedImage = "";
 
@@ -44,6 +42,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
     var imageAdded = await favouriteRepo.addImageToFavourite(
         creatorName,
         isRecentGeneratedImage == true ? uploadedImage : imageUrl!,
+        uid,
         prompt,
         modelName,
         isRecentGeneratedImage);
@@ -53,11 +52,12 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
   Future<bool> removeImageFromFavourite(
     String creatorName,
     String imageUrl,
+    String uid,
     String prompt,
     String modelName,
   ) async {
     var removeImage = await favouriteRepo.removeImageFromFavourite(
-        creatorName, imageUrl, prompt, modelName);
+        creatorName, imageUrl, uid, prompt, modelName);
     if (removeImage == true) {
       fetchUserFavourites();
     }
@@ -91,43 +91,78 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
 
   Future<DocumentSnapshot<Map<String, dynamic>>?> fetchUserFavourites() async {
     var data = await favouriteRepo.fetchUserFavourites(UserData.ins.userId!);
-    Map<String, dynamic> docData = data!.data() ?? {};
 
-    // Ensure 'favourites' is a list and assign it to _userFavourites
-    _userFavourites = List<Map<String, dynamic>>.from(
-      docData['favourites'] ?? [],
-    );
-    notifyListeners(); // Notify listeners to update UI
+    if (data != null && data.data() != null) {
+      // Extract 'favourites' from the data
+      List<Map<String, dynamic>> favourites =
+          extractFavouritesFromData(data.data()!);
+
+      // Preload images associated with favourites
+      await preloadFavouritesImages(favourites);
+
+      // Assign to _userFavourites
+      _userFavourites = favourites;
+      print(_userFavourites);
+
+      // notifyListeners(); // Notify listeners to update UI
+    }
+    notifyListeners();
     return data;
   }
 
-  // getUserFavourites() async {
-  //   try {
-  //     DocumentSnapshot<Map<String, dynamic>> snapshot = await firestore
-  //         .collection('userFavourites')
-  //         .doc(UserData.ins.userId)
-  //         .get();
-  //     List<Map<String, dynamic>> userfav =
-  //         List<Map<String, dynamic>>.from(snapshot.data()?['favourites'] ?? []);
-  //     print(userfav);
-  //     print("dddddddddddddddddaaaaaaaaassssss");
-  //     _userFavourites = userfav;
-  //   } catch (e) {
-  //     print('Error retrieving data from Firestore: $e');
-  //   }
-  //   notifyListeners();
-  // }
+  List<Map<String, dynamic>> extractFavouritesFromData(
+      Map<String, dynamic> data) {
+    List<Map<String, dynamic>> images = [];
 
-  Future<void> downloadImage(String imageUrl) async {
+    // Assuming 'favourites' is a list of maps each containing 'imageUrl'
+    if (data.containsKey('favourites') && data['favourites'] is List) {
+      List<dynamic> favourites = data['favourites'];
+      for (var fav in favourites) {
+        if (fav.containsKey('imageUrl')) {
+          images.add({'imageUrl': fav['imageUrl'].toString()});
+        }
+      }
+    }
+
+    return images;
+  }
+
+// Helper function to preload images
+  Future<void> preloadFavouritesImages(
+      List<Map<String, dynamic>> favourites) async {
+    List<Future<void>> preloadFutures = favourites.map((image) {
+      final Completer<void> completer = Completer<void>();
+      final ImageStream stream = CachedNetworkImageProvider(image['imageUrl'])
+          .resolve(const ImageConfiguration());
+      final listener = ImageStreamListener((_, __) {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      }, onError: (dynamic exception, StackTrace? stackTrace) {
+        if (!completer.isCompleted) {
+          completer.completeError(exception);
+        }
+      });
+      stream.addListener(listener);
+      return completer.future;
+    }).toList();
+
+    await Future.wait(preloadFutures);
+
+    notifyListeners();
+  }
+
+  Future<void> downloadImage(String imageUrl,
+      {Uint8List? uint8ListObject}) async {
     setDownloadingLoader(true);
     print(_isDownloading);
     String? uploadedImage;
     try {
-      if (isBase64UrlValid(imageUrl)) {
-        Uint8List uint8Object = base64Decode(imageUrl);
+      if (uint8ListObject != null) {
         uploadedImage =
-            (await favouriteRepo.uploadRecenetImageOfUint8list(uint8Object))!;
+            await favouriteRepo.uploadRecenetImageOfUint8list(uint8ListObject);
       }
+
       // Create a temporary directory
       var tempDir = await getTemporaryDirectory();
       String savePath = '${tempDir.path}/temp_image.jpg';
@@ -135,18 +170,27 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
       // Download the image to the savePath
       await Dio().download(uploadedImage ?? imageUrl, savePath);
 
+      // **Read the image file as bytes**
+      Uint8List uint8List = await File(savePath).readAsBytes();
+
       // Save the file to the gallery
-      final result = await ImageGallerySaver.saveFile(savePath);
+      final result = await SaverGallery.saveImage(
+        uint8List,
+        quality: 60,
+        fileName: "artleap.jpg", // Use correct file extension
+        androidRelativePath: "DCIM/artleapImages",
+        skipIfExists: false,
+        extension: "jpg", // Specify the extension
+      );
       print('Image saved to gallery: $result');
       appSnackBar("Success", "Image saved to gallery", AppColors.blue);
       setDownloadingLoader(false);
-
       // Optionally delete the temp file
-      // File(savePath).deleteSync();
+      // await File(savePath).delete();
     } catch (e) {
       setDownloadingLoader(false);
-
       print('Error downloading and saving image: $e');
+      appSnackBar("Error", "Error downloading image: $e", AppColors.redColor);
     }
     notifyListeners();
   }

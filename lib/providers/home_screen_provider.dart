@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:photoroomapp/shared/navigation/navigation.dart';
 
 import '../shared/app_persistance/app_local.dart';
 import '../shared/constants/user_data.dart';
@@ -20,48 +21,95 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   List<Map<String, dynamic>> get filteredCreations => _filteredCreations;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  requestPermission() async {
-    if (await Permission.storage.isGranted) {
-      return true;
-    } else {
+  bool _isDeletionLoading = false;
+  bool get isDeletionLoading => _isDeletionLoading;
+  bool _isRequestingPermission = false;
+  setDeletionLoading(bool val) {
+    _isDeletionLoading = val;
+    notifyListeners();
+  }
+
+  Future<void> requestPermission() async {
+    if (_isRequestingPermission) return;
+    _isRequestingPermission = true;
+    try {
+      if (await Permission.storage.isGranted) {
+        // Permission already granted
+        return;
+      }
       var result = await Permission.storage.request();
-      return result.isGranted;
+      if (result.isGranted) {
+        // Permission granted, proceed with your functionality
+      } else if (result.isDenied) {
+        // Permission denied, you might want to show a dialog
+      } else if (result.isPermanentlyDenied) {
+        // Permission permanently denied, navigate to app settings
+        openAppSettings();
+      }
+    } finally {
+      _isRequestingPermission = false;
     }
   }
 
   getUserInfo() {
     var userid = AppLocal.ins.getUSerData(Hivekey.userId);
-    var userName = AppLocal.ins.getUSerData(Hivekey.userName);
+    var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     var userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic);
+    var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail);
     print(userProfilePicture);
     print("dddddddddddddddddd");
 
     UserData.ins.setUserData(
         id: userid,
         name: userName,
-        userprofilePicture: userProfilePicture ?? AppAssets.artstyle1);
+        userprofilePicture: userProfilePicture ?? AppAssets.artstyle1,
+        email: userEmail);
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>?> getUserCreations() async {
     var data = await homeRepo.getUsersCreations();
+
     if (data != null && data.data() != null) {
-      // Extract image URLs from the data
+      // Extract image data
       List<Map<String, dynamic>> images = extractImagesFromData(data.data()!);
-      // Preload images
-      await preloadImages(images);
+
+      // Preload only the first N images (e.g., N = 10)
+      int preloadCount = 5;
+      List<Map<String, dynamic>> initialBatch =
+          images.take(preloadCount).toList();
+
+      // Preload the initial batch of images
+      await preloadImages(initialBatch);
     }
+
     return data;
   }
 
   List<Map<String, dynamic>> extractImagesFromData(Map<String, dynamic> data) {
     List<Map<String, dynamic>> images = [];
 
-    // Assuming your data has an 'imageUrls' field that's a list of URLs
-    if (data.containsKey('imageUrls') && data['imageUrls'] is List) {
-      List<dynamic> imageUrls = data['imageUrls'];
-      for (var url in imageUrls) {
-        images.add({'url': url.toString()});
+    // Assuming 'userData' is the key for the array of maps where each map contains image details
+    if (data.containsKey('userData') && data['userData'] is List) {
+      List<dynamic> userData = data['userData'];
+
+      // Iterate over each map in the userData array
+      for (var userEntry in userData) {
+        if (userEntry is Map<String, dynamic> &&
+            userEntry.containsKey('imageUrl') &&
+            userEntry['imageUrl'] is String) {
+          // Add the imageUrl to the images list if it exists and is a string
+          String imageUrl = userEntry['imageUrl'].toString();
+          // Optional: Check if imageUrl is not empty
+          if (imageUrl.isNotEmpty) {
+            images.add({'imageUrl': imageUrl});
+          }
+        } else {
+          // Log or handle the case where imageUrl is not found or is not a string
+          print('Invalid or missing imageUrl in entry: $userEntry');
+        }
       }
+    } else {
+      print('userData key not found or is not a list');
     }
 
     return images;
@@ -180,5 +228,78 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   clearFilteredList() {
     filteredCreations.clear();
     notifyListeners();
+  }
+
+  Future<void> deleteImageIfPresent({
+    required String userId,
+    required String imageUrl, // The image URL to identify which image to delete
+  }) async {
+    setDeletionLoading(true);
+
+    // Define the data field and image URL key for each collection
+    List<Map<String, dynamic>> collections = [
+      {
+        'collectionName': 'CommunityCreations',
+        'documentId': 'usersCreations',
+        'dataField': 'userData',
+        'imageUrlKey': 'imageUrl',
+      },
+      {
+        'collectionName': 'usersProfileData',
+        'documentId': userId,
+        'dataField': 'userData',
+        'imageUrlKey': 'imageUrl',
+      },
+      {
+        'collectionName': 'userFavourites',
+        'documentId': userId,
+        'dataField': 'favourites', // Updated field name
+        'imageUrlKey': 'imageUrl', // Adjust if the key is different
+      },
+    ];
+
+    // Run deletion checks concurrently across collections
+    List<Future<void>> deleteOperations = collections.map((collection) async {
+      final String collectionName = collection['collectionName'];
+      final String documentId = collection['documentId'];
+      final String dataField = collection['dataField'];
+      final String imageUrlKey = collection['imageUrlKey'];
+
+      try {
+        DocumentReference<Map<String, dynamic>> documentRef =
+            firestore.collection(collectionName).doc(documentId);
+
+        DocumentSnapshot<Map<String, dynamic>> snapshot =
+            await documentRef.get();
+
+        if (snapshot.exists && snapshot.data() != null) {
+          List<dynamic> userData = List.from(snapshot.data()?[dataField] ?? []);
+
+          // Find the index of the image by checking its 'imageUrl'
+          int indexToDelete =
+              userData.indexWhere((item) => item[imageUrlKey] == imageUrl);
+
+          if (indexToDelete != -1) {
+            // Remove the item if it's found
+            userData.removeAt(indexToDelete);
+            // Update the document with the modified array
+            await documentRef.update({dataField: userData});
+            print('Image deleted from $collectionName.');
+          } else {
+            print('Image not found in $collectionName.');
+          }
+        } else {
+          print('$collectionName document does not exist or has no data.');
+        }
+      } catch (e, stackTrace) {
+        setDeletionLoading(false);
+        print('Error in $collectionName: $e');
+        print('StackTrace: $stackTrace');
+      }
+    }).toList();
+    await Future.wait(deleteOperations);
+    print("Deletion completed where image was found.");
+    setDeletionLoading(false);
+    Navigation.pop();
   }
 }

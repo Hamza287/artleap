@@ -24,7 +24,7 @@ class SignUpScreen extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          height: 600,
+          height: 650,
           width: double.infinity,
           decoration: BoxDecoration(
               color: AppColors.white,

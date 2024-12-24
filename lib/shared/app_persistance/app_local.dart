@@ -32,4 +32,5 @@ class Hivekey {
   static const userId = "USER_ID";
   static const userName = 'USER_NAME';
   static const userProfielPic = 'USER_PROFILE_IMAGE';
+  static const userEmail = 'USER_EMAIL';
 }

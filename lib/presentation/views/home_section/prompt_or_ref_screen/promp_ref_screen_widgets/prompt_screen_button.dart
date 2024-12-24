@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 
-class PromptScreenButton extends StatelessWidget {
+class PromptScreenButton extends ConsumerWidget {
   final String? title;
   final String? imageIcon;
   final VoidCallback? onpress;
@@ -11,7 +12,6 @@ class PromptScreenButton extends StatelessWidget {
   final double? height;
   final double? width;
   final double? imageIconSize;
-
   const PromptScreenButton(
       {super.key,
       this.title,
@@ -23,15 +23,18 @@ class PromptScreenButton extends StatelessWidget {
       this.imageIconSize});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: onpress,
+      onTap: isLoading ? () {} : onpress,
       child: Container(
         height: height ?? 35,
         width: width ?? 160,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: AppColors.indigo, // Set your desired button color here
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+              colors: [AppColors.indigo, AppColors.lightPurple],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
         ),
         child: isLoading
             ? Center(
@@ -43,7 +46,7 @@ class PromptScreenButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
+                  Image.asset( 
                     imageIcon!,
                     scale: imageIconSize ?? 2,
                   ),

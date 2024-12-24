@@ -36,14 +36,14 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             gradient: LinearGradient(
                 colors: [AppColors.lightIndigo, AppColors.darkIndigo])),
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          margin: EdgeInsets.only(top: 70),
-          decoration: BoxDecoration(
+          margin: const EdgeInsets.only(top: 70),
+          decoration: const BoxDecoration(
               color: AppColors.darkBlue,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
@@ -63,7 +63,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                         onTap: () {
                           Navigation.pop();
                         },
-                        child: Container(
+                        child: SizedBox(
                           height: 30,
                           width: 30,
                           child: Image.asset(
@@ -93,7 +93,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                         },
                         child: Container(
                           height: 350,
-                          margin: EdgeInsets.only(left: 15, right: 15),
+                          margin: const EdgeInsets.only(left: 15, right: 15),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
                             child: CachedNetworkImage(
@@ -114,7 +114,8 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                             },
                             child: Container(
                               height: 350,
-                              margin: EdgeInsets.only(left: 15, right: 15),
+                              margin:
+                                  const EdgeInsets.only(left: 15, right: 15),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: Image.memory(
@@ -134,7 +135,8 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                             },
                             child: Container(
                               height: 350,
-                              margin: EdgeInsets.only(left: 15, right: 15),
+                              margin:
+                                  const EdgeInsets.only(left: 15, right: 15),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: CachedNetworkImage(
@@ -153,13 +155,15 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                   isRecentGeneration: widget.params!.isRecentGeneration,
                   uint8ListImage: widget.params!.uint8ListImage ?? null,
                   currentUserId: widget.params!.userId,
+                  index: widget.params!.index,
+                  creatorEmail: widget.params!.creatorEmail,
                 ),
                 20.spaceY,
                 PromptTextWidget(
                   prompt: widget.params!.prompt,
                 ),
                 20.spaceY,
-                PictureInfoWidget(),
+                const PictureInfoWidget(),
                 20.spaceY,
               ],
             ),

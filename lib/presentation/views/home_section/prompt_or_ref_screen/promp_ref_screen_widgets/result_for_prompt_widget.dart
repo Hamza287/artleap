@@ -1,7 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/public_private_dialog.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:photoroomapp/providers/generate_image_provider.dart';
 import 'package:photoroomapp/shared/constants/user_data.dart';
@@ -27,12 +27,12 @@ class ResultForPromptWidget extends ConsumerWidget {
             ])),
             GestureDetector(
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return PublicPrivateDialog();
-                  },
-                );
+                // showDialog(
+                //   context: context,
+                //   builder: (context) {
+                //     return PublicPrivateDialog();
+                //   },
+                // );
               },
               child: Container(
                 child: Row(
@@ -164,7 +164,53 @@ class ResultForPromptWidget extends ConsumerWidget {
                         ))),
 
         10.spaceY,
-        if (ref.watch(generateImageProvider).generatedImage != null)
+        if (ref.watch(generateImageProvider).generatedImage.isNotEmpty &&
+            ref.watch(generateImageProvider).generatedImage.length == 1)
+          GestureDetector(
+            onTap: () {
+              Uint8List bytes = base64Decode(
+                  ref.watch(generateImageProvider).generatedImage[0]!.image);
+              print(UserData.ins.userName);
+              Navigation.pushNamed(SeePictureScreen.routeName,
+                  arguments: SeePictureParams(
+                      profileName: UserData.ins.userName,
+                      isRecentGeneration: true,
+                      modelName: "stability.AI",
+                      prompt: ref
+                          .watch(generateImageProvider)
+                          .promptTextController
+                          .text,
+                      uint8ListImage: bytes,
+                      isHomeScreenNavigation: false));
+            },
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.blue),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 10, right: 10, left: 10, bottom: 10),
+                child: Container(
+                  height: 300,
+                  margin: EdgeInsets.only(left: 0, right: 0),
+                  // decoration: BoxDecoration(
+                  //     image: DecorationImage(
+                  //         image: NetworkImage(ref
+                  //             .watch(generateImageProvider)
+                  //             .generatedImage!
+                  //             .output[0]),
+                  //         fit: BoxFit.fill)),
+                  child: displayBase64Image(ref
+                      .watch(generateImageProvider)
+                      .generatedImage[0]!
+                      .image),
+                ),
+              ),
+            ),
+          ),
+        10.spaceY,
+        if (ref.watch(generateImageProvider).generatedImage.length > 1)
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -172,21 +218,108 @@ class ResultForPromptWidget extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 10, right: 10, left: 10, bottom: 10),
-              child: Container(
-                height: 380,
-                margin: EdgeInsets.only(left: 0, right: 0),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(ref
-                            .watch(generateImageProvider)
-                            .generatedImage!
-                            .output[0]),
-                        fit: BoxFit.fill)),
+              child: GridView.builder(
+                shrinkWrap:
+                    true, // Required if GridView is inside a scrollable parent
+                physics:
+                    NeverScrollableScrollPhysics(), // Disable GridView's own scrolling
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 1, // Square items; adjust as needed
+                ),
+                itemCount:
+                    ref.watch(generateImageProvider).generatedImage.length,
+                itemBuilder: (context, index) {
+                  var e =
+                      ref.watch(generateImageProvider).generatedImage[index];
+                  Uint8List bytes = base64Decode(e!.image);
+                  return GestureDetector(
+                    onTap: () {
+                      Uint8List bytes = base64Decode(e!.image);
+                      print(UserData.ins.userName);
+                      Navigation.pushNamed(SeePictureScreen.routeName,
+                          arguments: SeePictureParams(
+                              profileName: UserData.ins.userName,
+                              isRecentGeneration: true,
+                              modelName: "stability.AI",
+                              prompt: ref
+                                  .watch(generateImageProvider)
+                                  .promptTextController
+                                  .text,
+                              uint8ListImage: bytes,
+                              isHomeScreenNavigation: false));
+                    },
+                    child: Container(
+                      height: 155,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          image: DecorationImage(
+                              image: MemoryImage(bytes), fit: BoxFit.fill)),
+                    ),
+                  );
+                },
               ),
             ),
           ),
+        // if (ref.watch(generateImageProvider).generatedImage.length > 1)
+        //   ...ref.watch(generateImageProvider).generatedImage.map(
+        //     (e) {
+        //       return GestureDetector(
+        //           onTap: () {
+        //             Uint8List bytes = base64Decode(e.image);
+        //             print(UserData.ins.userName);
+        //             Navigation.pushNamed(SeePictureScreen.routeName,
+        //                 arguments: SeePictureParams(
+        //                     profileName: UserData.ins.userName,
+        //                     isRecentGeneration: true,
+        //                     modelName: "stability.AI",
+        //                     prompt: ref
+        //                         .watch(generateImageProvider)
+        //                         .promptTextController
+        //                         .text,
+        //                     uint8ListImage: bytes,
+        //                     isHomeScreenNavigation: false));
+        //           },
+        //           child: Container(
+        //             width: double.infinity,
+        //             decoration: BoxDecoration(
+        //                 borderRadius: BorderRadius.circular(10),
+        //                 color: AppColors.blue),
+        //             child: Padding(
+        //               padding: const EdgeInsets.only(
+        //                   top: 10, right: 10, left: 10, bottom: 10),
+        //               child: Container(
+        //                 height: 380,
+        //                 margin: EdgeInsets.only(left: 0, right: 0),
+        //                 // decoration: BoxDecoration(
+        //                 //     image: DecorationImage(
+        //                 //         image: NetworkImage(ref
+        //                 //             .watch(generateImageProvider)
+        //                 //             .generatedImage!
+        //                 //             .output[0]),
+        //                 //         fit: BoxFit.fill)),
+        //                 child: displayBase64Image(
+        //                   e!.image,
+        //                 ),
+        //               ),
+        //             ),
+        //           ));
+        //     },
+        //   ),
+
         80.spaceY,
       ],
     );
   }
+}
+
+Widget displayBase64Image(String base64String) {
+  Uint8List bytes = base64Decode(base64String); // Decode base64 string
+  return Image.memory(
+    bytes,
+    fit: BoxFit.fill,
+  ); // Display image using Image.memory
 }

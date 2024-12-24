@@ -22,7 +22,7 @@ class FavouriteRepoImpl extends FavouritRepo {
 
   @override
   Future<bool> removeImageFromFavourite(String creatorName, String imageUrl,
-      String prompt, String modelName) async {
+      String? uid, String prompt, String modelName) async {
     try {
       await firestore
           .collection('userFavourites')
@@ -32,7 +32,7 @@ class FavouriteRepoImpl extends FavouritRepo {
           {
             "creator_name": creatorName,
             "imageUrl": imageUrl,
-            'userid': UserData.ins.userId,
+            'userid': uid,
             'prompt': prompt,
             'model_name': modelName
           }
@@ -46,8 +46,13 @@ class FavouriteRepoImpl extends FavouritRepo {
   }
 
   @override
-  Future<bool> addImageToFavourite(String creatorName, String imageUrl,
-      String prompt, String modelName, bool isRecentGeneratedImage) async {
+  Future<bool> addImageToFavourite(
+      String creatorName,
+      String imageUrl,
+      String? uid,
+      String prompt,
+      String modelName,
+      bool isRecentGeneratedImage) async {
     String? uploadedImage;
     print(isRecentGeneratedImage);
     try {
@@ -63,7 +68,7 @@ class FavouriteRepoImpl extends FavouritRepo {
             "creator_name": creatorName,
             "imageUrl":
                 isRecentGeneratedImage == true ? uploadedImage : imageUrl,
-            'userid': UserData.ins.userId,
+            'userid': uid,
             'prompt': prompt,
             'model_name': modelName
           }

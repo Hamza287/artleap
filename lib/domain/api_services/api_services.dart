@@ -6,9 +6,15 @@ import 'dio_core.dart';
 
 class ApiServices extends DioCore {
   ApiServices({required String baseUrl}) : super(baseUrl);
-  var headers = {
+  var header1 = {
     'Content-Type': 'application/json',
     'x-freepik-api-key': 'FPSX3f652ef8c69a425cbc4b19e9299c2000'
+  };
+
+  var header2 = {
+    'Accept': 'application/json',
+    'Authorization':
+        'Bearer sk-TK90Aqi6YFV4nwZd1j32pQbQYCcvJ0bYhJjISDb7K2zcoOSu'
   };
   Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters,
@@ -18,11 +24,14 @@ class ApiServices extends DioCore {
         options: _options(enableLocalPersistence));
   }
 
-  Future<Response> postJson(String path, dynamic data,
-      {bool enableLocalPersistence = false}) async {
+  Future<Response> postJson(
+    String path,
+    dynamic data, {
+    bool enableLocalPersistence = false,
+  }) async {
     return await dio.post(path,
         data: data,
-        options: _options(enableLocalPersistence, headers: headers));
+        options: _options(enableLocalPersistence, headers: header1));
   }
 
   Future<Response> postFormData(String path,
@@ -31,13 +40,18 @@ class ApiServices extends DioCore {
       String? imageFieldKey,
       bool enableLocalPersistence = false}) async {
     FormData formData = FormData.fromMap(data);
+    print(images.length);
     for (var image in images) {
       formData.files.add(MapEntry(
           isNull(imageFieldKey) ? 'images' : imageFieldKey!,
           MultipartFile.fromFileSync(image.path)));
     }
+    images = [];
+    print(images);
+    print("ggggggggggggggggggg");
     return await dio.post(path,
-        data: formData, options: _options(enableLocalPersistence));
+        data: formData,
+        options: _options(enableLocalPersistence, headers: header2));
   }
 
   Future<Response> delete(String path,

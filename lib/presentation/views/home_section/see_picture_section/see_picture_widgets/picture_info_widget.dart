@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/shared/shared.dart';
 
 class PictureInfoWidget extends ConsumerWidget {
-  const PictureInfoWidget({super.key});
+  final String? styleName;
+  const PictureInfoWidget({super.key, this.styleName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,48 +16,50 @@ class PictureInfoWidget extends ConsumerWidget {
       ),
       child: Column(
         children: [
+          10.spaceY,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              InfoText(
-                title: "Input Resolution",
-                info: "512 × 984px",
-              ),
-              InfoText(
-                title: "Created on",
-                info: "21 Aug 2024",
-              ),
-            ],
-          ),
-          10.spaceY,
-          Row(
-            children: [
-              Container(
-                height: 30,
-                width: 30,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: AppColors.lightIndigo),
-              ),
-              10.spaceX,
+              // Container(
+              //   height: 30,
+              //   width: 30,
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(5),
+              //       color: AppColors.lightIndigo),
+              // ),
+              // 10.spaceX,
               Text(
-                "Category Name",
+                styleName ?? "Style name",
                 style: AppTextstyle.interRegular(
                     fontSize: 14, color: AppColors.white),
               ),
               20.spaceX,
-              Image.asset(
-                AppAssets.galleryicon,
-                scale: 2,
+              InfoText(
+                title: "Created on",
+                info: "21 Aug 2024",
               ),
-              10.spaceX,
-              Text(
-                "Image reference",
-                style: AppTextstyle.interRegular(
-                    fontSize: 14, color: AppColors.white),
-              ),
+              // Image.asset(
+              //   AppAssets.galleryicon,
+              //   scale: 3.5,
+              // ),
+              // 10.spaceX,
+              // Text(
+              //   "Image reference",
+              //   style: AppTextstyle.interRegular(
+              //       fontSize: 14, color: AppColors.white),
+              // ),
             ],
-          )
+          ),
+          // 10.spaceY,
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //   children: [
+          //     // InfoText(
+          //     //   title: "Input Resolution",
+          //     //   info: "512 × 984px",
+          //     // ),
+          //   ],
+          // ),
         ],
       ),
     );

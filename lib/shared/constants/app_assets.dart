@@ -19,6 +19,27 @@ class AppAssets {
   static const forgotbg = "${imagesDir}forgotbg.png";
 
   static const splashscreenanimation = "${imagesDir}splashscreenanimation.gif";
+  static const cartoon = "${imagesDir}cartoon.jpg";
+  static const anime = "${imagesDir}anime.jpg";
+  static const threeD = "${imagesDir}threed.jpg";
+  static const comic = "${imagesDir}comic.jpg";
+  static const cyberpunk = "${imagesDir}cyberpunk.jpg";
+  static const dark = "${imagesDir}dark.jpg";
+  static const digitalart = "${imagesDir}digital-art.jpg";
+  static const fantasy = "${imagesDir}fantasy.jpg";
+  static const origami = "${imagesDir}origami.jpg";
+  static const painting = "${imagesDir}painting.jpg";
+  static const photo = "${imagesDir}photo.jpg";
+  static const pixelart = "${imagesDir}pixel-art.jpg";
+  static const surreal = "${imagesDir}surreal.jpg";
+  static const traditionalJapan = "${imagesDir}traditional-japan.jpg";
+  static const vector = "${imagesDir}vector.jpg";
+  static const vintage = "${imagesDir}vintage.jpg";
+  static const watercolor = "${imagesDir}watercolor.jpg";
+  static const seventyVibe = "${imagesDir}seventyvibe.jpg";
+  static const sketch = "${imagesDir}sketch.jpg";
+  static const mockup = "${imagesDir}mockup.jpg";
+  static const studio = "${imagesDir}studio.jpg";
 
   ///icons
   static const googleicon = "${iconsdir}googleicon.png";
@@ -52,7 +73,9 @@ class AppAssets {
   static const userinfoicon = "${iconsdir}userinfo.png";
   static const abouticon = "${iconsdir}abouticon.png";
   static const privacyicon = "${iconsdir}privacyicon.png";
-static const trashicon = "${iconsdir}Trash.png";
+  static const trashicon = "${iconsdir}Trash.png";
+  static const reporticon = "${iconsdir}reporticon.png";
+
   //json
   static const splashanimation = "${jsondir}splashanimation.json";
   static const splashscreen = "${jsondir}splashscreen.mp4";

@@ -8,7 +8,6 @@ import 'package:photoroomapp/presentation/views/home_section/see_picture_section
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:photoroomapp/presentation/views/onboarding_section/onboarding_screen.dart';
 import 'package:photoroomapp/shared/navigation/screen_params.dart';
-
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
@@ -31,7 +30,7 @@ class RouteGenerator {
       case OnboardingScreen.routeName:
         return route(const OnboardingScreen());
       case BottomNavBar.routeName:
-        return route(BottomNavBar());
+        return route(const BottomNavBar());
       case SeePictureScreen.routeName:
         return route(
             SeePictureScreen(params: settings.arguments as SeePictureParams?));
@@ -40,7 +39,7 @@ class RouteGenerator {
           params: settings.arguments as EditProfileSreenParams?,
         ));
       case OtherUserProfileScreen.routeName:
-        return route(OtherUserProfileScreen(
+        return route(OtherUserProfileScreen( 
           params: settings.arguments as OtherUserProfileParams?,
         ));
       case ForgotPasswordScreen.routeName:

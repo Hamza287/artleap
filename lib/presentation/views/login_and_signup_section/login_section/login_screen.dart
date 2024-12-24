@@ -26,7 +26,7 @@ class LoginScreen extends ConsumerWidget {
       widget: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          125.spaceY,
+          130.spaceY,
           const LoginScreenText(),
           20.spaceY,
           const Padding(

@@ -28,11 +28,19 @@ class FilterResultChips extends ConsumerWidget {
                 },
                 child: FittedBox(
                     child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(color: AppColors.white)),
                   child: Row(children: [
+                    Container(
+                      height: 22,
+                      width: 22,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: AssetImage(e['icon']!), fit: BoxFit.fill)),
+                    ),
                     5.spaceX,
                     Text(e["title"]!,
                         style: AppTextstyle.interRegular(

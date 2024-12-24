@@ -18,15 +18,15 @@ class DioCore {
       receiveTimeout: const Duration(seconds: 30),
     ));
     // _dio.interceptors.add(PrettyDioLogger());
-    _dio.interceptors.add(ConnectivityInterceptor());
-    _dio.interceptors.add(RequestInterceptor());
-    _dio.interceptors.add(ErrorInterceptor());
+    // _dio.interceptors.add(ConnectivityInterceptor());
+    // _dio.interceptors.add(RequestInterceptor());
+    // _dio.interceptors.add(ErrorInterceptor());
 
-    // _dio.interceptors.add(RetryInterceptor());
-    if (AppConstants.responseMode == ResponseMode.mock) {
-      _dio.interceptors.add(MockInterceptor());
-    } else if (AppConstants.responseMode == ResponseMode.real) {
-      _dio.interceptors.add(ProdResponseInterceptor());
-    }
+    // // _dio.interceptors.add(RetryInterceptor());
+    // if (AppConstants.responseMode == ResponseMode.mock) {
+    //   _dio.interceptors.add(MockInterceptor());
+    // } else if (AppConstants.responseMode == ResponseMode.real) {
+    //   _dio.interceptors.add(ProdResponseInterceptor());
+    // }
   }
 }

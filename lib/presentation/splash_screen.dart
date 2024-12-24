@@ -24,8 +24,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
     var userid = AppLocal.ins.getUSerData(Hivekey.userId);
-    var userName = AppLocal.ins.getUSerData(Hivekey.userName);
+    var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     var userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic);
+    var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail);
     _controller = VideoPlayerController.asset(AppAssets.splashscreen)
       ..initialize().then((_) {
         setState(() {});
@@ -42,7 +43,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           UserData.ins.setUserData(
               id: userid,
               name: userName,
-              userprofilePicture: userProfilePicture ?? AppAssets.artstyle1);
+              userprofilePicture: userProfilePicture ?? AppAssets.artstyle1,
+              email: userEmail);
           Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
         } else {
           Navigation.pushNamedAndRemoveUntil(OnboardingScreen.routeName);
@@ -76,7 +78,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 ),
               ],
             )
-          : Center(
+          : const Center(
               child:
                   CircularProgressIndicator(), // Show a loading indicator until the video is initialized
             ),

@@ -133,6 +133,10 @@ class AuthProvider extends ChangeNotifier {
       authError = user;
     } else if (isNotNull(user)) {
       AppLocal.ins.setUserData(Hivekey.userId, user.userCredential!.user!.uid);
+      AppLocal.ins.setUserData(
+          Hivekey.userName, user.userCredential!.user!.displayName);
+      AppLocal.ins
+          .setUserData(Hivekey.userEmail, user.userCredential!.user!.email);
       appSnackBar("Success", "Sign in successful", AppColors.green);
       clearControllers();
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
@@ -167,6 +171,8 @@ class AuthProvider extends ChangeNotifier {
 
       AppLocal.ins.setUserData(
           Hivekey.userProfielPic, userCred.userCredential!.user!.photoURL);
+      AppLocal.ins
+          .setUserData(Hivekey.userEmail, userCred.userCredential!.user!.email);
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
       await firestore
           .collection('users')

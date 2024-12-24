@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/other_user_profile_screen.dart';
-import 'package:photoroomapp/providers/favrourite_provider.dart';
-import 'package:photoroomapp/providers/home_screen_provider.dart';
 import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 import 'package:photoroomapp/shared/navigation/navigation.dart';
 import 'package:photoroomapp/shared/navigation/screen_params.dart';
-
 import '../../../../../shared/constants/user_data.dart';
 
 class ProfileNameFollowWidget extends ConsumerWidget {

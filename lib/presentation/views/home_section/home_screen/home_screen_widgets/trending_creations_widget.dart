@@ -59,7 +59,7 @@ class _TrendingCreationsWidgetState
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (context) => ArtStyleDilog(),
+                    builder: (context) => const ArtStyleDilog(),
                   );
                 },
                 child: Image.asset(
@@ -113,7 +113,6 @@ class _TrendingCreationsWidgetState
                 );
               }
 
-              // Build the grid view with the data
               return Container(
                 decoration: BoxDecoration(
                   color: AppColors.darkIndigo,
@@ -135,9 +134,9 @@ class _TrendingCreationsWidgetState
                       crossAxisSpacing: 8,
                       repeatPattern: QuiltedGridRepeatPattern.inverted,
                       pattern: [
-                        QuiltedGridTile(2, 2),
-                        QuiltedGridTile(1, 1),
-                        QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(2, 2),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
                       ],
                     ),
                     itemCount: ref
@@ -171,14 +170,15 @@ class _TrendingCreationsWidgetState
                           Navigation.pushNamed(
                             SeePictureScreen.routeName,
                             arguments: SeePictureParams(
-                              userId: image["userid"],
-                              profileName: image["creator_name"],
-                              image: image["imageUrl"],
-                              prompt: image["prompt"],
-                              modelName: image["model_name"],
-                              isHomeScreenNavigation: true,
-                              isRecentGeneration: false,
-                            ),
+                                userId: image["userid"],
+                                profileName: image["creator_name"],
+                                image: image["imageUrl"],
+                                prompt: image["prompt"],
+                                modelName: image["model_name"],
+                                isHomeScreenNavigation: true,
+                                isRecentGeneration: false,
+                                index: reverseIndex,
+                                creatorEmail: image["creator_email"]),
                           );
                         },
                         child: Container(
@@ -191,11 +191,6 @@ class _TrendingCreationsWidgetState
                               imageUrl: image["imageUrl"],
                               fit: BoxFit.cover,
                               fadeInDuration: Duration.zero,
-                              // placeholder: (context, url) => Center(
-                              //   child: CircularProgressIndicator(),
-                              // ),
-                              // errorWidget: (context, url, error) =>
-                              //     Icon(Icons.error, color: AppColors.white),
                             ),
                           ),
                         ),

@@ -79,21 +79,22 @@ class MyCreationsWidget extends StatelessWidget {
                     ),
                     itemCount: listofCreations.length,
                     itemBuilder: (context, index) {
-                      var reverIndex = listofCreations.length - 1 - index;
-                      var e = listofCreations[reverIndex];
+                      var reverseIndex = listofCreations.length - 1 - index;
+                      var e = listofCreations[reverseIndex];
                       return GestureDetector(
                         onTap: () {
                           Navigation.pushNamed(
                             SeePictureScreen.routeName,
                             arguments: SeePictureParams(
-                              isHomeScreenNavigation: false,
-                              image: e["imageUrl"],
-                              prompt: e["prompt"],
-                              isRecentGeneration: false,
-                              modelName: e["model_name"],
-                              profileName: e["creator_name"],
-                              userId: UserData.ins.userId,
-                            ),
+                                isHomeScreenNavigation: false,
+                                image: e["imageUrl"],
+                                prompt: e["prompt"],
+                                isRecentGeneration: false,
+                                modelName: e["model_name"],
+                                profileName: e["creator_name"],
+                                userId: UserData.ins.userId,
+                                index: reverseIndex,
+                                creatorEmail: e["creator_email"]),
                           );
                         },
                         child: Container(

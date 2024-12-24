@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/views/global_widgets/app_background_widget.dart';
 import 'package:photoroomapp/presentation/views/global_widgets/search_textfield.dart';
@@ -34,9 +35,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(homeScreenProvider).requestPermission();
-      ref.read(modelsListProvider).getModelsListData();
       ref.read(homeScreenProvider).getUserCreations();
+      ref.read(homeScreenProvider).requestPermission();
       ref.read(userProfileProvider).getUserProfiledata();
       ref.read(favouriteProvider).fetchUserFavourites();
       ref.read(generateImageProvider).clearVarData();
@@ -45,21 +45,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBackgroundWidget(
-        widget: Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: RefreshIndicator(
-        backgroundColor: AppColors.darkBlue,
-        onRefresh: () {
-          return ref.read(homeScreenProvider).getUserCreations();
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [10.spaceY, 15.spaceY, TrendingCreationsWidget()],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+        } else {
+          bool shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: AppColors.blue,
+                  title: const Text('Confirm Exit'),
+                  content: const Text('Are you sure you want to leave?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(
+                        'No',
+                        style: AppTextstyle.interBold(color: AppColors.white),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(
+                        'Yes',
+                        style: AppTextstyle.interBold(color: AppColors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+          if (shouldExit) {
+            SystemNavigator.pop();
+          }
+        }
+      },
+      child: AppBackgroundWidget(
+          widget: Padding(
+        padding: const EdgeInsets.only(left: 6, right: 6),
+        child: RefreshIndicator(
+          backgroundColor: AppColors.darkBlue,
+          onRefresh: () {
+            return ref.watch(homeScreenProvider).getUserCreations();
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [10.spaceY, 15.spaceY, const TrendingCreationsWidget()],
+            ),
           ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }

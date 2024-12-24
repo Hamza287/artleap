@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:isolate';
 import 'package:dio/dio.dart';
 import 'package:photoroomapp/domain/api_models/Image_to_Image_model.dart';
@@ -10,12 +11,16 @@ import '../api_services/handling_response.dart';
 
 class GenerateImg2ImgImpl extends GenerateImg2ImgRepo {
   @override
-  Future<ApiResponse> generateImgToImg(Map<String, dynamic> data,
+  Future<ApiResponse> generateImgToImg(
+      Map<String, dynamic> data, List<File> images,
       {bool enableLocalPersistence = false}) async {
     print(data);
     print("dddddddddddd");
     try {
-      Response res = await imgToimgService.postJson("", data,
+      Response res = await imgToimgService.postFormData("",
+          data: data,
+          imageFieldKey: "image",
+          images: images,
           enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
       console('REPO : ${result.status}');

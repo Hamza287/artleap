@@ -36,27 +36,27 @@ class SocialLoginsWidget extends ConsumerWidget {
                     ),
                   ),
                 ),
-          ref.watch(authprovider).isLoading(LoginMethod.facebook)
-              ? const SizedBox(
-                  width: 85,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: AppColors.indigo,
-                    ),
-                  ),
-                )
-              : InkWell(
-                  onTap: () {
-                    ref.read(authprovider).signInWithFacebook();
-                  },
-                  child: Container(
-                    width: 85,
-                    child: Image.asset(
-                      AppAssets.facebooklogin,
-                      scale: 2.2,
-                    ),
-                  ),
-                ),
+          // ref.watch(authprovider).isLoading(LoginMethod.facebook)
+          //     ? const SizedBox(
+          //         width: 85,
+          //         child: Center(
+          //           child: CircularProgressIndicator(
+          //             backgroundColor: AppColors.indigo,
+          //           ),
+          //         ),
+          //       )
+          //     : InkWell(
+          //         onTap: () {
+          //           ref.read(authprovider).signInWithFacebook();
+          //         },
+          //         child: Container(
+          //           width: 85,
+          //           child: Image.asset(
+          //             AppAssets.facebooklogin,
+          //             scale: 2.2,
+          //           ),
+          //         ),
+          //       ),
           // Image.asset(
           //   AppAssets.applelogin,
           //   scale: 2.2,

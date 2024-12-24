@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/providers/home_screen_provider.dart';
@@ -11,7 +12,7 @@ class SearchTextfield extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       height: 35,
-      width: 320,
+      width: double.infinity,
       // margin: EdgeInsets.only(left: 15, right: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7), color: AppColors.greyBlue),
@@ -30,6 +31,7 @@ class SearchTextfield extends ConsumerWidget {
           ),
         ),
         onChanged: (value) {
+          FirebaseCrashlytics.instance.log('User typing in search textfield');
           ref.read(homeScreenProvider).searchByPrompt(value);
         },
       ),
