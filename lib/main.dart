@@ -22,9 +22,13 @@ import 'shared/theme/dark_theme.dart';
 void main() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        name: "secondary",
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+
     await AppLocal.ins.initStorage();
     await DI.initDI();
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

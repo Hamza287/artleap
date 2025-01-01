@@ -45,5 +45,29 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Added for Google Sign-In -->
+	<key>GIDClientID</key>
+	<string>586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd.apps.googleusercontent.com</string>
+
+	<!-- Added URL Types -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- Replace with the reverse client ID -->
+				<string>com.googleusercontent.apps.586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd</string>
+				<string>com.googleusercontent.apps.53715181958-10rq7oogskggumj2v40iku8o9homdf5t</string>
+			</array>
+		</dict>
+	</array>
+	<!-- Required Usage Descriptions for accessing Photo Library -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires permission to save images to your Photo Library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires permission to access your Photo Library.</string>
 </dict>
 </plist>

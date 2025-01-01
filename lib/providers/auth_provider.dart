@@ -188,34 +188,34 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  signInWithFacebook() async {
-    startLoading(LoginMethod.facebook);
-    AuthResult? userCred = await _authServices.signInWithFacebook();
+  // signInWithFacebook() async {
+  //   startLoading(LoginMethod.facebook);
+  //   AuthResult? userCred = await _authServices.signInWithFacebook();
 
-    if (isNotNull(userCred)) {
-      appSnackBar("Success", "SignIn successfully!",
-          const Color.fromARGB(255, 113, 235, 117));
-      AppLocal.ins
-          .setUserData(Hivekey.userId, userCred!.userCredential!.user!.uid);
-      AppLocal.ins.setUserData(
-          Hivekey.userName, userCred.userCredential!.user!.displayName);
+  //   if (isNotNull(userCred)) {
+  //     appSnackBar("Success", "SignIn successfully!",
+  //         const Color.fromARGB(255, 113, 235, 117));
+  //     AppLocal.ins
+  //         .setUserData(Hivekey.userId, userCred!.userCredential!.user!.uid);
+  //     AppLocal.ins.setUserData(
+  //         Hivekey.userName, userCred.userCredential!.user!.displayName);
 
-      AppLocal.ins.setUserData(
-          Hivekey.userProfielPic, userCred.userCredential!.user!.photoURL);
-      Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-      await firestore
-          .collection('users')
-          .doc(userCred.userCredential!.user!.uid)
-          .set({
-        'id': userCred.userCredential!.user!.uid,
-        'username': userCred.userCredential!.user!.displayName,
-        'email': userCred.userCredential!.user!.email,
-        'profile_image': userCred.userCredential!.user!.photoURL
-      });
-    }
-    stopLoading(LoginMethod.facebook);
-    notifyListeners();
-  }
+  //     AppLocal.ins.setUserData(
+  //         Hivekey.userProfielPic, userCred.userCredential!.user!.photoURL);
+  //     Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+  //     await firestore
+  //         .collection('users')
+  //         .doc(userCred.userCredential!.user!.uid)
+  //         .set({
+  //       'id': userCred.userCredential!.user!.uid,
+  //       'username': userCred.userCredential!.user!.displayName,
+  //       'email': userCred.userCredential!.user!.email,
+  //       'profile_image': userCred.userCredential!.user!.photoURL
+  //     });
+  //   }
+  //   stopLoading(LoginMethod.facebook);
+  //   notifyListeners();
+  // }
 
   void clearControllers() {
     emailController.clear();

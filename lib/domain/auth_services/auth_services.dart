@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:photoroomapp/shared/app_persistance/app_local.dart';
 import 'package:photoroomapp/shared/app_snack_bar.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
@@ -107,40 +107,40 @@ class AuthServices {
     }
   }
 
-  Future<AuthResult?> signInWithFacebook() async {
-    try {
-      final result = await FacebookAuth.i.login(
-        permissions: [
-          'email',
-          'public_profile',
-          // 'user_birthday',
-          // 'user_friends',
-          // 'user_gender',
-          // 'user_link'
-        ],
-      );
-      if (result.status == LoginStatus.success) {
-        final userData = await FacebookAuth.i.getUserData(
-            fields:
-                "name,email,picture.width(200),birthday,friends,gender,link");
-        final OAuthCredential credential =
-            FacebookAuthProvider.credential(result.accessToken!.tokenString);
+  // Future<AuthResult?> signInWithFacebook() async {
+  //   try {
+  //     final result = await FacebookAuth.i.login(
+  //       permissions: [
+  //         'email',
+  //         'public_profile',
+  //         // 'user_birthday',
+  //         // 'user_friends',
+  //         // 'user_gender',
+  //         // 'user_link'
+  //       ],
+  //     );
+  //     if (result.status == LoginStatus.success) {
+  //       final userData = await FacebookAuth.i.getUserData(
+  //           fields:
+  //               "name,email,picture.width(200),birthday,friends,gender,link");
+  //       final OAuthCredential credential =
+  //           FacebookAuthProvider.credential(result.accessToken!.tokenString);
 
-        // return await FirebaseAuth.instance.signInWithCredential(credential);
-        return AuthResult(
-            fbData: userData,
-            userCredential:
-                await FirebaseAuth.instance.signInWithCredential(credential));
-      }
-      console(result.message);
-      console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
-      return null;
-    } catch (e) {
-      console(e);
-      console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
-      return null;
-    }
-  }
+  //       // return await FirebaseAuth.instance.signInWithCredential(credential);
+  //       return AuthResult(
+  //           fbData: userData,
+  //           userCredential:
+  //               await FirebaseAuth.instance.signInWithCredential(credential));
+  //     }
+  //     console(result.message);
+  //     console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
+  //     return null;
+  //   } catch (e) {
+  //     console(e);
+  //     console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
+  //     return null;
+  //   }
+  // }
 }
 
 // enum AuthResultState { success, error, emailNotVerified }
