@@ -1,26 +1,59 @@
 {
   "project_info": {
-    "project_number": "586272014422",
-    "project_id": "artleap-d2079",
-    "storage_bucket": "artleap-d2079.firebasestorage.app"
+    "project_number": "53715181958",
+    "project_id": "imaginary-verse",
+    "storage_bucket": "imaginary-verse.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:586272014422:android:264bfdc71a13f633b67bf7",
+        "mobilesdk_app_id": "1:53715181958:android:9dc78b65a64e54e4decc07",
         "android_client_info": {
           "package_name": "com.XrDIgital.ImaginaryVerse"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "53715181958-gktpd6i5oeqiej7a4i0v34p048trqcp9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.XrDIgital.ImaginaryVerse",
+            "certificate_hash": "cbd857397c9fc78b2e1f17b3390148bffa0e5e82"
+          }
+        },
+        {
+          "client_id": "53715181958-qa1dm07qrolafb76hi0lhg9majrbchme.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.XrDIgital.ImaginaryVerse",
+            "certificate_hash": "538e35f04ddbe776423087784d2443f81b30089a"
+          }
+        },
+        {
+          "client_id": "53715181958-06bvu6ies0pmocsb69c5m1091fuomsku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyALpDsstpx5oCzLUOFN0qL5UZ-6rHwe1Fw"
+          "current_key": "AIzaSyBrfCe9kURknifcxmOgP69pqhasK3ZKfb4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53715181958-06bvu6ies0pmocsb69c5m1091fuomsku.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "53715181958-10rq7oogskggumj2v40iku8o9homdf5t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.XrDIgital.ImaginaryVerse"
+              }
+            }
+          ]
         }
       }
     }

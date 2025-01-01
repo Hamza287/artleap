@@ -41,49 +41,53 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDG6CIzTm7L5ZlgRK1g-7DsIH2icuGin7c',
-    appId: '1:586272014422:web:84793bfaff3e0312b67bf7',
-    messagingSenderId: '586272014422',
-    projectId: 'artleap-d2079',
-    authDomain: 'artleap-d2079.firebaseapp.com',
-    storageBucket: 'artleap-d2079.firebasestorage.app',
-    measurementId: 'G-TKH4Z1WF6H',
+    apiKey: 'AIzaSyDy8prKHws6ECrtwjM3vxnAh3K5WiiwfI8',
+    appId: '1:53715181958:web:e074f917e24bf14bdecc07',
+    messagingSenderId: '53715181958',
+    projectId: 'imaginary-verse',
+    authDomain: 'imaginary-verse.firebaseapp.com',
+    storageBucket: 'imaginary-verse.appspot.com',
+    measurementId: 'G-NZ9THB6NQQ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyALpDsstpx5oCzLUOFN0qL5UZ-6rHwe1Fw',
-    appId: '1:586272014422:android:264bfdc71a13f633b67bf7',
-    messagingSenderId: '586272014422',
-    projectId: 'artleap-d2079',
-    storageBucket: 'artleap-d2079.firebasestorage.app',
+    apiKey: 'AIzaSyBrfCe9kURknifcxmOgP69pqhasK3ZKfb4',
+    appId: '1:53715181958:android:9dc78b65a64e54e4decc07',
+    messagingSenderId: '53715181958',
+    projectId: 'imaginary-verse',
+    storageBucket: 'imaginary-verse.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAftafQlwY315UhnG63PTx9fwfnc0KEGfE',
-    appId: '1:586272014422:ios:7a5a8f47c0903e34b67bf7',
-    messagingSenderId: '586272014422',
-    projectId: 'artleap-d2079',
-    storageBucket: 'artleap-d2079.firebasestorage.app',
+    apiKey: 'AIzaSyCefdd4vFs6Va_9MR_Wf4BnX6jLdBbann4',
+    appId: '1:53715181958:ios:34adf88a7361b9eadecc07',
+    messagingSenderId: '53715181958',
+    projectId: 'imaginary-verse',
+    storageBucket: 'imaginary-verse.appspot.com',
+    androidClientId: '53715181958-gktpd6i5oeqiej7a4i0v34p048trqcp9.apps.googleusercontent.com',
+    iosClientId: '53715181958-10rq7oogskggumj2v40iku8o9homdf5t.apps.googleusercontent.com',
     iosBundleId: 'com.XrDIgital.ImaginaryVerse',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAftafQlwY315UhnG63PTx9fwfnc0KEGfE',
-    appId: '1:586272014422:ios:7a5a8f47c0903e34b67bf7',
-    messagingSenderId: '586272014422',
-    projectId: 'artleap-d2079',
-    storageBucket: 'artleap-d2079.firebasestorage.app',
+    apiKey: 'AIzaSyCefdd4vFs6Va_9MR_Wf4BnX6jLdBbann4',
+    appId: '1:53715181958:ios:34adf88a7361b9eadecc07',
+    messagingSenderId: '53715181958',
+    projectId: 'imaginary-verse',
+    storageBucket: 'imaginary-verse.appspot.com',
+    androidClientId: '53715181958-gktpd6i5oeqiej7a4i0v34p048trqcp9.apps.googleusercontent.com',
+    iosClientId: '53715181958-10rq7oogskggumj2v40iku8o9homdf5t.apps.googleusercontent.com',
     iosBundleId: 'com.XrDIgital.ImaginaryVerse',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDG6CIzTm7L5ZlgRK1g-7DsIH2icuGin7c',
-    appId: '1:586272014422:web:4f91ed94bc37227eb67bf7',
-    messagingSenderId: '586272014422',
-    projectId: 'artleap-d2079',
-    authDomain: 'artleap-d2079.firebaseapp.com',
-    storageBucket: 'artleap-d2079.firebasestorage.app',
-    measurementId: 'G-RL1LVJY8JB',
+    apiKey: 'AIzaSyDy8prKHws6ECrtwjM3vxnAh3K5WiiwfI8',
+    appId: '1:53715181958:web:25e5c82f54a3ccbfdecc07',
+    messagingSenderId: '53715181958',
+    projectId: 'imaginary-verse',
+    authDomain: 'imaginary-verse.firebaseapp.com',
+    storageBucket: 'imaginary-verse.appspot.com',
+    measurementId: 'G-4EELX69MT3',
   );
 
 }
