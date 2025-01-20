@@ -336,10 +336,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   void checkSexualWords(String input) {
     // Convert input to lowercase for case-insensitive checking
     final lowerInput = input.toLowerCase();
-
     // Check if any word in the list is contained in the input
     bool found = sexualWordsList.any((word) => lowerInput.contains(word));
-
     _containsSexualWords = found;
     notifyListeners();
   }
