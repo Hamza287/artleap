@@ -38,8 +38,8 @@ android {
         applicationId "com.XrDIgital.ImaginaryVerse"
         minSdk 23
         targetSdk 34
-        versionCode 6
-        versionName "1.1.4"
+        versionCode 8
+        versionName "1.1.6"
         ndk {
             debugSymbolLevel 'FULL'
         }
@@ -56,9 +56,13 @@ android {
 
    buildTypes {
     release {
+        signingConfig signingConfigs.debug
         signingConfig signingConfigs.release
         minifyEnabled false // Code shrinking disabled
         shrinkResources false // Resource shrinking disabled
+         ndk {
+                debugSymbolLevel 'FULL' // Generate full debug symbols
+            }
         // If you're using ProGuard, uncomment the next line
         // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }

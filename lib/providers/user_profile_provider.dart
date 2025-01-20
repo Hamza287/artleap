@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
+import 'package:photoroomapp/shared/app_persistance/app_data.dart';
 import 'package:photoroomapp/shared/constants/user_data.dart';
+import 'package:uuid/uuid.dart';
 
 final userProfileProvider =
     ChangeNotifierProvider<UserProfileProvider>((ref) => UserProfileProvider());
@@ -21,6 +23,8 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   Map<String, dynamic>? get otherUserPersonalInfo => _otherUserPersonalInfo;
   Map<String, dynamic>? _userPersonalData;
   Map<String, dynamic>? get userPersonalData => _userPersonalData;
+  Map<String, dynamic> _userDailyCredits = {};
+  Map<String, dynamic> get userDailyCredits => _userDailyCredits;
 
   // String? _userId;
   // String? get userId => _userId;
@@ -51,6 +55,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
           .get();
       DocumentSnapshot<Map<String, dynamic>> userPersonalInfo =
           await firestore.collection('users').doc(UserData.ins.userId).get();
+      // Map<String, dynamic>? userCredits = snapshot.data()?['credits'] ?? {};
       List<Map<String, dynamic>> userData =
           List<Map<String, dynamic>>.from(snapshot.data()?['userData'] ?? []);
       List<Map<String, dynamic>> userFollowingData =
@@ -58,12 +63,14 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       List<Map<String, dynamic>> userFollowerData =
           List<Map<String, dynamic>>.from(snapshot.data()?['followers'] ?? []);
       print(userData);
-      print("dddddddddddddddddaaaaaaaaassssss");
       _userCreations = userData;
       _userFollowingData = userFollowingData;
       _userFollowerData = userFollowerData;
       _userPersonalData = userPersonalInfo.data() ?? {};
+      _userDailyCredits = _userPersonalData!["credits"];
+
       print(_userPersonalData);
+      print(_userDailyCredits);
     } catch (e) {
       print('Error retrieving data from Firestore: $e');
     }
@@ -73,7 +80,6 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   Future<DocumentSnapshot<Map<String, dynamic>>?> fetchUserProfileData() async {
     var data = await userProfileRepo.fetchUserProfileData(UserData.ins.userId!);
     print(data!.data());
-    print("oooooooooooooooooooooooooooooooooooooooooo");
     notifyListeners(); // Notify listeners to update UI
     return data;
   }
@@ -164,9 +170,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
 
   refreshFtn() async {
     await getUserProfiledata();
-    print("dddddddddd");
     await fetchUserProfileData();
-    print("ssssssssss");
     await fetchUserPersonalData(UserData.ins.userId);
   }
 }

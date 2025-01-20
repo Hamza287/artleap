@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 // import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:photoroomapp/firebase_options.dart';
 import 'package:photoroomapp/presentation/splash_screen.dart';
@@ -22,13 +23,11 @@ import 'shared/theme/dark_theme.dart';
 void main() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        name: "secondary",
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
+    await MobileAds.instance.initialize();
 
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await AppLocal.ins.initStorage();
     await DI.initDI();
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -44,7 +43,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Artleap.ai',
       themeMode: ref.watch(themeProvider),
       theme: lightTheme,
       darkTheme: darkTheme,

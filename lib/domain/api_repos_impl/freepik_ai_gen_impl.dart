@@ -15,6 +15,7 @@ class FreepikAiGenImpl extends FreepikAiGenRepo {
     try {
       Response res = await postFreePikGen.postJson("", data,
           enableLocalPersistence: enableLocalPersistence);
+      print(res);
       ApiResponse result = HandlingResponse.returnResponse(res);
       print(result);
       console('REPO : ${result.status}');

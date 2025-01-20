@@ -35,17 +35,21 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                     ? "Your Favourites"
                     : "",
             listOfColors: ref.watch(bottomNavBarProvider).pageIndex == 3
-                ? [AppColors.lightIndigo, AppColors.darkIndigo]
+                ? [
+                    const Color.fromARGB(255, 145, 137, 199),
+                    AppColors.darkIndigo
+                  ]
                 : [AppColors.darkBlue, AppColors.darkBlue],
             actions: [
               if (ref.watch(bottomNavBarProvider).pageIndex == 0)
-                Expanded(
+                const Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10, left: 14),
-                    child: const SearchTextfield(),
+                    padding: EdgeInsets.only(top: 10, left: 14),
+                    child: SearchTextfield(),
                   ),
                 ),
               if (ref.watch(bottomNavBarProvider).pageIndex == 0) 20.spaceX,
+
               // if (ref.watch(bottomNavBarProvider).pageIndex == 0)
               //   Padding(
               //     padding: const EdgeInsets.only(right: 20, top: 10),

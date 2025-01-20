@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/constants/app_assets.dart';
 import 'package:photoroomapp/shared/navigation/navigation.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:visibility_detector/visibility_detector.dart';
 import '../shared/app_persistance/app_local.dart';
 import '../shared/constants/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,6 +21,8 @@ final homeScreenProvider =
 
 class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   // FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final notificationSettings =
+      FirebaseMessaging.instance.requestPermission(provisional: true);
   final List<Map<String, dynamic>> _filteredCreations = [];
   List<Map<String, dynamic>> get filteredCreations => _filteredCreations;
   bool _isLoading = false;
@@ -23,12 +30,30 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   bool _isDeletionLoading = false;
   bool get isDeletionLoading => _isDeletionLoading;
   bool _isRequestingPermission = false;
+  List<String> _visibleImages = [];
+  List<String> get visibleImages => _visibleImages;
+
+  setVisibleImages(List<String> val) {
+    _visibleImages = val;
+    notifyListeners();
+  }
+
   setDeletionLoading(bool val) {
     _isDeletionLoading = val;
     notifyListeners();
   }
 
+  getDeviceTokekn() async {
+    FirebaseMessaging.instance.getInitialMessage();
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    print(fcmToken);
+    print("llllllllllllllllllllllllll");
+    notifyListeners();
+  }
+
   Future<void> requestPermission() async {
+    requestPermissionForNotifications();
     if (_isRequestingPermission) return;
     _isRequestingPermission = true;
     try {
@@ -50,6 +75,28 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     }
   }
 
+  Future<void> requestPermissionForNotifications() async {
+    if (_isRequestingPermission) return;
+    _isRequestingPermission = true;
+    try {
+      if (await Permission.notification.isGranted) {
+        // Permission already granted
+        return;
+      }
+      var result = await Permission.notification.request();
+      if (result.isGranted) {
+        // Permission granted, proceed with your functionality
+      } else if (result.isDenied) {
+        // Permission denied, you might want to show a dialog
+      } else if (result.isPermanentlyDenied) {
+        // Permission permanently denied, navigate to app settings
+        openAppSettings();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   getUserInfo() {
     var userid = AppLocal.ins.getUSerData(Hivekey.userId);
     var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
@@ -57,7 +104,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail);
     print(userProfilePicture);
     print("dddddddddddddddddd");
-
     UserData.ins.setUserData(
         id: userid,
         name: userName,
@@ -80,7 +126,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
       // Preload the initial batch of images
       await preloadImages(initialBatch);
     }
-
+    notifyListeners();
     return data;
   }
 
@@ -110,7 +156,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     } else {
       print('userData key not found or is not a list');
     }
-
+    notifyListeners();
     return images;
   }
 
@@ -136,23 +182,36 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
       stream.addListener(listener);
       return completer.future;
     }).toList();
-
     await Future.wait(preloadFutures);
+  }
+
+  visibilityInfo(VisibilityInfo info, String images) {
+    if (info.visibleFraction > 0) {
+      if (!visibleImages.contains(images)) {
+        visibleImages.add(images);
+      }
+    } else {
+      visibleImages.remove(images);
+    }
+    notifyListeners();
+  }
+
+  void addVisibleImage(String imageUrl) {
+    if (!visibleImages.contains(imageUrl)) {
+      _visibleImages = [...visibleImages, imageUrl];
+      notifyListeners();
+    }
   }
 
   filteredListFtn(String modelName) async {
     _filteredCreations.clear();
     DocumentSnapshot<Map<String, dynamic>>? data = await getUserCreations();
-
     if (data != null && data.data() != null) {
       Map<String, dynamic> dataMap = data.data()!;
-
       // Access the 'userData' key
       List<dynamic>? creationsList = dataMap['userData'];
-
       if (creationsList != null) {
         List<Map<String, dynamic>> creations = [];
-
         for (var item in creationsList) {
           if (item is Map<String, dynamic>) {
             creations.add(item);

@@ -5,9 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/intl.dart';
 import 'package:photoroomapp/domain/api_models/generate_high_q_model.dart';
 import 'package:photoroomapp/domain/api_services/api_response.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
+import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/api_models/Image_to_Image_model.dart';
 import '../domain/api_models/models_list_model.dart';
@@ -17,14 +20,11 @@ import '../shared/utilities/pickers.dart';
 import '../domain/api_models/freepik_image_gen_model.dart' as freePik;
 
 final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
-    (ref) => GenerateImageProvider());
+    (ref) => GenerateImageProvider(ref));
 
 class GenerateImageProvider extends ChangeNotifier with BaseRepo {
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
-
   final List<ImageToImageModel?> _generatedImage = [];
   List<ImageToImageModel?> get generatedImage => _generatedImage;
   GenerateHighQualityImageModel? _generatedHighQualityImage;
@@ -51,13 +51,23 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   String? _selectedStyle;
   String? get selectedStyle => _selectedStyle;
+
+  bool _containsSexualWords = false;
+  bool get containsSexualWords => _containsSexualWords;
+
+  BannerAd? _bannerAd;
+  BannerAd? get bannerAd => _bannerAd;
+  bool _isBannerAdLoaded = false;
+  bool get isBannerAdLoaded => _isBannerAdLoaded;
+
   set selectedStyle(String? value) {
     _selectedStyle = value;
     notifyListeners();
   }
 
-  GenerateImageProvider() {
-    // Automatically select the first style if available
+  final Ref reference;
+
+  GenerateImageProvider(this.reference) {
     if (freePikStyles.isNotEmpty) {
       _selectedStyle = freePikStyles[0]['title'];
     }
@@ -95,6 +105,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   String? dataUrl;
   generateFreePikImage() async {
+    deductCredit(UserData.ins.userId!);
     setGenerateImageLoader(true);
     Map<String, dynamic> mapdata = {
       "prompt": promptTextController.text,
@@ -116,6 +127,9 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     ApiResponse generateImageRes = await freePikRepo.generateImage(data);
     if (generateImageRes.status == Status.completed) {
       var _generatedData = generateImageRes.data as freePik.FreePikAIGenModel;
+      print(_generatedData);
+      print("ddddddddddddddddd");
+      reference.read(userProfileProvider).getUserProfiledata();
       generatedFreePikData = _generatedData.data;
       for (var item in generatedFreePikData) {
         String base64String = item.base64;
@@ -317,5 +331,121 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     } catch (e) {
       return false;
     }
+  }
+
+  void checkSexualWords(String input) {
+    // Convert input to lowercase for case-insensitive checking
+    final lowerInput = input.toLowerCase();
+
+    // Check if any word in the list is contained in the input
+    bool found = sexualWordsList.any((word) => lowerInput.contains(word));
+
+    _containsSexualWords = found;
+    notifyListeners();
+  }
+
+  void loadBannerAd() {
+    _bannerAd = BannerAd(
+      size: AdSize.banner, // or AdSize.smartBanner
+      adUnitId:
+          'ca-app-pub-3940256099942544/9214589741', // Your banner ad unit ID
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          _isBannerAdLoaded = true;
+          notifyListeners();
+          print(_isBannerAdLoaded);
+          print("ddddddddddddddddd");
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          // Dispose of the ad here to free resources
+          ad.dispose();
+          print('Banner failed to load: $error');
+        },
+      ),
+      request: const AdRequest(),
+    )..load();
+  }
+
+  // Helper to get today's date as a string (e.g., "2025-01-08")
+  String getTodayString() {
+    return DateFormat('yyyy-MM-dd').format(DateTime.now());
+  }
+
+  // Step 1: Add or Update Credits Map
+  Future<void> ensureCreditsExist(String userId) async {
+    final userDoc = firestore.collection('users').doc(UserData.ins.userId);
+    final userSnapshot = await userDoc.get();
+    if (userSnapshot.exists) {
+      final userData = userSnapshot.data()!;
+      if (!userData.containsKey('credits')) {
+        // Add the `credits` map if it doesn't exist
+        await userDoc.update({
+          'credits': {
+            'remaining': 75,
+            'lastUpdate': getTodayString(),
+          },
+        });
+      }
+    } else {
+      throw Exception("User document does not exist.");
+    }
+  }
+
+  // Step 2: Check and Renew Credits
+  Future<void> checkAndRenewCredits(String userId) async {
+    final userDoc = firestore.collection('users').doc(userId);
+
+    final userSnapshot = await userDoc.get();
+    if (userSnapshot.exists) {
+      final userData = userSnapshot.data()!;
+      final credits = userData['credits'] ?? {};
+      final String lastUpdate = credits['lastUpdate'] ?? '';
+      // final int remaining = credits['remaining'] ?? 3;
+
+      // Get today's date
+      final todayString = getTodayString();
+
+      if (lastUpdate != todayString) {
+        // Reset credits to 3 for a new day
+        await userDoc.update({
+          'credits': {
+            'remaining': 75,
+            'lastUpdate': todayString,
+          },
+        });
+      }
+    } else {
+      throw Exception("User document does not exist.");
+    }
+  }
+
+  // Step 3: Deduct Credits
+  Future<bool> deductCredit(String userId) async {
+    final userDoc = firestore.collection('users').doc(userId);
+
+    final userSnapshot = await userDoc.get();
+    if (userSnapshot.exists) {
+      final userData = userSnapshot.data()!;
+      final credits = userData['credits'] ?? {};
+      final int remaining = credits['remaining'] ?? 0;
+      if (remaining > 0) {
+        // Deduct one credit
+        await userDoc.update({
+          'credits.remaining': remaining - 25,
+        });
+        return true; // Successfully deducted
+      } else {
+        // No credits remaining
+        return false;
+      }
+    } else {
+      throw Exception("User document does not exist.");
+    }
+  }
+
+  creditsCheckAndBalance() {
+    ensureCreditsExist(UserData.ins.userId!);
+    checkAndRenewCredits(UserData.ins.userId!);
+    notifyListeners();
   }
 }

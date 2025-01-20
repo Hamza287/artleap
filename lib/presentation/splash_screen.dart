@@ -45,7 +45,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               name: userName,
               userprofilePicture: userProfilePicture ?? AppAssets.artstyle1,
               email: userEmail);
-          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName); 
         } else {
           Navigation.pushNamedAndRemoveUntil(OnboardingScreen.routeName);
         }
