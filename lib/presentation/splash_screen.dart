@@ -56,6 +56,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    print("dispoooooooosoeeeeeeeedddd");
     super.dispose();
   }
 
@@ -72,7 +73,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     child: SizedBox(
                       width: _controller.value.size.width,
                       height: _controller.value.size.height,
-                      child: VideoPlayer(_controller),
+                      child: VideoPlayer(
+                        _controller,
+                      ),
                     ),
                   ),
                 ),

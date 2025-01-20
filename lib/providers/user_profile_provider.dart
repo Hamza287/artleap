@@ -10,7 +10,7 @@ final userProfileProvider =
     ChangeNotifierProvider<UserProfileProvider>((ref) => UserProfileProvider());
 
 class UserProfileProvider extends ChangeNotifier with BaseRepo {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> _userCreations = [];
   List<Map<String, dynamic>> get usersCreations => _userCreations;
   List<Map<String, dynamic>> _userFollowingData = [];
@@ -30,7 +30,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   // String? get userId => _userId;
   // String? _userName;
   // String? get userName => _userName;
-  var uuid = const Uuid().v1();
+  // var uuid = const Uuid().v1();
   bool _isloading = false;
   bool get isloading => _isloading;
 

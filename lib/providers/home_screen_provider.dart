@@ -162,8 +162,13 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> preloadImages(List<Map<String, dynamic>> images) async {
     List<Future<void>> preloadFutures = images.map((image) {
+      // Assuming a smaller version or a cached version is available
+      final String imageUrl = image['imageUrl'];
+      String thumbnailUrl = imageUrl.replaceAll("fullsize",
+          "thumbnail"); // Example: modify the URL for the thumbnail version
+
       final Completer<void> completer = Completer<void>();
-      final ImageStream stream = CachedNetworkImageProvider(image['imageUrl'])
+      final ImageStream stream = CachedNetworkImageProvider(thumbnailUrl)
           .resolve(const ImageConfiguration());
       final listener = ImageStreamListener((_, __) {
         if (!completer.isCompleted) {
