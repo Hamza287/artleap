@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:uuid/uuid.dart';
-import '../shared/app_persistance/app_local.dart';
 
 final userProfileProvider =
     ChangeNotifierProvider<UserProfileProvider>((ref) => UserProfileProvider());
 
 class UserProfileProvider extends ChangeNotifier with BaseRepo {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> _userCreations = [];
   List<Map<String, dynamic>> get usersCreations => _userCreations;
   List<Map<String, dynamic>> _userFollowingData = [];
@@ -28,7 +26,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   // String? get userId => _userId;
   // String? _userName;
   // String? get userName => _userName;
-  var uuid = const Uuid().v1();
+  // var uuid = const Uuid().v1();
   bool _isloading = false;
   bool get isloading => _isloading;
 

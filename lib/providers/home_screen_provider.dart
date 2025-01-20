@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +15,8 @@ final homeScreenProvider =
     ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
 
 class HomeScreenProvider extends ChangeNotifier with BaseRepo {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  List<Map<String, dynamic>> _filteredCreations = [];
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final List<Map<String, dynamic>> _filteredCreations = [];
   List<Map<String, dynamic>> get filteredCreations => _filteredCreations;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -117,8 +116,13 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> preloadImages(List<Map<String, dynamic>> images) async {
     List<Future<void>> preloadFutures = images.map((image) {
+      // Assuming a smaller version or a cached version is available
+      final String imageUrl = image['imageUrl'];
+      String thumbnailUrl = imageUrl.replaceAll("fullsize",
+          "thumbnail"); // Example: modify the URL for the thumbnail version
+
       final Completer<void> completer = Completer<void>();
-      final ImageStream stream = CachedNetworkImageProvider(image['imageUrl'])
+      final ImageStream stream = CachedNetworkImageProvider(thumbnailUrl)
           .resolve(const ImageConfiguration());
       final listener = ImageStreamListener((_, __) {
         if (!completer.isCompleted) {
@@ -134,8 +138,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     }).toList();
 
     await Future.wait(preloadFutures);
-
-    notifyListeners();
   }
 
   filteredListFtn(String modelName) async {

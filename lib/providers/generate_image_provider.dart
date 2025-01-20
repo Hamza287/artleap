@@ -20,12 +20,12 @@ final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
     (ref) => GenerateImageProvider());
 
 class GenerateImageProvider extends ChangeNotifier with BaseRepo {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
 
-  List<ImageToImageModel?> _generatedImage = [];
+  final List<ImageToImageModel?> _generatedImage = [];
   List<ImageToImageModel?> get generatedImage => _generatedImage;
   GenerateHighQualityImageModel? _generatedHighQualityImage;
   GenerateHighQualityImageModel? get generatedHighQualityImage =>

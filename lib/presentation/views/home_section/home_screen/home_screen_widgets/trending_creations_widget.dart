@@ -189,8 +189,20 @@ class _TrendingCreationsWidgetState
                             borderRadius: BorderRadius.circular(5),
                             child: CachedNetworkImage(
                               imageUrl: image["imageUrl"],
+                              height: 150, // Specify height
+                              width: 150, // Specify width
+                              // maxHeightDiskCache: 100, maxWidthDiskCache: 100,
+                              memCacheHeight: 400, memCacheWidth: 400,
                               fit: BoxFit.cover,
                               fadeInDuration: Duration.zero,
+
+                              // placeholder: (context, url) => Center(
+                              //   child: CircularProgressIndicator(
+                              //     color: AppColors.indigo,
+                              //   ),
+                              // ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
                           ),
                         ),

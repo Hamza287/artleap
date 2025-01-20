@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +11,12 @@ import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/app_snack_bar.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:saver_gallery/saver_gallery.dart';
-import 'package:uuid/uuid.dart';
 import '../shared/constants/user_data.dart';
 
 final favouriteProvider =
     ChangeNotifierProvider<FavouriteProvider>((ref) => FavouriteProvider());
 
 class FavouriteProvider extends ChangeNotifier with BaseRepo {
-  var uuid = const Uuid().v1();
   List<Map<String, dynamic>> _userFavourites = [];
   List<Map<String, dynamic>> get usersFavourites => _userFavourites;
   bool _isDownloading = false;
@@ -98,7 +95,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
           extractFavouritesFromData(data.data()!);
 
       // Preload images associated with favourites
-      await preloadFavouritesImages(favourites);
+      // await preloadFavouritesImages(favourites);
 
       // Assign to _userFavourites
       _userFavourites = favourites;
@@ -127,30 +124,30 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
     return images;
   }
 
-// Helper function to preload images
-  Future<void> preloadFavouritesImages(
-      List<Map<String, dynamic>> favourites) async {
-    List<Future<void>> preloadFutures = favourites.map((image) {
-      final Completer<void> completer = Completer<void>();
-      final ImageStream stream = CachedNetworkImageProvider(image['imageUrl'])
-          .resolve(const ImageConfiguration());
-      final listener = ImageStreamListener((_, __) {
-        if (!completer.isCompleted) {
-          completer.complete();
-        }
-      }, onError: (dynamic exception, StackTrace? stackTrace) {
-        if (!completer.isCompleted) {
-          completer.completeError(exception);
-        }
-      });
-      stream.addListener(listener);
-      return completer.future;
-    }).toList();
+// // Helper function to preload images
+//   Future<void> preloadFavouritesImages(
+//       List<Map<String, dynamic>> favourites) async {
+//     List<Future<void>> preloadFutures = favourites.map((image) {
+//       final Completer<void> completer = Completer<void>();
+//       final ImageStream stream = CachedNetworkImageProvider(image['imageUrl'])
+//           .resolve(const ImageConfiguration());
+//       final listener = ImageStreamListener((_, __) {
+//         if (!completer.isCompleted) {
+//           completer.complete();
+//         }
+//       }, onError: (dynamic exception, StackTrace? stackTrace) {
+//         if (!completer.isCompleted) {
+//           completer.completeError(exception);
+//         }
+//       });
+//       stream.addListener(listener);
+//       return completer.future;
+//     }).toList();
 
-    await Future.wait(preloadFutures);
+//     await Future.wait(preloadFutures);
 
-    notifyListeners();
-  }
+//     notifyListeners();
+//   }
 
   Future<void> downloadImage(String imageUrl,
       {Uint8List? uint8ListObject}) async {
