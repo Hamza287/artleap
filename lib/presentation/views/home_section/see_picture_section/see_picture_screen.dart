@@ -139,8 +139,8 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                                   const EdgeInsets.only(left: 15, right: 15),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
-                                child: CachedNetworkImage(
-                                  imageUrl: widget.params!.image!,
+                                child: Image.network(
+                                  widget.params!.image!,
                                   fit: BoxFit.fill,
                                 ),
                               ),

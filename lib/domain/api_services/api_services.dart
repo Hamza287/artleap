@@ -29,6 +29,8 @@ class ApiServices extends DioCore {
     dynamic data, {
     bool enableLocalPersistence = false,
   }) async {
+    print(path);
+    print(data);
     return await dio.post(path,
         data: data,
         options: _options(enableLocalPersistence, headers: header1));

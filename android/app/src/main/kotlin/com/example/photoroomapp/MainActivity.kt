@@ -1,18 +1,21 @@
 package com.XrDIgital.ImaginaryVerse
 
-import io.flutter.embedding.android.FlutterActivity
 import android.content.pm.PackageManager
 import android.util.Base64
 import android.util.Log
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
+
     init {
         try {
             val info = packageManager.getPackageInfo(
                 "com.XrDIgital.ImaginaryVerse", // Your package name
-                android.content.pm.PackageManager.GET_SIGNATURES
+                PackageManager.GET_SIGNATURES
             )
             for (signature in info.signatures) {
                 val md = MessageDigest.getInstance("SHA")
@@ -23,5 +26,22 @@ class MainActivity: FlutterActivity() {
         } catch (e: Exception) {
             Log.e("KeyHash:", "Error generating key hash", e)
         }
+    }
+
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        // Register your custom NativeAdFactory
+        GoogleMobileAdsPlugin.registerNativeAdFactory(
+            flutterEngine,
+            "listTile", // factoryId used in Dart
+            ListTileNativeAdFactory(layoutInflater) // The class you created
+        )
+    }
+
+
+    override fun onDestroy() {
+        GoogleMobileAdsPlugin.unregisterNativeAdFactory(flutterEngine!!, "listTile")
+        super.onDestroy()
     }
 }

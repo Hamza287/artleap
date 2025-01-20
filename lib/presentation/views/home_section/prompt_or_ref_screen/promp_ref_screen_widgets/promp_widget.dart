@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/providers/generate_image_provider.dart';
+import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
+
+import '../../../../../shared/constants/app_assets.dart';
 
 class PromptWidget extends ConsumerWidget {
   const PromptWidget({super.key});
@@ -13,13 +16,40 @@ class PromptWidget extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Write your prompt for the image",
-          style:
-              AppTextstyle.interRegular(color: AppColors.white, fontSize: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Write your prompt for the image",
+              style: AppTextstyle.interRegular(
+                  color: AppColors.white, fontSize: 12),
+            ),
+            Container(
+              height: 30,
+              width: 95,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.white)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    AppAssets.stackofcoins,
+                    height: 15,
+                  ),
+                  5.spaceX,
+                  Text(
+                    "${ref.watch(userProfileProvider).userDailyCredits["remaining"].toString()} Credits",
+                    style: AppTextstyle.interMedium(
+                        color: AppColors.white, fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         8.spaceY,
-        Container( 
+        Container(
           height: 120,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -30,6 +60,9 @@ class PromptWidget extends ConsumerWidget {
             maxLines: null,
             minLines: null,
             expands: true,
+            onChanged: (value) {
+              ref.watch(generateImageProvider).checkSexualWords(value);
+            },
             decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(left: 10, bottom: 10),
                 enabledBorder: InputBorder.none,

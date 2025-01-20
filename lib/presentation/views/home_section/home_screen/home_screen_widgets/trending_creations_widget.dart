@@ -9,11 +9,11 @@ import 'package:photoroomapp/presentation/views/home_section/see_picture_section
 import 'package:photoroomapp/providers/home_screen_provider.dart';
 import 'package:photoroomapp/shared/constants/app_assets.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_static_data.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 import 'package:photoroomapp/shared/navigation/navigation.dart';
 import 'package:photoroomapp/shared/navigation/screen_params.dart';
-
+import 'package:shimmer/shimmer.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
 
 class TrendingCreationsWidget extends ConsumerStatefulWidget {
@@ -26,6 +26,15 @@ class TrendingCreationsWidget extends ConsumerStatefulWidget {
 
 class _TrendingCreationsWidgetState
     extends ConsumerState<TrendingCreationsWidget> {
+  late Future<DocumentSnapshot<Map<String, dynamic>>?> userCreationsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the Future to be fetched only once
+    userCreationsFuture = ref.read(homeScreenProvider).getUserCreations();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -72,10 +81,9 @@ class _TrendingCreationsWidgetState
         ),
         15.spaceY,
         FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
-          future: ref.read(homeScreenProvider).getUserCreations(),
+          future: userCreationsFuture, // Use the cached Future here
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              // Show a loading indicator
               return Center(
                 child: LoadingAnimationWidget.threeArchedCircle(
                   color: AppColors.white,
@@ -83,10 +91,8 @@ class _TrendingCreationsWidgetState
                 ),
               );
             } else if (snapshot.hasError) {
-              // Show an error message
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data?.data() == null) {
-              // Show a message when there's no data
               return Center(
                 child: Text(
                   "No data yet",
@@ -97,10 +103,8 @@ class _TrendingCreationsWidgetState
                 ),
               );
             } else {
-              // Data is available, build the UI
               Map<String, dynamic> data = snapshot.data!.data()!;
               List<dynamic> usersCreations = data['userData'] ?? [];
-
               if (usersCreations.isEmpty) {
                 return Center(
                   child: Text(
@@ -112,7 +116,6 @@ class _TrendingCreationsWidgetState
                   ),
                 );
               }
-
               return Container(
                 decoration: BoxDecoration(
                   color: AppColors.darkIndigo,
@@ -127,6 +130,7 @@ class _TrendingCreationsWidgetState
                   ),
                   child: GridView.builder(
                     shrinkWrap: true,
+                    cacheExtent: 2000.0,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: SliverQuiltedGridDelegate(
                       crossAxisCount: 3,
@@ -165,32 +169,67 @@ class _TrendingCreationsWidgetState
                               .watch(homeScreenProvider)
                               .filteredCreations[reverseIndex]
                           : usersCreations[reverseIndex];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigation.pushNamed(
-                            SeePictureScreen.routeName,
-                            arguments: SeePictureParams(
-                                userId: image["userid"],
-                                profileName: image["creator_name"],
-                                image: image["imageUrl"],
-                                prompt: image["prompt"],
-                                modelName: image["model_name"],
-                                isHomeScreenNavigation: true,
-                                isRecentGeneration: false,
-                                index: reverseIndex,
-                                creatorEmail: image["creator_email"]),
-                          );
+                      return VisibilityDetector(
+                        key: Key('image-$index'),
+                        onVisibilityChanged: (VisibilityInfo info) {
+                          const double bufferZone = 300.0;
+                          final bool isInBufferZone =
+                              info.visibleBounds.top - bufferZone < 0 &&
+                                  info.visibleBounds.bottom + bufferZone > 0;
+                          if (isInBufferZone) {
+                            ref
+                                .read(homeScreenProvider)
+                                .visibilityInfo(info, image["imageUrl"]);
+                          }
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: CachedNetworkImage(
-                              imageUrl: image["imageUrl"],
-                              fit: BoxFit.cover,
-                              fadeInDuration: Duration.zero,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigation.pushNamed(
+                              SeePictureScreen.routeName,
+                              arguments: SeePictureParams(
+                                  userId: image["userid"],
+                                  profileName: image["creator_name"],
+                                  image: image["imageUrl"],
+                                  prompt: image["prompt"],
+                                  modelName: image["model_name"],
+                                  isHomeScreenNavigation: true,
+                                  isRecentGeneration: false,
+                                  index: reverseIndex,
+                                  creatorEmail: image["creator_email"]),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: ref
+                                      .watch(homeScreenProvider)
+                                      .visibleImages
+                                      .contains(image["imageUrl"])
+                                  ? CachedNetworkImage(
+                                      imageUrl: image["imageUrl"],
+                                      fit: BoxFit.cover,
+                                      memCacheHeight: 400,
+                                      memCacheWidth: 400,
+                                      fadeInDuration: Duration.zero,
+                                      placeholder: (context, url) {
+                                        return Shimmer.fromColors(
+                                          baseColor: AppColors.lightIndigo,
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            color: AppColors.lightIndigo,
+                                            height: 200,
+                                            width: double.infinity,
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Container(
+                                      color: AppColors.darkIndigo,
+                                      height: 200,
+                                    ),
                             ),
                           ),
                         ),

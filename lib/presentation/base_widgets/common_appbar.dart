@@ -27,7 +27,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.darkBlue,
       flexibleSpace: Container(
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: BoxDecoration(               
             color: AppColors.darkBlue,
             gradient: LinearGradient(
                 colors:

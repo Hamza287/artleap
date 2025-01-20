@@ -99,16 +99,18 @@ class AuthProvider extends ChangeNotifier {
       } else if (isNotNull(user)) {
         clearError();
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
-
+        AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
         appSnackBar("Success", "Sign up successful", AppColors.green);
+        print(userNameController.text);
         await firestore
             .collection('users')
             .doc(user.userCredential!.user!.uid)
             .set({
-          'username': userNameController.text,
-          'email': emailController.text,
+          'username': _userNameController.text,
+          'email': _emailController.text,
         });
-        clearControllers();
+        print("sssssssssssssssssssss");
+        print(userNameController.text);
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
         stopLoading(LoginMethod.signup);
       }
@@ -118,7 +120,6 @@ class AuthProvider extends ChangeNotifier {
 
   signInWithEmail() async {
     startLoading(LoginMethod.email);
-
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       stopLoading(LoginMethod.email);
       authError = UserAuthResult(
@@ -133,20 +134,9 @@ class AuthProvider extends ChangeNotifier {
       authError = user;
     } else if (isNotNull(user)) {
       AppLocal.ins.setUserData(Hivekey.userId, user.userCredential!.user!.uid);
-      AppLocal.ins.setUserData(
-          Hivekey.userName, user.userCredential!.user!.displayName);
-      AppLocal.ins
-          .setUserData(Hivekey.userEmail, user.userCredential!.user!.email);
       appSnackBar("Success", "Sign in successful", AppColors.green);
       clearControllers();
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-      await firestore
-          .collection('users')
-          .doc(user.userCredential!.user!.uid)
-          .set({
-        'username': user.userCredential!.user!.displayName,
-        'email': user.userCredential!.user!.email,
-      });
     }
   }
 

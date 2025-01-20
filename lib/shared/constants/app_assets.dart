@@ -75,6 +75,7 @@ class AppAssets {
   static const privacyicon = "${iconsdir}privacyicon.png";
   static const trashicon = "${iconsdir}Trash.png";
   static const reporticon = "${iconsdir}reporticon.png";
+  static const stackofcoins = "${iconsdir}stackofcoins.png";
 
   //json
   static const splashanimation = "${jsondir}splashanimation.json";
