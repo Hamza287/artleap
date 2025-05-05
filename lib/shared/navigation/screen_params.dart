@@ -7,6 +7,7 @@ class DummyScreenArgs {
 }
 
 class SeePictureParams {
+  String? imageId;
   final String? userId;
   final String? profileName;
   final String? image;
@@ -14,20 +15,23 @@ class SeePictureParams {
   final String? modelName;
   final String? creatorEmail;
   final Uint8List? uint8ListImage;
-  bool isHomeScreenNavigation = false;
-  bool isRecentGeneration = false;
+  // final String? othersUserId;
+  // bool isHomeScreenNavigation = false;
+  // bool isRecentGeneration = false;
   final int? index;
 
   SeePictureParams(
-      {this.userId,
+      {required this.imageId,
+      this.userId,
       this.profileName,
       this.creatorEmail,
       this.image,
       this.prompt,
       this.modelName,
       this.uint8ListImage,
-      required this.isHomeScreenNavigation,
-      required this.isRecentGeneration,
+      // this.othersUserId,
+      // required this.isHomeScreenNavigation,
+      // required this.isRecentGeneration,
       this.index});
 }
 

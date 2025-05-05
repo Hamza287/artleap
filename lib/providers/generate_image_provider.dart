@@ -17,7 +17,8 @@ import '../domain/api_models/models_list_model.dart';
 import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
 import '../shared/utilities/pickers.dart';
-import '../domain/api_models/freepik_image_gen_model.dart' as freePik;
+import '../domain/api_models/text_to_image_model.dart' as txtToImg;
+import '../domain/api_models/Image_to_Image_model.dart' as ImgToImg;
 
 final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
     (ref) => GenerateImageProvider(ref));
@@ -25,8 +26,8 @@ final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
 class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
-  final List<ImageToImageModel?> _generatedImage = [];
-  List<ImageToImageModel?> get generatedImage => _generatedImage;
+  final List<ImgToImg.Images?> _generatedImage = [];
+  List<ImgToImg.Images?> get generatedImage => _generatedImage;
   GenerateHighQualityImageModel? _generatedHighQualityImage;
   GenerateHighQualityImageModel? get generatedHighQualityImage =>
       _generatedHighQualityImage;
@@ -45,7 +46,9 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   List<int> get imageNumber => _dropdownItems;
 
   var uuid = const Uuid().v1();
-  List<freePik.Data> generatedFreePikData = [];
+  final List<txtToImg.Images?> _generatedTextToImageData = [];
+  List<txtToImg.Images?> get generatedTextToImageData =>
+      _generatedTextToImageData;
   List<Uint8List> listOfImagesBytes = [];
   List<File> images = [];
 
@@ -68,8 +71,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final Ref reference;
 
   GenerateImageProvider(this.reference) {
-    if (freePikStyles.isNotEmpty) {
-      _selectedStyle = freePikStyles[0]['title'];
+    if (textToImageStyles.isNotEmpty) {
+      _selectedStyle = textToImageStyles[0]['title'];
     }
   }
   set selectedImageNumber(int? value) {
@@ -104,50 +107,28 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   }
 
   String? dataUrl;
-  generateFreePikImage() async {
-    deductCredit(UserData.ins.userId!);
+  generateTextToImage() async {
     setGenerateImageLoader(true);
     Map<String, dynamic> mapdata = {
       "prompt": promptTextController.text,
-      "negative_prompt":
-          "b&w, earth, cartoon, ugly,mutated hands,mutated foots, not recognizing the prompt",
-      "styling": {
-        "style": selectedStyle,
-        "color": "pastel",
-        "lightning": "warm",
-        "framing": "portrait"
-      },
-      "guidance_scale": "2",
-      "seed": null,
+      "userId": UserData.ins.userId,
+      "username": UserData.ins.userName,
+      "creatorEmail": UserData.ins.userEmail,
+      "presetStyle": selectedStyle,
       "num_images": selectedImageNumber,
-      "image": {"size": "square"}
+      "width": 1024,
+      "height": 1024
     };
-    var data = jsonEncode(mapdata);
-    print(data);
-    ApiResponse generateImageRes = await freePikRepo.generateImage(data);
+    // var data = jsonEncode(mapdata);
+    // print(data);
+    ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
     if (generateImageRes.status == Status.completed) {
-      var _generatedData = generateImageRes.data as freePik.FreePikAIGenModel;
-      print(_generatedData);
+      var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
+      _generatedTextToImageData.addAll(generatedData.images);
+      reference.read(userProfileProvider).deductUserCredits();
+      setGenerateImageLoader(false);
+      print(_generatedTextToImageData);
       print("ddddddddddddddddd");
-      reference.read(userProfileProvider).getUserProfiledata();
-      generatedFreePikData = _generatedData.data;
-      for (var item in generatedFreePikData) {
-        String base64String = item.base64;
-        Uint8List imageBytes = base64Decode(base64String);
-        listOfImagesBytes.add(imageBytes);
-        print(listOfImagesBytes.length);
-        print(listOfImagesBytes);
-        setGenerateImageLoader(false);
-      }
-      String? imageUrl = await uploadGeneratedImageToFirebase(
-          generatedFreePikData.first.base64);
-      if (imageUrl != null) {
-        uploadImageToCommunityCreations(imageUrl, promptTextController.text,
-            _selectedStyle ?? "AI generated");
-        userCreationsForProfile(imageUrl, promptTextController.text,
-            _selectedStyle ?? "AI generated");
-      }
-      print(_generatedData.data);
     } else {
       setGenerateImageLoader(false);
       print(generateImageRes.status);
@@ -186,22 +167,21 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     setGenerateImageLoader(true);
     print(images);
     Map<String, dynamic> data = {
-      "prompt":
-          "${promptTextController.text},ultra HD, high qualit,4k, high resolution",
-      "strength": "0.60",
-      "mode": "image-to-image",
-      "model ": "sd3-large",
-      "negative_prompt":
-          "bad quality, result is opposite of prompt, not following the prompt, ",
-      "cfg_scale": "10"
+      "prompt": promptTextController.text,
+      "userId": UserData.ins.userId,
+      "username": UserData.ins.userName,
+      "creatorEmail": UserData.ins.userEmail,
+      "presetStyle": selectedStyle,
+      "num_images": selectedImageNumber,
     };
     print(data);
     print("Sending request to API...");
     ApiResponse generateImageRes =
         await generateImgToImgRepo.generateImgToImg(data, images);
+    var generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
     if (generateImageRes.status == Status.completed) {
       // clearVarData();
-      _generatedImage.add(generateImageRes.data as ImageToImageModel);
+      _generatedImage.addAll(generatedData.images);
 
       setGenerateImageLoader(false);
       images = [];
@@ -334,9 +314,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   }
 
   void checkSexualWords(String input) {
-    // Convert input to lowercase for case-insensitive checking
     final lowerInput = input.toLowerCase();
-    // Check if any word in the list is contained in the input
     bool found = sexualWordsList.any((word) => lowerInput.contains(word));
     _containsSexualWords = found;
     notifyListeners();
@@ -362,88 +340,5 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       ),
       request: const AdRequest(),
     )..load();
-  }
-
-  // Helper to get today's date as a string (e.g., "2025-01-08")
-  String getTodayString() {
-    return DateFormat('yyyy-MM-dd').format(DateTime.now());
-  }
-
-  // Step 1: Add or Update Credits Map
-  Future<void> ensureCreditsExist(String userId) async {
-    final userDoc = firestore.collection('users').doc(UserData.ins.userId);
-    final userSnapshot = await userDoc.get();
-    if (userSnapshot.exists) {
-      final userData = userSnapshot.data()!;
-      if (!userData.containsKey('credits')) {
-        // Add the `credits` map if it doesn't exist
-        await userDoc.update({
-          'credits': {
-            'remaining': 75,
-            'lastUpdate': getTodayString(),
-          },
-        });
-      }
-    } else {
-      throw Exception("User document does not exist.");
-    }
-  }
-
-  // Step 2: Check and Renew Credits
-  Future<void> checkAndRenewCredits(String userId) async {
-    final userDoc = firestore.collection('users').doc(userId);
-
-    final userSnapshot = await userDoc.get();
-    if (userSnapshot.exists) {
-      final userData = userSnapshot.data()!;
-      final credits = userData['credits'] ?? {};
-      final String lastUpdate = credits['lastUpdate'] ?? '';
-      // final int remaining = credits['remaining'] ?? 3;
-
-      // Get today's date
-      final todayString = getTodayString();
-
-      if (lastUpdate != todayString) {
-        // Reset credits to 3 for a new day
-        await userDoc.update({
-          'credits': {
-            'remaining': 75,
-            'lastUpdate': todayString,
-          },
-        });
-      }
-    } else {
-      throw Exception("User document does not exist.");
-    }
-  }
-
-  // Step 3: Deduct Credits
-  Future<bool> deductCredit(String userId) async {
-    final userDoc = firestore.collection('users').doc(userId);
-
-    final userSnapshot = await userDoc.get();
-    if (userSnapshot.exists) {
-      final userData = userSnapshot.data()!;
-      final credits = userData['credits'] ?? {};
-      final int remaining = credits['remaining'] ?? 0;
-      if (remaining > 0) {
-        // Deduct one credit
-        await userDoc.update({
-          'credits.remaining': remaining - 25,
-        });
-        return true; // Successfully deducted
-      } else {
-        // No credits remaining
-        return false;
-      }
-    } else {
-      throw Exception("User document does not exist.");
-    }
-  }
-
-  creditsCheckAndBalance() {
-    ensureCreditsExist(UserData.ins.userId!);
-    checkAndRenewCredits(UserData.ins.userId!);
-    notifyListeners();
   }
 }

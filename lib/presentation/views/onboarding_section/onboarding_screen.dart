@@ -31,7 +31,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   //   // TODO: implement dispose
   //   super.dispose();
   //   ref.read(onboardingProvider).stopAutoPageView();
-  //   ref.read(onboardingProvider).pageController.dispose();
+  //   // ref.read(onboardingProvider).pageController.dispose();
   // }
 
   @override
@@ -42,33 +42,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           children: [
             PageView.builder(
               controller: ref.watch(onboardingProvider).pageController,
-              onPageChanged: (value) {
-                ref.read(onboardingProvider).setOnboardingPageIndex(value);
+              onPageChanged: (index) {
+                ref.read(onboardingProvider).setOnboardingPageIndex(index);
               },
-              itemCount: onboardingImagesList.length,
               itemBuilder: (context, index) {
+                int actualIndex =
+                    index % onboardingImagesList.length; // Handle looping
+                double pageOffset = 0;
+                double scale = (1 - (pageOffset.abs() * 0.2)).clamp(0.9, 1.0);
                 return Container(
                   decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(onboardingImagesList[ref
-                              .watch(onboardingProvider)
-                              .onboardingPageIndex]["image"]),
-                          fit: BoxFit.cover)),
+                    image: DecorationImage(
+                      image: AssetImage(
+                          onboardingImagesList[actualIndex]["image"]),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 150),
                     child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 70,
-                          width: 300,
-                          child: Text(
-                            onboardingImagesList[index]["text"],
-                            textAlign: TextAlign.center,
-                            // overflow: TextOverflow.ellipsis,
-                            style: AppTextstyle.interBold(
-                                color: AppColors.white, fontSize: 25),
-                          ),
-                        )),
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        height: 70,
+                        width: 300,
+                        child: Text(
+                          onboardingImagesList[actualIndex]["text"],
+                          textAlign: TextAlign.center,
+                          style: AppTextstyle.interBold(
+                              color: AppColors.white, fontSize: 25),
+                        ),
+                      ),
+                    ),
                   ),
                 );
               },
@@ -83,7 +87,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: Container(
                       height: 12,
                       width: 12,
-                      margin: EdgeInsets.only(right: 20),
+                      margin: const EdgeInsets.only(right: 20),
                       decoration: BoxDecoration(
                           color: ref
                                       .watch(onboardingProvider)
@@ -113,7 +117,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onpress: () {
                       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
                       ref.read(onboardingProvider).stopAutoPageView();
-                      ref.read(onboardingProvider).pageController.dispose();
+                      // ref.read(onboardingProvider).pageController.dispose();
                     },
                   )),
             )

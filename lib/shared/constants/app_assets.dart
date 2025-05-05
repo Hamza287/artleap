@@ -40,6 +40,21 @@ class AppAssets {
   static const sketch = "${imagesDir}sketch.jpg";
   static const mockup = "${imagesDir}mockup.jpg";
   static const studio = "${imagesDir}studio.jpg";
+  static const leo_anime = "${imagesDir}leo_anime.png";
+  static const leo_bokeh = "${imagesDir}leo_bokeh.png";
+  static const leo_cinematic_closure = "${imagesDir}leo_cinematic_closure.png";
+  static const leo_cinematic = "${imagesDir}leo_cinematic.png";
+  static const leo_creative = "${imagesDir}leo_creative.png";
+  static const leo_dynamic = "${imagesDir}leo_dynamic.png";
+  static const leo_environment = "${imagesDir}leo_environment.png";
+  static const leo_fashion = "${imagesDir}leo_fashion.png";
+  static const leo_film = "${imagesDir}leo_film.png";
+  static const leo_food = "${imagesDir}leo_food.png";
+  static const leo_hdr = "${imagesDir}leo_hdr.png";
+  static const leo_illustration = "${imagesDir}leo_illustration.png";
+  static const leo_monochrome = "${imagesDir}leo_monochrome.png";
+  static const leo_moody = "${imagesDir}leo_moody.png";
+  static const leo_sketch = "${imagesDir}leo_sketch.png";
 
   ///icons
   static const googleicon = "${iconsdir}googleicon.png";
@@ -76,6 +91,7 @@ class AppAssets {
   static const trashicon = "${iconsdir}Trash.png";
   static const reporticon = "${iconsdir}reporticon.png";
   static const stackofcoins = "${iconsdir}stackofcoins.png";
+  static const logo = "${iconsdir}logo.png";
 
   //json
   static const splashanimation = "${jsondir}splashanimation.json";

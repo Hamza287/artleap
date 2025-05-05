@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/shared/constants/app_colors.dart';
 
 import '../../shared/constants/app_assets.dart';
 
@@ -13,7 +14,7 @@ class RegistrationBackgroundWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Scaffold(
-        // resizeToAvoidBottomInset: false,
+        backgroundColor: AppColors.darkBlue,
         body: Container(
           height: double.infinity,
           width: double.infinity,

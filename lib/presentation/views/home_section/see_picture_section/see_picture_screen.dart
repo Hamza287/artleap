@@ -18,6 +18,7 @@ import 'package:photoroomapp/shared/navigation/screen_params.dart';
 
 import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
+import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
 class SeePictureScreen extends ConsumerStatefulWidget {
   static const routeName = "see_picture_screen";
@@ -30,6 +31,13 @@ class SeePictureScreen extends ConsumerStatefulWidget {
 }
 
 class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    AnalyticsService.instance.logScreenView(screenName: 'see image screen');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,88 +83,94 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                     ],
                   ),
                 ),
-                if (widget.params!.isHomeScreenNavigation == true) 20.spaceY,
-                if (widget.params!.isHomeScreenNavigation == true &&
-                    widget.params!.userId != UserData.ins.userId)
+                20.spaceY,
+                // if (widget.params!.isHomeScreenNavigation == true) 20.spaceY,
+                // if (widget.params!.isHomeScreenNavigation == true &&
+                //     widget.params!.userId != UserData.ins.userId)
+                if (widget.params!.userId != UserData.ins.userId)
                   ProfileNameFollowWidget(
                     profileName: widget.params!.profileName,
                     userId: widget.params!.userId,
                   ),
                 20.spaceY,
-                widget.params!.isHomeScreenNavigation
-                    ? GestureDetector(
-                        onTap: () {
-                          Navigation.pushNamed(FullImageViewerScreen.routeName,
-                              arguments: FullImageScreenParams(
-                                Image: widget.params!.image!,
-                              ));
-                        },
-                        child: Container(
-                          height: 350,
-                          margin: const EdgeInsets.only(left: 15, right: 15),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.params!.image!,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      )
-                    : widget.params!.uint8ListImage != null
-                        ? GestureDetector(
-                            onTap: () {
-                              Navigation.pushNamed(
-                                  FullImageViewerScreen.routeName,
-                                  arguments: FullImageScreenParams(
-                                    uint8list: widget.params!.uint8ListImage!,
-                                  ));
-                            },
-                            child: Container(
-                              height: 350,
-                              margin:
-                                  const EdgeInsets.only(left: 15, right: 15),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Image.memory(
-                                  widget.params!.uint8ListImage!,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          )
-                        : GestureDetector(
-                            onTap: () {
-                              Navigation.pushNamed(
-                                  FullImageViewerScreen.routeName,
-                                  arguments: FullImageScreenParams(
-                                    Image: widget.params!.image!,
-                                  ));
-                            },
-                            child: Container(
-                              height: 350,
-                              margin:
-                                  const EdgeInsets.only(left: 15, right: 15),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Image.network(
-                                  widget.params!.image!,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          ),
+                // widget.params!.isHomeScreenNavigation
+                //     ? GestureDetector(
+                //         onTap: () {
+                //           Navigation.pushNamed(FullImageViewerScreen.routeName,
+                //               arguments: FullImageScreenParams(
+                //                 Image: widget.params!.image!,
+                //               ));
+                //         },
+                //         child: Container(
+                //           height: 350,
+                //           margin: const EdgeInsets.only(left: 15, right: 15),
+                //           child: ClipRRect(
+                //             borderRadius: BorderRadius.circular(5),
+                //             child: CachedNetworkImage(
+                //               imageUrl: widget.params!.image!,
+                //               fit: BoxFit.fill,
+                //             ),
+                //           ),
+                //         ),
+                //       )
+                //     :
+                //      widget.params!.uint8ListImage != null
+                //         ? GestureDetector(
+                //             onTap: () {
+                //               Navigation.pushNamed(
+                //                   FullImageViewerScreen.routeName,
+                //                   arguments: FullImageScreenParams(
+                //                     uint8list: widget.params!.uint8ListImage!,
+                //                   ));
+                //             },
+                //             child: Container(
+                //               height: 350,
+                //               margin:
+                //                   const EdgeInsets.only(left: 15, right: 15),
+                //               child: ClipRRect(
+                //                 borderRadius: BorderRadius.circular(5),
+                //                 child: Image.memory(
+                //                   widget.params!.uint8ListImage!,
+                //                   fit: BoxFit.fill,
+                //                 ),
+                //               ),
+                //             ),
+                //           )
+                //         :
+                GestureDetector(
+                  onTap: () {
+                    Navigation.pushNamed(FullImageViewerScreen.routeName,
+                        arguments: FullImageScreenParams(
+                          Image: widget.params!.image!,
+                        ));
+                  },
+                  child: Container(
+                    height: 350,
+                    margin: const EdgeInsets.only(left: 15, right: 15),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.params!.image!,
+                        fit: BoxFit.fill,
+                        fadeInDuration: Duration.zero,
+                      ),
+                    ),
+                  ),
+                ),
                 20.spaceY,
                 PictureOptionsWidget(
+                  imageId: widget.params!.imageId,
                   creatorName: widget.params!.profileName,
                   imageUrl: widget.params!.image ?? "",
                   prompt: widget.params!.prompt,
                   modelName: widget.params!.modelName,
-                  isRecentGeneration: widget.params!.isRecentGeneration,
-                  uint8ListImage: widget.params!.uint8ListImage ?? null,
-                  currentUserId: widget.params!.userId,
+
+                  // isRecentGeneration: widget.params!.isRecentGeneration,
+                  uint8ListImage: widget.params!.uint8ListImage,
+                  currentUserId: UserData.ins.userId,
                   index: widget.params!.index,
                   creatorEmail: widget.params!.creatorEmail,
+                  otherUserId: widget.params!.userId,
                 ),
                 20.spaceY,
                 PromptTextWidget(

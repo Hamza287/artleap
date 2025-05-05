@@ -4,17 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:photoroomapp/domain/api_models/user_favourites_model.dart';
 import 'package:photoroomapp/presentation/views/global_widgets/dialog_box/delete_alert_dialog.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
 import 'package:photoroomapp/providers/favrourite_provider.dart';
+import 'package:photoroomapp/providers/image_actions_provider.dart';
+import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/providers/home_screen_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../../providers/add_image_to_fav_provider.dart';
 import '../../../../../shared/constants/app_assets.dart';
 import '../../../../../shared/constants/user_data.dart';
+import '../../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
 // ignore: must_be_immutable
 class PictureOptionsWidget extends ConsumerWidget {
@@ -27,7 +32,9 @@ class PictureOptionsWidget extends ConsumerWidget {
   bool? isGeneratedScreenNavigation;
   bool? isRecentGeneration;
   String? currentUserId;
+  String? otherUserId;
   int? index;
+  String? imageId;
   PictureOptionsWidget(
       {super.key,
       this.imageUrl,
@@ -39,79 +46,86 @@ class PictureOptionsWidget extends ConsumerWidget {
       this.isRecentGeneration,
       this.uint8ListImage,
       this.currentUserId,
-      this.index});
+      this.otherUserId,
+      this.index,
+      this.imageId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print(otherUserId);
+    print(UserData.ins.userId);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10, left: 25, right: 25),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         // crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (isRecentGeneration == false)
-            Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.white.withOpacity(0.4))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 3),
-                    child: LikeButton(
-                      isLiked: imageUrl != null
-                          ? ref
-                                  .watch(favouriteProvider)
-                                  .usersFavourites
-                                  .any((value) => value["imageUrl"] == imageUrl)
-                              ? true
-                              : false
-                          : false,
-                      bubblesColor: const BubblesColor(
-                          dotPrimaryColor: AppColors.indigo,
-                          dotSecondaryColor: AppColors.lightIndigo),
-                      onTap: (isLiked) {
-                        if (isLiked) {
-                          return ref
-                              .read(favouriteProvider)
-                              .removeImageFromFavourite(creatorName!, imageUrl!,
-                                  currentUserId!, prompt!, modelName!);
-                        } else {
-                          return ref
-                              .read(favouriteProvider)
-                              .addImageToFavourite(
-                                  creatorName!,
-                                  prompt!,
-                                  modelName!,
-                                  imageUrl: imageUrl!,
-                                  imagesBytes: uint8ListImage,
-                                  isRecentGeneration!,
-                                  currentUserId);
-                        }
-                      },
-                    ),
+          // if (isRecentGeneration == false)
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.white.withOpacity(0.4))),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 3),
+                  child: LikeButton(
+                    // animationDuration: const Duration(seconds: 1),
+                    isLiked:
+                        ref.watch(favouriteProvider).usersFavourites != null
+                            ? ref
+                                    .watch(favouriteProvider)
+                                    .usersFavourites!
+                                    .favorites
+                                    .any((img) => img.id == imageId)
+                                ? true
+                                : false
+                            : false,
+                    bubblesColor: const BubblesColor(
+                        dotPrimaryColor: AppColors.redColor,
+                        dotSecondaryColor: AppColors.redColor),
+                    onTap: (isLiked) {
+                      print(currentUserId);
+                      print(imageId);
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'Generate button event');
+                      if (isLiked) {
+                        AnalyticsService.instance.logButtonClick(
+                            buttonName: 'add to favourite event');
+                        return ref
+                            .read(favouriteProvider)
+                            .addToFavourite(currentUserId!, imageId!);
+                      } else {
+                        return ref
+                            .read(favouriteProvider)
+                            .addToFavourite(currentUserId!, imageId!);
+                      }
+                    },
                   ),
-                  2.spaceY,
-                  Text(
-                    "Save",
-                    style: AppTextstyle.interRegular(
-                        color: AppColors.white, fontSize: 6.5),
-                  )
-                ],
-              ),
+                ),
+                2.spaceY,
+                Text(
+                  "Save",
+                  style: AppTextstyle.interRegular(
+                      color: AppColors.white, fontSize: 6.5),
+                )
+              ],
             ),
+          ),
           GestureDetector(
             onTap: () {
               print(imageUrl!);
               uint8ListImage != null
                   ? ref
-                      .read(favouriteProvider)
+                      .read(favProvider)
                       .downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
-                  : ref.read(favouriteProvider).downloadImage(imageUrl!);
+                  : ref.read(favProvider).downloadImage(imageUrl!);
+              AnalyticsService.instance
+                  .logButtonClick(buttonName: 'download button event');
             },
             child: Container(
               height: 50,
@@ -119,7 +133,7 @@ class PictureOptionsWidget extends ConsumerWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: AppColors.white.withOpacity(0.4))),
-              child: ref.watch(favouriteProvider).isDownloading == true
+              child: ref.watch(favProvider).isDownloading == true
                   ? Center(
                       child: LoadingAnimationWidget.threeArchedCircle(
                         color: AppColors.white,
@@ -146,6 +160,8 @@ class PictureOptionsWidget extends ConsumerWidget {
           GestureDetector(
             onTap: () async {
               await Share.shareUri(Uri.parse(imageUrl!));
+              AnalyticsService.instance
+                  .logButtonClick(buttonName: 'share button event');
             },
             child: Container(
               height: 50,
@@ -170,17 +186,19 @@ class PictureOptionsWidget extends ConsumerWidget {
               ),
             ),
           ),
-          if (currentUserId == UserData.ins.userId)
+          if (otherUserId == UserData.ins.userId)
             GestureDetector(
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return DeleteAlertDialog(
-                      imageUrl: imageUrl,
+                      imageId: imageId,
                     );
                   },
                 );
+                AnalyticsService.instance
+                    .logButtonClick(buttonName: 'delete button event');
               },
               child: Container(
                 height: 50,
@@ -189,7 +207,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                     border:
                         Border.all(color: AppColors.redColor.withOpacity(0.4))),
-                child: ref.watch(homeScreenProvider).isDeletionLoading
+                child: ref.watch(imageActionsProvider).isDeleting
                     ? Center(
                         child: LoadingAnimationWidget.threeArchedCircle(
                           color: AppColors.white,
@@ -213,7 +231,8 @@ class PictureOptionsWidget extends ConsumerWidget {
                       ),
               ),
             ),
-          if (isRecentGeneration == false)
+          // if (isRecentGeneration == false)
+          if (otherUserId != UserData.ins.userId)
             GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -221,11 +240,8 @@ class PictureOptionsWidget extends ConsumerWidget {
                   isScrollControlled: true,
                   builder: (context) {
                     return ReportImageBottomSheet(
-                      imageUrl: imageUrl,
-                      creatorEmail: creatorEmail,
-                      creatorName: creatorName,
-                      modelName: modelName,
-                      prompt: prompt,
+                      imageId: imageId,
+                      creatorId: otherUserId,
                     );
                   },
                 );

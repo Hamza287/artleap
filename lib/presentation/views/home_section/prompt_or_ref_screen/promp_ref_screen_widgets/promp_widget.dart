@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/providers/generate_image_provider.dart';
 import 'package:photoroomapp/providers/user_profile_provider.dart';
+import 'package:photoroomapp/providers/generate_image_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
@@ -39,7 +39,7 @@ class PromptWidget extends ConsumerWidget {
                   ),
                   5.spaceX,
                   Text(
-                    "${ref.watch(userProfileProvider).userDailyCredits["remaining"].toString()} Credits",
+                    "${ref.watch(userProfileProvider).userProfileData!.user.dailyCredits} Credits",
                     style: AppTextstyle.interMedium(
                         color: AppColors.white, fontSize: 11),
                   ),
@@ -64,7 +64,7 @@ class PromptWidget extends ConsumerWidget {
               ref.watch(generateImageProvider).checkSexualWords(value);
             },
             decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(left: 10, bottom: 10),
+                contentPadding: const EdgeInsets.only(left: 10, bottom: 10),
                 enabledBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,

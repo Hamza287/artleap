@@ -3,25 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/header_text.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/row_buttons.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/others_bottom_sheet.dart';
+import 'package:photoroomapp/providers/image_actions_provider.dart';
 import 'package:photoroomapp/providers/report_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
+import 'package:photoroomapp/shared/constants/user_data.dart';
 
 import '../../../../../shared/constants/app_static_data.dart';
 import '../../../../../shared/shared.dart';
 
 class ReportImageBottomSheet extends ConsumerWidget {
-  final String? imageUrl;
-  final String? prompt;
-  final String? modelName;
-  final String? creatorName;
-  final String? creatorEmail;
-  const ReportImageBottomSheet(
-      {super.key,
-      this.imageUrl,
-      this.prompt,
-      this.modelName,
-      this.creatorEmail,
-      this.creatorName});
+  final String? imageId;
+
+  final String? creatorId;
+
+  const ReportImageBottomSheet({super.key, this.imageId, this.creatorId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,13 +57,14 @@ class ReportImageBottomSheet extends ConsumerWidget {
             (e) {
               return InkWell(
                 onTap: () {
-                  ref.watch(reportProvider).reportReason = e["title"];
-                  ref.watch(reportProvider).reportReasonId = e["id"];
+                  ref.watch(imageActionsProvider).reportReason = e["title"];
+                  ref.watch(imageActionsProvider).reportReasonId = e["id"];
                 },
                 child: Container(
-                  color: ref.watch(reportProvider).reportReason == e["title"]
-                      ? AppColors.blue
-                      : null,
+                  color:
+                      ref.watch(imageActionsProvider).reportReason == e["title"]
+                          ? AppColors.blue
+                          : null,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -112,9 +108,9 @@ class ReportImageBottomSheet extends ConsumerWidget {
           ),
           40.spaceY,
           RowButtons(
-            onSendPress: ref.watch(reportProvider).reportReason == null
+            onSendPress: ref.watch(imageActionsProvider).reportReason == null
                 ? () {}
-                : ref.watch(reportProvider).reportReasonId == "5"
+                : ref.watch(imageActionsProvider).reportReasonId == "5"
                     ? () {
                         showModalBottomSheet(
                           context: context,
@@ -122,26 +118,24 @@ class ReportImageBottomSheet extends ConsumerWidget {
                           builder: (context) {
                             return OthersBottomSheet(
                               onpress: ref
-                                      .read(reportProvider)
+                                      .read(imageActionsProvider)
                                       .othersTextController
                                       .text
                                       .isEmpty
                                   ? () {}
                                   : () {
-                                      ref.read(reportProvider).reportImage(
-                                          imageUrl!,
-                                          prompt!,
-                                          modelName!,
-                                          creatorName!,
-                                          creatorEmail!);
+                                      ref
+                                          .read(imageActionsProvider)
+                                          .reportImage(imageId!, creatorId!);
                                     },
                             );
                           },
                         );
                       }
                     : () {
-                        ref.read(reportProvider).reportImage(imageUrl!, prompt!,
-                            modelName!, creatorName!, creatorEmail!);
+                        ref
+                            .read(imageActionsProvider)
+                            .reportImage(imageId!, creatorId!);
                       },
             onCancelPress: () {
               Navigation.pop();

@@ -1,17 +1,26 @@
 package com.XrDIgital.ImaginaryVerse
 
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import androidx.core.view.WindowCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 class MainActivity : FlutterActivity() {
 
-    init {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // ✅ Enable edge-to-edge experience for Android 11+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+
         try {
             val info = packageManager.getPackageInfo(
                 "com.XrDIgital.ImaginaryVerse", // Your package name
@@ -28,7 +37,6 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         // Register your custom NativeAdFactory
@@ -38,7 +46,6 @@ class MainActivity : FlutterActivity() {
             ListTileNativeAdFactory(layoutInflater) // The class you created
         )
     }
-
 
     override fun onDestroy() {
         GoogleMobileAdsPlugin.unregisterNativeAdFactory(flutterEngine!!, "listTile")

@@ -7,12 +7,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/domain/api_models/users_creations_model.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/constants/app_assets.dart';
 import 'package:photoroomapp/shared/navigation/navigation.dart';
 import 'package:http/http.dart' as http;
 import 'package:visibility_detector/visibility_detector.dart';
+import '../domain/api_services/api_response.dart';
 import '../shared/app_persistance/app_local.dart';
+import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -23,15 +26,32 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   // FirebaseFirestore firestore = FirebaseFirestore.instance;
   final notificationSettings =
       FirebaseMessaging.instance.requestPermission(provisional: true);
-  final List<Map<String, dynamic>> _filteredCreations = [];
-  List<Map<String, dynamic>> get filteredCreations => _filteredCreations;
-  bool _isLoading = false;
+  List<Images?> _filteredCreations = [];
+  List<Images?> get filteredCreations => _filteredCreations;
+  final bool _isLoading = false;
   bool get isLoading => _isLoading;
   bool _isDeletionLoading = false;
   bool get isDeletionLoading => _isDeletionLoading;
   bool _isRequestingPermission = false;
   List<String> _visibleImages = [];
   List<String> get visibleImages => _visibleImages;
+  UsersCreations? _usersData;
+  UsersCreations? get usersData => _usersData;
+  final List<Images> _communityImagesList = [];
+  List<Images> get communityImagesList => _communityImagesList;
+  bool _isLoadingMore = false;
+  bool get isLoadingMore => _isLoadingMore;
+  set isLoadingMore(bool val) {
+    _isLoadingMore = val;
+    notifyListeners();
+  }
+
+  int _page = 0;
+  int get page => _page;
+  set page(int pageNo) {
+    _page = pageNo;
+    notifyListeners();
+  }
 
   setVisibleImages(List<String> val) {
     _visibleImages = val;
@@ -43,13 +63,12 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  getDeviceTokekn() async {
-    FirebaseMessaging.instance.getInitialMessage();
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    await FirebaseMessaging.instance.setAutoInitEnabled(true);
-    print(fcmToken);
-    print("llllllllllllllllllllllllll");
-    notifyListeners();
+  Future<void> loadMoreImages() async {
+    _isLoadingMore = true;
+
+    await getUserCreations(); // your next page function
+
+    _isLoadingMore = false;
   }
 
   Future<void> requestPermission() async {
@@ -98,36 +117,37 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   getUserInfo() {
-    var userid = AppLocal.ins.getUSerData(Hivekey.userId);
+    var userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
-    var userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic);
-    var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail);
+    var userProfilePicture =
+        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
+    var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
     print(userProfilePicture);
-    print("dddddddddddddddddd");
     UserData.ins.setUserData(
         id: userid,
         name: userName,
         userprofilePicture: userProfilePicture ?? AppAssets.artstyle1,
         email: userEmail);
+    notifyListeners();
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>?> getUserCreations() async {
-    var data = await homeRepo.getUsersCreations();
-
-    if (data != null && data.data() != null) {
-      // Extract image data
-      List<Map<String, dynamic>> images = extractImagesFromData(data.data()!);
-
-      // Preload only the first N images (e.g., N = 10)
-      int preloadCount = 5;
-      List<Map<String, dynamic>> initialBatch =
-          images.take(preloadCount).toList();
-
-      // Preload the initial batch of images
-      await preloadImages(initialBatch);
+  getUserCreations() async {
+    if (_page == 0) {
+      _page = 1;
+    } else {
+      _page++;
     }
+    ApiResponse response = await homeRepo.getUsersCreations(_page);
+    print(response);
+    print("dddddddddddddddd");
+    print(response.message);
+    print(response.data);
+    _usersData = response.data;
+    _communityImagesList.addAll(_usersData!.images);
+    _filteredCreations = List.from(_communityImagesList);
+    print(_usersData!.message);
+    print("jjjjjjjjjjjjjjjjjj");
     notifyListeners();
-    return data;
   }
 
   List<Map<String, dynamic>> extractImagesFromData(Map<String, dynamic> data) {
@@ -203,93 +223,91 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     }
   }
 
-  filteredListFtn(String modelName) async {
-    _filteredCreations.clear();
-    DocumentSnapshot<Map<String, dynamic>>? data = await getUserCreations();
-    if (data != null && data.data() != null) {
-      Map<String, dynamic> dataMap = data.data()!;
-      // Access the 'userData' key
-      List<dynamic>? creationsList = dataMap['userData'];
-      if (creationsList != null) {
-        List<Map<String, dynamic>> creations = [];
-        for (var item in creationsList) {
-          if (item is Map<String, dynamic>) {
-            creations.add(item);
-          } else {
-            print('Invalid creation item: $item');
-          }
-        }
+  void filteredListFtn(String modelName) {
+    final lowerCaseModel = modelName.toLowerCase();
 
-        // Filter the creations based on modelName
-        var filtered =
-            creations.where((creation) => creation['model_name'] == modelName);
+    _filteredCreations = _communityImagesList.where((img) {
+      final model = img.modelName.toLowerCase();
+      return model == lowerCaseModel ||
+          modelNameMatchAliases(model, lowerCaseModel);
+    }).toList();
 
-        _filteredCreations.addAll(filtered);
-        print(_filteredCreations);
-        notifyListeners();
-      } else {
-        print('userData is null or not a list.');
-      }
-    } else {
-      print('Data is null or data.data() is null.');
-    }
-  }
-
-  searchByPrompt(String query) async {
-    _isLoading = true;
-    notifyListeners();
-
-    _filteredCreations.clear();
-    DocumentSnapshot<Map<String, dynamic>>? data = await getUserCreations();
-
-    if (data != null && data.data() != null) {
-      Map<String, dynamic> dataMap = data.data()!;
-
-      // Access the 'userData' key
-      List<dynamic>? creationsList = dataMap['userData'];
-
-      if (creationsList != null) {
-        List<Map<String, dynamic>> creations = [];
-
-        for (var item in creationsList) {
-          if (item is Map<String, dynamic>) {
-            creations.add(item);
-          } else {
-            print('Invalid creation item: $item');
-          }
-        }
-
-        // If query is empty, show all creations
-        if (query.isEmpty) {
-          _filteredCreations.addAll(creations);
-        } else {
-          // Filter the creations based on 'prompt' (case-insensitive)
-          var filtered = creations.where((creation) {
-            String prompt = creation['prompt'] ?? '';
-            return prompt.toLowerCase().contains(query.toLowerCase());
-          });
-
-          _filteredCreations.addAll(filtered);
-        }
-
-        _isLoading = false;
-        notifyListeners();
-      } else {
-        print('userData is null or not a list.');
-        _isLoading = false;
-        notifyListeners();
-      }
-    } else {
-      print('Data is null or data.data() is null.');
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  clearFilteredList() {
-    filteredCreations.clear();
     notifyListeners();
   }
+
+// 🔹 Helper method to match modelName against both Freepik and Leonardo style titles
+  bool modelNameMatchAliases(String imageModel, String selectedModel) {
+    // Normalize both for safe comparison
+    final lowerImageModel = imageModel.toLowerCase();
+
+    final allStyleTitles = [
+      ...freePikStyles.map((e) => e["title"]!.toLowerCase()),
+      ...textToImageStyles.map((e) => e["title"]!.toLowerCase())
+    ];
+
+    return allStyleTitles.contains(lowerImageModel) &&
+        lowerImageModel == selectedModel;
+  }
+
+  void clearFilteredList() {
+    _filteredCreations = List.from(_communityImagesList);
+    notifyListeners();
+  }
+  // searchByPrompt(String query) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   _filteredCreations.clear();
+  //   DocumentSnapshot<Map<String, dynamic>>? data = await getUserCreations();
+
+  //   if (data.data() != null) {
+  //     Map<String, dynamic> dataMap = data.data()!;
+
+  //     // Access the 'userData' key
+  //     List<dynamic>? creationsList = dataMap['userData'];
+
+  //     if (creationsList != null) {
+  //       List<Map<String, dynamic>> creations = [];
+
+  //       for (var item in creationsList) {
+  //         if (item is Map<String, dynamic>) {
+  //           creations.add(item);
+  //         } else {
+  //           print('Invalid creation item: $item');
+  //         }
+  //       }
+
+  //       // If query is empty, show all creations
+  //       if (query.isEmpty) {
+  //         _filteredCreations.addAll(creations);
+  //       } else {
+  //         // Filter the creations based on 'prompt' (case-insensitive)
+  //         var filtered = creations.where((creation) {
+  //           String prompt = creation['prompt'] ?? '';
+  //           return prompt.toLowerCase().contains(query.toLowerCase());
+  //         });
+
+  //         _filteredCreations.addAll(filtered);
+  //       }
+
+  //       _isLoading = false;
+  //       notifyListeners();
+  //     } else {
+  //       print('userData is null or not a list.');
+  //       _isLoading = false;
+  //       notifyListeners();
+  //     }
+  //   } else {
+  //     print('Data is null or data.data() is null.');
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+
+  // clearFilteredList() {
+  //   filteredCreations.clear();
+  //   notifyListeners();
+  // }
 
   Future<void> deleteImageIfPresent({
     required String userId,

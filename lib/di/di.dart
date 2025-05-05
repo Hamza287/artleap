@@ -24,6 +24,9 @@ class DI {
         () => ApiServices(baseUrl: AppConstants.getModelsList),
         instanceName: AppConstants.getModelsList);
     getIt.registerLazySingleton<ApiServices>(
+        () => ApiServices(baseUrl: AppConstants.artleapBaseUrl),
+        instanceName: AppConstants.artleapBaseUrl);
+    getIt.registerLazySingleton<ApiServices>(
         () => ApiServices(baseUrl: AppConstants.generateHighQualityImage),
         instanceName: AppConstants.generateHighQualityImage);
     getIt.registerLazySingleton<ApiServices>(

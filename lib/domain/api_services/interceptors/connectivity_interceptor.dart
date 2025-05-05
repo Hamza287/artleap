@@ -9,7 +9,8 @@ class ConnectivityInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     console('CONNECTIVITY_INTERCEPTORRRRRRRRRRRRR');
-    if (connectivityResult.contains(ConnectivityResult.none) && !options.extra[localDataStorageEnabled]) {
+    if (connectivityResult.contains(ConnectivityResult.none) &&
+        !options.extra[localDataStorageEnabled]) {
       handler.reject(DioException(
         requestOptions: options,
         error: 'No Internet Connection',

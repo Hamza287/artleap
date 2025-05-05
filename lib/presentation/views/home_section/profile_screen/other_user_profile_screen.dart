@@ -7,6 +7,8 @@ import 'package:photoroomapp/presentation/views/home_section/profile_screen/prof
 import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/shared/shared.dart';
 
+import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+
 // ignore: must_be_immutable
 class OtherUserProfileScreen extends ConsumerStatefulWidget {
   static const String routeName = 'other_profile_screen';
@@ -27,13 +29,15 @@ class _OtherUserProfileScreenState
     super.initState();
     ref
         .read(userProfileProvider)
-        .getOtherUserProfiledata(widget.params!.userId!);
+        .getOtherUserProfileData(widget.params!.userId!);
+    AnalyticsService.instance
+        .logScreenView(screenName: 'others profile screen');
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBackgroundWidget(
-      widget: ref.watch(userProfileProvider).otherUserProfileData.isEmpty
+      widget: ref.watch(userProfileProvider).otherUserProfileData == null
           ? Center(
               child: LoadingAnimationWidget.threeArchedCircle(
                 color: AppColors.white,
@@ -43,7 +47,15 @@ class _OtherUserProfileScreenState
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  40.spaceY,
+                  25.spaceY,
+                  Row(
+                    children: [
+                      20.spaceX,
+                      const Icon(Icons.arrow_back_ios_new_outlined,
+                          color: AppColors.white, size: 20),
+                    ],
+                  ),
+                  20.spaceY,
                   ProfileInfoWidget(
                     profileName: widget.params!.profileName,
                     userId: widget.params!.userId,
@@ -53,7 +65,9 @@ class _OtherUserProfileScreenState
                     userName: widget.params!.profileName,
                     listofCreations: ref
                         .watch(userProfileProvider)
-                        .otherUserProfileData["userData"],
+                        .otherUserProfileData!
+                        .user
+                        .images,
                   )
                 ],
               ),

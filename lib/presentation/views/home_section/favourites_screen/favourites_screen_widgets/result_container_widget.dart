@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/domain/api_models/user_favourites_model.dart';
 import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:photoroomapp/providers/favrourite_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
@@ -25,8 +26,8 @@ class ResultContainerWidget extends ConsumerWidget {
         child: GridView.builder(
           shrinkWrap: true, // Makes GridView take only necessary space
           physics:
-              NeverScrollableScrollPhysics(), // Disables GridView scrolling
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              const NeverScrollableScrollPhysics(), // Disables GridView scrolling
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 10.0,
             mainAxisSpacing: 10.0,
@@ -35,19 +36,20 @@ class ResultContainerWidget extends ConsumerWidget {
           itemCount: data.length,
           itemBuilder: (context, index) {
             var reverseIndex = data.length - 1 - index;
-            var e = data[reverseIndex];
+            Favorites e = data[reverseIndex];
             return GestureDetector(
               onTap: () {
                 Navigation.pushNamed(SeePictureScreen.routeName,
                     arguments: SeePictureParams(
-                        isHomeScreenNavigation: false,
-                        isRecentGeneration: false,
-                        image: e["imageUrl"],
-                        modelName: e["model_name"],
-                        profileName: e["creator_name"],
-                        prompt: e["prompt"],
-                        userId: e["userid"],
-                        creatorEmail: e["creator_email"]));
+                        // isHomeScreenNavigation: false,
+                        // isRecentGeneration: false,
+                        imageId: e.id,
+                        image: e.imageUrl,
+                        modelName: e.modelName,
+                        profileName: e.username,
+                        prompt: e.prompt,
+                        userId: e.userId,
+                        creatorEmail: e.creatorEmail));
               },
               child: Container(
                 height: 155,
@@ -59,7 +61,7 @@ class ResultContainerWidget extends ConsumerWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: CachedNetworkImage(
-                    imageUrl: e["imageUrl"],
+                    imageUrl: e.imageUrl,
                     fit: BoxFit.fill,
                     fadeInDuration: Duration.zero,
                   ),

@@ -32,7 +32,7 @@ class SearchTextfield extends ConsumerWidget {
         ),
         onChanged: (value) {
           FirebaseCrashlytics.instance.log('User typing in search textfield');
-          ref.read(homeScreenProvider).searchByPrompt(value);
+          ref.read(homeScreenProvider).filteredListFtn(value);
         },
       ),
     );

@@ -1,10 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+import '../api_services/api_response.dart';
 import '../base_repo/base.dart';
 
 abstract class UserProfileRepo extends Base {
-  Future<DocumentSnapshot<Map<String, dynamic>>?> fetchUserProfileData(
-      String userId);
-  Future<DocumentSnapshot<Map<String, dynamic>>?> fetchUserPersonalData(
-      String userId);
+  Future<ApiResponse> followUnFollowUser(Map<String, dynamic> data,
+      {bool enableLocalPersistence = false});
+
+  Future<ApiResponse> getUserProfileData(String uid,
+      {bool enableLocalPersistence = false});
+
+  Future<ApiResponse> getOtherUserProfileData(String uid,
+      {bool enableLocalPersistence = false});
+
+  Future<ApiResponse> updateUserCredits(Map<String, dynamic> data,
+      {bool enableLocalPersistence = false});
+
+  Future<ApiResponse> deductCredits(Map<String, dynamic> data,
+      {bool enableLocalPersistence = false});
 }

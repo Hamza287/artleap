@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/providers/image_actions_provider.dart';
 import 'package:photoroomapp/shared/navigation/navigation.dart';
 
 import '../../../../providers/home_screen_provider.dart';
@@ -8,15 +9,15 @@ import '../../../../shared/constants/app_textstyle.dart';
 import '../../../../shared/constants/user_data.dart';
 
 class DeleteAlertDialog extends ConsumerWidget {
-  final String? imageUrl;
-  const DeleteAlertDialog({super.key, this.imageUrl});
+  final String? imageId;
+  const DeleteAlertDialog({super.key, this.imageId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       backgroundColor: AppColors.blue,
-      title: Text('Confirm Delete'),
-      content: Text('Are you sure you want to Delete?'),
+      title: const Text('Confirm Delete'),
+      content: const Text('Are you sure you want to Delete?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
@@ -28,8 +29,7 @@ class DeleteAlertDialog extends ConsumerWidget {
         TextButton(
           onPressed: () {
             Navigator.pop(context, false);
-            ref.read(homeScreenProvider).deleteImageIfPresent(
-                imageUrl: imageUrl!, userId: UserData.ins.userId!);
+            ref.read(imageActionsProvider).deleteImage(imageId!);
           },
           child: Text(
             'Yes',

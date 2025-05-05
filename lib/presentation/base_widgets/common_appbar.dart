@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../shared/constants/app_colors.dart';
 import '../../shared/constants/app_textstyle.dart';
-import '../../shared/navigation/navigation.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -18,16 +16,14 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      // backgroundColor: AppColors.white,
-      // elevation: 0,
-      // scrolledUnderElevation: 0,
+    return AppBar( 
+      elevation: 0,
       automaticallyImplyLeading: false,
       shadowColor: AppColors.darkBlue,
       backgroundColor: AppColors.darkBlue,
       flexibleSpace: Container(
         height: double.infinity,
-        decoration: BoxDecoration(               
+        decoration: BoxDecoration(
             color: AppColors.darkBlue,
             gradient: LinearGradient(
                 colors:

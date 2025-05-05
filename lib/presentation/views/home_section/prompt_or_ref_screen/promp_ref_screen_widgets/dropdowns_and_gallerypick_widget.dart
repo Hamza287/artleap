@@ -14,13 +14,12 @@ import '../../../../../shared/constants/app_static_data.dart';
 class DropDownsAndGalleryPickWidget extends ConsumerWidget {
   final VoidCallback onpress;
 
-  DropDownsAndGalleryPickWidget({Key? key, required this.onpress})
-      : super(key: key);
+  const DropDownsAndGalleryPickWidget({super.key, required this.onpress});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final images = ref.watch(generateImageProvider).images;
-    final isImagesNotEmpty = images.isNotEmpty;
+    // final isImagesNotEmpty = images.isNotEmpty;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -28,7 +27,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
         // Gallery Icon or Image
         GestureDetector(
           onTap: onpress,
-          child: Container(
+          child: SizedBox(
             height: 35,
             width: 45,
             child: Stack(
@@ -60,7 +59,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
                       onTap: () {
                         ref.watch(generateImageProvider).clearImagesList();
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.cancel,
                         color: AppColors.redColor,
                         size: 18,
@@ -72,141 +71,115 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
           ),
         ),
         // First Dropdown (Number of Images)
-        AbsorbPointer(
-          absorbing: isImagesNotEmpty,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: ImageFiltered(
-              imageFilter: isImagesNotEmpty
-                  ? ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0)
-                  : ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
-              child: Container(
-                height: 35,
-                width: 130,
-                color: AppColors.indigo,
-                child: Center(
-                  child: DropdownButton<int>(
-                    isExpanded: true,
-                    dropdownColor: AppColors.indigo,
-                    value: ref.watch(generateImageProvider).selectedImageNumber,
-                    hint: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        'Number of Images',
-                        style: AppTextstyle.interRegular(
-                          fontSize: 10,
-                          color: AppColors.white,
-                        ),
-                      ),
-                    ),
-                    icon: Icon(
-                      Icons.arrow_drop_down_sharp,
-                      color: AppColors.white,
-                    ),
-                    underline: SizedBox(),
-                    onChanged: (int? newValue) {
-                      ref.read(generateImageProvider).selectedImageNumber =
-                          newValue!;
-                    },
-                    items: ref
-                        .watch(generateImageProvider)
-                        .imageNumber
-                        .map<DropdownMenuItem<int>>((int value) {
-                      return DropdownMenuItem<int>(
-                        value: value,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Text(
-                            value.toString(),
-                            style: AppTextstyle.interMedium(
-                              fontSize: 16,
-                              color: AppColors.white,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+        Container(
+          height: 35,
+          width: 130,
+          color: AppColors.indigo,
+          child: Center(
+            child: DropdownButton<int>(
+              isExpanded: true,
+              dropdownColor: AppColors.indigo,
+              value: ref.watch(generateImageProvider).selectedImageNumber,
+              hint: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  'Number of Images',
+                  style: AppTextstyle.interRegular(
+                    fontSize: 10,
+                    color: AppColors.white,
                   ),
                 ),
               ),
+              icon: const Icon(
+                Icons.arrow_drop_down_sharp,
+                color: AppColors.white,
+              ),
+              underline: const SizedBox(),
+              onChanged: (int? newValue) {
+                ref.read(generateImageProvider).selectedImageNumber = newValue!;
+              },
+              items: ref
+                  .watch(generateImageProvider)
+                  .imageNumber
+                  .map<DropdownMenuItem<int>>((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      value.toString(),
+                      style: AppTextstyle.interMedium(
+                        fontSize: 16,
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ),
         // 5.spaceX,
-        AbsorbPointer(
-          absorbing: isImagesNotEmpty,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: ImageFiltered(
-              imageFilter: isImagesNotEmpty
-                  ? ImageFilter.blur(
-                      sigmaX: 5.0,
-                      sigmaY: 5.0,
-                    )
-                  : ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
-              child: Container(
-                height: 35,
-                width: 150,
-                color: AppColors.indigo,
-                child: Center(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    dropdownColor: AppColors.indigo,
-                    value: ref.watch(generateImageProvider).selectedStyle,
-                    hint: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        'Select Style',
-                        style: AppTextstyle.interRegular(
-                          fontSize: 10,
-                          color: AppColors.white,
-                        ),
-                      ),
-                    ),
-                    icon: Icon(
-                      Icons.arrow_drop_down_sharp,
-                      color: AppColors.white,
-                    ),
-                    underline: SizedBox(),
-                    onChanged: (String? newValue) {
-                      ref.watch(generateImageProvider).selectedStyle = newValue;
-                    },
-                    items: freePikStyles.map<DropdownMenuItem<String>>(
-                        (Map<String, String> styles) {
-                      return DropdownMenuItem<String>(
-                        value: styles['title'],
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 37,
-                              width: 37,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: AssetImage(styles['icon']!),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            5.spaceX,
-                            Container(
-                              width: 80,
-                              child: Text(
-                                styles['title']!,
-                                style: AppTextstyle.interMedium(
-                                  fontSize: 14,
-                                  color: AppColors.white,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+        Container(
+          height: 35,
+          width: 150,
+          color: AppColors.indigo,
+          child: Center(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              dropdownColor: AppColors.indigo,
+              value: ref.watch(generateImageProvider).selectedStyle,
+              hint: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  'Select Style',
+                  style: AppTextstyle.interRegular(
+                    fontSize: 10,
+                    color: AppColors.white,
                   ),
                 ),
               ),
+              icon: const Icon(
+                Icons.arrow_drop_down_sharp,
+                color: AppColors.white,
+              ),
+              underline: const SizedBox(),
+              onChanged: (String? newValue) {
+                ref.watch(generateImageProvider).selectedStyle = newValue;
+              },
+              items: textToImageStyles
+                  .map<DropdownMenuItem<String>>((Map<String, String> styles) {
+                return DropdownMenuItem<String>(
+                  value: styles['title'],
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 37,
+                        width: 37,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: AssetImage(styles['icon']!),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                      5.spaceX,
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          styles['title']!,
+                          style: AppTextstyle.interMedium(
+                            fontSize: 14,
+                            color: AppColors.white,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ),
         ),

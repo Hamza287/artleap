@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,13 +9,12 @@ import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/shared/app_snack_bar.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:saver_gallery/saver_gallery.dart';
-import '../shared/constants/user_data.dart';
 
-final favouriteProvider =
+final favProvider =
     ChangeNotifierProvider<FavouriteProvider>((ref) => FavouriteProvider());
 
 class FavouriteProvider extends ChangeNotifier with BaseRepo {
-  List<Map<String, dynamic>> _userFavourites = [];
+  final List<Map<String, dynamic>> _userFavourites = [];
   List<Map<String, dynamic>> get usersFavourites => _userFavourites;
   bool _isDownloading = false;
   bool get isDownloading => _isDownloading;
@@ -27,39 +24,39 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<bool> addImageToFavourite(String creatorName, String prompt,
-      String modelName, bool isRecentGeneratedImage, String? uid,
-      {String? imageUrl, Uint8List? imagesBytes}) async {
-    String uploadedImage = "";
+  // Future<bool> addImageToFavourite(String creatorName, String prompt,
+  //     String modelName, bool isRecentGeneratedImage, String? uid,
+  //     {String? imageUrl, Uint8List? imagesBytes}) async {
+  //   String uploadedImage = "";
 
-    if (isRecentGeneratedImage == true) {
-      uploadedImage =
-          (await favouriteRepo.uploadRecenetImageOfUint8list(imagesBytes!))!;
-    }
-    var imageAdded = await favouriteRepo.addImageToFavourite(
-        creatorName,
-        isRecentGeneratedImage == true ? uploadedImage : imageUrl!,
-        uid,
-        prompt,
-        modelName,
-        isRecentGeneratedImage);
-    return imageAdded;
-  }
+  //   if (isRecentGeneratedImage == true) {
+  //     uploadedImage =
+  //         (await favouriteRepo.uploadRecenetImageOfUint8list(imagesBytes!))!;
+  //   }
+  //   var imageAdded = await favouriteRepo.addImageToFavourite(
+  //       creatorName,
+  //       isRecentGeneratedImage == true ? uploadedImage : imageUrl!,
+  //       uid,
+  //       prompt,
+  //       modelName,
+  //       isRecentGeneratedImage);
+  //   return imageAdded;
+  // }
 
-  Future<bool> removeImageFromFavourite(
-    String creatorName,
-    String imageUrl,
-    String uid,
-    String prompt,
-    String modelName,
-  ) async {
-    var removeImage = await favouriteRepo.removeImageFromFavourite(
-        creatorName, imageUrl, uid, prompt, modelName);
-    if (removeImage == true) {
-      fetchUserFavourites();
-    }
-    return removeImage;
-  }
+  // Future<bool> removeImageFromFavourite(
+  //   String creatorName,
+  //   String imageUrl,
+  //   String uid,
+  //   String prompt,
+  //   String modelName,
+  // ) async {
+  //   var removeImage = await favouriteRepo.removeImageFromFavourite(
+  //       creatorName, imageUrl, uid, prompt, modelName);
+  //   if (removeImage == true) {
+  //     fetchUserFavourites();
+  //   }
+  //   return removeImage;
+  // }
 
   // Future<bool> removeImageFromFavourite(String creatorName, String imageUrl,
   //     String prompt, String modelName) async {
@@ -86,43 +83,43 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
   //   }
   // }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>?> fetchUserFavourites() async {
-    var data = await favouriteRepo.fetchUserFavourites(UserData.ins.userId!);
+  // Future<DocumentSnapshot<Map<String, dynamic>>?> fetchUserFavourites() async {
+  //   var data = await favouriteRepo.fetchUserFavourites(UserData.ins.userId!);
 
-    if (data != null && data.data() != null) {
-      // Extract 'favourites' from the data
-      List<Map<String, dynamic>> favourites =
-          extractFavouritesFromData(data.data()!);
+  //   if (data != null && data.data() != null) {
+  //     // Extract 'favourites' from the data
+  //     List<Map<String, dynamic>> favourites =
+  //         extractFavouritesFromData(data.data()!);
 
-      // Preload images associated with favourites
-      // await preloadFavouritesImages(favourites);
+  //     // Preload images associated with favourites
+  //     // await preloadFavouritesImages(favourites);
 
-      // Assign to _userFavourites
-      _userFavourites = favourites;
-      print(_userFavourites);
+  //     // Assign to _userFavourites
+  //     _userFavourites = favourites;
+  //     print(_userFavourites);
 
-      // notifyListeners(); // Notify listeners to update UI
-    }
-    notifyListeners();
-    return data;
-  }
+  //     // notifyListeners(); // Notify listeners to update UI
+  //   }
+  //   notifyListeners();
+  //   return data;
+  // }
 
-  List<Map<String, dynamic>> extractFavouritesFromData(
-      Map<String, dynamic> data) {
-    List<Map<String, dynamic>> images = [];
+  // List<Map<String, dynamic>> extractFavouritesFromData(
+  //     Map<String, dynamic> data) {
+  //   List<Map<String, dynamic>> images = [];
 
-    // Assuming 'favourites' is a list of maps each containing 'imageUrl'
-    if (data.containsKey('favourites') && data['favourites'] is List) {
-      List<dynamic> favourites = data['favourites'];
-      for (var fav in favourites) {
-        if (fav.containsKey('imageUrl')) {
-          images.add({'imageUrl': fav['imageUrl'].toString()});
-        }
-      }
-    }
+  //   // Assuming 'favourites' is a list of maps each containing 'imageUrl'
+  //   if (data.containsKey('favourites') && data['favourites'] is List) {
+  //     List<dynamic> favourites = data['favourites'];
+  //     for (var fav in favourites) {
+  //       if (fav.containsKey('imageUrl')) {
+  //         images.add({'imageUrl': fav['imageUrl'].toString()});
+  //       }
+  //     }
+  //   }
 
-    return images;
-  }
+  //   return images;
+  // }
 
 // // Helper function to preload images
 //   Future<void> preloadFavouritesImages(
@@ -155,11 +152,6 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
     print(_isDownloading);
     String? uploadedImage;
     try {
-      if (uint8ListObject != null) {
-        uploadedImage =
-            await favouriteRepo.uploadRecenetImageOfUint8list(uint8ListObject);
-      }
-
       // Create a temporary directory
       var tempDir = await getTemporaryDirectory();
       String savePath = '${tempDir.path}/temp_image.jpg';
@@ -192,14 +184,14 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  bool isBase64UrlValid(String str) {
-    try {
-      base64Url.decode(str);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  // bool isBase64UrlValid(String str) {
+  //   try {
+  //     base64Url.decode(str);
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
   // Future<String?> uploadGeneratedImageToFirebase(String imageUrl) async {
   //   try {
   //     print("Starting image upload to Firebase Storage...");

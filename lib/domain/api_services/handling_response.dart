@@ -11,7 +11,7 @@ class HandlingResponse {
       200 => ApiResponse.completed(data),
       400 => ApiResponse.error('Some Error Occurred'),
       401 => ApiResponse.unAuthorised('Unauthorized'),
-      403 => ApiResponse.error('Forbidden'),  
+      403 => ApiResponse.error('Forbidden'),
       404 => ApiResponse.error('Not Found'),
       500 => ApiResponse.error('Internal Server Error'),
       -6 => ApiResponse.error('No Internet Connection'),

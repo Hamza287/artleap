@@ -1,7 +1,7 @@
 class UserData {
   static final UserData ins = UserData._internal();
   UserData._internal();
-  String? userId;
+  String?   userId;
   String? userName;
   String? userProfilePic;
   String? userEmail;

@@ -10,30 +10,32 @@ class UserProfileMatricsWidget extends ConsumerWidget {
   final int creationsCount;
 
   const UserProfileMatricsWidget({
-    Key? key,
+    super.key,
     required this.followersCount,
     required this.followingCount,
     required this.creationsCount,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       height: 50,
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
               colors: [AppColors.lightIndigo, AppColors.darkIndigo])),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 20),
+            padding: const EdgeInsets.only(left: 20),
             child: MatricsTextWidget(
               title: "Creations",
               count: ref
                   .watch(userProfileProvider)
-                  .usersCreations
+                  .userProfileData!
+                  .user
+                  .images
                   .length
                   .toString(),
             ),
@@ -42,17 +44,21 @@ class UserProfileMatricsWidget extends ConsumerWidget {
             title: "Followers",
             count: ref
                 .watch(userProfileProvider)
-                .userFollowerData
+                .userProfileData!
+                .user
+                .followers
                 .length
                 .toString(),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: 20),
             child: MatricsTextWidget(
               title: "Followings",
               count: ref
                   .watch(userProfileProvider)
-                  .userFollowingData
+                  .userProfileData!
+                  .user
+                  .following
                   .length
                   .toString(),
             ),

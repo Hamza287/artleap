@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -23,7 +23,7 @@ import 'shared/theme/dark_theme.dart';
 void main() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await MobileAds.instance.initialize();
+    // await MobileAds.instance.initialize();
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -31,6 +31,15 @@ void main() {
     await AppLocal.ins.initStorage();
     await DI.initDI();
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // Make status bar transparent
+      systemNavigationBarColor:
+          Colors.transparent, // Make navigation bar transparent
+      statusBarIconBrightness:
+          Brightness.light, // Adjust icon colors for light mode
+      systemNavigationBarIconBrightness: Brightness.light,
+    ));
     runApp(const ProviderScope(child: MyApp()));
   }, (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);

@@ -17,6 +17,8 @@ class ProfileNameFollowWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print(userId);
+  
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15),
       child: Row(
@@ -34,7 +36,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                   Container(
                     height: 35,
                     width: 35,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: AppColors.black),
                   ),
                   10.spaceX,
@@ -47,18 +49,16 @@ class ProfileNameFollowWidget extends ConsumerWidget {
               ),
             ),
           ),
-          ref
-                  .watch(userProfileProvider)
-                  .userFollowingData
-                  .any((user) => user["userid"] == userId)
+          ref.watch(userProfileProvider).userProfileData!.user.following.any(
+            (user) {
+              return user.id == userId;
+            },
+          )
               ? GestureDetector(
                   onTap: () {
-                    ref.read(userProfileProvider).userUnfollowRequest(
-                          UserData.ins.userId!,
-                          userId!,
-                          profileName!,
-                          UserData.ins.userName!,
-                        );
+                    ref
+                        .read(userProfileProvider)
+                        .followUnfollowUser(UserData.ins.userId!, userId!);
                   },
                   child: Container(
                     height: 30,
@@ -83,11 +83,9 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                 )
               : GestureDetector(
                   onTap: () {
-                    ref.read(userProfileProvider).userFollowRequest(
-                        UserData.ins.userId!,
-                        userId!,
-                        profileName!,
-                        UserData.ins.userName!);
+                    ref
+                        .read(userProfileProvider)
+                        .followUnfollowUser(UserData.ins.userId!, userId!);
                   },
                   child: Container(
                     height: 30,

@@ -5,13 +5,14 @@ import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_scree
 import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/promp_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/prompt_screen_button.dart';
 import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/result_for_prompt_widget.dart';
-import 'package:photoroomapp/providers/generate_image_provider.dart';
 import 'package:photoroomapp/providers/user_profile_provider.dart';
+import 'package:photoroomapp/providers/generate_image_provider.dart';
 import 'package:photoroomapp/shared/app_snack_bar.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';
 import '../../../../shared/constants/app_assets.dart';
+import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 import '../../../google_ads/interstetial_ad.dart';
 
 class PromptOrReferenceScreen extends ConsumerStatefulWidget {
@@ -31,6 +32,7 @@ class _PromptOrReferenceScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(generateImageProvider).loadBannerAd();
       InterstitialAdManager.instance.loadInterstitialAd();
+      AnalyticsService.instance.logScreenView(screenName: 'generating screen');
     });
   }
 
@@ -55,16 +57,9 @@ class _PromptOrReferenceScreenState
                 10.spaceY,
                 DropDownsAndGalleryPickWidget(
                   onpress: () {
-                    if (ref
-                        .watch(generateImageProvider)
-                        .promptTextController
-                        .text
-                        .isEmpty) {
-                      appSnackBar("Alert", "Please write your prompt",
-                          AppColors.redColor);
-                    } else {
-                      ref.read(generateImageProvider).pickImage();
-                    }
+                    ref.read(generateImageProvider).pickImage();
+                    AnalyticsService.instance.logButtonClick(
+                        buttonName: 'picking image from gallery button event');
                   },
                 ),
                 20.spaceY,
@@ -76,7 +71,9 @@ class _PromptOrReferenceScreenState
                   suffixRow: true,
                   onpress: ref
                               .watch(userProfileProvider)
-                              .userDailyCredits["remaining"] ==
+                              .userProfileData!
+                              .user
+                              .dailyCredits ==
                           0
                       ? () {
                           appSnackBar(
@@ -119,22 +116,20 @@ class _PromptOrReferenceScreenState
                                     .watch(generateImageProvider)
                                     .generateImgToImg();
                               } else {
-                                InterstitialAdManager.instance
-                                    .showInterstitialAd();
+                                // InterstitialAdManager.instance
+                                //     .showInterstitialAd();
+                                AnalyticsService.instance.logButtonClick(
+                                    buttonName: 'Generate button event');
+
                                 ref
                                     .read(generateImageProvider)
-                                    .generateFreePikImage();
+                                    .generateTextToImage();
                               }
                             },
                   isLoading:
                       ref.watch(generateImageProvider).isGenerateImageLoading,
                 ),
                 20.spaceY,
-                // ref.watch(generateImageProvider).isBannerAdLoaded
-                //     ? const BannerAdWidget()
-                //     : const SizedBox(),
-                // 20.spaceY,
-                // NativeAdWidget(),
                 const ResultForPromptWidget(),
               ],
             ),

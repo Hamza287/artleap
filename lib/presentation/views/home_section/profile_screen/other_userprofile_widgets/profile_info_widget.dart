@@ -5,8 +5,6 @@ import 'package:photoroomapp/shared/constants/app_assets.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
-
-import '../../../../../providers/favrourite_provider.dart';
 import '../../../../../providers/user_profile_provider.dart';
 import '../../../../../shared/constants/user_data.dart';
 
@@ -24,17 +22,22 @@ class ProfileInfoWidget extends ConsumerWidget {
         children: [
           Column(
             children: [
-              ref.watch(userProfileProvider).otherUserPersonalInfo != null
+              ref
+                      .watch(userProfileProvider)
+                      .otherUserProfileData!
+                      .user
+                      .profilePic
+                      .isNotEmpty
                   ? Container(
                       height: 55,
                       width: 55,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: NetworkImage(ref
-                                          .watch(userProfileProvider)
-                                          .otherUserPersonalInfo![
-                                      "profile_image"] ??
-                                  AppAssets.artstyle1)),
+                                  .watch(userProfileProvider)
+                                  .otherUserProfileData!
+                                  .user
+                                  .profilePic)),
                           shape: BoxShape.circle,
                           color: AppColors.white),
                     )
@@ -43,6 +46,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                       width: 55,
                       decoration: const BoxDecoration(
                           shape: BoxShape.circle, color: AppColors.white),
+                      child: Image.asset(AppAssets.profilepic),
                     ),
               10.spaceY,
               Text(
@@ -54,7 +58,7 @@ class ProfileInfoWidget extends ConsumerWidget {
           ),
           Column(
             children: [
-              Container(
+              SizedBox(
                 width: 200,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +74,9 @@ class ProfileInfoWidget extends ConsumerWidget {
                           Text(
                             ref
                                 .watch(userProfileProvider)
-                                .otherUserProfileData["userData"]
+                                .otherUserProfileData!
+                                .user
+                                .images
                                 .length
                                 .toString(),
                             style: AppTextstyle.interMedium(
@@ -89,13 +95,17 @@ class ProfileInfoWidget extends ConsumerWidget {
                           ),
                           Text(
                             ref
-                                        .watch(userProfileProvider)
-                                        .otherUserProfileData["followers"] ==
-                                    null
+                                    .watch(userProfileProvider)
+                                    .otherUserProfileData!
+                                    .user
+                                    .followers
+                                    .isEmpty
                                 ? "0"
                                 : ref
                                     .watch(userProfileProvider)
-                                    .otherUserProfileData["followers"]
+                                    .otherUserProfileData!
+                                    .user
+                                    .followers
                                     .length
                                     .toString(),
                             style: AppTextstyle.interMedium(
@@ -114,13 +124,17 @@ class ProfileInfoWidget extends ConsumerWidget {
                           ),
                           Text(
                             ref
-                                        .watch(userProfileProvider)
-                                        .otherUserProfileData["following"] ==
-                                    null
+                                    .watch(userProfileProvider)
+                                    .otherUserProfileData!
+                                    .user
+                                    .following
+                                    .isEmpty
                                 ? "0"
                                 : ref
                                     .watch(userProfileProvider)
-                                    .otherUserProfileData["following"]
+                                    .otherUserProfileData!
+                                    .user
+                                    .following
                                     .length
                                     .toString(),
                             style: AppTextstyle.interMedium(
@@ -135,15 +149,17 @@ class ProfileInfoWidget extends ConsumerWidget {
               20.spaceY,
               ref
                       .watch(userProfileProvider)
-                      .userFollowingData
-                      .any((user) => user["userid"] == userId)
+                      .userProfileData!
+                      .user
+                      .following
+                      .any(
+                        (user) => user.id == userId,
+                      )
                   ? GestureDetector(
                       onTap: () {
-                        ref.read(userProfileProvider).userUnfollowRequest(
-                            UserData.ins.userId!,
-                            userId!,
-                            profileName!,
-                            UserData.ins.userName!);
+                        ref
+                            .read(userProfileProvider)
+                            .followUnfollowUser(UserData.ins.userId!, userId!);
                       },
                       child: Container(
                         height: 30,
@@ -169,11 +185,9 @@ class ProfileInfoWidget extends ConsumerWidget {
                     )
                   : GestureDetector(
                       onTap: () {
-                        ref.read(userProfileProvider).userFollowRequest(
-                            UserData.ins.userId!,
-                            userId!,
-                            profileName!,
-                            UserData.ins.userName!);
+                        ref
+                            .read(userProfileProvider)
+                            .followUnfollowUser(UserData.ins.userId!, userId!);
                       },
                       child: Container(
                         height: 30,

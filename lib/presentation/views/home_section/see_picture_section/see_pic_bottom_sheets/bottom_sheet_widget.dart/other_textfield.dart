@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/providers/image_actions_provider.dart';
 import 'package:photoroomapp/providers/report_provider.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/constants/app_textstyle.dart';
@@ -16,7 +17,7 @@ class OthersTextfield extends ConsumerWidget {
           color: AppColors.white.withOpacity(0.3),
           borderRadius: BorderRadius.circular(15)),
       child: TextField(
-        controller: ref.watch(reportProvider).othersTextController,
+        controller: ref.watch(imageActionsProvider).othersTextController,
         style: AppTextstyle.interMedium(color: AppColors.white),
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(8.0),

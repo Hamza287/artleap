@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_button.dart';
-import 'package:photoroomapp/shared/constants/app_assets.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/shared.dart';
-
 import '../../../../../providers/user_profile_provider.dart';
 
 class ProfilePicAndInfoWidget extends ConsumerWidget {
@@ -16,8 +12,12 @@ class ProfilePicAndInfoWidget extends ConsumerWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ref.watch(userProfileProvider).userPersonalData!["profile_image"] !=
-                null
+        ref
+                .watch(userProfileProvider)
+                .userProfileData!
+                .user
+                .profilePic
+                .isNotEmpty
             ? Container(
                 height: 100,
                 width: 100,
@@ -25,16 +25,18 @@ class ProfilePicAndInfoWidget extends ConsumerWidget {
                     image: DecorationImage(
                         image: NetworkImage(ref
                             .watch(userProfileProvider)
-                            .userPersonalData!["profile_image"])),
+                            .userProfileData!
+                            .user
+                            .profilePic)),
                     shape: BoxShape.circle,
                     color: AppColors.white),
               )
             : Container(
                 height: 100,
                 width: 100,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage(UserData.ins.userProfilePic!),
+                        image: AssetImage(AppAssets.artstyle1),
                         fit: BoxFit.cover),
                     shape: BoxShape.circle,
                     color: AppColors.white),

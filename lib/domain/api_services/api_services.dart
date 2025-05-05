@@ -6,16 +6,15 @@ import 'dio_core.dart';
 
 class ApiServices extends DioCore {
   ApiServices({required String baseUrl}) : super(baseUrl);
-  var header1 = {
-    'Content-Type': 'application/json',
-    'x-freepik-api-key': 'FPSX3f652ef8c69a425cbc4b19e9299c2000'
-  };
+  // var header1 = {
+  //   'Content-Type': 'application/json',
+  // };
 
-  var header2 = {
-    'Accept': 'application/json',
-    'Authorization':
-        'Bearer sk-TK90Aqi6YFV4nwZd1j32pQbQYCcvJ0bYhJjISDb7K2zcoOSu'
-  };
+  // var header2 = {
+  //   'Accept': 'application/json',
+  //   'Authorization':
+  //       'Bearer sk-TK90Aqi6YFV4nwZd1j32pQbQYCcvJ0bYhJjISDb7K2zcoOSu'
+  // };
   Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters,
       bool enableLocalPersistence = false}) async {
@@ -33,7 +32,9 @@ class ApiServices extends DioCore {
     print(data);
     return await dio.post(path,
         data: data,
-        options: _options(enableLocalPersistence, headers: header1));
+        options: _options(
+          enableLocalPersistence,
+        ));
   }
 
   Future<Response> postFormData(String path,
@@ -52,8 +53,7 @@ class ApiServices extends DioCore {
     print(images);
     print("ggggggggggggggggggg");
     return await dio.post(path,
-        data: formData,
-        options: _options(enableLocalPersistence, headers: header2));
+        data: formData, options: _options(enableLocalPersistence));
   }
 
   Future<Response> delete(String path,

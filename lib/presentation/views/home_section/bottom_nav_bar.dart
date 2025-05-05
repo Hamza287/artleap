@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/base_widgets/common_appbar.dart';
 import 'package:photoroomapp/providers/bottom_nav_bar_provider.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/shared/shared.dart';
+import '../../../providers/user_profile_provider.dart';
 import '../../../providers/home_screen_provider.dart';
+import '../../../shared/constants/user_data.dart';
 import '../global_widgets/search_textfield.dart';
 
 class BottomNavBar extends ConsumerStatefulWidget {
@@ -21,7 +22,11 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ref.read(homeScreenProvider).getUserInfo();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(userProfileProvider)
+          .getUserProfileData(UserData.ins.userId ?? "");
+    });
   }
 
   @override
@@ -35,10 +40,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                     ? "Your Favourites"
                     : "",
             listOfColors: ref.watch(bottomNavBarProvider).pageIndex == 3
-                ? [
-                    const Color.fromARGB(255, 145, 137, 199),
-                    AppColors.darkIndigo
-                  ]
+                ? [AppColors.lightIndigo, AppColors.darkIndigo]
                 : [AppColors.darkBlue, AppColors.darkBlue],
             actions: [
               if (ref.watch(bottomNavBarProvider).pageIndex == 0)
@@ -126,44 +128,42 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
-                    ref.watch(bottomNavBarProvider).setPageIndex(3);
-                  },
-                  child: ref.watch(userProfileProvider).userPersonalData == null
-                      ? Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.darkIndigo,
-                          ),
-                        )
-                      : ref
-                                  .watch(userProfileProvider)
-                                  .userPersonalData!["profile_image"] !=
-                              null
-                          ? Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(ref
-                                          .watch(userProfileProvider)
-                                          .userPersonalData!["profile_image"])),
-                                  shape: BoxShape.circle,
-                                  color: AppColors.white),
-                            )
-                          : Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(AppAssets.artstyle1),
-                                  ),
-                                  shape: BoxShape.circle,
-                                  color: AppColors.white),
-                            ),
-                ),
+                    onTap: () {
+                      ref.watch(bottomNavBarProvider).setPageIndex(3);
+                    },
+                    child: ref.watch(userProfileProvider).isloading
+                        ? const CircularProgressIndicator(
+                            color: AppColors.indigo,
+                          )
+                        : ref
+                                .watch(userProfileProvider)
+                                .userProfileData!
+                                .user
+                                .profilePic
+                                .isEmpty
+                            ? Container(
+                                height: 35,
+                                width: 35,
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(AppAssets.artstyle1),
+                                    ),
+                                    shape: BoxShape.circle,
+                                    color: AppColors.white),
+                              )
+                            : Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(ref
+                                            .watch(userProfileProvider)
+                                            .userProfileData!
+                                            .user
+                                            .profilePic)),
+                                    shape: BoxShape.circle,
+                                    color: AppColors.white),
+                              )),
               ],
             ),
           ),

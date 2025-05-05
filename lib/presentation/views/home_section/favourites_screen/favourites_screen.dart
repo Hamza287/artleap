@@ -6,11 +6,14 @@ import 'package:photoroomapp/presentation/views/global_widgets/app_background_wi
 import 'package:photoroomapp/presentation/views/home_section/favourites_screen/favourites_screen_widgets/result_container_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/favourites_screen/favourites_screen_widgets/results_text_dropdown_widget.dart';
 import 'package:photoroomapp/providers/favrourite_provider.dart';
+import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 
+import '../../../../providers/add_image_to_fav_provider.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';
 import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
+import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
 class FavouritesScreen extends ConsumerStatefulWidget {
   const FavouritesScreen({super.key});
@@ -25,7 +28,8 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ref.read(favouriteProvider).fetchUserFavourites();
+    ref.read(favouriteProvider).getUserFav(UserData.ins.userId!);
+    AnalyticsService.instance.logScreenView(screenName: 'favourite screen');
   }
 
   @override
@@ -43,53 +47,29 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
           child: RefreshIndicator(
             backgroundColor: AppColors.darkBlue,
             onRefresh: () {
-              return ref.watch(favouriteProvider).fetchUserFavourites();
+              return ref
+                  .read(favouriteProvider)
+                  .getUserFav(UserData.ins.userId!);
             },
             child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(), // Allows scroll refresh
+              physics:
+                  const AlwaysScrollableScrollPhysics(), // Allows scroll refresh
               child: Column(
                 children: [
                   // ResultsTextDropDownWidget(),
                   20.spaceY,
-                  FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
-                    future: ref.read(favouriteProvider).fetchUserFavourites(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: LoadingAnimationWidget.threeArchedCircle(
+                  ref.watch(favouriteProvider).usersFavourites == null
+                      ? const Center(
+                          child: CircularProgressIndicator(
                             color: AppColors.white,
-                            size: 30,
                           ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else {
-                        DocumentSnapshot<Map<String, dynamic>>?
-                            userFavouriteData = snapshot.data;
-
-                        List<dynamic> favourites =
-                            userFavouriteData?.data()?["favourites"] ?? [];
-
-                        if (favourites.isEmpty) {
-                          return Center(
-                            child: Text(
-                              "No data yet",
-                              style: AppTextstyle.interBold(
-                                fontSize: 15,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          );
-                        } else {
-                          print(favourites.length);
-                          print("hhhhhhhhhhh");
-                          return ResultContainerWidget(
-                            data: favourites,
-                          );
-                        }
-                      }
-                    },
-                  ),
+                        )
+                      : ResultContainerWidget(
+                          data: ref
+                              .watch(favouriteProvider)
+                              .usersFavourites!
+                              .favorites,
+                        )
                 ],
               ),
             ),

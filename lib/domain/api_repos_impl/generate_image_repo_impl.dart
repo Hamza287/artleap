@@ -1,6 +1,5 @@
 import 'dart:isolate';
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/domain/api_models/generate_image_model.dart';
 import 'package:photoroomapp/domain/api_repos_abstract/generate_image_repo.dart';
 import 'package:photoroomapp/domain/api_services/api_response.dart';
 import '../../shared/console.dart';

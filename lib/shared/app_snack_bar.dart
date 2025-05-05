@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'navigation/navigator_key.dart';
 
 appSnackBar(String title, String message, Color color) {
+  print("llllllllllllllllllllll");
   Flushbar(
-    title: title, 
+    title: title,
     message: message,
     flushbarPosition: FlushbarPosition.TOP,
     backgroundColor: color,

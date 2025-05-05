@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
 import 'package:photoroomapp/shared/navigation/screen_params.dart';
+
+import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
 class FullImageViewerScreen extends StatefulWidget {
   static const String routeName = "full_image_screen";
   final FullImageScreenParams? params;
 
-  FullImageViewerScreen({super.key, this.params});
+  const FullImageViewerScreen({super.key, this.params});
 
   @override
   _FullImageViewerScreenState createState() => _FullImageViewerScreenState();
@@ -33,6 +36,7 @@ class _FullImageViewerScreenState extends State<FullImageViewerScreen>
     _animationController.addListener(() {
       _transformationController.value = _animation!.value;
     });
+    AnalyticsService.instance.logScreenView(screenName: 'full image screen');
   }
 
   @override
@@ -97,29 +101,17 @@ class _FullImageViewerScreenState extends State<FullImageViewerScreen>
               transformationController: _transformationController,
               minScale: _minScale,
               maxScale: _maxScale,
-              child: widget.params!.uint8list != null
-                  ? SizedBox(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.memory(
-                          widget.params!.uint8list!,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.network(
-                          widget.params!.Image!,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
+              child: SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.params!.Image!,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
             ),
           ),
         ),

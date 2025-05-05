@@ -17,6 +17,8 @@ class AppConstants {
   static const ResponseMode responseMode = ResponseMode.real;
   static const String stableDefKey =
       "q888ISOb2v6zvmbLTb7tbSyiMrVfzZ3A8lQrp2yNaI55m5OYujQqPmlOGfuf";
+
+  static const String artleapBaseUrl = "http://43.205.54.198:8000/api/";
 }
 
 enum Environment { development, staging, production }

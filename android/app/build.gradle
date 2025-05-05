@@ -30,7 +30,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-  kotlinOptions {
+
+    kotlinOptions {
         jvmTarget = "1.8"
     }
 
@@ -38,10 +39,10 @@ android {
         applicationId "com.XrDIgital.ImaginaryVerse"
         minSdk 23
         targetSdk 34
-        versionCode 8
-        versionName "1.1.6"
+        versionCode 22
+        versionName "1.1.20"
         ndk {
-            debugSymbolLevel 'FULL'
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
     }
 
@@ -54,22 +55,19 @@ android {
         }
     }
 
-   buildTypes {
-    release {
-        signingConfig signingConfigs.debug
-        signingConfig signingConfigs.release
-        minifyEnabled false // Code shrinking disabled
-        shrinkResources false // Resource shrinking disabled
-         ndk {
-                debugSymbolLevel 'FULL' // Generate full debug symbols
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false // Code shrinking disabled
+            shrinkResources false // Resource shrinking disabled
+            ndk {
+                debugSymbolLevel "FULL" // Correct placement for debug symbols
             }
-        // If you're using ProGuard, uncomment the next line
-        // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
-    debug {
-        signingConfig signingConfigs.debug
-    }
-}
 }
 
 flutter {

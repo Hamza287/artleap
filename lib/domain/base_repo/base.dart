@@ -13,13 +13,17 @@ class Base {
       instanceName: AppConstants.generateHighQualityImage);
   ApiServices get textToHighQualityImageService =>
       _textToHighQualityImageService;
-  final ApiServices _imgToimgService =
-      getIt.get<ApiServices>(instanceName: AppConstants.imgToimgUrl);
-  ApiServices get imgToimgService => _imgToimgService;
+  // final ApiServices _imgToimgService =
+  //     getIt.get<ApiServices>(instanceName: AppConstants.artleapBaseUrl);
+  // ApiServices get imgToimgService => _imgToimgService;
 
   final ApiServices _otherApiServices =
       getIt.get<ApiServices>(instanceName: AppConstants.otherBaseUrl);
   ApiServices get otherApiServices => _otherApiServices;
+
+  final ApiServices _artleapApiService =
+      getIt.get<ApiServices>(instanceName: AppConstants.artleapBaseUrl);
+  ApiServices get artleapApiService => _artleapApiService;
 
   final ApiServices _reqresApiServices =
       getIt.get<ApiServices>(instanceName: AppConstants.reqresBaseUrl);
@@ -28,9 +32,9 @@ class Base {
   final ApiServices _getModelsListService =
       getIt.get<ApiServices>(instanceName: AppConstants.getModelsList);
   ApiServices get getModelsListApi => _getModelsListService;
-  final ApiServices _postFreePikGen =
-      getIt.get<ApiServices>(instanceName: AppConstants.freePikImageUrl);
-  ApiServices get postFreePikGen => _postFreePikGen;
+  final ApiServices _postTextToImage =
+      getIt.get<ApiServices>(instanceName: AppConstants.artleapBaseUrl);
+  ApiServices get postTextToImage => _postTextToImage;
   final FirebaseFirestore _firestore = getIt.get<FirebaseFirestore>();
   FirebaseFirestore get firestore => _firestore;
 
