@@ -5,6 +5,7 @@ import 'package:photoroomapp/presentation/views/home_section/profile_screen/prof
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_background_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_pic_info_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/user_profile_metrics_widget.dart';
+import 'package:photoroomapp/providers/ads_provider.dart';
 import 'package:photoroomapp/providers/bottom_nav_bar_provider.dart';
 import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/shared/constants/user_data.dart';

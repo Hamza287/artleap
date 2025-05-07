@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/presentation/google_ads/native_add.dart';
 import 'package:photoroomapp/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:photoroomapp/shared/app_persistance/app_local.dart';
@@ -90,7 +91,9 @@ class EditProfileWidget extends ConsumerWidget {
               title: "Logout",
               titleColor: AppColors.redColor,
             ),
-          )
+          ),
+          100.spaceY,
+          NativeAdWidget()
         ],
       ),
     );

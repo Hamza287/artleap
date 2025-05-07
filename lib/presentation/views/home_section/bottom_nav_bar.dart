@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/presentation/base_widgets/common_appbar.dart';
+import 'package:photoroomapp/providers/ads_provider.dart';
 import 'package:photoroomapp/providers/bottom_nav_bar_provider.dart';
 import 'package:photoroomapp/shared/shared.dart';
+import '../../../providers/generate_image_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../providers/home_screen_provider.dart';
 import '../../../shared/constants/user_data.dart';
+import '../../google_ads/banner_ad.dart';
+import '../../google_ads/native_add.dart';
 import '../global_widgets/search_textfield.dart';
 
 class BottomNavBar extends ConsumerStatefulWidget {
@@ -22,6 +26,8 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // NativeAdWidget.instance.loadNativeAd();
+    // InterstitialAdManager.instance.loadInterstitialAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(userProfileProvider)
@@ -43,14 +49,22 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                 ? [AppColors.lightIndigo, AppColors.darkIndigo]
                 : [AppColors.darkBlue, AppColors.darkBlue],
             actions: [
-              if (ref.watch(bottomNavBarProvider).pageIndex == 0)
-                const Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10, left: 14),
-                    child: SearchTextfield(),
-                  ),
-                ),
-              if (ref.watch(bottomNavBarProvider).pageIndex == 0) 20.spaceX,
+              // if (ref.watch(bottomNavBarProvider).pageIndex == 0)
+              //   const Expanded(
+              //     child: Column(
+              //       children: [
+              //         Padding(
+              //           padding: EdgeInsets.only(left: 10),
+              //           child: BannerAdWidget(),
+              //         ),
+              //         Padding(
+              //           padding: EdgeInsets.only(top: 5, left: 15),
+              //           child: SearchTextfield(),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // if (ref.watch(bottomNavBarProvider).pageIndex == 0) 20.spaceX,
 
               // if (ref.watch(bottomNavBarProvider).pageIndex == 0)
               //   Padding(
@@ -61,6 +75,21 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
               //     ),
               //   )
             ],
+            bottomWidget: ref.watch(bottomNavBarProvider).pageIndex == 0
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: BannerAdWidget(),
+                      ),
+                      5.spaceY,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: SearchTextfield(),
+                      ),
+                    ],
+                  )
+                : null,
           ),
           resizeToAvoidBottomInset: false,
           bottomNavigationBar: Container(

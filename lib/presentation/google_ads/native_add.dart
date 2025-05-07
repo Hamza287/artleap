@@ -1,63 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:photoroomapp/providers/ads_provider.dart';
 
-class NativeAdWidget extends StatefulWidget {
-  const NativeAdWidget({Key? key}) : super(key: key);
+import '../../shared/constants/app_assets.dart';
 
+class NativeAdWidget extends ConsumerStatefulWidget {
+  const NativeAdWidget({super.key});
   @override
-  State<NativeAdWidget> createState() => _NativeAdWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _NativeAdWidgetState();
 }
 
-class _NativeAdWidgetState extends State<NativeAdWidget> {
-  NativeAd? _nativeAd;
-  bool _isAdLoaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadNativeAd();
-  }
-
-  void _loadNativeAd() {
-    _nativeAd = NativeAd(
-      adUnitId:
-          'ca-app-pub-3940256099942544/2247696110', // Your native ad unit ID
-      factoryId: 'listTile', // The factory ID you used in MainActivity
-      listener: NativeAdListener(
-        onAdLoaded: (ad) {
-          setState(() {
-            _isAdLoaded = true;
-          });
-          debugPrint('Native ad loaded');
-        },
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('Native ad failed to load: $error');
-          ad.dispose();
-        },
-      ),
-      request: const AdRequest(),
-    );
-
-    _nativeAd!.load();
-  }
-
-  @override
-  void dispose() {
-    _nativeAd?.dispose();
-    super.dispose();
-  }
-
+class _NativeAdWidgetState extends ConsumerState<NativeAdWidget> {
   @override
   Widget build(BuildContext context) {
-    if (!_isAdLoaded) {
-      // Show a placeholder, progress bar, or nothing while ad is loading
-      return const SizedBox(height: 0, width: 0);
+    final ads = ref.watch(adsProvider);
+
+    if (!ads.isNativeAdLoaded || ads.nativeAd == null) {
+      return Image.asset(
+        AppAssets.adicon,
+        scale: 6,
+        // fit: BoxFit.contain,
+        // scale: 0.1,
+        // height: 15,
+        // width: 15,
+      ); // fallback or loader
     }
+
     return Container(
-      // If your native_ad_layout.xml is, for example, 120dp tall,
-      // match that here or use a fixed height:
-      height: 120,
-      child: AdWidget(ad: _nativeAd!),
+      height: 220,
+      // margin: EdgeInsets.only(right: 15),
+      child: AdWidget(ad: ref.watch(adsProvider).nativeAd!),
     );
   }
 }

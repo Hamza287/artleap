@@ -23,7 +23,7 @@ import 'shared/theme/dark_theme.dart';
 void main() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // await MobileAds.instance.initialize();
+    await MobileAds.instance.initialize();
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

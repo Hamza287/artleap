@@ -58,10 +58,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   bool _containsSexualWords = false;
   bool get containsSexualWords => _containsSexualWords;
 
-  BannerAd? _bannerAd;
-  BannerAd? get bannerAd => _bannerAd;
-  bool _isBannerAdLoaded = false;
-  bool get isBannerAdLoaded => _isBannerAdLoaded;
+
 
   set selectedStyle(String? value) {
     _selectedStyle = value;
@@ -320,25 +317,5 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  void loadBannerAd() {
-    _bannerAd = BannerAd(
-      size: AdSize.banner, // or AdSize.smartBanner
-      adUnitId:
-          'ca-app-pub-3940256099942544/9214589741', // Your banner ad unit ID
-      listener: BannerAdListener(
-        onAdLoaded: (Ad ad) {
-          _isBannerAdLoaded = true;
-          notifyListeners();
-          print(_isBannerAdLoaded);
-          print("ddddddddddddddddd");
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          // Dispose of the ad here to free resources
-          ad.dispose();
-          print('Banner failed to load: $error');
-        },
-      ),
-      request: const AdRequest(),
-    )..load();
-  }
+
 }

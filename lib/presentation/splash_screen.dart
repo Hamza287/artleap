@@ -10,6 +10,7 @@ import 'package:photoroomapp/shared/navigation/navigation.dart';
 import 'package:photoroomapp/shared/shared.dart';
 import 'package:video_player/video_player.dart';
 
+import '../providers/ads_provider.dart';
 import '../providers/user_profile_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -25,6 +26,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
+    ref.read(adsProvider).loadNativeAd();
+    ref.read(adsProvider).loadBannerAd();
     String userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     String userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     WidgetsBinding.instance.addPostFrameCallback((_) {

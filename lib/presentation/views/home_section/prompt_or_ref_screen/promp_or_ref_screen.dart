@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:photoroomapp/presentation/google_ads/banner_ad.dart';
 import 'package:photoroomapp/presentation/views/global_widgets/app_background_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/dropdowns_and_gallerypick_widget.dart';
 import 'package:photoroomapp/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/promp_widget.dart';
@@ -30,8 +31,6 @@ class _PromptOrReferenceScreenState
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(generateImageProvider).loadBannerAd();
-      InterstitialAdManager.instance.loadInterstitialAd();
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
     });
   }

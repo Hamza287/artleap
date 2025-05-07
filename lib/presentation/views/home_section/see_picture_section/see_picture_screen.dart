@@ -36,6 +36,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     // TODO: implement initState
     super.initState();
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
+    print("See Picture Screen Params: ${widget.params!.creatorEmail}");
   }
 
   @override

@@ -7,16 +7,19 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isBackButton;
   final List<Widget> actions;
   final List<Color>? listOfColors;
-  const CommonAppBar(
-      {super.key,
-      this.title,
-      this.actions = const [],
-      this.isBackButton = true,
-      this.listOfColors});
+  final Widget? bottomWidget;
+  const CommonAppBar({
+    super.key,
+    this.title,
+    this.actions = const [],
+    this.isBackButton = true,
+    this.listOfColors,
+    this.bottomWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return AppBar( 
+    return AppBar(
       elevation: 0,
       automaticallyImplyLeading: false,
       shadowColor: AppColors.darkBlue,
@@ -35,9 +38,18 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       actions: actions,
+      bottom: bottomWidget != null
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(90),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: bottomWidget!,
+              ),
+            )
+          : null,
     );
   }
 
   @override
-  Size get preferredSize => const Size(double.infinity, 70);
+  Size get preferredSize => const Size(double.infinity, 90);
 }

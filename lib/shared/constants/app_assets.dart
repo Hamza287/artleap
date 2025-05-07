@@ -92,6 +92,7 @@ class AppAssets {
   static const reporticon = "${iconsdir}reporticon.png";
   static const stackofcoins = "${iconsdir}stackofcoins.png";
   static const logo = "${iconsdir}logo.png";
+  static const adicon = "${iconsdir}adicon.png";
 
   //json
   static const splashanimation = "${jsondir}splashanimation.json";

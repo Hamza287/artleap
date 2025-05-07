@@ -11,6 +11,9 @@ import 'package:photoroomapp/shared/constants/app_textstyle.dart';
 import 'package:photoroomapp/shared/constants/user_data.dart';
 import 'package:photoroomapp/shared/extensions/sized_box.dart';
 
+import '../../../../providers/generate_image_provider.dart';
+import '../../../google_ads/interstetial_ad.dart';
+
 class HomeScreen extends ConsumerStatefulWidget {
   static const String routeName = 'home_screen';
   const HomeScreen({super.key});
@@ -24,6 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favouriteProvider).getUserFav(UserData.ins.userId ?? "");
       ref.read(userProfileProvider).updateUserCredits();

@@ -14,6 +14,8 @@ import 'package:photoroomapp/shared/navigation/screen_params.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../../../google_ads/native_add.dart';
+
 class TrendingCreationsWidget extends ConsumerStatefulWidget {
   const TrendingCreationsWidget({super.key});
 
@@ -110,9 +112,17 @@ class _TrendingCreationsWidgetState
                       const QuiltedGridTile(1, 1),
                     ],
                   ),
-                  itemCount: filteredList.length,
+                  itemCount: filteredList.length + 1,
                   itemBuilder: (context, index) {
-                    final image = filteredList[index];
+                    final adIndex = 10;
+
+                    if (index == adIndex) {
+                      return const NativeAdWidget();
+                    }
+
+                    final imageIndex = index > adIndex ? index - 1 : index;
+                    final image = filteredList[imageIndex];
+
                     return VisibilityDetector(
                       key: Key('image-${image!.id}'),
                       onVisibilityChanged: (info) {
