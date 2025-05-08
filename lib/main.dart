@@ -31,15 +31,14 @@ void main() {
     await AppLocal.ins.initStorage();
     await DI.initDI();
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // Make status bar transparent
-      systemNavigationBarColor:
-          Colors.transparent, // Make navigation bar transparent
-      statusBarIconBrightness:
-          Brightness.light, // Adjust icon colors for light mode
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light,
     ));
+
     runApp(const ProviderScope(child: MyApp()));
   }, (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);

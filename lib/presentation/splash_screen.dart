@@ -26,8 +26,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
-    ref.read(adsProvider).loadNativeAd();
-    ref.read(adsProvider).loadBannerAd();
+    Future.microtask(() {
+      ref.read(adsProvider).loadNativeAd();
+      ref.read(adsProvider).loadBannerAd();
+    });
     String userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     String userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     WidgetsBinding.instance.addPostFrameCallback((_) {

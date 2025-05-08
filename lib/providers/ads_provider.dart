@@ -21,8 +21,8 @@ class AdsProvider extends ChangeNotifier with BaseRepo {
 
   void loadNativeAd() {
     _nativeAd = NativeAd(
-      adUnitId: 'your-admob-unit-id',
-      factoryId: 'adFactoryExample',
+      adUnitId: 'ca-app-pub-9762893813732933/9286731994',
+      factoryId: 'listTile',
       listener: NativeAdListener(
         onAdLoaded: (ad) {
           _isNativeAdLoaded = true;
