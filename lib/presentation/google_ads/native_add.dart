@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:photoroomapp/providers/ads_provider.dart';
+import 'package:Artleap.ai/providers/ads_provider.dart';
 
 import '../../shared/constants/app_assets.dart';
 

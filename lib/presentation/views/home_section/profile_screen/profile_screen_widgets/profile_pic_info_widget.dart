@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 import '../../../../../providers/user_profile_provider.dart';
 
 class ProfilePicAndInfoWidget extends ConsumerWidget {

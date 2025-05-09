@@ -1,10 +1,10 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/providers/home_screen_provider.dart';
-import 'package:photoroomapp/shared/constants/app_assets.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/providers/home_screen_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class SearchTextfield extends ConsumerWidget {
   const SearchTextfield({super.key});

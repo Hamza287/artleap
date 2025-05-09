@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/domain/api_models/Image_to_Image_model.dart';
-import 'package:photoroomapp/domain/api_models/generate_image_model.dart';
-import 'package:photoroomapp/domain/api_repos_abstract/generate_image_repo.dart';
-import 'package:photoroomapp/domain/api_repos_abstract/img2img_repo.dart';
-import 'package:photoroomapp/domain/api_services/api_response.dart';
-import 'package:photoroomapp/shared/constants/app_api_paths.dart';
+import 'package:Artleap.ai/domain/api_models/Image_to_Image_model.dart';
+import 'package:Artleap.ai/domain/api_models/generate_image_model.dart';
+import 'package:Artleap.ai/domain/api_repos_abstract/generate_image_repo.dart';
+import 'package:Artleap.ai/domain/api_repos_abstract/img2img_repo.dart';
+import 'package:Artleap.ai/domain/api_services/api_response.dart';
+import 'package:Artleap.ai/shared/constants/app_api_paths.dart';
 import '../../shared/console.dart';
 import '../api_services/handling_response.dart';
 

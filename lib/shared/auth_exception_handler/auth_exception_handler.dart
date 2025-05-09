@@ -1,4 +1,4 @@
-import 'package:photoroomapp/shared/console.dart';
+import 'package:Artleap.ai/shared/console.dart';
 
 class AuthExceptionHandler {
   static AuthResultStatus handleException(e) {

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/edit_profile_screen.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/my_creations_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_background_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_pic_info_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/user_profile_metrics_widget.dart';
-import 'package:photoroomapp/providers/ads_provider.dart';
-import 'package:photoroomapp/providers/bottom_nav_bar_provider.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
-import 'package:photoroomapp/shared/navigation/screen_params.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/profile_screen_widgets/my_creations_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_background_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/profile_screen_widgets/profile_pic_info_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/profile_screen_widgets/user_profile_metrics_widget.dart';
+import 'package:Artleap.ai/providers/ads_provider.dart';
+import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import '../../../../shared/constants/app_colors.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 

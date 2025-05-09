@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/edit_profile_widget.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/edit_profile_widget.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
 
 import '../../../../../shared/navigation/screen_params.dart';
 

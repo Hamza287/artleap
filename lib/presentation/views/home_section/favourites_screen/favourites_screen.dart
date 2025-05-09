@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:photoroomapp/presentation/views/global_widgets/app_background_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/favourites_screen/favourites_screen_widgets/result_container_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/favourites_screen/favourites_screen_widgets/results_text_dropdown_widget.dart';
-import 'package:photoroomapp/providers/favrourite_provider.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/favourites_screen_widgets/result_container_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/favourites_screen_widgets/results_text_dropdown_widget.dart';
+import 'package:Artleap.ai/providers/favrourite_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
 import '../../../../providers/add_image_to_fav_provider.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';

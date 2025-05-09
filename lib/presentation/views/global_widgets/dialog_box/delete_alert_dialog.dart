@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/providers/image_actions_provider.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/providers/image_actions_provider.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
 
 import '../../../../providers/home_screen_provider.dart';
 import '../../../../shared/constants/app_colors.dart';

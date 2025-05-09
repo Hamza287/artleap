@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:photoroomapp/providers/ads_provider.dart';
-import 'package:photoroomapp/providers/generate_image_provider.dart';
-import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/providers/ads_provider.dart';
+import 'package:Artleap.ai/providers/generate_image_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
 
 class BannerAdWidget extends ConsumerStatefulWidget {
   const BannerAdWidget({super.key});

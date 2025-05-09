@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
 
 import '../../../../../shared/constants/app_colors.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
@@ -15,7 +15,7 @@ class NotHaveAccountText extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        RichText(     
+        RichText(
             text: TextSpan(
                 style: AppTextstyle.interRegular(
                     color: AppColors.white, fontSize: 12),

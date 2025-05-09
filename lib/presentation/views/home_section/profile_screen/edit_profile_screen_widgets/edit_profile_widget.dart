@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/google_ads/native_add.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/google_ads/native_add.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 
 import '../../../../../shared/constants/app_assets.dart';
 import '../../../../../shared/constants/app_colors.dart';

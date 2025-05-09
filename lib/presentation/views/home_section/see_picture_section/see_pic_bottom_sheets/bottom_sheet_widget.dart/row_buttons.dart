@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/common_button.dart';
-import 'package:photoroomapp/providers/report_provider.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/common_button.dart';
+import 'package:Artleap.ai/providers/report_provider.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 
 import '../../../../../../shared/constants/app_textstyle.dart';
 
@@ -23,7 +23,6 @@ class RowButtons extends ConsumerWidget {
             title: "Cancel",
             width: 150,
             onpress: onCancelPress,
-
           ),
           ReportCommonButton(
             width: 150,
@@ -33,7 +32,6 @@ class RowButtons extends ConsumerWidget {
             iconColor: AppColors.white,
             iconsize: 18,
             onpress: onSendPress,
-
           ),
         ],
       ),

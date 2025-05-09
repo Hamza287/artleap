@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/global_widgets/app_background_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/home_screen/home_screen_widgets/trending_creations_widget.dart';
-import 'package:photoroomapp/providers/add_image_to_fav_provider.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
-import 'package:photoroomapp/providers/home_screen_provider.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen_widgets/trending_creations_widget.dart';
+import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/providers/home_screen_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
 import '../../../../providers/generate_image_provider.dart';
 import '../../../google_ads/interstetial_ad.dart';

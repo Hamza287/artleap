@@ -1,16 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/base_widgets/scaffold_background.dart';
-import 'package:photoroomapp/presentation/views/global_widgets/app_common_button.dart';
-import 'package:photoroomapp/presentation/views/global_widgets/app_common_textfield.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:photoroomapp/providers/auth_provider.dart';
-import 'package:photoroomapp/shared/constants/app_assets.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/base_widgets/scaffold_background.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/app_common_button.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/app_common_textfield.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/providers/auth_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 
 import '../../../shared/navigation/navigation.dart';
 

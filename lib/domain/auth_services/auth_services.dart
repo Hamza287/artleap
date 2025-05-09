@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
-import 'package:photoroomapp/shared/app_snack_bar.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
 
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../shared/auth_exception_handler/auth_exception_handler.dart';

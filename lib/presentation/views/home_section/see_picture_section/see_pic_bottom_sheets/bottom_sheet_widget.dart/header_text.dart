@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/forgot_password_section/forgot_password_screen.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_static_data.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_static_data.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
 class HeaderText extends ConsumerWidget {
   const HeaderText({super.key});

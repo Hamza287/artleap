@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
-import 'package:photoroomapp/domain/api_models/generate_high_q_model.dart';
-import 'package:photoroomapp/domain/api_services/api_response.dart';
-import 'package:photoroomapp/domain/base_repo/base_repo.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/domain/api_models/generate_high_q_model.dart';
+import 'package:Artleap.ai/domain/api_services/api_response.dart';
+import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/api_models/Image_to_Image_model.dart';
 import '../domain/api_models/models_list_model.dart';
@@ -57,8 +57,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   bool _containsSexualWords = false;
   bool get containsSexualWords => _containsSexualWords;
-
-
 
   set selectedStyle(String? value) {
     _selectedStyle = value;
@@ -316,6 +314,4 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     _containsSexualWords = found;
     notifyListeners();
   }
-
-
 }

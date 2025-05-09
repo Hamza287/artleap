@@ -1,5 +1,5 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:photoroomapp/domain/data_classes/dummy.dart';
+// import 'package:Artleap.ai/domain/data_classes/dummy.dart';
 // import '../domain/api_services/api_response.dart';
 // import '../domain/base_repo/base_repo.dart';
 // import '../shared/console.dart';

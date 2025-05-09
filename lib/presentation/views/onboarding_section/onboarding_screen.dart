@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:photoroomapp/presentation/views/onboarding_section/onboarding_widgets/continue_button.dart';
-import 'package:photoroomapp/providers/onboarding_provider.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_static_data.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_widgets/continue_button.dart';
+import 'package:Artleap.ai/providers/onboarding_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_static_data.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   static const String routeName = 'onboarding_screen';

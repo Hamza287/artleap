@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
 import '../../../../../providers/in_app_purchase_provider.dart';
 

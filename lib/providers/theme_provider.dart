@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
+import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../shared/constants/theme_constants.dart';
 
 final themeProvider =

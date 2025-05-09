@@ -1,6 +1,6 @@
 {
-    "name": "photoroomapp",
-    "short_name": "photoroomapp",
+    "name": "Artleap.ai",
+    "short_name": "Artleap.ai",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,4 +1,4 @@
-import 'package:photoroomapp/domain/base_repo/base.dart';
+import 'package:Artleap.ai/domain/base_repo/base.dart';
 
 import '../api_services/api_response.dart';
 

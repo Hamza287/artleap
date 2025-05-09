@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
 import '../../../../../shared/constants/app_colors.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
@@ -10,7 +10,7 @@ class SignupScreenText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column( 
+    return Column(
       children: [
         5.spaceY,
         Text(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/domain/api_models/user_profile_model.dart';
-import 'package:photoroomapp/domain/base_repo/base_repo.dart';
+import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
+import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 
 import '../domain/api_services/api_response.dart';
 import '../shared/constants/user_data.dart';
