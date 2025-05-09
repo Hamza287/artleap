@@ -8,10 +8,8 @@ final adsProvider = ChangeNotifierProvider<AdsProvider>((ref) => AdsProvider());
 class AdsProvider extends ChangeNotifier with BaseRepo {
   NativeAd? _nativeAd;
   NativeAd? get nativeAd => _nativeAd;
-  // bool _isAdLoaded = false;
   InterstitialAd? _interstitialAd;
   InterstitialAd? get interstitialAd => _interstitialAd;
-
   BannerAd? _bannerAd;
   BannerAd? get bannerAd => _bannerAd;
   bool _isBannerAdLoaded = false;
@@ -72,7 +70,6 @@ class AdsProvider extends ChangeNotifier with BaseRepo {
           _interstitialAd = null;
         },
       );
-
       _interstitialAd!.show();
     } else {
       print('Interstitial is not ready');

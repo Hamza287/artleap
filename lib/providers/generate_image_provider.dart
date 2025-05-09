@@ -1,18 +1,12 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:intl/intl.dart';
 import 'package:photoroomapp/domain/api_models/generate_high_q_model.dart';
 import 'package:photoroomapp/domain/api_services/api_response.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
-import '../domain/api_models/Image_to_Image_model.dart';
 import '../domain/api_models/models_list_model.dart';
 import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
@@ -31,7 +25,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   GenerateHighQualityImageModel? _generatedHighQualityImage;
   GenerateHighQualityImageModel? get generatedHighQualityImage =>
       _generatedHighQualityImage;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  // final FirebaseStorage _storage = FirebaseStorage.instance;
 
   bool _isGenerateImageLoading = false;
   bool get isGenerateImageLoading => _isGenerateImageLoading;
@@ -57,8 +51,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   bool _containsSexualWords = false;
   bool get containsSexualWords => _containsSexualWords;
-
-
 
   set selectedStyle(String? value) {
     _selectedStyle = value;
@@ -145,20 +137,20 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<String?> uploadImageToFirebase(String filePath) async {
-    try {
-      String fileExtension = filePath.split('.').last;
-      Reference ref = _storage.ref().child(
-          "images/${DateTime.now().millisecondsSinceEpoch}.$fileExtension");
-      UploadTask uploadTask = ref.putFile(File(filePath));
-      await uploadTask;
-      String downloadURL = await ref.getDownloadURL();
-      return downloadURL;
-    } catch (e) {
-      print('Failed to upload image: $e');
-      return null;
-    }
-  }
+  // Future<String?> uploadImageToFirebase(String filePath) async {
+  //   try {
+  //     String fileExtension = filePath.split('.').last;
+  //     Reference ref = _storage.ref().child(
+  //         "images/${DateTime.now().millisecondsSinceEpoch}.$fileExtension");
+  //     UploadTask uploadTask = ref.putFile(File(filePath));
+  //     await uploadTask;
+  //     String downloadURL = await ref.getDownloadURL();
+  //     return downloadURL;
+  //   } catch (e) {
+  //     print('Failed to upload image: $e');
+  //     return null;
+  //   }
+  // }
 
   Future<void> generateImgToImg() async {
     setGenerateImageLoader(true);
@@ -191,113 +183,113 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  uploadImageToCommunityCreations(
-    String imageUrl,
-    String prompt,
-    String modelName,
-  ) async {
-    try {
-      await firestore
-          .collection('CommunityCreations')
-          .doc("usersCreations")
-          .set({
-        'userData': FieldValue.arrayUnion([
-          {
-            "id": uuid,
-            'creator_name': UserData.ins.userName,
-            'creator_email': UserData.ins.userEmail,
-            "imageUrl": imageUrl,
-            'timestamp': DateTime.now(),
-            'userid': UserData.ins.userId,
-            'prompt': prompt,
-            'model_name': modelName
-          }
-        ])
-      }, SetOptions(merge: true));
-    } catch (e) {
-      print('Error saving image URL to Firestore: $e');
-    }
-  }
+  // uploadImageToCommunityCreations(
+  //   String imageUrl,
+  //   String prompt,
+  //   String modelName,
+  // ) async {
+  //   try {
+  //     await firestore
+  //         .collection('CommunityCreations')
+  //         .doc("usersCreations")
+  //         .set({
+  //       'userData': FieldValue.arrayUnion([
+  //         {
+  //           "id": uuid,
+  //           'creator_name': UserData.ins.userName,
+  //           'creator_email': UserData.ins.userEmail,
+  //           "imageUrl": imageUrl,
+  //           'timestamp': DateTime.now(),
+  //           'userid': UserData.ins.userId,
+  //           'prompt': prompt,
+  //           'model_name': modelName
+  //         }
+  //       ])
+  //     }, SetOptions(merge: true));
+  //   } catch (e) {
+  //     print('Error saving image URL to Firestore: $e');
+  //   }
+  // }
 
-  userCreationsForProfile(
-      String imageUrl, String prompt, String modelName) async {
-    try {
-      await firestore
-          .collection('usersProfileData')
-          .doc(UserData.ins.userId)
-          .set({
-        'userData': FieldValue.arrayUnion([
-          {
-            "creator_name": UserData.ins.userName,
-            "id": uuid,
-            "imageUrl": imageUrl,
-            'timestamp': DateTime.now(),
-            'userid': UserData.ins.userId,
-            'prompt': prompt,
-            'model_name': modelName
-          }
-        ])
-      }, SetOptions(merge: true));
-      clearVarData();
-    } catch (e) {
-      print('Error saving image URL to Firestore: $e');
-    }
-  }
+  // userCreationsForProfile(
+  //     String imageUrl, String prompt, String modelName) async {
+  //   try {
+  //     await firestore
+  //         .collection('usersProfileData')
+  //         .doc(UserData.ins.userId)
+  //         .set({
+  //       'userData': FieldValue.arrayUnion([
+  //         {
+  //           "creator_name": UserData.ins.userName,
+  //           "id": uuid,
+  //           "imageUrl": imageUrl,
+  //           'timestamp': DateTime.now(),
+  //           'userid': UserData.ins.userId,
+  //           'prompt': prompt,
+  //           'model_name': modelName
+  //         }
+  //       ])
+  //     }, SetOptions(merge: true));
+  //     clearVarData();
+  //   } catch (e) {
+  //     print('Error saving image URL to Firestore: $e');
+  //   }
+  // }
 
-  Future<String?> uploadGeneratedImageToFirebase(String base64Image) async {
-    try {
-      print("Starting image upload to Firebase Storage...");
+  // Future<String?> uploadGeneratedImageToFirebase(String base64Image) async {
+  //   try {
+  //     print("Starting image upload to Firebase Storage...");
 
-      // Default MIME type and file extension
-      String mimeType = 'image/png';
-      String fileExtension = 'png';
+  //     // Default MIME type and file extension
+  //     String mimeType = 'image/png';
+  //     String fileExtension = 'png';
 
-      // Remove data URI prefix if present and extract MIME type
-      if (base64Image.contains(',')) {
-        final RegExp dataUriRegex = RegExp(r'data:(.*?);base64,(.*)');
-        final Match? match = dataUriRegex.firstMatch(base64Image);
+  //     // Remove data URI prefix if present and extract MIME type
+  //     if (base64Image.contains(',')) {
+  //       final RegExp dataUriRegex = RegExp(r'data:(.*?);base64,(.*)');
+  //       final Match? match = dataUriRegex.firstMatch(base64Image);
 
-        if (match != null) {
-          mimeType = match.group(1) ?? 'image/png';
-          base64Image = match.group(2) ?? '';
+  //       if (match != null) {
+  //         mimeType = match.group(1) ?? 'image/png';
+  //         base64Image = match.group(2) ?? '';
 
-          // Determine the file extension from MIME type
-          if (mimeType.contains('/')) {
-            fileExtension = mimeType.split('/').last;
-          }
-        } else {
-          // Remove any prefix before the comma
-          base64Image = base64Image.substring(base64Image.indexOf(',') + 1);
-        }
-      }
+  //         // Determine the file extension from MIME type
+  //         if (mimeType.contains('/')) {
+  //           fileExtension = mimeType.split('/').last;
+  //         }
+  //       } else {
+  //         // Remove any prefix before the comma
+  //         base64Image = base64Image.substring(base64Image.indexOf(',') + 1);
+  //       }
+  //     }
 
-      // Decode the Base64 string into bytes
-      Uint8List imageBytes = base64Decode(base64Image);
+  //     // Decode the Base64 string into bytes
+  //     Uint8List imageBytes = base64Decode(base64Image);
 
-      // Create a reference to Firebase Storage
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference ref = _storage.ref().child('images/$fileName.$fileExtension');
+  //     // Create a reference to Firebase Storage
+  //     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  //     Reference ref = _storage.ref().child('images/$fileName.$fileExtension');
 
-      // Upload the image data
-      UploadTask uploadTask = ref.putData(
-        imageBytes,
-        SettableMetadata(contentType: mimeType),
-      );
+  //     // Upload the image data
+  //     UploadTask uploadTask = ref.putData(
+  //       imageBytes,
+  //       SettableMetadata(contentType: mimeType),
+  //     );
 
-      // Wait for the upload to complete
-      TaskSnapshot snapshot = await uploadTask;
+  //     // Wait for the upload to complete
+  //     TaskSnapshot snapshot = await uploadTask;
 
-      // Get the download URL
-      String downloadURL = await snapshot.ref.getDownloadURL();
-      print("Image uploaded successfully. Download URL: $downloadURL");
+  //     // Get the download URL
+  //     String downloadURL = await snapshot.ref.getDownloadURL();
+  //     print("Image uploaded successfully. Download URL: $downloadURL");
 
-      return downloadURL;
-    } catch (e, stackTrace) {
-      print('Failed to upload image: $e');
-      print('Stack trace: $stackTrace');
-      return null;
-    }
-  }
+  //     return downloadURL;
+  //   } catch (e, stackTrace) {
+  //     print('Failed to upload image: $e');
+  //     print('Stack trace: $stackTrace');
+  //     return null;
+  //   }
+  // }
 
 // Helper function to check if a string is a valid URL
   bool isValidUrl(String url) {
@@ -316,6 +308,4 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     _containsSexualWords = found;
     notifyListeners();
   }
-
-
 }

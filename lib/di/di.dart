@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import '../domain/api_services/api_services.dart';
 import '../shared/constants/app_constants.dart';
@@ -32,10 +30,6 @@ class DI {
     getIt.registerLazySingleton<ApiServices>(
         () => ApiServices(baseUrl: AppConstants.freePikImageUrl),
         instanceName: AppConstants.freePikImageUrl);
-    getIt.registerLazySingleton<FirebaseFirestore>(
-        () => FirebaseFirestore.instance);
-    getIt
-        .registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
     // getIt.registerLazySingleton<HomeRepo>(() => HomeRepoImp());
     await getIt.allReady();
   }

@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:photoroomapp/domain/base_repo/base_repo.dart';
 import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:photoroomapp/presentation/views/home_section/home_screen/home_screen.dart';
 import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:photoroomapp/providers/user_profile_provider.dart';
 import 'package:photoroomapp/shared/app_persistance/app_local.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
-import '../presentation/views/onboarding_section/onboarding_screen.dart';
 import '../shared/app_snack_bar.dart';
 import '../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../shared/constants/app_colors.dart';
 import '../shared/general_methods.dart';
 import '../shared/navigation/navigation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 
@@ -106,13 +104,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
         appSnackBar("Success", "Sign up successful", AppColors.green);
         print(userNameController.text);
-        await firestore
-            .collection('users')
-            .doc(user.userCredential!.user!.uid)
-            .set({
-          'username': _userNameController.text,
-          'email': _emailController.text,
-        });
         print("sssssssssssssssssssss");
         print(userNameController.text);
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);

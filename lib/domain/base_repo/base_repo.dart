@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get_it/get_it.dart';
+
 import 'package:photoroomapp/domain/api_repos_abstract/auth_repo.dart';
 import 'package:photoroomapp/domain/api_repos_abstract/favourite_repo.dart';
 import 'package:photoroomapp/domain/api_repos_abstract/image_actions_repo.dart';
@@ -50,5 +49,5 @@ mixin BaseRepo {
   FreepikAiGenRepo get freePikRepo => _freePikRepo;
   final UserProfileRepo _userFollowingRepo = UserProfileRepoImpl();
   UserProfileRepo get userFollowingRepo => _userFollowingRepo;
-  final FirebaseFirestore firestore = GetIt.instance.get<FirebaseFirestore>();
+  
 }

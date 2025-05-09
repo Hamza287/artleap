@@ -1,9 +1,6 @@
 import 'dart:isolate';
 import 'dart:typed_data';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:photoroomapp/domain/api_repos_abstract/favourite_repo.dart';
 import 'package:http/http.dart' as http;
 import '../../shared/console.dart';
