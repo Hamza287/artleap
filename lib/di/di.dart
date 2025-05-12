@@ -30,7 +30,6 @@ class DI {
     getIt.registerLazySingleton<ApiServices>(
         () => ApiServices(baseUrl: AppConstants.freePikImageUrl),
         instanceName: AppConstants.freePikImageUrl);
-    // getIt.registerLazySingleton<HomeRepo>(() => HomeRepoImp());
     await getIt.allReady();
   }
 }

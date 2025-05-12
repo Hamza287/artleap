@@ -148,6 +148,7 @@ class _TrendingCreationsWidgetState
                               image: image.imageUrl,
                               prompt: image.prompt,
                               modelName: image.modelName,
+                              createdDate: image.createdAt,
                               index: index,
                               creatorEmail: image.userEmail,
                             ),
