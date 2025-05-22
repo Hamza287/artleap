@@ -96,18 +96,20 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   }
 
   Future<void> deductUserCredits() async {
+    print("00000000000000000000");
     Map<String, dynamic> mapdata = {
       "userId": UserData.ins.userId,
-      "creditsToDeduct": "5"
+      "creditsToDeduct": 25
     };
-    // var data = jsonEncode(mapdata);
-    // print(data);
-    ApiResponse generateImageRes =
-        await userFollowingRepo.deductCredits(mapdata);
-    if (generateImageRes.status == Status.completed) {
-      print("ddddddddddddddddd");
+    print(mapdata);
+    ApiResponse response = await userFollowingRepo.deductCredits(mapdata);
+    if (response.status == Status.completed) {
+      getUserProfileData(UserData.ins.userId ?? "");
+      print(response.data);
+      print(response.message);
+      print("11111111111111111111svvvvssssssssssss11");
     } else {
-      print(generateImageRes.status);
+      print(response.status);
     }
     notifyListeners();
   }

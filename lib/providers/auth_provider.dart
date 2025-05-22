@@ -14,7 +14,6 @@ import '../shared/constants/app_colors.dart';
 import '../shared/general_methods.dart';
 import '../shared/navigation/navigation.dart';
 
-
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 
 enum LoginMethod { email, signup, google, facebook, apple, forgotPassword }
@@ -221,6 +220,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     };
     print(body);
     ApiResponse userRes = await authRepo.login(body: body);
+    print(userRes.data);
     if (userRes.status == Status.completed) {
       reference
           .read(userProfileProvider)
@@ -233,7 +233,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     print(userRes.data);
     print(userRes.message);
     print(userRes.status);
-
     print("lllllllllllllllllll");
   }
 
@@ -250,7 +249,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     print(userRes.data);
     print(userRes.message);
     print(userRes.status);
-
     print("lllllllllllllllllll");
   }
 
@@ -273,9 +271,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       print(userRes.data);
       print(userRes.data["user"]['userId']);
       print(userRes.data["user"]['username']);
+      print(userRes.data["user"]['email']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
       AppLocal.ins
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
+      AppLocal.ins
+          .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
       AppLocal.ins.setUserData(
           Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
     }

@@ -51,5 +51,5 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size(double.infinity, 90);
+  Size get preferredSize => const Size(double.infinity, 100);
 }

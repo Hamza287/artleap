@@ -60,8 +60,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final Ref reference;
 
   GenerateImageProvider(this.reference) {
-    if (textToImageStyles.isNotEmpty) {
-      _selectedStyle = textToImageStyles[0]['title'];
+    if (freePikStyles.isNotEmpty) {
+      _selectedStyle = freePikStyles[0]['title'];
     }
   }
   set selectedImageNumber(int? value) {
@@ -105,11 +105,13 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       "creatorEmail": UserData.ins.userEmail,
       "presetStyle": selectedStyle,
       "num_images": selectedImageNumber,
-      "width": 1024,
-      "height": 1024
+      "aspectRatio": "widescreen_16_9",
+      // "width": 1024,
+      // "height": 1024
     };
     // var data = jsonEncode(mapdata);
-    // print(data);
+    print(mapdata);
+    print("Sending request to API...01010101001010101010101010101010");
     ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
     if (generateImageRes.status == Status.completed) {
       var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
