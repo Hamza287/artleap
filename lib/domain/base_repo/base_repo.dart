@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:Artleap.ai/domain/api_repos_abstract/auth_repo.dart';
@@ -20,6 +21,29 @@ import 'package:Artleap.ai/domain/api_repos_impl/img2img_repo_impl.dart';
 import 'package:Artleap.ai/domain/api_repos_impl/load_models_list_impl.dart';
 import 'package:Artleap.ai/domain/api_repos_impl/reqres_repo_impl.dart';
 import 'package:Artleap.ai/domain/api_repos_impl/user_profile_repo_impl.dart';
+=======
+
+import 'package:photoroomapp/domain/api_repos_abstract/auth_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/favourite_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/image_actions_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/text_to_image_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/generate_image_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/home_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/img2img_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/load_models_list_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/reqres_repo.dart';
+import 'package:photoroomapp/domain/api_repos_abstract/user_profile_repo.dart';
+import 'package:photoroomapp/domain/api_repos_impl/auth_repo_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/favourite_repo_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/image_actions_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/text_to_image_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/generate_image_repo_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/home_repo_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/img2img_repo_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/load_models_list_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/reqres_repo_impl.dart';
+import 'package:photoroomapp/domain/api_repos_impl/user_profile_repo_impl.dart';
+>>>>>>> 5917cf2312788802f909d285445903588a50494e
 import '../api_repos_abstract/add_to_fav_repo.dart';
 import '../api_repos_impl/add_to_fav_impl.dart';
 
@@ -50,5 +74,5 @@ mixin BaseRepo {
   FreepikAiGenRepo get freePikRepo => _freePikRepo;
   final UserProfileRepo _userFollowingRepo = UserProfileRepoImpl();
   UserProfileRepo get userFollowingRepo => _userFollowingRepo;
-  final FirebaseFirestore firestore = GetIt.instance.get<FirebaseFirestore>();
+  
 }

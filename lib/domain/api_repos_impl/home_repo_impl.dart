@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:dio/dio.dart';
 import 'package:Artleap.ai/domain/api_repos_abstract/home_repo.dart';
 

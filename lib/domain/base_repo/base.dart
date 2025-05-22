@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 
 import '../../shared/constants/app_constants.dart';
 import '../../di/di.dart';
@@ -35,11 +34,6 @@ class Base {
   final ApiServices _postTextToImage =
       getIt.get<ApiServices>(instanceName: AppConstants.artleapBaseUrl);
   ApiServices get postTextToImage => _postTextToImage;
-  final FirebaseFirestore _firestore = getIt.get<FirebaseFirestore>();
-  FirebaseFirestore get firestore => _firestore;
-
-  final FirebaseStorage _storage = getIt.get<FirebaseStorage>();
-  FirebaseStorage get storage => _storage;
 
   // final ApiServices _apiServices = ApiServices(baseUrl: AppConstants.baseUrl);
   // ApiServices get apiServices => _apiServices;

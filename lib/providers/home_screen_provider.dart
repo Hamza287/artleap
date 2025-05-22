@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -309,76 +307,76 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   //   notifyListeners();
   // }
 
-  Future<void> deleteImageIfPresent({
-    required String userId,
-    required String imageUrl, // The image URL to identify which image to delete
-  }) async {
-    setDeletionLoading(true);
+  // Future<void> deleteImageIfPresent({
+  //   required String userId,
+  //   required String imageUrl, // The image URL to identify which image to delete
+  // }) async {
+  //   setDeletionLoading(true);
 
-    // Define the data field and image URL key for each collection
-    List<Map<String, dynamic>> collections = [
-      {
-        'collectionName': 'CommunityCreations',
-        'documentId': 'usersCreations',
-        'dataField': 'userData',
-        'imageUrlKey': 'imageUrl',
-      },
-      {
-        'collectionName': 'usersProfileData',
-        'documentId': userId,
-        'dataField': 'userData',
-        'imageUrlKey': 'imageUrl',
-      },
-      {
-        'collectionName': 'userFavourites',
-        'documentId': userId,
-        'dataField': 'favourites', // Updated field name
-        'imageUrlKey': 'imageUrl', // Adjust if the key is different
-      },
-    ];
+  //   // Define the data field and image URL key for each collection
+  //   List<Map<String, dynamic>> collections = [
+  //     {
+  //       'collectionName': 'CommunityCreations',
+  //       'documentId': 'usersCreations',
+  //       'dataField': 'userData',
+  //       'imageUrlKey': 'imageUrl',
+  //     },
+  //     {
+  //       'collectionName': 'usersProfileData',
+  //       'documentId': userId,
+  //       'dataField': 'userData',
+  //       'imageUrlKey': 'imageUrl',
+  //     },
+  //     {
+  //       'collectionName': 'userFavourites',
+  //       'documentId': userId,
+  //       'dataField': 'favourites', // Updated field name
+  //       'imageUrlKey': 'imageUrl', // Adjust if the key is different
+  //     },
+  //   ];
 
-    // Run deletion checks concurrently across collections
-    List<Future<void>> deleteOperations = collections.map((collection) async {
-      final String collectionName = collection['collectionName'];
-      final String documentId = collection['documentId'];
-      final String dataField = collection['dataField'];
-      final String imageUrlKey = collection['imageUrlKey'];
+  //   // Run deletion checks concurrently across collections
+  //   List<Future<void>> deleteOperations = collections.map((collection) async {
+  //     final String collectionName = collection['collectionName'];
+  //     final String documentId = collection['documentId'];
+  //     final String dataField = collection['dataField'];
+  //     final String imageUrlKey = collection['imageUrlKey'];
 
-      try {
-        DocumentReference<Map<String, dynamic>> documentRef =
-            firestore.collection(collectionName).doc(documentId);
+  //     try {
+  //       DocumentReference<Map<String, dynamic>> documentRef =
+  //           firestore.collection(collectionName).doc(documentId);
 
-        DocumentSnapshot<Map<String, dynamic>> snapshot =
-            await documentRef.get();
+  //       DocumentSnapshot<Map<String, dynamic>> snapshot =
+  //           await documentRef.get();
 
-        if (snapshot.exists && snapshot.data() != null) {
-          List<dynamic> userData = List.from(snapshot.data()?[dataField] ?? []);
+  //       if (snapshot.exists && snapshot.data() != null) {
+  //         List<dynamic> userData = List.from(snapshot.data()?[dataField] ?? []);
 
-          // Find the index of the image by checking its 'imageUrl'
-          int indexToDelete =
-              userData.indexWhere((item) => item[imageUrlKey] == imageUrl);
+  //         // Find the index of the image by checking its 'imageUrl'
+  //         int indexToDelete =
+  //             userData.indexWhere((item) => item[imageUrlKey] == imageUrl);
 
-          if (indexToDelete != -1) {
-            // Remove the item if it's found
-            userData.removeAt(indexToDelete);
-            // Update the document with the modified array
-            await documentRef.update({dataField: userData});
-            print('Image deleted from $collectionName.');
-          } else {
-            print('Image not found in $collectionName.');
-          }
-        } else {
-          print('$collectionName document does not exist or has no data.');
-        }
-      } catch (e, stackTrace) {
-        setDeletionLoading(false);
-        print('Error in $collectionName: $e');
-        print('StackTrace: $stackTrace');
-      }
-    }).toList();
-    await Future.wait(deleteOperations);
-    print("Deletion completed where image was found.");
-    setDeletionLoading(false);
-    Navigation.pop();
-  }
+  //         if (indexToDelete != -1) {
+  //           // Remove the item if it's found
+  //           userData.removeAt(indexToDelete);
+  //           // Update the document with the modified array
+  //           await documentRef.update({dataField: userData});
+  //           print('Image deleted from $collectionName.');
+  //         } else {
+  //           print('Image not found in $collectionName.');
+  //         }
+  //       } else {
+  //         print('$collectionName document does not exist or has no data.');
+  //       }
+  //     } catch (e, stackTrace) {
+  //       setDeletionLoading(false);
+  //       print('Error in $collectionName: $e');
+  //       print('StackTrace: $stackTrace');
+  //     }
+  //   }).toList();
+  //   await Future.wait(deleteOperations);
+  //   print("Deletion completed where image was found.");
+  //   setDeletionLoading(false);
+  //   Navigation.pop();
+  // }
 }
