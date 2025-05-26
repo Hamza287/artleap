@@ -14,6 +14,8 @@ class SeePictureParams {
   final String? prompt;
   final String? modelName;
   final String? creatorEmail;
+  final String? createdDate;
+
   final Uint8List? uint8ListImage;
   // final String? othersUserId;
   // bool isHomeScreenNavigation = false;
@@ -28,6 +30,7 @@ class SeePictureParams {
       this.image,
       this.prompt,
       this.modelName,
+      this.createdDate,
       this.uint8ListImage,
       // this.othersUserId,
       // required this.isHomeScreenNavigation,

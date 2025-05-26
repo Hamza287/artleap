@@ -38,7 +38,6 @@ class MyCreationsWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -53,11 +52,9 @@ class MyCreationsWidget extends StatelessWidget {
                         style: AppTextstyle.interMedium(
                             color: AppColors.white, fontSize: 14),
                       ),
-                // Your dropdown widget here (if needed)
               ],
             ),
             const SizedBox(height: 20),
-            // Display "No data yet" or the creations
             listofCreations.isEmpty
                 ? Center(
                     child: Text(

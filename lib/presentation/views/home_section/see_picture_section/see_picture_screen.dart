@@ -178,7 +178,9 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                   prompt: widget.params!.prompt,
                 ),
                 20.spaceY,
-                const PictureInfoWidget(),
+                PictureInfoWidget(
+                  styleName: widget.params!.modelName,
+                ),
                 20.spaceY,
               ],
             ),

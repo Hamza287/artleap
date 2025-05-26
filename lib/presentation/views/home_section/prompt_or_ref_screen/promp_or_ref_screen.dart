@@ -48,7 +48,7 @@ class _PromptOrReferenceScreenState
         widget: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: SingleChildScrollView(
-            child: Column(
+            child: Column( 
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 10.spaceY,

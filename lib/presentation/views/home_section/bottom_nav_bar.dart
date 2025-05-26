@@ -26,8 +26,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // NativeAdWidget.instance.loadNativeAd();
-    // InterstitialAdManager.instance.loadInterstitialAd();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(userProfileProvider)

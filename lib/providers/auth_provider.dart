@@ -1,20 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-<<<<<<< HEAD
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
-=======
-import 'package:photoroomapp/domain/base_repo/base_repo.dart';
-import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
->>>>>>> 5917cf2312788802f909d285445903588a50494e
 import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
 import '../shared/app_snack_bar.dart';
@@ -22,7 +14,6 @@ import '../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../shared/constants/app_colors.dart';
 import '../shared/general_methods.dart';
 import '../shared/navigation/navigation.dart';
-
 
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 
@@ -230,6 +221,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     };
     print(body);
     ApiResponse userRes = await authRepo.login(body: body);
+    print(userRes.data);
     if (userRes.status == Status.completed) {
       reference
           .read(userProfileProvider)
@@ -242,7 +234,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     print(userRes.data);
     print(userRes.message);
     print(userRes.status);
-
     print("lllllllllllllllllll");
   }
 
@@ -259,7 +250,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     print(userRes.data);
     print(userRes.message);
     print(userRes.status);
-
     print("lllllllllllllllllll");
   }
 
@@ -282,9 +272,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       print(userRes.data);
       print(userRes.data["user"]['userId']);
       print(userRes.data["user"]['username']);
+      print(userRes.data["user"]['email']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
       AppLocal.ins
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
+      AppLocal.ins
+          .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
       AppLocal.ins.setUserData(
           Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
     }

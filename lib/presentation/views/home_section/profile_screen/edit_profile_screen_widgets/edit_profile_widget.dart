@@ -25,6 +25,16 @@ class EditProfileWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           40.spaceY,
+          GestureDetector(
+            onTap: () {
+              Navigation.pop();
+            },
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: AppColors.white,
+            ),
+          ),
+          40.spaceY,
           Row(
             children: [
               Container(
@@ -43,10 +53,10 @@ class EditProfileWidget extends ConsumerWidget {
                         fit: BoxFit.cover)),
               ),
               20.spaceX,
-              Column(
+              Column(  
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  Text( 
                     params!.userName ?? "user name",
                     style: AppTextstyle.interMedium(
                         color: AppColors.white, fontSize: 14),
@@ -93,7 +103,7 @@ class EditProfileWidget extends ConsumerWidget {
             ),
           ),
           100.spaceY,
-          NativeAdWidget()
+          // NativeAdWidget()
         ],
       ),
     );

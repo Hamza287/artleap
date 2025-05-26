@@ -118,7 +118,7 @@ class Images {
     creatorEmail = json['creatorEmail'];
     imageUrl = json['imageUrl'];
     createdAt = json['createdAt'];
-    modelName = json['modelName'];
+    modelName = json['modelName'] ?? "";
     prompt = json['prompt'];
     V = json['__v'];
   }

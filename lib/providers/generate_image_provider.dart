@@ -2,19 +2,12 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-<<<<<<< HEAD
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:Artleap.ai/domain/api_models/generate_high_q_model.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
-=======
-import 'package:photoroomapp/domain/api_models/generate_high_q_model.dart';
-import 'package:photoroomapp/domain/api_services/api_response.dart';
-import 'package:photoroomapp/domain/base_repo/base_repo.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
->>>>>>> 5917cf2312788802f909d285445903588a50494e
 import 'package:uuid/uuid.dart';
 import '../domain/api_models/models_list_model.dart';
 import '../shared/constants/app_static_data.dart';
@@ -69,8 +62,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final Ref reference;
 
   GenerateImageProvider(this.reference) {
-    if (textToImageStyles.isNotEmpty) {
-      _selectedStyle = textToImageStyles[0]['title'];
+    if (freePikStyles.isNotEmpty) {
+      _selectedStyle = freePikStyles[0]['title'];
     }
   }
   set selectedImageNumber(int? value) {
@@ -114,11 +107,13 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       "creatorEmail": UserData.ins.userEmail,
       "presetStyle": selectedStyle,
       "num_images": selectedImageNumber,
-      "width": 1024,
-      "height": 1024
+      "aspectRatio": "widescreen_16_9",
+      // "width": 1024,
+      // "height": 1024
     };
     // var data = jsonEncode(mapdata);
-    // print(data);
+    print(mapdata);
+    print("Sending request to API...01010101001010101010101010101010");
     ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
     if (generateImageRes.status == Status.completed) {
       var generatedData = generateImageRes.data as txtToImg.TextToImageModel;

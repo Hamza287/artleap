@@ -4,7 +4,8 @@ import 'package:Artleap.ai/shared/shared.dart';
 
 class PictureInfoWidget extends ConsumerWidget {
   final String? styleName;
-  const PictureInfoWidget({super.key, this.styleName});
+  final String? createdAt;
+  const PictureInfoWidget({super.key, this.styleName, this.createdAt});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,46 +21,17 @@ class PictureInfoWidget extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // Container(
-              //   height: 30,
-              //   width: 30,
-              //   decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(5),
-              //       color: AppColors.lightIndigo),
-              // ),
-              // 10.spaceX,
-              Text(
-                styleName ?? "Style name",
-                style: AppTextstyle.interRegular(
-                    fontSize: 14, color: AppColors.white),
+              InfoText(
+                title: "Art Style",
+                info: styleName,
               ),
               20.spaceX,
               InfoText(
                 title: "Created on",
-                info: "21 Aug 2024",
+                info: createdAt ?? "Unknown",
               ),
-              // Image.asset(
-              //   AppAssets.galleryicon,
-              //   scale: 3.5,
-              // ),
-              // 10.spaceX,
-              // Text(
-              //   "Image reference",
-              //   style: AppTextstyle.interRegular(
-              //       fontSize: 14, color: AppColors.white),
-              // ),
             ],
           ),
-          // 10.spaceY,
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //   children: [
-          //     // InfoText(
-          //     //   title: "Input Resolution",
-          //     //   info: "512 × 984px",
-          //     // ),
-          //   ],
-          // ),
         ],
       ),
     );

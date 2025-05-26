@@ -147,7 +147,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
               onChanged: (String? newValue) {
                 ref.watch(generateImageProvider).selectedStyle = newValue;
               },
-              items: textToImageStyles
+              items: freePikStyles
                   .map<DropdownMenuItem<String>>((Map<String, String> styles) {
                 return DropdownMenuItem<String>(
                   value: styles['title'],

@@ -13,18 +13,18 @@ class BannerAdWidget extends ConsumerStatefulWidget {
 }
 
 class _BannerAdWidgetState extends ConsumerState<BannerAdWidget> {
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    ref.read(adsProvider).bannerAd!.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   ref.read(adsProvider).bannerAd!.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     final ads = ref.watch(adsProvider);
-
-    if (!ads.isBannerAdLoaded || ads.bannerAd == null) {
+    final bannerAd = ads.bannerAd;
+    if (bannerAd == null || !ads.isBannerAdLoaded) {
       return Align(
         alignment: Alignment.topRight,
         child: Image.asset(
@@ -32,13 +32,13 @@ class _BannerAdWidgetState extends ConsumerState<BannerAdWidget> {
           height: 20,
           width: 20,
         ),
-      ); // fallback or loader
+      );
     }
     return Container(
       alignment: Alignment.center,
-      width: ref.watch(adsProvider).bannerAd!.size.width.toDouble(),
-      height: 40,
-      child: AdWidget(ad: ref.watch(adsProvider).bannerAd!),
+      width: bannerAd.size.width.toDouble(),
+      height: bannerAd.size.height.toDouble(), // use dynamic height
+      child: AdWidget(ad: bannerAd),
     );
   }
 }

@@ -63,7 +63,7 @@ class Images {
     username = json['username'];
     imageUrl = json['imageUrl'];
     createdAt = json['createdAt'];
-    modelName = json['modelName'];
+    modelName = json['modelName'] ?? "";
     userEmail = json["creatorEmail"] ?? "";
     prompt = json['prompt'];
     V = json['__v'];
