@@ -46,11 +46,11 @@ class Images {
   late final String createdAt;
 
   Images.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
+    id = json['_id'] ?? "";
     imageUrl = json['imageUrl'];
     creatorEmail = json['creatorEmail'];
     username = json['username'];
-    presetStyle = json['presetStyle'];
+    presetStyle = json['presetStyle'] ?? "";
     prompt = json['prompt'];
     createdAt = json['createdAt'];
   }
