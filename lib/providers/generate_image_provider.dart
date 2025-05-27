@@ -52,6 +52,14 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   bool _containsSexualWords = false;
   bool get containsSexualWords => _containsSexualWords;
 
+  String? _aspectRatio = "social_story_9_16";
+  String? get aspectRatio => _aspectRatio;
+
+  set aspectRatio(String? value) {
+    _aspectRatio = value;
+    notifyListeners();
+  }
+
   set selectedStyle(String? value) {
     _selectedStyle = value;
     notifyListeners();
@@ -99,13 +107,13 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   generateTextToImage() async {
     setGenerateImageLoader(true);
     Map<String, dynamic> mapdata = {
-      "prompt": promptTextController.text,
+      "prompt": _promptTextController.text,
       "userId": UserData.ins.userId,
       "username": UserData.ins.userName,
       "creatorEmail": UserData.ins.userEmail,
-      "presetStyle": selectedStyle,
-      "num_images": selectedImageNumber,
-      "aspectRatio": "widescreen_16_9",
+      "presetStyle": _selectedStyle,
+      "num_images": _selectedItem,
+      "aspectRatio": _aspectRatio,
       // "width": 1024,
       // "height": 1024
     };
@@ -129,30 +137,23 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> pickImage() async {
     String? imagePath = await Pickers.ins.pickImage();
-    File imageData = File(imagePath!);
-    print(imageData);
-    print("ddddddddddd");
-    if (images.isNotEmpty) {
-      images = [];
-    }
-    images.add(imageData);
+
+    // 🛑 Exit if no image selected
+    if (imagePath == null) return;
+
+    File imageData = File(imagePath);
+
+    // 🔁 Clear previous images and add new one
+    images = [imageData];
+
+    // ✅ Set default style to ANIME for image-to-image
+    _selectedStyle = textToImageStyles.firstWhere(
+      (style) => style['title'] == 'ANIME',
+      orElse: () => textToImageStyles[0],
+    )['title'];
+
     notifyListeners();
   }
-
-  // Future<String?> uploadImageToFirebase(String filePath) async {
-  //   try {
-  //     String fileExtension = filePath.split('.').last;
-  //     Reference ref = _storage.ref().child(
-  //         "images/${DateTime.now().millisecondsSinceEpoch}.$fileExtension");
-  //     UploadTask uploadTask = ref.putFile(File(filePath));
-  //     await uploadTask;
-  //     String downloadURL = await ref.getDownloadURL();
-  //     return downloadURL;
-  //   } catch (e) {
-  //     print('Failed to upload image: $e');
-  //     return null;
-  //   }
-  // }
 
   Future<void> generateImgToImg() async {
     setGenerateImageLoader(true);
@@ -175,6 +176,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       _generatedImage.addAll(generatedData.images);
 
       setGenerateImageLoader(false);
+      selectedStyle = null;
+
       images = [];
     } else {
       print(generateImageRes.status);
@@ -185,115 +188,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  // uploadImageToCommunityCreations(
-  //   String imageUrl,
-  //   String prompt,
-  //   String modelName,
-  // ) async {
-  //   try {
-  //     await firestore
-  //         .collection('CommunityCreations')
-  //         .doc("usersCreations")
-  //         .set({
-  //       'userData': FieldValue.arrayUnion([
-  //         {
-  //           "id": uuid,
-  //           'creator_name': UserData.ins.userName,
-  //           'creator_email': UserData.ins.userEmail,
-  //           "imageUrl": imageUrl,
-  //           'timestamp': DateTime.now(),
-  //           'userid': UserData.ins.userId,
-  //           'prompt': prompt,
-  //           'model_name': modelName
-  //         }
-  //       ])
-  //     }, SetOptions(merge: true));
-  //   } catch (e) {
-  //     print('Error saving image URL to Firestore: $e');
-  //   }
-  // }
-
-  // userCreationsForProfile(
-  //     String imageUrl, String prompt, String modelName) async {
-  //   try {
-  //     await firestore
-  //         .collection('usersProfileData')
-  //         .doc(UserData.ins.userId)
-  //         .set({
-  //       'userData': FieldValue.arrayUnion([
-  //         {
-  //           "creator_name": UserData.ins.userName,
-  //           "id": uuid,
-  //           "imageUrl": imageUrl,
-  //           'timestamp': DateTime.now(),
-  //           'userid': UserData.ins.userId,
-  //           'prompt': prompt,
-  //           'model_name': modelName
-  //         }
-  //       ])
-  //     }, SetOptions(merge: true));
-  //     clearVarData();
-  //   } catch (e) {
-  //     print('Error saving image URL to Firestore: $e');
-  //   }
-  // }
-
-  // Future<String?> uploadGeneratedImageToFirebase(String base64Image) async {
-  //   try {
-  //     print("Starting image upload to Firebase Storage...");
-
-  //     // Default MIME type and file extension
-  //     String mimeType = 'image/png';
-  //     String fileExtension = 'png';
-
-  //     // Remove data URI prefix if present and extract MIME type
-  //     if (base64Image.contains(',')) {
-  //       final RegExp dataUriRegex = RegExp(r'data:(.*?);base64,(.*)');
-  //       final Match? match = dataUriRegex.firstMatch(base64Image);
-
-  //       if (match != null) {
-  //         mimeType = match.group(1) ?? 'image/png';
-  //         base64Image = match.group(2) ?? '';
-
-  //         // Determine the file extension from MIME type
-  //         if (mimeType.contains('/')) {
-  //           fileExtension = mimeType.split('/').last;
-  //         }
-  //       } else {
-  //         // Remove any prefix before the comma
-  //         base64Image = base64Image.substring(base64Image.indexOf(',') + 1);
-  //       }
-  //     }
-
-  //     // Decode the Base64 string into bytes
-  //     Uint8List imageBytes = base64Decode(base64Image);
-
-  //     // Create a reference to Firebase Storage
-  //     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-  //     Reference ref = _storage.ref().child('images/$fileName.$fileExtension');
-
-  //     // Upload the image data
-  //     UploadTask uploadTask = ref.putData(
-  //       imageBytes,
-  //       SettableMetadata(contentType: mimeType),
-  //     );
-
-  //     // Wait for the upload to complete
-  //     TaskSnapshot snapshot = await uploadTask;
-
-  //     // Get the download URL
-  //     String downloadURL = await snapshot.ref.getDownloadURL();
-  //     print("Image uploaded successfully. Download URL: $downloadURL");
-
-  //     return downloadURL;
-  //   } catch (e, stackTrace) {
-  //     print('Failed to upload image: $e');
-  //     print('Stack trace: $stackTrace');
-  //     return null;
-  //   }
-  // }
-
-// Helper function to check if a string is a valid URL
   bool isValidUrl(String url) {
     try {
       Uri uri = Uri.parse(url);

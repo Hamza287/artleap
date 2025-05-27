@@ -91,6 +91,16 @@ List<Map<String, String>> textToImageStyles = [
   // {"title": "UNPROCESSED", "icon": AppAssets.photo},
 ];
 
+List<Map<String, String>> freePikAspectRatio = [
+  {"title": "9:16", "icon": AppAssets.nine, "value": "social_story_9_16"},
+  {"title": "5:4", "icon": AppAssets.five, "value": "social_5_4"},
+  {"title": "4:3", "icon": AppAssets.four, "value": "classic_4_3"},
+  {"title": "3:2", "icon": AppAssets.three, "value": "standard_3_2"},
+  {"title": "1:1", "icon": AppAssets.one, "value": "square_1_1"},
+  {"title": "2:3", "icon": AppAssets.two, "value": "portrait_2_3"},
+  {"title": "16:9", "icon": AppAssets.sixteen, "value": "widescreen_16_9"},
+];
+
 List<Map<String, dynamic>> reportOptions = [
   {"id": "1", "title": "Inappropriate Content (e.g., nudity, violence)"},
   {"id": "2", "title": "Misleading or False Information"},

@@ -232,43 +232,43 @@ class PictureOptionsWidget extends ConsumerWidget {
               ),
             ),
           // if (isRecentGeneration == false)
-          if (otherUserId != UserData.ins.userId)
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) {
-                    return ReportImageBottomSheet(
-                      imageId: imageId,
-                      creatorId: otherUserId,
-                    );
-                  },
-                );
-              },
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.redColor)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppAssets.reporticon,
-                      scale: 2.7,
-                    ),
-                    2.spaceY,
-                    Text(
-                      "Report",
-                      style: AppTextstyle.interRegular(
-                          color: AppColors.redColor, fontSize: 6.5),
-                    )
-                  ],
-                ),
+          // if (otherUserId != UserData.ins.userId)
+          GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) {
+                  return ReportImageBottomSheet(
+                    imageId: imageId,
+                    creatorId: otherUserId,
+                  );
+                },
+              );
+            },
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.redColor)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    AppAssets.reporticon,
+                    scale: 2.7,
+                  ),
+                  2.spaceY,
+                  Text(
+                    "Report",
+                    style: AppTextstyle.interRegular(
+                        color: AppColors.redColor, fontSize: 6.5),
+                  )
+                ],
               ),
             ),
+          ),
         ],
       ),
     );

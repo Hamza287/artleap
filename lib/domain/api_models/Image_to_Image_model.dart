@@ -48,8 +48,8 @@ class Images {
   late final String createdAt;
 
   Images.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    userId = json['userId'];
+    id = json['_id'] ?? "";
+    userId = json['userId'] ?? "";
     imageUrl = json['imageUrl'];
     creatorEmail = json['creatorEmail'];
     username = json['username'];
