@@ -90,12 +90,12 @@ class _TrendingCreationsWidgetState
           : Container(
               decoration: BoxDecoration(
                 color: AppColors.darkIndigo,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 10,
+                  vertical: 5,
+                  horizontal: 5,
                 ),
                 child: GridView.builder(
                   shrinkWrap: true,
@@ -103,8 +103,8 @@ class _TrendingCreationsWidgetState
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverQuiltedGridDelegate(
                     crossAxisCount: 3,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 6,
+                    crossAxisSpacing: 5,
                     repeatPattern: QuiltedGridRepeatPattern.inverted,
                     pattern: [
                       const QuiltedGridTile(2, 2),
@@ -115,14 +115,11 @@ class _TrendingCreationsWidgetState
                   itemCount: filteredList.length + 1,
                   itemBuilder: (context, index) {
                     final adIndex = 10;
-
                     if (index == adIndex) {
                       return const NativeAdWidget();
                     }
-
                     final imageIndex = index > adIndex ? index - 1 : index;
                     final image = filteredList[imageIndex];
-
                     return VisibilityDetector(
                       key: Key('image-${image!.id}'),
                       onVisibilityChanged: (info) {
