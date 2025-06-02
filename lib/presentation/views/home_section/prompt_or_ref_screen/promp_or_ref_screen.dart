@@ -48,10 +48,10 @@ class _PromptOrReferenceScreenState
         widget: Padding(
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: SingleChildScrollView(
-            child: Column( 
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                10.spaceY,
+                // 10.spaceY,
                 const PromptWidget(),
                 10.spaceY,
                 DropDownsAndGalleryPickWidget(
@@ -61,7 +61,7 @@ class _PromptOrReferenceScreenState
                         buttonName: 'picking image from gallery button event');
                   },
                 ),
-                20.spaceY,
+                10.spaceY,
                 PromptScreenButton(
                   height: 45,
                   width: double.infinity,

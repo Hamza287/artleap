@@ -168,7 +168,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                                 .user
                                 .profilePic
                                 .isEmpty
-                            ? Container(
+                            ? Container( 
                                 height: 35,
                                 width: 35,
                                 decoration: const BoxDecoration(
@@ -180,7 +180,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                               )
                             : Container(
                                 height: 35,
-                                width: 35,
+                                width: 35, 
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage(ref

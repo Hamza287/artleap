@@ -165,8 +165,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                   imageUrl: widget.params!.image ?? "",
                   prompt: widget.params!.prompt,
                   modelName: widget.params!.modelName,
-
-                  // isRecentGeneration: widget.params!.isRecentGeneration,
                   uint8ListImage: widget.params!.uint8ListImage,
                   currentUserId: UserData.ins.userId,
                   index: widget.params!.index,
