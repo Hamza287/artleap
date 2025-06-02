@@ -85,59 +85,12 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                   ),
                 ),
                 20.spaceY,
-                // if (widget.params!.isHomeScreenNavigation == true) 20.spaceY,
-                // if (widget.params!.isHomeScreenNavigation == true &&
-                //     widget.params!.userId != UserData.ins.userId)
                 if (widget.params!.userId != UserData.ins.userId)
                   ProfileNameFollowWidget(
                     profileName: widget.params!.profileName,
                     userId: widget.params!.userId,
                   ),
                 20.spaceY,
-                // widget.params!.isHomeScreenNavigation
-                //     ? GestureDetector(
-                //         onTap: () {
-                //           Navigation.pushNamed(FullImageViewerScreen.routeName,
-                //               arguments: FullImageScreenParams(
-                //                 Image: widget.params!.image!,
-                //               ));
-                //         },
-                //         child: Container(
-                //           height: 350,
-                //           margin: const EdgeInsets.only(left: 15, right: 15),
-                //           child: ClipRRect(
-                //             borderRadius: BorderRadius.circular(5),
-                //             child: CachedNetworkImage(
-                //               imageUrl: widget.params!.image!,
-                //               fit: BoxFit.fill,
-                //             ),
-                //           ),
-                //         ),
-                //       )
-                //     :
-                //      widget.params!.uint8ListImage != null
-                //         ? GestureDetector(
-                //             onTap: () {
-                //               Navigation.pushNamed(
-                //                   FullImageViewerScreen.routeName,
-                //                   arguments: FullImageScreenParams(
-                //                     uint8list: widget.params!.uint8ListImage!,
-                //                   ));
-                //             },
-                //             child: Container(
-                //               height: 350,
-                //               margin:
-                //                   const EdgeInsets.only(left: 15, right: 15),
-                //               child: ClipRRect(
-                //                 borderRadius: BorderRadius.circular(5),
-                //                 child: Image.memory(
-                //                   widget.params!.uint8ListImage!,
-                //                   fit: BoxFit.fill,
-                //                 ),
-                //               ),
-                //             ),
-                //           )
-                //         :
                 GestureDetector(
                   onTap: () {
                     Navigation.pushNamed(FullImageViewerScreen.routeName,

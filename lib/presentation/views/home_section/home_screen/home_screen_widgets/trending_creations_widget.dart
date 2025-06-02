@@ -29,7 +29,7 @@ class _TrendingCreationsWidgetState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) { 
       if (ref.watch(homeScreenProvider).page == 0) {
         ref.read(homeScreenProvider).getUserCreations();
       }
@@ -37,7 +37,7 @@ class _TrendingCreationsWidgetState
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     final filteredList =
         ref.watch(homeScreenProvider).filteredCreations.isNotEmpty
             ? ref.watch(homeScreenProvider).filteredCreations
@@ -47,7 +47,7 @@ class _TrendingCreationsWidgetState
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ShaderMask(
+          ShaderMask( 
             shaderCallback: (bounds) => const LinearGradient(
               colors: [Color(0xffAD90FF), Color(0xffEA6BFF), Color(0xffFFA869)],
               begin: Alignment.topLeft,
@@ -155,6 +155,7 @@ class _TrendingCreationsWidgetState
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                           ),
+                          clipBehavior: Clip.hardEdge,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
                             child: ref
@@ -163,9 +164,11 @@ class _TrendingCreationsWidgetState
                                     .contains(image.imageUrl)
                                 ? CachedNetworkImage(
                                     imageUrl: image.imageUrl,
+                                    alignment: Alignment.center,
                                     fit: BoxFit.cover,
-                                    memCacheHeight: 400,
-                                    memCacheWidth: 400,
+
+                                    // memCacheHeight: 400,
+                                    // memCacheWidth: 400,
                                     fadeInDuration: Duration.zero,
                                     placeholder: (context, url) =>
                                         Shimmer.fromColors(

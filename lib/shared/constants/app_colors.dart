@@ -22,4 +22,5 @@ class AppColors {
   static const matepink = Color(0xffE649FF);
   static const seaBlue = Color(0xff3893FF);
   static const greyBlue = Color(0xff252452);
+  static const daisyBrush = Color(0xff4A2D97);
 }

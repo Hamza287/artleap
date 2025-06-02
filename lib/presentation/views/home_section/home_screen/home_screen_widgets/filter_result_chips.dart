@@ -23,7 +23,7 @@ class FilterResultChips extends ConsumerWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            GestureDetector(
+            GestureDetector( 
               onTap: () {
                 ref.read(homeScreenProvider).clearFilteredList();
                 Navigation.pop();
@@ -33,7 +33,12 @@ class FilterResultChips extends ConsumerWidget {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  border: Border.all(color: AppColors.pinkColor),
+                  border: Border.all(
+                    color:
+                        ref.watch(homeScreenProvider).selectedStyleTitle == null
+                            ? AppColors.pinkColor
+                            : AppColors.white,
+                  ),
                 ),
                 child: Text(
                   "All Styles",
@@ -48,6 +53,7 @@ class FilterResultChips extends ConsumerWidget {
               return GestureDetector(
                 onTap: () {
                   ref.read(homeScreenProvider).filteredListFtn(e["title"]!);
+                  print(ref.watch(homeScreenProvider).filteredCreations);
                   Navigation.pop();
                 },
                 child: Container(
@@ -55,7 +61,12 @@ class FilterResultChips extends ConsumerWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    border: Border.all(color: AppColors.white),
+                    border: Border.all(
+                      color: ref.watch(homeScreenProvider).selectedStyleTitle ==
+                              e["title"]
+                          ? AppColors.pinkColor
+                          : AppColors.white,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

@@ -67,7 +67,7 @@ class ResultForPromptWidget extends ConsumerWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: AppColors.blue),
+                  color: AppColors.darkIndigo),
               child: Padding(
                   padding: const EdgeInsets.only(
                       top: 10, right: 10, left: 10, bottom: 10),
@@ -128,7 +128,7 @@ class ResultForPromptWidget extends ConsumerWidget {
                             width: double.infinity,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: AppColors.blue),
+                                color: AppColors.darkIndigo),
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 10, right: 10, left: 10, bottom: 10),

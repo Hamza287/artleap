@@ -51,8 +51,13 @@ class _OtherUserProfileScreenState
                   Row(
                     children: [
                       20.spaceX,
-                      const Icon(Icons.arrow_back_ios_new_outlined,
-                          color: AppColors.white, size: 20),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_new_outlined,
+                            color: AppColors.white, size: 20),
+                      ),
                     ],
                   ),
                   20.spaceY,

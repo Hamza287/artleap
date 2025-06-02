@@ -15,7 +15,7 @@ class SignupTextfieldSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        Text( 
           "Sign Up",
           style: AppTextstyle.interBold(color: AppColors.black, fontSize: 32),
         ),
@@ -33,11 +33,13 @@ class SignupTextfieldSection extends ConsumerWidget {
         AppCommonTextfield(
           hintText: "Password",
           controller: ref.watch(authprovider).passwordController,
+          obsecureTextType: ObsecureText.signupPassword,
         ),
         20.spaceY,
         AppCommonTextfield(
           hintText: "Confirm Password",
           controller: ref.watch(authprovider).confirmPasswordController,
+          obsecureTextType: ObsecureText.confirmPassword,
         )
       ],
     );

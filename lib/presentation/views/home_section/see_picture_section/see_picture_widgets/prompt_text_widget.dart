@@ -49,7 +49,7 @@ class PromptTextWidget extends ConsumerWidget {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
             decoration: BoxDecoration(
-                color: AppColors.blueColor.withOpacity(0.5),
+                color: AppColors.darkIndigo,
                 borderRadius: BorderRadius.circular(10)),
             child: Container(
               height: 250,
