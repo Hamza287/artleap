@@ -16,4 +16,6 @@ abstract class UserProfileRepo extends Base {
 
   Future<ApiResponse> deductCredits(Map<String, dynamic> data,
       {bool enableLocalPersistence = false});
+  Future<ApiResponse> deleteAccount(String uid,
+      {bool enableLocalPersistence = false});
 }

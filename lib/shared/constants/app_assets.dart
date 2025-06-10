@@ -71,7 +71,7 @@ class AppAssets {
   static const applelogin = "${iconsdir}applelogin.png";
   static const gobackicon = "${iconsdir}gobackicon.png";
   static const notificationicon = "${iconsdir}notificationicon.png";
-  static const selecticon = "${iconsdir}selecticon.png"; 
+  static const selecticon = "${iconsdir}selecticon.png";
   static const cross = "${iconsdir}cross.png";
   static const trendingicon = "${iconsdir}trendingicon.png";
   static const starticon = "${iconsdir}staricon.png";
@@ -100,6 +100,8 @@ class AppAssets {
   static const one = "${iconsdir}one.png";
   static const two = "${iconsdir}two.png";
   static const sixteen = "${iconsdir}sixteen.png";
+  static const deleteicon = "${iconsdir}deleteicon.png";
+  static const privacypolicyicon = "${iconsdir}privacypolicyicon.png";
 
   //json
   static const splashanimation = "${jsondir}splashanimation.json";

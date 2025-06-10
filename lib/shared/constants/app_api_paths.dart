@@ -16,4 +16,5 @@ class AppApiPaths {
   static const String deductCredits = "user/deductCredits";
   static const String deleteImage = "delete/";
   static const String reportImage = "images/";
+  static const String deleteAccount = "delete/";
 }

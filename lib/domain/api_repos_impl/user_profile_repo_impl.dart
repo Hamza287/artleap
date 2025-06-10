@@ -145,4 +145,30 @@ class UserProfileRepoImpl extends UserProfileRepo {
       return HandlingResponse.returnException(w);
     }
   }
+
+  @override
+  Future<ApiResponse> deleteAccount(String uid,
+      {bool enableLocalPersistence = false}) async {
+    try {
+      Response res = await artleapApiService.delete(
+          AppApiPaths.deleteAccount + uid,
+          enableLocalPersistence: enableLocalPersistence);
+      print(res.data);
+      ApiResponse result = HandlingResponse.returnResponse(res);
+      console('REPO : ${result.status}');
+      if (result.status == Status.processing) {
+        print(result.data);
+        print("eeeeeeeeeeeeeeeeeeeeee");
+        return ApiResponse.processing("ssssssssssssssss");
+      } else if (result.status == Status.completed) {
+        print(result.data);
+        var data = await Isolate.run(() => res.data);
+        return ApiResponse.completed(data);
+      } else {
+        return result;
+      }
+    } on DioException catch (w) {
+      return HandlingResponse.returnException(w);
+    }
+  }
 }

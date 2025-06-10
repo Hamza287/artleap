@@ -9,8 +9,8 @@ import '../../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../../shared/console.dart';
 import '../../shared/constants/hive_keys.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import '../../shared/navigation/navigation.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;

@@ -1,10 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../shared/constants/app_constants.dart';
-import 'interceptors/connectivity_interceptor.dart';
-import 'interceptors/mock_interceptor.dart';
-import 'interceptors/prod_response_interceptor.dart';
-import 'interceptors/request_interceptor.dart';
-import 'interceptors/error_interceptor.dart';
 
 class DioCore {
   late Dio _dio;

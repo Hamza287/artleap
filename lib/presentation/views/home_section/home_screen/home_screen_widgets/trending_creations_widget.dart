@@ -107,7 +107,7 @@ class _TrendingCreationsWidgetState
                     crossAxisSpacing: 5,
                     repeatPattern: QuiltedGridRepeatPattern.inverted,
                     pattern: [
-                      const QuiltedGridTile(2, 2),
+                      const QuiltedGridTile(2, 2), 
                       const QuiltedGridTile(1, 1),
                       const QuiltedGridTile(1, 1),
                     ],
