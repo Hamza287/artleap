@@ -18,12 +18,12 @@ class AlreadyHaveAccountText extends ConsumerWidget {
             text: TextSpan(
                 style: AppTextstyle.interRegular(
                     color: AppColors.black.withOpacity(0.4), fontSize: 12),
-                text: "Already have an account? ",
+                text: "Already have an account?  ",
                 children: [
               TextSpan(
                   text: "Login",
-                  style: AppTextstyle.interRegular(
-                      color: AppColors.darkIndigo, fontSize: 12),
+                  style: AppTextstyle.interMedium(
+                      color: AppColors.indigo, fontSize: 12),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);

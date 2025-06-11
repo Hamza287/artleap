@@ -36,11 +36,15 @@ class SignUpScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 30.spaceY,
-                GestureDetector(
-                    onTap: () {
-                      Navigation.pop();
-                    },
-                    child: GoBackWidget()),
+                Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigation.pop();
+                        },
+                        child: GoBackWidget()),
+                  ],
+                ),
                 30.spaceY,
                 SignupTextfieldSection(),
                 20.spaceY,

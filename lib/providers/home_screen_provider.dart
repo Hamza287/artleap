@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/users_creations_model.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
@@ -37,6 +35,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   UsersCreations? get usersData => _usersData;
   final List<Images> _communityImagesList = [];
   List<Images> get communityImagesList => _communityImagesList;
+  String? _selectedStyleTitle;
+  String? get selectedStyleTitle => _selectedStyleTitle;
   bool _isLoadingMore = false;
   bool get isLoadingMore => _isLoadingMore;
   set isLoadingMore(bool val) {
@@ -222,6 +222,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   void filteredListFtn(String modelName) {
+    _selectedStyleTitle = modelName;
     final lowerCaseModel = modelName.toLowerCase();
 
     _filteredCreations = _communityImagesList.where((img) {
@@ -248,135 +249,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   void clearFilteredList() {
+    _selectedStyleTitle = null;
     _filteredCreations = List.from(_communityImagesList);
     notifyListeners();
   }
-  // searchByPrompt(String query) async {
-  //   _isLoading = true;
-  //   notifyListeners();
-
-  //   _filteredCreations.clear();
-  //   DocumentSnapshot<Map<String, dynamic>>? data = await getUserCreations();
-
-  //   if (data.data() != null) {
-  //     Map<String, dynamic> dataMap = data.data()!;
-
-  //     // Access the 'userData' key
-  //     List<dynamic>? creationsList = dataMap['userData'];
-
-  //     if (creationsList != null) {
-  //       List<Map<String, dynamic>> creations = [];
-
-  //       for (var item in creationsList) {
-  //         if (item is Map<String, dynamic>) {
-  //           creations.add(item);
-  //         } else {
-  //           print('Invalid creation item: $item');
-  //         }
-  //       }
-
-  //       // If query is empty, show all creations
-  //       if (query.isEmpty) {
-  //         _filteredCreations.addAll(creations);
-  //       } else {
-  //         // Filter the creations based on 'prompt' (case-insensitive)
-  //         var filtered = creations.where((creation) {
-  //           String prompt = creation['prompt'] ?? '';
-  //           return prompt.toLowerCase().contains(query.toLowerCase());
-  //         });
-
-  //         _filteredCreations.addAll(filtered);
-  //       }
-
-  //       _isLoading = false;
-  //       notifyListeners();
-  //     } else {
-  //       print('userData is null or not a list.');
-  //       _isLoading = false;
-  //       notifyListeners();
-  //     }
-  //   } else {
-  //     print('Data is null or data.data() is null.');
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
-
-  // clearFilteredList() {
-  //   filteredCreations.clear();
-  //   notifyListeners();
-  // }
-
-  // Future<void> deleteImageIfPresent({
-  //   required String userId,
-  //   required String imageUrl, // The image URL to identify which image to delete
-  // }) async {
-  //   setDeletionLoading(true);
-
-  //   // Define the data field and image URL key for each collection
-  //   List<Map<String, dynamic>> collections = [
-  //     {
-  //       'collectionName': 'CommunityCreations',
-  //       'documentId': 'usersCreations',
-  //       'dataField': 'userData',
-  //       'imageUrlKey': 'imageUrl',
-  //     },
-  //     {
-  //       'collectionName': 'usersProfileData',
-  //       'documentId': userId,
-  //       'dataField': 'userData',
-  //       'imageUrlKey': 'imageUrl',
-  //     },
-  //     {
-  //       'collectionName': 'userFavourites',
-  //       'documentId': userId,
-  //       'dataField': 'favourites', // Updated field name
-  //       'imageUrlKey': 'imageUrl', // Adjust if the key is different
-  //     },
-  //   ];
-
-  //   // Run deletion checks concurrently across collections
-  //   List<Future<void>> deleteOperations = collections.map((collection) async {
-  //     final String collectionName = collection['collectionName'];
-  //     final String documentId = collection['documentId'];
-  //     final String dataField = collection['dataField'];
-  //     final String imageUrlKey = collection['imageUrlKey'];
-
-  //     try {
-  //       DocumentReference<Map<String, dynamic>> documentRef =
-  //           firestore.collection(collectionName).doc(documentId);
-
-  //       DocumentSnapshot<Map<String, dynamic>> snapshot =
-  //           await documentRef.get();
-
-  //       if (snapshot.exists && snapshot.data() != null) {
-  //         List<dynamic> userData = List.from(snapshot.data()?[dataField] ?? []);
-
-  //         // Find the index of the image by checking its 'imageUrl'
-  //         int indexToDelete =
-  //             userData.indexWhere((item) => item[imageUrlKey] == imageUrl);
-
-  //         if (indexToDelete != -1) {
-  //           // Remove the item if it's found
-  //           userData.removeAt(indexToDelete);
-  //           // Update the document with the modified array
-  //           await documentRef.update({dataField: userData});
-  //           print('Image deleted from $collectionName.');
-  //         } else {
-  //           print('Image not found in $collectionName.');
-  //         }
-  //       } else {
-  //         print('$collectionName document does not exist or has no data.');
-  //       }
-  //     } catch (e, stackTrace) {
-  //       setDeletionLoading(false);
-  //       print('Error in $collectionName: $e');
-  //       print('StackTrace: $stackTrace');
-  //     }
-  //   }).toList();
-  //   await Future.wait(deleteOperations);
-  //   print("Deletion completed where image was found.");
-  //   setDeletionLoading(false);
-  //   Navigation.pop();
-  // }
 }

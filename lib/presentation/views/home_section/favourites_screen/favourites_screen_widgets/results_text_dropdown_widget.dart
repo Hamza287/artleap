@@ -16,47 +16,47 @@ class ResultsTextDropDownWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text("Results",
             style:
                 AppTextstyle.interMedium(fontSize: 16, color: AppColors.white)),
-        Container(
-          height: 35,
-          width: 140,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: AppColors.indigo),
-          child: Center(
-            child: DropdownButton<String>(
-              value: _selectedItem,
-              hint: Text(
-                'All',
-                style: AppTextstyle.interRegular(
-                    fontSize: 14, color: AppColors.white),
-              ),
-              icon: Icon(
-                Icons.arrow_drop_down_sharp,
-                color: AppColors.white,
-              ),
-              // elevation: 25,
-              style: TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
-              ),
-              onChanged: (String? newValue) {
-                _selectedItem = newValue!;
-              },
-              items:
-                  _dropdownItems.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
+        // Container(
+        //   height: 35,
+        //   width: 140,
+        //   decoration: BoxDecoration(
+        //       borderRadius: BorderRadius.circular(10), color: AppColors.indigo),
+        //   child: Center(
+        //     child: DropdownButton<String>(
+        //       value: _selectedItem,
+        //       hint: Text(
+        //         'All',
+        //         style: AppTextstyle.interRegular(
+        //             fontSize: 14, color: AppColors.white),
+        //       ),
+        //       icon: Icon(
+        //         Icons.arrow_drop_down_sharp,
+        //         color: AppColors.white,
+        //       ),
+        //       // elevation: 25,
+        //       style: TextStyle(color: Colors.deepPurple),
+        //       underline: Container(
+        //         height: 2,
+        //         color: Colors.deepPurpleAccent,
+        //       ),
+        //       onChanged: (String? newValue) {
+        //         _selectedItem = newValue!;
+        //       },
+        //       items:
+        //           _dropdownItems.map<DropdownMenuItem<String>>((String value) {
+        //         return DropdownMenuItem<String>(
+        //           value: value,
+        //           child: Text(value),
+        //         );
+        //       }).toList(),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

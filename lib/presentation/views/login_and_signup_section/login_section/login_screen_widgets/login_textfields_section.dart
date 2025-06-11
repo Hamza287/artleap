@@ -21,9 +21,9 @@ class LoginScreenTextfieldsSection extends ConsumerWidget {
         ),
         10.spaceY,
         AppCommonTextfield(
-          hintText: "Password",
-          controller: ref.watch(authprovider).passwordController,
-        )
+            hintText: "Password",
+            controller: ref.watch(authprovider).passwordController,
+            obsecureTextType: ObsecureText.loginPassword)
       ],
     );
   }

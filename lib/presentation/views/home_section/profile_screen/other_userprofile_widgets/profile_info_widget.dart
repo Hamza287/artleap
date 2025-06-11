@@ -177,7 +177,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                             : Center(
                                 child: Text(
                                   "Following",
-                                  style: AppTextstyle.interRegular(
+                                  style: AppTextstyle.interMedium(
                                       color: AppColors.white, fontSize: 12),
                                 ),
                               ),
@@ -204,7 +204,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                             : Center(
                                 child: Text(
                                   "Follow",
-                                  style: AppTextstyle.interRegular(
+                                  style: AppTextstyle.interMedium(
                                       color: AppColors.white, fontSize: 12),
                                 ),
                               ),

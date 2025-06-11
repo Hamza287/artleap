@@ -65,7 +65,7 @@ class CommonButton extends StatelessWidget {
               if (icon != null || imageicon != null) 10.spaceX,
               Text(
                 title!,
-                style: AppTextstyle.interBold(
+                style: AppTextstyle.interMedium(
                     fontSize: titlefontsize ?? 14,
                     color: buttonTextColor ?? AppColors.white),
               ),

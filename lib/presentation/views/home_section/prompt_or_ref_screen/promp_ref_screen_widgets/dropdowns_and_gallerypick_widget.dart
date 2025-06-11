@@ -33,13 +33,13 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
               height: 40,
               width: 145,
               decoration: BoxDecoration(
-                color: AppColors.indigo,
+                color: AppColors.daisyBrush,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Center(
                 child: DropdownButton<int>(
                   isExpanded: true,
-                  dropdownColor: AppColors.indigo,
+                  dropdownColor: AppColors.daisyBrush,
                   value: ref.watch(generateImageProvider).selectedImageNumber,
                   hint: Padding(
                     padding: const EdgeInsets.only(left: 10),
@@ -87,7 +87,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
                 height: 40,
                 width: 175,
                 decoration: BoxDecoration(
-                  color: AppColors.indigo,
+                  color: AppColors.daisyBrush,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Center(
@@ -155,7 +155,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
                 height: 40,
                 width: 175,
                 decoration: BoxDecoration(
-                  color: AppColors.indigo,
+                  color: AppColors.daisyBrush,
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Center(
@@ -234,7 +234,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
                     width: 187,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: AppColors.indigo,
+                      color: AppColors.daisyBrush,
                     ),
                     child: images.isEmpty
                         ? Row(
@@ -308,7 +308,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
               height: 40,
               width: 128,
               decoration: BoxDecoration(
-                color: AppColors.indigo,
+                color: AppColors.daisyBrush,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Center(
