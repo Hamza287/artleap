@@ -55,7 +55,7 @@ class SocialLoginsWidget extends ConsumerWidget {
                 ),
           if (Platform.isIOS)
             Container(
-              height: 45,
+              height: 45, 
               width: 139,
               child: SignInWithAppleButton(
                 style: SignInWithAppleButtonStyle.white,
