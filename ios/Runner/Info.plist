@@ -42,6 +42,25 @@
 	<string>586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>ASAuthorizationAppleID</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd</string>
+				<string>com.googleusercontent.apps.53715181958-10rq7oogskggumj2v40iku8o9homdf5t</string>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app uses Apple Sign-In for authentication.</string>
+
+
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app requires permission to save images to your Photo Library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

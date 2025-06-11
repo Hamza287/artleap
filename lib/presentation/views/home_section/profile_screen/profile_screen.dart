@@ -52,49 +52,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.end,
-                    //   children: [
-                    //     Padding(
-                    //       padding: const EdgeInsets.only(right: 20),
-                    //       child: Image.asset(
-                    //         AppAssets.notificationicon,
-                    //         scale: 2.4,
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
-                    // FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
-                    //     future: ref
-                    //         .read(userProfileProvider)
-                    //         .fetchUserPersonalData(UserData.ins.userId!),
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.connectionState ==
-                    //           ConnectionState.waiting) {
-                    //         return const Center(child: SizedBox());
-                    //       } else if (snapshot.hasError) {
-                    //         return Center(
-                    //             child: Text('Error: ${snapshot.error}'));
-                    //       } else {
-                    //         DocumentSnapshot<Map<String, dynamic>>?
-                    //             userPersonalData = snapshot.data;
-
-                    //         if (userPersonalData == null ||
-                    //             userPersonalData.data() == null) {
-                    //           return Center(
-                    //             child: Text(
-                    //               "No data yet",
-                    //               style: AppTextstyle.interBold(
-                    //                   fontSize: 15, color: AppColors.black),
-                    //             ),
-                    //           );
-                    //         } else {
-                    // Map<String, dynamic> data =
-                    //     userPersonalData.data()!;
-                    // String userName = data['username'] ?? '';
-                    // String profileImage = data['profile_image'] ?? '';
-                    // String userEmail = data['email'] ?? '';
-
                     ProfileBackgroundWidget(
                       widget: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -125,9 +82,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ],
                       ),
                     ),
-                    // }
-                    //   }
-                    // }),
                     Column(
                       children: [
                         UserProfileMatricsWidget(

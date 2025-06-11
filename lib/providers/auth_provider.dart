@@ -163,6 +163,27 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+  signInWithApple() async {
+    startLoading(LoginMethod.apple);
+    UserCredential? userCred = await _authServices.signInWithApple();
+    if (isNotNull(userCred)) {
+      appSnackBar("Success", "SignIn successfully!",
+          const Color.fromARGB(255, 113, 235, 117));
+
+      print("lllllllllllllllllllllllllllllllllllll");
+
+      print(userCred!.user!.uid);
+      print(userCred.user!);
+      // googleLogin(
+      //     userCred.userCredential!.user!.displayName!,
+      //     userCred.userCredential!.user!.email!,
+      //     userCred.userCredential!.user!.uid,
+      //     userCred.userCredential!.user!.photoURL!);
+    }
+    stopLoading(LoginMethod.apple);
+    notifyListeners();
+  }
+
   // signInWithFacebook() async {
   //   startLoading(LoginMethod.facebook);
   //   AuthResult? userCred = await _authServices.signInWithFacebook();

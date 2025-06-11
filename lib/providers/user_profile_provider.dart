@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../domain/api_services/api_response.dart';
 import '../shared/constants/user_data.dart';
 
@@ -112,5 +112,14 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       print(response.status);
     }
     notifyListeners();
+  }
+
+  Future<void> launchAnyUrl(String? url) async {
+    final Uri uri = Uri.parse(url!);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

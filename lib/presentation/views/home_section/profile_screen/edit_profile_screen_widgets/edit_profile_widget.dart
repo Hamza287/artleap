@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/google_ads/native_add.dart';
@@ -7,10 +8,11 @@ import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-
+import '../../../../../providers/user_profile_provider.dart';
 import '../../../../../shared/constants/app_assets.dart';
 import '../../../../../shared/constants/app_colors.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
+import 'separator_widget.dart';
 
 class EditProfileWidget extends ConsumerWidget {
   final EditProfileSreenParams? params;
@@ -25,6 +27,8 @@ class EditProfileWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           40.spaceY,
+
+          // 30.spaceY,
           GestureDetector(
             onTap: () {
               Navigation.pop();
@@ -53,10 +57,10 @@ class EditProfileWidget extends ConsumerWidget {
                         fit: BoxFit.cover)),
               ),
               20.spaceX,
-              Column(  
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text( 
+                  Text(
                     params!.userName ?? "user name",
                     style: AppTextstyle.interMedium(
                         color: AppColors.white, fontSize: 14),
@@ -79,17 +83,32 @@ class EditProfileWidget extends ConsumerWidget {
           //   // titleColor: AppColors.redColor,
           // ),
           // 20.spaceY,
-          // IconWithTextTile(
-          //   imageIcon: AppAssets.privacyicon,
-          //   title: "Privacy Policy",
-          //   // titleColor: AppColors.redColor,
-          // ),
+          SeparatorWidget(
+            title: "General",
+          ),
+          20.spaceY,
+
+          GestureDetector(
+            onTap: () {
+              ref.read(userProfileProvider).launchAnyUrl(
+                  "https://x-r.digital/privacy-policy/artleap-ai/");
+            },
+            child: IconWithTextTile(
+              imageIcon: AppAssets.privacyicon,
+              title: "Privacy Policy",
+              // titleColor: AppColors.redColor,
+            ),
+          ),
           // 20.spaceY,
           // IconWithTextTile(
           //   imageIcon: AppAssets.abouticon,
           //   title: "About Artleap.AI",
           //   // titleColor: AppColors.redColor,
           // ),
+          50.spaceY,
+          SeparatorWidget(
+            title: "About",
+          ),
           20.spaceY,
           InkWell(
             onTap: () {
@@ -102,7 +121,23 @@ class EditProfileWidget extends ConsumerWidget {
               titleColor: AppColors.redColor,
             ),
           ),
-          100.spaceY,
+          20.spaceY,
+          InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => const DeleteAccountDialog(),
+              );
+              // Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+            },
+            child: IconWithTextTile(
+              imageIcon: AppAssets.deleteicon,
+              title: "Delete Account",
+              titleColor: AppColors.redColor,
+            ),
+          ),
+          80.spaceY,
+
           // NativeAdWidget()
         ],
       ),
