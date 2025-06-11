@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_static_data.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_static_data.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
 class ArtStyleWidget extends ConsumerWidget {
   const ArtStyleWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(          
+    return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,7 +35,7 @@ class ArtStyleWidget extends ConsumerWidget {
             children: [
               ...artsStyleImagesLIst.map(
                 (e) {
-                  return Container( 
+                  return Container(
                     height: 65,
                     width: 62,
                     margin: const EdgeInsets.only(right: 5),

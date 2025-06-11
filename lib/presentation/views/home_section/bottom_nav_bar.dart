@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/base_widgets/common_appbar.dart';
-import 'package:photoroomapp/providers/ads_provider.dart';
-import 'package:photoroomapp/providers/bottom_nav_bar_provider.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
+import 'package:Artleap.ai/providers/ads_provider.dart';
+import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/generate_image_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../providers/home_screen_provider.dart';

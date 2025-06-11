@@ -1,6 +1,6 @@
 import 'dart:isolate';
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/domain/api_models/dummy_model.dart';
+import 'package:Artleap.ai/domain/api_models/dummy_model.dart';
 import '../../shared/constants/app_api_paths.dart';
 import '../../shared/console.dart';
 import '../api_repos_abstract/dummy_repo.dart';

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:photoroomapp/domain/base_repo/base_repo.dart';
-import 'package:photoroomapp/shared/app_snack_bar.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 
 final favProvider =

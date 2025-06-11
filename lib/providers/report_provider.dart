@@ -1,12 +1,12 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter/material.dart';
-// import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-// import 'package:photoroomapp/presentation/views/home_section/home_screen/home_screen.dart';
-// import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-// import 'package:photoroomapp/shared/app_snack_bar.dart';
-// import 'package:photoroomapp/shared/constants/app_colors.dart';
-// import 'package:photoroomapp/shared/navigation/navigation.dart';
+// import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+// import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen.dart';
+// import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
+// import 'package:Artleap.ai/shared/app_snack_bar.dart';
+// import 'package:Artleap.ai/shared/constants/app_colors.dart';
+// import 'package:Artleap.ai/shared/navigation/navigation.dart';
 // import '../domain/base_repo/base_repo.dart';
 // import '../shared/constants/user_data.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
+import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../../../shared/console.dart';
 import '../../../shared/constants/app_constants.dart';
 

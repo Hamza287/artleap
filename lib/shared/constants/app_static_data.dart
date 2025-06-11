@@ -1,4 +1,4 @@
-import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
 
 List<Map> onboardingImagesList = [
   {

@@ -8,9 +8,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 // import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:photoroomapp/firebase_options.dart';
-import 'package:photoroomapp/presentation/splash_screen.dart';
-import 'package:photoroomapp/shared/theme/light_theme.dart';
+import 'package:Artleap.ai/firebase_options.dart';
+import 'package:Artleap.ai/presentation/splash_screen.dart';
+import 'package:Artleap.ai/shared/theme/light_theme.dart';
 import 'di/di.dart';
 import 'shared/navigation/navigator_key.dart';
 import 'shared/navigation/route_generator.dart';
@@ -24,7 +24,6 @@ void main() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await MobileAds.instance.initialize();
-
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

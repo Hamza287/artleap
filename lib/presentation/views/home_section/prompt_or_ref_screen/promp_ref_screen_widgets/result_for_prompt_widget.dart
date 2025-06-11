@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:photoroomapp/providers/generate_image_provider.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
+import 'package:Artleap.ai/providers/generate_image_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 
 class ResultForPromptWidget extends ConsumerWidget {
   const ResultForPromptWidget({super.key});

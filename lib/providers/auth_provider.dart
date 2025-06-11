@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/domain/base_repo/base_repo.dart';
-import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
+import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
 import '../shared/app_snack_bar.dart';
@@ -159,6 +160,27 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           userCred.userCredential!.user!.photoURL!);
     }
     stopLoading(LoginMethod.google);
+    notifyListeners();
+  }
+
+  signInWithApple() async {
+    startLoading(LoginMethod.apple);
+    UserCredential? userCred = await _authServices.signInWithApple();
+    if (isNotNull(userCred)) {
+      appSnackBar("Success", "SignIn successfully!",
+          const Color.fromARGB(255, 113, 235, 117));
+
+      print("lllllllllllllllllllllllllllllllllllll");
+
+      print(userCred!.user!.uid);
+      print(userCred.user!);
+      // googleLogin(
+      //     userCred.userCredential!.user!.displayName!,
+      //     userCred.userCredential!.user!.email!,
+      //     userCred.userCredential!.user!.uid,
+      //     userCred.userCredential!.user!.photoURL!);
+    }
+    stopLoading(LoginMethod.apple);
     notifyListeners();
   }
 

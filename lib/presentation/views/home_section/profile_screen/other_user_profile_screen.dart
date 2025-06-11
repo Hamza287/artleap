@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:photoroomapp/presentation/views/global_widgets/app_background_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/other_userprofile_widgets/profile_info_widget.dart';
-import 'package:photoroomapp/presentation/views/home_section/profile_screen/profile_screen_widgets/my_creations_widget.dart';
-import 'package:photoroomapp/providers/user_profile_provider.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_userprofile_widgets/profile_info_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/profile_screen_widgets/my_creations_widget.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 

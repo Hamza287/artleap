@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/domain/api_models/user_favourites_model.dart';
-import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:photoroomapp/providers/favrourite_provider.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
-import 'package:photoroomapp/shared/navigation/screen_params.dart';
+import 'package:Artleap.ai/domain/api_models/user_favourites_model.dart';
+import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
+import 'package:Artleap.ai/providers/favrourite_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 
 class ResultContainerWidget extends ConsumerWidget {
   final List<dynamic> data;

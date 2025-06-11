@@ -1,9 +1,9 @@
 import 'dart:isolate';
 
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/domain/api_models/reqres_user_model.dart';
-import 'package:photoroomapp/domain/api_repos_abstract/reqres_repo.dart';
-import 'package:photoroomapp/domain/api_services/api_response.dart';
+import 'package:Artleap.ai/domain/api_models/reqres_user_model.dart';
+import 'package:Artleap.ai/domain/api_repos_abstract/reqres_repo.dart';
+import 'package:Artleap.ai/domain/api_services/api_response.dart';
 
 import '../../shared/console.dart';
 import '../../shared/constants/app_api_paths.dart';

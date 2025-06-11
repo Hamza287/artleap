@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
 import '../../../../../providers/auth_provider.dart';
 import '../../../../../shared/constants/app_colors.dart';
 import 'dart:io';
@@ -61,6 +60,8 @@ class SocialLoginsWidget extends ConsumerWidget {
                 style: SignInWithAppleButtonStyle.white,
                 text: "",
                 onPressed: () async {
+                  ref.read(authprovider).signInWithApple();
+
                   // final result = await signInWithApple();
                   // if (result != null) {
                   //   print(

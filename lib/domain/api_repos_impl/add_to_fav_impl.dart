@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/domain/api_repos_abstract/add_to_fav_repo.dart';
+import 'package:Artleap.ai/domain/api_repos_abstract/add_to_fav_repo.dart';
 
 import '../../shared/console.dart';
 import '../../shared/constants/app_api_paths.dart';

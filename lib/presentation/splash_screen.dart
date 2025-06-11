@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:photoroomapp/presentation/views/onboarding_section/onboarding_screen.dart';
-import 'package:photoroomapp/shared/app_persistance/app_local.dart';
-import 'package:photoroomapp/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_screen.dart';
+import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:lottie/lottie.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 import 'package:video_player/video_player.dart';
 
 import '../providers/ads_provider.dart';

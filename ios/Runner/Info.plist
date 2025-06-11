@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Photoroomapp</string>
+	<string>Artleap.ai</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,16 +15,57 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>photoroomapp</string>
+	<string>Artleap.ai</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd</string>
+				<string>com.googleusercontent.apps.53715181958-10rq7oogskggumj2v40iku8o9homdf5t</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>4</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-9762893813732933~5867808261</string>
+	<key>GIDClientID</key>
+	<string>586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>ASAuthorizationAppleID</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd</string>
+				<string>com.googleusercontent.apps.53715181958-10rq7oogskggumj2v40iku8o9homdf5t</string>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app uses Apple Sign-In for authentication.</string>
+
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires permission to save images to your Photo Library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires permission to access your Photo Library.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -41,33 +84,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-
-	<!-- Added for Google Sign-In -->
-	<key>GIDClientID</key>
-	<string>586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd.apps.googleusercontent.com</string>
-
-	<!-- Added URL Types -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<!-- Replace with the reverse client ID -->
-				<string>com.googleusercontent.apps.586272014422-8d7s9bvo7ojigvomj5soavkbraekn6sd</string>
-				<string>com.googleusercontent.apps.53715181958-10rq7oogskggumj2v40iku8o9homdf5t</string>
-			</array>
-		</dict>
-	</array>
-	<!-- Required Usage Descriptions for accessing Photo Library -->
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app requires permission to save images to your Photo Library.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires permission to access your Photo Library.</string>
 </dict>
 </plist>

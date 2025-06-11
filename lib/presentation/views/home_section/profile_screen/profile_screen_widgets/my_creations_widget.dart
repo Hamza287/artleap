@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:photoroomapp/domain/api_models/user_profile_model.dart';
-// import 'package:photoroomapp/domain/api_models/Image_to_Image_model.dart';
-import 'package:photoroomapp/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:photoroomapp/shared/constants/app_colors.dart';
-import 'package:photoroomapp/shared/constants/app_textstyle.dart';
-import 'package:photoroomapp/shared/constants/user_data.dart';
-import 'package:photoroomapp/shared/navigation/navigation.dart';
-import 'package:photoroomapp/shared/navigation/screen_params.dart';
+import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
+// import 'package:Artleap.ai/domain/api_models/Image_to_Image_model.dart';
+import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 
 class MyCreationsWidget extends StatelessWidget {
   final String? userName;

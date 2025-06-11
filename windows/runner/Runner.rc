@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "photoroomapp" "\0"
+            VALUE "FileDescription", "Artleap.ai" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "photoroomapp" "\0"
+            VALUE "InternalName", "Artleap.ai" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "photoroomapp.exe" "\0"
-            VALUE "ProductName", "photoroomapp" "\0"
+            VALUE "OriginalFilename", "Artleap.ai.exe" "\0"
+            VALUE "ProductName", "Artleap.ai" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

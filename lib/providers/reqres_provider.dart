@@ -1,4 +1,4 @@
-// import 'package:photoroomapp/domain/data_classes/reqres.dart';
+// import 'package:Artleap.ai/domain/data_classes/reqres.dart';
 
 // import '../domain/api_services/api_response.dart';
 // import '../domain/base_repo/base_repo.dart';

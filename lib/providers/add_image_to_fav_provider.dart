@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:photoroomapp/domain/api_models/user_favourites_model.dart';
+import 'package:Artleap.ai/domain/api_models/user_favourites_model.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/base_repo/base_repo.dart';
 

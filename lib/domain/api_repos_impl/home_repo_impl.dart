@@ -2,7 +2,7 @@ import 'dart:isolate';
 
 
 import 'package:dio/dio.dart';
-import 'package:photoroomapp/domain/api_repos_abstract/home_repo.dart';
+import 'package:Artleap.ai/domain/api_repos_abstract/home_repo.dart';
 
 import '../../shared/constants/app_api_paths.dart';
 import '../../shared/constants/app_constants.dart';

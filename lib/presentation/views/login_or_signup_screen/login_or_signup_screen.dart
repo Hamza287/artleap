@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:photoroomapp/presentation/base_widgets/scaffold_background.dart';
-import 'package:photoroomapp/presentation/views/global_widgets/app_common_button.dart';
-import 'package:photoroomapp/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:photoroomapp/presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
-import 'package:photoroomapp/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/login_or_signup_button.dart';
-import 'package:photoroomapp/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/login_or_signup_text.dart';
-import 'package:photoroomapp/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/or_widget.dart';
-import 'package:photoroomapp/providers/auth_provider.dart';
-import 'package:photoroomapp/shared/shared.dart';
+import 'package:Artleap.ai/presentation/base_widgets/scaffold_background.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/app_common_button.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
+import 'package:Artleap.ai/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/login_or_signup_button.dart';
+import 'package:Artleap.ai/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/login_or_signup_text.dart';
+import 'package:Artleap.ai/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/or_widget.dart';
+import 'package:Artleap.ai/providers/auth_provider.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 
 class LoginORsignUpScreen extends ConsumerStatefulWidget {
   static const String routeName = "login_or_signup_Screen";

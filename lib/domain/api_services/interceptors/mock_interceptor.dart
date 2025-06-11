@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:photoroomapp/shared/console.dart';
+import 'package:Artleap.ai/shared/console.dart';
 import 'package:template_expressions/template_expressions.dart';
 
 class MockInterceptor extends Interceptor {
