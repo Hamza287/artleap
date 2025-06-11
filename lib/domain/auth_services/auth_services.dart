@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:photoroomapp/shared/app_persistance/app_local.dart';
 import 'package:photoroomapp/shared/app_snack_bar.dart';
 import 'package:photoroomapp/shared/constants/app_colors.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../shared/auth_exception_handler/auth_exception_handler.dart';
@@ -10,7 +14,6 @@ import '../../shared/console.dart';
 import '../../shared/constants/hive_keys.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../shared/navigation/navigation.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -96,7 +99,6 @@ class AuthServices {
       final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
       // return await FirebaseAuth.instance.signInWithCredential(credential);
-
       return AuthResult(
           userCredential:
               await FirebaseAuth.instance.signInWithCredential(credential));
@@ -107,6 +109,50 @@ class AuthServices {
     }
   }
 
+  Future<AuthResult?> signInWithApple() async {
+    try {
+      final rawNonce = generateNonce();
+      final hashedNonce = sha256ofString(rawNonce);
+
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
+      return AuthResult(userCredential: userCredential);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  String generateNonce([int length = 32]) {
+    final charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = List.generate(
+        length,
+        (_) => charset[
+            (DateTime.now().millisecondsSinceEpoch + _ * 31) % charset.length]);
+    return random.join();
+  }
+
+  // Helper: Hash nonce with SHA256
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
   // Future<AuthResult?> signInWithFacebook() async {
   //   try {
   //     final result = await FacebookAuth.i.login(
