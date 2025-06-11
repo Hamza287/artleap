@@ -174,6 +174,8 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
 
       print(userCred!.user!.uid);
       print(userCred.user!);
+      appleLogin(userCred.user!.displayName!, userCred.user!.email!,
+          userCred.user!.uid, userCred.user!.photoURL!);
       // googleLogin(
       //     userCred.userCredential!.user!.displayName!,
       //     userCred.userCredential!.user!.email!,
@@ -312,12 +314,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   }
 
   appleLogin(
-      String userName, String email, String googleId, String profilePic) async {
+      String userName, String email, String appleId, String profilePic) async {
     print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
-      "appleId": googleId,
+      "appleId": appleId,
       "profilePic": profilePic
     };
     print(body);
