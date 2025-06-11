@@ -1,9 +1,12 @@
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../domain/api_services/api_response.dart';
+import '../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../shared/constants/user_data.dart';
 
 final userProfileProvider =
@@ -110,6 +113,27 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       print("11111111111111111111svvvvssssssssssss11");
     } else {
       print(response.status);
+    }
+    notifyListeners();
+  }
+
+  Future<void> deActivateAccount(String uid) async {
+    setLoader(true);
+    print(uid);
+    print("Sending request to API...");
+    ApiResponse userProfileDataRes = await userFollowingRepo.deleteAccount(uid);
+    if (userProfileDataRes.status == Status.completed) {
+      print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+      AppLocal.ins.clearUSerData(Hivekey.userId);
+      Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+      appSnackBar("Success", "Your account has been deleted successfully",
+          AppColors.green);
+      setLoader(false);
+    } else {
+      print(userProfileDataRes.status);
+      appSnackBar("Error", "soemthing went wrong, please try again",
+          AppColors.redColor);
+      setLoader(false);
     }
     notifyListeners();
   }

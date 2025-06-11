@@ -21,9 +21,9 @@ class Navigation {
   static pop({bool rootNavigator = false, int delay = 0}) => Timer(
       Duration(milliseconds: delay),
       () => Navigator.of(appContext, rootNavigator: rootNavigator).pop());
-static  String currentScreen() {
+  static String currentScreen() {
     // return ModalRoute.of(appContext)?.settings.name ?? '';
     return '';
-  //  return Router.of(appContext).routeInformationProvider?.value.location??'';
+    //  return Router.of(appContext).routeInformationProvider?.value.location??'';
   }
 }
