@@ -69,4 +69,25 @@ class AuthRepoImpl extends AuthRepo {
       return HandlingResponse.returnException(w);
     }
   }
+
+  @override
+  Future<ApiResponse> appleLogin({required Map<String, dynamic> body}) async {
+    try {
+      Response res =
+          await artleapApiService.postJson(AppApiPaths.appleLogin, body);
+      print(AppConstants.artleapBaseUrl + AppApiPaths.appleLogin);
+      ApiResponse result = HandlingResponse.returnResponse(res);
+      print(res);
+      // console('REPO : ${result.status}');
+      if (result.status == Status.completed) {
+        // DummyModel data =
+        //     await Isolate.run(() => DummyModel.fromJson(res.data));
+        return ApiResponse.completed(res.data);
+      } else {
+        return result;
+      }
+    } on DioException catch (w) {
+      return HandlingResponse.returnException(w);
+    }
+  }
 }

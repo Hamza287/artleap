@@ -310,4 +310,41 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     print(userRes.status);
     print("lllllllllllllllllll");
   }
+
+  appleLogin(
+      String userName, String email, String googleId, String profilePic) async {
+    print("entryyyyyyyyyyyyyy");
+    Map<String, String> body = {
+      "username": userName,
+      "email": email,
+      "appleId": googleId,
+      "profilePic": profilePic
+    };
+    print(body);
+    ApiResponse userRes = await authRepo.appleLogin(body: body);
+    if (userRes.status == Status.completed) {
+      reference
+          .read(userProfileProvider)
+          .getUserProfileData(userRes.data["user"]['userId']);
+      print(userRes);
+      print(userRes.data);
+      print(userRes.data["user"]['userId']);
+      print(userRes.data["user"]['username']);
+      print(userRes.data["user"]['email']);
+      AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
+      AppLocal.ins
+          .setUserData(Hivekey.userName, userRes.data["user"]['username']);
+      AppLocal.ins
+          .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
+      AppLocal.ins.setUserData(
+          Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+    }
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+    });
+    print(userRes.data);
+    print(userRes.message);
+    print(userRes.status);
+    print("lllllllllllllllllll");
+  }
 }

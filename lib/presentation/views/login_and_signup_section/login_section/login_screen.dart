@@ -8,12 +8,8 @@ import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_sec
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen_widgets/remember_me_forgot_widget.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen_widgets/social_logins_widget.dart';
 import 'package:Artleap.ai/presentation/views/login_or_signup_screen/login_or_signup_screen_widgets/or_widget.dart';
-import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_screen.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-
 import '../../global_widgets/error_widget.dart';
 
 class LoginScreen extends ConsumerWidget {

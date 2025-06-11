@@ -5,6 +5,7 @@ class AppApiPaths {
   static const String login = "login";
   static const String signup = "signup";
   static const String googleLogin = "googleLogin";
+  static const String appleLogin = "appleLogin";
   static const String getUsersCreations = "all-images?page=";
   static const String generateImage = "freepikTxtToImg";
   static const String img2imgPath = "leonardoImgToImg";
