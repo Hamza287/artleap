@@ -53,8 +53,9 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     print("Sending request to API...");
     ApiResponse userProfileDataRes =
         await userFollowingRepo.getUserProfileData(uid);
+    print(uid);
+    print(AppApiPaths.getUserProData + uid);
     if (userProfileDataRes.status == Status.completed) {
-      print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
       _userProfileData = userProfileDataRes.data as UserProfileModel;
       print(_userProfileData!.user.email);
       setLoader(false);

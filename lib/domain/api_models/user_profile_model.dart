@@ -54,13 +54,13 @@ class User {
   late final int V;
 
   User.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    username = json['username'];
-    email = json['email'];
-    password = json['password'];
+    id = json['_id'] ?? "";
+    username = json['username'] ?? "";
+    email = json['email'] ?? "";
+    password = json['password'] ?? "";
     favorites = List.castFrom<dynamic, String>(json['favorites']);
     profilePic = json['profilePic'];
-    dailyCredits = json['dailyCredits'];
+    dailyCredits = json['dailyCredits'] ?? 75;
     isSubscribed = json['isSubscribed'];
     images = List.from(json['images']).map((e) => Images.fromJson(e)).toList();
     followers = List.castFrom<dynamic, dynamic>(json['followers']);

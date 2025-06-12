@@ -162,13 +162,8 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                         ? const CircularProgressIndicator(
                             color: AppColors.indigo,
                           )
-                        : ref
-                                .watch(userProfileProvider)
-                                .userProfileData!
-                                .user
-                                .profilePic
-                                .isEmpty
-                            ? Container( 
+                        : ref.watch(userProfileProvider).userProfileData == null
+                            ? Container(
                                 height: 35,
                                 width: 35,
                                 decoration: const BoxDecoration(
@@ -178,19 +173,36 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                                     shape: BoxShape.circle,
                                     color: AppColors.white),
                               )
-                            : Container(
-                                height: 35,
-                                width: 35, 
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(ref
-                                            .watch(userProfileProvider)
-                                            .userProfileData!
-                                            .user
-                                            .profilePic)),
-                                    shape: BoxShape.circle,
-                                    color: AppColors.white),
-                              )),
+                            : ref
+                                    .watch(userProfileProvider)
+                                    .userProfileData!
+                                    .user
+                                    .profilePic
+                                    .isEmpty
+                                ? Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                          image:
+                                              AssetImage(AppAssets.artstyle1),
+                                        ),
+                                        shape: BoxShape.circle,
+                                        color: AppColors.white),
+                                  )
+                                : Container(
+                                    height: 35,
+                                    width: 35,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: NetworkImage(ref
+                                                .watch(userProfileProvider)
+                                                .userProfileData!
+                                                .user
+                                                .profilePic)),
+                                        shape: BoxShape.circle,
+                                        color: AppColors.white),
+                                  )),
               ],
             ),
           ),

@@ -40,7 +40,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse> getUserProfileData(String uid,
       {bool enableLocalPersistence = false}) async {
     print(AppApiPaths.getUserProData + uid);
-    print("sssssssssssssssssssssssssssssssssssss");
+    print("3333333333333333333333");
 
     try {
       Response res = await artleapApiService.get(
@@ -52,10 +52,11 @@ class UserProfileRepoImpl extends UserProfileRepo {
       console('REPO : ${result.status}');
       if (result.status == Status.processing) {
         print(result.data);
-        print("eeeeeeeeeeeeeeeeeeeeee");
+        print("zzzzzzzzzzzzzzzzzz");
         return ApiResponse.processing("ssssssssssssssss");
       } else if (result.status == Status.completed) {
         print(result.data);
+  
         UserProfileModel data =
             await Isolate.run(() => UserProfileModel.fromJson(res.data));
         return ApiResponse.completed(data);
