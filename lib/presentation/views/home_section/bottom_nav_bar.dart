@@ -5,11 +5,13 @@ import 'package:Artleap.ai/providers/ads_provider.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/generate_image_provider.dart';
+import '../../../providers/notification_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../providers/home_screen_provider.dart';
 import '../../../shared/constants/user_data.dart';
 import '../../google_ads/banner_ad.dart';
 import '../../google_ads/native_add.dart';
+import '../Notifications/notification_screen.dart';
 import '../global_widgets/search_textfield.dart';
 
 class BottomNavBar extends ConsumerStatefulWidget {
@@ -108,7 +110,31 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
         appBar: CommonAppBar(
           title: _getAppBarTitle(pageIndex),
           listOfColors: _getAppBarColors(pageIndex),
-          actions: const [],
+          actions:  [
+            Consumer(
+              builder: (context, ref, _) {
+                final unreadCount = ref.watch(notificationProvider)
+                    .where((n) => !n.isRead)
+                    .length;
+
+                return IconButton(
+                  icon: Badge(
+                    label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
+                    child: const Icon(
+                      Icons.notifications,
+                      color: AppColors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context,
+                        NotificationScreen.routeName
+                    );
+                  },
+                );
+              },
+            ),
+          ],
           bottomWidget: pageIndex == 0
               ? Column(
             children: [

@@ -79,6 +79,7 @@ dependencies:
   crypto: ^3.0.6
   flutter_cache_manager: ^3.4.1
   flutter_local_notifications: ^19.3.0
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:
