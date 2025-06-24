@@ -30,18 +30,13 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   Future<void> followUnfollowUser(String uid, String followId) async {
     setLoader(true);
     Map<String, dynamic> data = {"userId": uid, "followId": followId};
-    print(data);
-    print("Sending request to API...");
     ApiResponse generateImageRes = await userFollowingRepo.followUnFollowUser(
       data,
     );
-    // var generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
     if (generateImageRes.status == Status.completed) {
       getUserProfileData(uid);
       setLoader(false);
     } else {
-      print(generateImageRes.status);
-
       setLoader(false);
     }
     notifyListeners();
@@ -49,34 +44,22 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> getUserProfileData(String uid) async {
     setLoader(true);
-    print(uid);
-    print("Sending request to API...");
     ApiResponse userProfileDataRes =
         await userFollowingRepo.getUserProfileData(uid);
-    print(uid);
-    print(AppApiPaths.getUserProData + uid);
     if (userProfileDataRes.status == Status.completed) {
       _userProfileData = userProfileDataRes.data as UserProfileModel;
-      print(_userProfileData!.user.email);
       setLoader(false);
     } else {
-      print(userProfileDataRes.status);
-
       setLoader(false);
     }
     notifyListeners();
   }
 
   Future<void> getOtherUserProfileData(String uid) async {
-    print("Sending request to API...");
     ApiResponse userProfileDataRes =
         await userFollowingRepo.getUserProfileData(uid);
     if (userProfileDataRes.status == Status.completed) {
       _otherUserProfileData = userProfileDataRes.data as UserProfileModel;
-      print("dddddddddddddddddddddddddddddddddddddddd");
-      print(_otherUserProfileData!.user.username);
-
-      print(_userProfileData!.user.email);
     } else {
       print(userProfileDataRes.status);
     }
@@ -87,31 +70,23 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     Map<String, dynamic> mapdata = {
       "userId": UserData.ins.userId,
     };
-    // var data = jsonEncode(mapdata);
-    // print(data);
     ApiResponse generateImageRes =
         await userFollowingRepo.updateUserCredits(mapdata);
     if (generateImageRes.status == Status.completed) {
-      print("ddddddddddddddddd");
     } else {
-      print(generateImageRes.status);
+      // print(generateImageRes.status);
     }
     notifyListeners();
   }
 
   Future<void> deductUserCredits() async {
-    print("00000000000000000000");
     Map<String, dynamic> mapdata = {
       "userId": UserData.ins.userId,
       "creditsToDeduct": 25
     };
-    print(mapdata);
     ApiResponse response = await userFollowingRepo.deductCredits(mapdata);
     if (response.status == Status.completed) {
       getUserProfileData(UserData.ins.userId ?? "");
-      print(response.data);
-      print(response.message);
-      print("11111111111111111111svvvvssssssssssss11");
     } else {
       print(response.status);
     }
@@ -120,19 +95,15 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> deActivateAccount(String uid) async {
     setLoader(true);
-    print(uid);
-    print("Sending request to API...");
     ApiResponse userProfileDataRes = await userFollowingRepo.deleteAccount(uid);
     if (userProfileDataRes.status == Status.completed) {
-      print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
       AppLocal.ins.clearUSerData(Hivekey.userId);
       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
       appSnackBar("Success", "Your account has been deleted successfully",
           AppColors.green);
       setLoader(false);
     } else {
-      print(userProfileDataRes.status);
-      appSnackBar("Error", "soemthing went wrong, please try again",
+      appSnackBar("Error", "something went wrong, please try again",
           AppColors.redColor);
       setLoader(false);
     }

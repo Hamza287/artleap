@@ -21,9 +21,6 @@ class MyCreationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("listofCreations: $listofCreations");
-    print("userName: $userName");
-    print("gggggggggggggggggggg");
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.darkBlue,

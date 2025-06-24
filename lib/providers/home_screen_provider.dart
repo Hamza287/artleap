@@ -120,7 +120,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     var userProfilePicture =
         AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
-    print(userProfilePicture);
+    // print(userProfilePicture);
     UserData.ins.setUserData(
         id: userid,
         name: userName,
@@ -129,22 +129,30 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  getUserCreations() async {
+  Future<void> getUserCreations() async {
     if (_page == 0) {
       _page = 1;
     } else {
       _page++;
     }
+
     ApiResponse response = await homeRepo.getUsersCreations(_page);
-    print(response);
-    print("dddddddddddddddd");
-    print(response.message);
-    print(response.data);
+
+    // Handle null response or null data
+    if (response.data == null) {
+      // You might want to add error handling here
+      notifyListeners();
+      return;
+    }
+
     _usersData = response.data;
-    _communityImagesList.addAll(_usersData!.images);
-    _filteredCreations = List.from(_communityImagesList);
-    print(_usersData!.message);
-    print("jjjjjjjjjjjjjjjjjj");
+
+    // Safely add images only if they exist
+    if (_usersData?.images != null) {
+      _communityImagesList.addAll(_usersData!.images);
+      _filteredCreations = List.from(_communityImagesList);
+    }
+
     notifyListeners();
   }
 

@@ -18,7 +18,6 @@ class AnalyticsService {
       name: 'screen_view',
       parameters: {'screen_name': screenName},
     );
-    print('Logged screen view: $screenName');
   }
 
   // Log button click
@@ -27,6 +26,5 @@ class AnalyticsService {
       name: 'button_click',
       parameters: {'button_name': buttonName},
     );
-    print('Logged button click: $buttonName');
   }
 }

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../shared/console.dart';
 import 'api_response.dart';
 
 class HandlingResponse {
@@ -20,8 +19,6 @@ class HandlingResponse {
   }
 
   static ApiResponse returnException(DioException exception) {
-    console(exception);
-    console('EXCEPTION');
     return switch (exception.type) {
       DioExceptionType.connectionTimeout =>
         ApiResponse.error('Connection Timeout'),

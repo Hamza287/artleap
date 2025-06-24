@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:Artleap.ai/domain/api_models/generate_high_q_model.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
@@ -120,19 +120,19 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       // "height": 1024
     };
     // var data = jsonEncode(mapdata);
-    print(mapdata);
-    print("Sending request to API...01010101001010101010101010101010");
+    // print(mapdata);
+    // print("Sending request to API...01010101001010101010101010101010");
     ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
     if (generateImageRes.status == Status.completed) {
       var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
       _generatedTextToImageData.addAll(generatedData.images);
       reference.read(userProfileProvider).deductUserCredits();
       setGenerateImageLoader(false);
-      print(_generatedTextToImageData);
-      print("ddddddddddddddddd");
+      // print(_generatedTextToImageData);
+      // print("ddddddddddddddddd");
     } else {
       setGenerateImageLoader(false);
-      print(generateImageRes.status);
+      // print(generateImageRes.status);
     }
     notifyListeners();
   }
@@ -159,7 +159,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> generateImgToImg() async {
     setGenerateImageLoader(true);
-    print(images);
+    // print(images);
     Map<String, dynamic> data = {
       "prompt": promptTextController.text,
       "userId": UserData.ins.userId,
@@ -168,8 +168,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       "presetStyle": selectedStyle,
       "num_images": selectedImageNumber,
     };
-    print(data);
-    print("Sending request to API...");
+    // print(data);
+    // print("Sending request to API...");
     ApiResponse generateImageRes =
         await generateImgToImgRepo.generateImgToImg(data, images);
     var generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
@@ -182,7 +182,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
       images = [];
     } else {
-      print(generateImageRes.status);
+      // print(generateImageRes.status);
       images = [];
 
       setGenerateImageLoader(false);

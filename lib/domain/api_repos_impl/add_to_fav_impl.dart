@@ -17,12 +17,8 @@ class AddToFavImpl extends AddToFavRepo {
       Response res = await artleapApiService.postJson(
           AppApiPaths.togglefavourite, data,
           enableLocalPersistence: enableLocalPersistence);
-      print(res.data);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      console('REPO : ${result.status}');
       if (result.status == Status.processing) {
-        print(result.data);
-        print("eeeeeeeeeeeeeeeeeeeeee");
         return ApiResponse.processing("ssssssssssssssss");
       } else if (result.status == Status.completed) {
         print(result.data);
@@ -42,15 +38,10 @@ class AddToFavImpl extends AddToFavRepo {
     try {
       Response res = await artleapApiService.get(AppApiPaths.getUserFav + uid,
           enableLocalPersistence: enableLocalPersistence);
-      print(res.data);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      console('REPO : ${result.status}');
       if (result.status == Status.processing) {
-        print(result.data);
-        print("eeeeeeeeeeeeeeeeeeeeee");
         return ApiResponse.processing("ssssssssssssssss");
       } else if (result.status == Status.completed) {
-        print(result.data);
         UserFavouritesModel data =
             await Isolate.run(() => UserFavouritesModel.fromJson(res.data));
         return ApiResponse.completed(data);

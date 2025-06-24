@@ -16,7 +16,6 @@ class ReqResRepoImpl extends ReqResRepo {
       Response res = await reqresApi.get(AppApiPaths.getReqResUsers,
           enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      console('REPO : ${result.status}');
       if (result.status == Status.completed) {
         ReqResUsersModel data =
             await Isolate.run(() => ReqResUsersModel.fromJson(res.data));

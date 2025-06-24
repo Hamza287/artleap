@@ -1,30 +1,36 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import '../../../../providers/watermark_provider.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
-class FullImageViewerScreen extends StatefulWidget {
+class FullImageViewerScreen extends ConsumerStatefulWidget {
   static const String routeName = "full_image_screen";
   final FullImageScreenParams? params;
 
   const FullImageViewerScreen({super.key, this.params});
 
   @override
-  _FullImageViewerScreenState createState() => _FullImageViewerScreenState();
+  ConsumerState<FullImageViewerScreen> createState() => _FullImageViewerScreenState();
 }
 
-class _FullImageViewerScreenState extends State<FullImageViewerScreen>
+class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     with SingleTickerProviderStateMixin {
   final TransformationController _transformationController =
-      TransformationController();
+  TransformationController();
 
   late AnimationController _animationController;
   Animation<Matrix4>? _animation;
 
-  final double _minScale = 1.0; // Your specified minScale
-  final double _maxScale = 5.0; // Your specified maxScale
+  final double _minScale = 1.0;
+  final double _maxScale = 5.0;
+
+  Uint8List? _originalImageBytes;
+  bool _isLoadingImage = true;
 
   @override
   void initState() {
@@ -37,6 +43,33 @@ class _FullImageViewerScreenState extends State<FullImageViewerScreen>
       _transformationController.value = _animation!.value;
     });
     AnalyticsService.instance.logScreenView(screenName: 'full image screen');
+
+    // Load the original image when the screen initializes
+    _loadOriginalImage();
+  }
+
+  Future<void> _loadOriginalImage() async {
+    try {
+      final response = await http.get(Uri.parse(widget.params!.Image!));
+      if (response.statusCode == 200) {
+        setState(() {
+          _originalImageBytes = response.bodyBytes;
+          _isLoadingImage = false;
+        });
+        // Apply watermark after loading the original image
+        if (_originalImageBytes != null) {
+          ref.read(watermarkProvider.notifier).applyWatermark(_originalImageBytes!);
+        }
+      } else {
+        setState(() {
+          _isLoadingImage = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoadingImage = false;
+      });
+    }
   }
 
   @override
@@ -50,25 +83,19 @@ class _FullImageViewerScreenState extends State<FullImageViewerScreen>
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
 
     if (currentScale > _minScale) {
-      // Animate back to the original scale
       _animateTransformation(Matrix4.identity());
     } else {
-      // Center zoom logic
-      final newScale = _maxScale / 2; // Example zoom level
+      final newScale = _maxScale / 2;
       final RenderBox renderBox = context.findRenderObject() as RenderBox;
       final Size screenSize = renderBox.size;
-
-      // Calculate the center point to zoom in on
       final Offset screenCenter =
-          Offset(screenSize.width / 2, screenSize.height / 2);
+      Offset(screenSize.width / 2, screenSize.height / 2);
 
-      // Create the target transformation matrix
       final targetMatrix = Matrix4.identity()
         ..translate(
             screenCenter.dx * (1 - newScale), screenCenter.dy * (1 - newScale))
         ..scale(newScale);
 
-      // Animate to the target matrix
       _animateTransformation(targetMatrix);
     }
   }
@@ -86,6 +113,8 @@ class _FullImageViewerScreenState extends State<FullImageViewerScreen>
 
   @override
   Widget build(BuildContext context) {
+    final watermarkState = ref.watch(watermarkProvider);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.darkBlue,
@@ -106,7 +135,19 @@ class _FullImageViewerScreenState extends State<FullImageViewerScreen>
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: CachedNetworkImage(
+                  child: _isLoadingImage
+                      ? const Center(child: CircularProgressIndicator())
+                      : watermarkState.isLoading
+                      ? CachedNetworkImage(
+                    imageUrl: widget.params!.Image!,
+                    fit: BoxFit.contain,
+                  )
+                      : watermarkState.watermarkedImage != null
+                      ? Image.memory(
+                    watermarkState.watermarkedImage!,
+                    fit: BoxFit.contain,
+                  )
+                      : CachedNetworkImage(
                     imageUrl: widget.params!.Image!,
                     fit: BoxFit.contain,
                   ),

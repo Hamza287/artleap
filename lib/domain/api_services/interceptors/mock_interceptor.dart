@@ -42,7 +42,6 @@ class MockInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    console("MOCK_INTERCEPTORRRRRRRRRRRRR");
     await _futureManifestLoaded;
     await Future.wait(_futuresBundleLoaded);
     Map<String, dynamic>? route = _routes[options.path];

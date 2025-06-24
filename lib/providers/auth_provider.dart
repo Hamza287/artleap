@@ -103,9 +103,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
         appSnackBar("Success", "Sign up successful", AppColors.green);
-        print(userNameController.text);
-        print("sssssssssssssssssssss");
-        print(userNameController.text);
+        // print(userNameController.text);
+        // print("sssssssssssssssssssss");
+        // print(userNameController.text);
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
         stopLoading(LoginMethod.signup);
       }
@@ -145,20 +145,32 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   signInWithGoogle() async {
     startLoading(LoginMethod.google);
     AuthResult? userCred = await _authServices.signInWithGoogle();
-    if (isNotNull(userCred)) {
-      appSnackBar("Success", "SignIn successfully!",
-          const Color.fromARGB(255, 113, 235, 117));
 
-      print("lllllllllllllllllllllllllllllllllllll");
+    if (userCred != null &&
+        userCred.userCredential != null &&
+        userCred.userCredential!.user != null) {
 
-      print(userCred!.userCredential!.user!.uid);
-      print(userCred.userCredential!.user!.displayName);
-      googleLogin(
-          userCred.userCredential!.user!.displayName!,
-          userCred.userCredential!.user!.email!,
-          userCred.userCredential!.user!.uid,
-          userCred.userCredential!.user!.photoURL!);
+      final user = userCred.userCredential!.user!;
+      final displayName = user.displayName ?? 'Unknown'; // Provide default if null
+      final email = user.email;
+      final uid = user.uid;
+      final photoURL = user.photoURL ?? ''; // Provide default if null
+
+      if (email != null) {
+        appSnackBar("Success", "SignIn successfully!",
+            const Color.fromARGB(255, 113, 235, 117));
+
+        print(uid);
+        print(displayName);
+
+        googleLogin(displayName, email, uid, photoURL);
+      } else {
+        appSnackBar("Error", "Email is required for login", Colors.red);
+      }
+    } else {
+      appSnackBar("Error", "Failed to sign in with Google", Colors.red);
     }
+
     stopLoading(LoginMethod.google);
     notifyListeners();
   }
@@ -254,31 +266,31 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     }
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
+    // print(userRes.data);
+    // print(userRes.message);
+    // print(userRes.status);
+    // print("lllllllllllllllllll");
   }
 
   userSignup(String userName, String email, String password) async {
-    print("entryyyyyyyyyyyyyy");
+    // print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
       "password": password,
     };
-    print(body);
-    print("kkkkkkkkkkkkkkkkkkk");
+    // print(body);
+    // print("kkkkkkkkkkkkkkkkkkk");
     ApiResponse userRes = await authRepo.signup(body: body);
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
+    // print(userRes.data);
+    // print(userRes.message);
+    // print(userRes.status);
+    // print("lllllllllllllllllll");
   }
 
   googleLogin(
       String userName, String email, String googleId, String profilePic) async {
-    print("entryyyyyyyyyyyyyy");
+    // print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
@@ -291,11 +303,11 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       reference
           .read(userProfileProvider)
           .getUserProfileData(userRes.data["user"]['userId']);
-      print(userRes);
-      print(userRes.data);
-      print(userRes.data["user"]['userId']);
-      print(userRes.data["user"]['username']);
-      print(userRes.data["user"]['email']);
+      // print(userRes);
+      // print(userRes.data);
+      // print(userRes.data["user"]['userId']);
+      // print(userRes.data["user"]['username']);
+      // print(userRes.data["user"]['email']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
       AppLocal.ins
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
@@ -307,15 +319,15 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     Future.delayed(const Duration(seconds: 1), () {
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     });
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
+    // print(userRes.data);
+    // print(userRes.message);
+    // print(userRes.status);
+    // print("lllllllllllllllllll");
   }
 
   appleLogin(
       String userName, String email, String appleId, String profilePic) async {
-    print("entryyyyyyyyyyyyyy");
+    // print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
@@ -328,11 +340,11 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       reference
           .read(userProfileProvider)
           .getUserProfileData(userRes.data["user"]['userId']);
-      print(userRes);
-      print(userRes.data);
-      print(userRes.data["user"]['userId']);
-      print(userRes.data["user"]['username']);
-      print(userRes.data["user"]['email']);
+      // print(userRes);
+      // print(userRes.data);
+      // print(userRes.data["user"]['userId']);
+      // print(userRes.data["user"]['username']);
+      // print(userRes.data["user"]['email']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
       AppLocal.ins
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
@@ -344,9 +356,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     Future.delayed(const Duration(seconds: 1), () {
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     });
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
+    // print(userRes.data);
+    // print(userRes.message);
+    // print(userRes.status);
+    // print("lllllllllllllllllll");
   }
 }

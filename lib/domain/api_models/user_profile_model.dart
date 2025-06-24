@@ -9,9 +9,9 @@ class UserProfileModel {
   late final User user;
 
   UserProfileModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    message = json['message'];
-    user = User.fromJson(json['user']);
+    success = json['success'] ?? false;
+    message = json['message'] ?? '';
+    user = User.fromJson(json['user'] ?? {});
   }
 
   Map<String, dynamic> toJson() {
@@ -55,19 +55,18 @@ class User {
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['_id'] ?? "";
-    username = json['username'] ?? "";
+    username = json['username'] is String ? json['username'] as String : "";
     email = json['email'] ?? "";
     password = json['password'] ?? "";
-    favorites = List.castFrom<dynamic, String>(json['favorites']);
-    profilePic = json['profilePic'];
-    dailyCredits = json['dailyCredits'] ?? 75;
-    isSubscribed = json['isSubscribed'];
-    images = List.from(json['images']).map((e) => Images.fromJson(e)).toList();
-    followers = List.castFrom<dynamic, dynamic>(json['followers']);
-    following =
-        List.from(json['following']).map((e) => Following.fromJson(e)).toList();
-    createdAt = json['createdAt'];
-    V = json['__v'];
+    favorites = List.castFrom<dynamic, String>(json['favorites'] ?? []);
+    profilePic = json['profilePic'] ?? "";
+    dailyCredits = json['dailyCredits'] ?? 150;
+    isSubscribed = json['isSubscribed'] ?? false;
+    images = List.from(json['images'] ?? []).map((e) => Images.fromJson(e ?? {})).toList();
+    followers = List.castFrom<dynamic, dynamic>(json['followers'] ?? []);
+    following = List.from(json['following'] ?? []).map((e) => Following.fromJson(e ?? {})).toList();
+    createdAt = json['createdAt'] ?? "";
+    V = json['__v'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -112,15 +111,15 @@ class Images {
   late final int V;
 
   Images.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    userId = json['userId'];
-    username = json['username'];
-    creatorEmail = json['creatorEmail'];
-    imageUrl = json['imageUrl'];
-    createdAt = json['createdAt'];
+    id = json['_id'] ?? "";
+    userId = json['userId'] ?? "";
+    username = json['username'] is String ? json['username'] as String : "";
+    creatorEmail = json['creatorEmail'] ?? "";
+    imageUrl = json['imageUrl'] ?? "";
+    createdAt = json['createdAt'] ?? "";
     modelName = json['modelName'] ?? "";
-    prompt = json['prompt'];
-    V = json['__v'];
+    prompt = json['prompt'] ?? "";
+    V = json['__v'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -169,19 +168,19 @@ class Following {
   late final int V;
 
   Following.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    username = json['username'];
-    email = json['email'];
-    password = json['password'];
-    favorites = List.castFrom<dynamic, String>(json['favorites']);
-    profilePic = json['profilePic'];
-    dailyCredits = json['dailyCredits'];
-    isSubscribed = json['isSubscribed'];
-    images = List.castFrom<dynamic, String>(json['images']);
-    followers = List.castFrom<dynamic, String>(json['followers']);
-    following = List.castFrom<dynamic, dynamic>(json['following']);
-    createdAt = json['createdAt'];
-    V = json['__v'];
+    id = json['_id'] ?? "";
+    username = json['username'] is String ? json['username'] as String : "";
+    email = json['email'] ?? "";
+    password = json['password'] ?? "";
+    favorites = List.castFrom<dynamic, String>(json['favorites'] ?? []);
+    profilePic = json['profilePic'] ?? "";
+    dailyCredits = json['dailyCredits'] ?? 0;
+    isSubscribed = json['isSubscribed'] ?? false;
+    images = List.castFrom<dynamic, String>(json['images'] ?? []);
+    followers = List.castFrom<dynamic, String>(json['followers'] ?? []);
+    following = List.castFrom<dynamic, dynamic>(json['following'] ?? []);
+    createdAt = json['createdAt'] ?? "";
+    V = json['__v'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {

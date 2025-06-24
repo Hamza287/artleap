@@ -17,15 +17,10 @@ class FavouriteRepoImpl extends FavouritRepo {
       Response res = await artleapApiService.get(
           AppApiPaths.getUserProData + uid,
           enableLocalPersistence: enableLocalPersistence);
-      print(res.data);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      console('REPO : ${result.status}');
       if (result.status == Status.processing) {
-        print(result.data);
-        print("eeeeeeeeeeeeeeeeeeeeee");
         return ApiResponse.processing("ssssssssssssssss");
       } else if (result.status == Status.completed) {
-        print(result.data);
         var data = await Isolate.run(() => res.data);
         return ApiResponse.completed(data);
       } else {

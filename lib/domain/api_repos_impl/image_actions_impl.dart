@@ -12,13 +12,9 @@ class ImageActionsImpl extends ImageActionsRepo {
     try {
       Response res =
           await artleapApiService.delete(AppApiPaths.deleteImage + imageId!);
-      print(AppConstants.artleapBaseUrl + AppApiPaths.deleteImage + imageId);
       ApiResponse result = HandlingResponse.returnResponse(res);
       print(res);
-      // console('REPO : ${result.status}');
       if (result.status == Status.completed) {
-        // DummyModel data =
-        //     await Isolate.run(() => DummyModel.fromJson(res.data));
         return ApiResponse.completed(res.data);
       } else {
         return result;

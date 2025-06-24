@@ -1,16 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_screen.dart';
-import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import 'package:video_player/video_player.dart';
-
-import '../providers/ads_provider.dart';
 import '../providers/user_profile_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -26,10 +21,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(adsProvider).loadNativeAd();
-      ref.read(adsProvider).loadBannerAd();
-    });
+    // Future.microtask(() {
+    //   ref.read(adsProvider).loadNativeAd();
+    //   ref.read(adsProvider).loadBannerAd();
+    // });
     String userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     String userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,10 +36,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     Future.delayed(
       const Duration(seconds: 5),
       () {
-        print(userid);
-        print(userName);
-        print(userProfilePicture);
-        print(userEmail);
         if (userid.isNotEmpty) {
           UserData.ins.setUserData(
               id: userid,

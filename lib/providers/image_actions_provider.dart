@@ -39,20 +39,24 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<void> deleteImage(String imageId) async {
+  Future<bool> deleteImage(String imageId) async {
     loadingState = ImageActionLoading.deleting;
     notifyListeners();
 
     try {
       ApiResponse userRes = await imageActionRepo.deleteImage(imageId: imageId);
-
       if (userRes.status == Status.completed) {
         appSnackBar("Success", "Image deleted successfully", AppColors.green);
+        return true;
       }
+    } catch (e) {
+      appSnackBar('Error', e.toString(), AppColors.redColor);
     } finally {
       loadingState = ImageActionLoading.none;
       notifyListeners();
     }
+
+    return false;
   }
 
   Future<void> reportImage(

@@ -17,10 +17,7 @@ class FreepikAiGenImpl extends FreepikAiGenRepo {
       Response res = await artleapApiService.postJson(
           AppApiPaths.generateImage, data,
           enableLocalPersistence: enableLocalPersistence);
-      print(res);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      print(result);
-      console('REPO : ${result.status}');
       if (result.status == Status.completed) {
         TextToImageModel data =
             await Isolate.run(() => TextToImageModel.fromJson(res.data));
