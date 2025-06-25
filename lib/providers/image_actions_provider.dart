@@ -4,6 +4,7 @@ import '../domain/api_services/api_response.dart';
 import '../domain/base_repo/base_repo.dart';
 import 'package:flutter/material.dart';
 
+import '../presentation/views/home_section/bottom_nav_bar.dart';
 import '../shared/app_snack_bar.dart';
 import '../shared/constants/app_colors.dart';
 
@@ -39,14 +40,18 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<bool> deleteImage(String imageId) async {
+  Future<bool> deleteImage(BuildContext context,String? imageId) async {
     loadingState = ImageActionLoading.deleting;
     notifyListeners();
 
     try {
-      ApiResponse userRes = await imageActionRepo.deleteImage(imageId: imageId);
+      ApiResponse userRes = await imageActionRepo.deleteImage(imageId: imageId!);
       if (userRes.status == Status.completed) {
         appSnackBar("Success", "Image deleted successfully", AppColors.green);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BottomNavBar()),
+        );
         return true;
       }
     } catch (e) {
@@ -55,7 +60,6 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
       loadingState = ImageActionLoading.none;
       notifyListeners();
     }
-
     return false;
   }
 

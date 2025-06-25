@@ -15,7 +15,7 @@ class AppApiPaths {
   static const String togglefavourite = "toggle-favorite";
   static const String userCredits = "user/credits";
   static const String deductCredits = "user/deductCredits";
-  static const String deleteImage = "delete/";
+  static const String deleteImage = "images/delete/";
   static const String reportImage = "images/";
   static const String deleteAccount = "delete/";
 }

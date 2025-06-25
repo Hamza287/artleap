@@ -1,12 +1,10 @@
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-
-import '../../../../providers/home_screen_provider.dart';
+import '../../../../providers/refresh_provider.dart';
 import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
-import '../../../../shared/constants/user_data.dart';
 
 class DeleteAlertDialog extends ConsumerWidget {
   final String? imageId;
@@ -27,9 +25,9 @@ class DeleteAlertDialog extends ConsumerWidget {
           ),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             Navigator.pop(context, false);
-            ref.read(imageActionsProvider).deleteImage(imageId!);
+            await ref.read(imageActionsProvider).deleteImage(context,imageId!);
           },
           child: Text(
             'Yes',

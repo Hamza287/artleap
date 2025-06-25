@@ -12,7 +12,9 @@ import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';
+import '../../../../providers/refresh_provider.dart';
 import '../../../../shared/constants/app_assets.dart';
+import '../../../../shared/constants/user_data.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 import '../../../google_ads/interstetial_ad.dart';
 
@@ -38,6 +40,15 @@ class _PromptOrReferenceScreenState
   Widget build(BuildContext context) {
     final userProfile = ref.watch(userProfileProvider).userProfileData;
     final generateImageProviderState = ref.watch(generateImageProvider);
+    final shouldRefresh = ref.watch(refreshProvider);
+
+    if (shouldRefresh && UserData.ins.userId != null) {
+      Future.microtask(() {
+        ref
+            .read(userProfileProvider)
+            .getUserProfileData(UserData.ins.userId!);
+      });
+    }
 
     return PopScope(
       canPop: false,
