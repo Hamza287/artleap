@@ -20,15 +20,11 @@ class AuthServices {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      print(result.user);
-      print("peeeeee");
       return UserAuthResult(userCredential: result);
     } on FirebaseAuthException catch (e) {
       console(e);
       AuthResultStatus status = AuthExceptionHandler.handleException(e);
       String message = AuthExceptionHandler.generateExceptionMessage(status);
-      // showSnackbar(message, bgColor: AppColors.red);
-      console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
       return UserAuthResult(
           authResultState: AuthResultStatus.error, message: message);
     }
@@ -42,14 +38,8 @@ class AuthServices {
       AppLocal.ins.setUserData(HiveKeys.userId, result.user!.uid);
       return UserAuthResult(userCredential: result);
     } on FirebaseAuthException catch (e) {
-      console(e);
-      console(e);
-      // String errormsg = e.toString();
-      // String firebaseMsg = errormsg.substring(errormsg.indexOf(']') + 2);
       AuthResultStatus status = AuthExceptionHandler.handleException(e);
       String message = AuthExceptionHandler.generateExceptionMessage(status);
-      // showSnackbar(message, bgColor: AppColors.red);
-      console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
       return UserAuthResult(
           authResultState: AuthResultStatus.error, message: message);
     }
@@ -65,11 +55,11 @@ class AuthServices {
           AppColors.green);
       // return UserAuthResult(authType: AuthType.email, userCredential: user);
     } on FirebaseAuthException catch (e) {
-      console(e);
+      // console(e);
       AuthResultStatus status = AuthExceptionHandler.handleException(e);
       String message = AuthExceptionHandler.generateExceptionMessage(status);
       appSnackBar("Failed", message, AppColors.redColor);
-      console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
+      // console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
       // return null;
     }
   }
@@ -78,18 +68,10 @@ class AuthServices {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
         scopes: ["profile", "email"],
-        // clientId: ,
-        //  scopes: <String>[
-        // 'email',
-        //   'https://www.googleapis.com/auth/contacts.readonly',
-        // ],
       ).signIn().catchError((error) {
-        console(error);
-        console('gooogle user cancelledddddddd');
         return null;
       });
       if (googleUser == null) {
-        console('gooogle user nulllllllllllllllllll');
         return null;
       }
       final GoogleSignInAuthentication? googleAuth =
@@ -101,8 +83,6 @@ class AuthServices {
           userCredential:
               await FirebaseAuth.instance.signInWithCredential(credential));
     } catch (e) {
-      console(e);
-      console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
       return null;
     }
   }
@@ -145,40 +125,6 @@ class AuthServices {
     final digest = sha256.convert(bytes);
     return digest.toString();
   }
-  // Future<AuthResult?> signInWithFacebook() async {
-  //   try {
-  //     final result = await FacebookAuth.i.login(
-  //       permissions: [
-  //         'email',
-  //         'public_profile',
-  //         // 'user_birthday',
-  //         // 'user_friends',
-  //         // 'user_gender',
-  //         // 'user_link'
-  //       ],
-  //     );
-  //     if (result.status == LoginStatus.success) {
-  //       final userData = await FacebookAuth.i.getUserData(
-  //           fields:
-  //               "name,email,picture.width(200),birthday,friends,gender,link");
-  //       final OAuthCredential credential =
-  //           FacebookAuthProvider.credential(result.accessToken!.tokenString);
-
-  //       // return await FirebaseAuth.instance.signInWithCredential(credential);
-  //       return AuthResult(
-  //           fbData: userData,
-  //           userCredential:
-  //               await FirebaseAuth.instance.signInWithCredential(credential));
-  //     }
-  //     console(result.message);
-  //     console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
-  //     return null;
-  //   } catch (e) {
-  //     console(e);
-  //     console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
-  //     return null;
-  //   }
-  // }
 }
 
 // enum AuthResultState { success, error, emailNotVerified }

@@ -18,6 +18,7 @@ class AppConstants {
   static const String stableDefKey =
       "q888ISOb2v6zvmbLTb7tbSyiMrVfzZ3A8lQrp2yNaI55m5OYujQqPmlOGfuf";
 
+  // static const String artleapBaseUrl = "http://192.168.11.204:8000/api/";
   static const String artleapBaseUrl = "http://43.205.54.198:8000/api/";
 }
 

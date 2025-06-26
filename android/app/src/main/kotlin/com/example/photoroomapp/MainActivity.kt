@@ -7,8 +7,6 @@ import android.util.Base64
 import android.util.Log
 import androidx.core.view.WindowCompat
 import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
 import java.security.MessageDigest
 
 class MainActivity : FlutterActivity() {
@@ -16,7 +14,7 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ✅ Enable edge-to-edge experience for Android 11+
+        // Enable edge-to-edge experience for Android 11+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
         }
@@ -35,20 +33,5 @@ class MainActivity : FlutterActivity() {
         } catch (e: Exception) {
             Log.e("KeyHash:", "Error generating key hash", e)
         }
-    }
-
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        // Register your custom NativeAdFactory
-        GoogleMobileAdsPlugin.registerNativeAdFactory(
-            flutterEngine,
-            "listTile", // factoryId used in Dart
-            ListTileNativeAdFactory(layoutInflater) // The class you created
-        )
-    }
-
-    override fun onDestroy() {
-        GoogleMobileAdsPlugin.unregisterNativeAdFactory(flutterEngine!!, "listTile")
-        super.onDestroy()
     }
 }

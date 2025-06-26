@@ -7,6 +7,7 @@ import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/fav
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:shimmer/shimmer.dart' show Shimmer;
 
 import '../../../../providers/add_image_to_fav_provider.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';
@@ -22,22 +23,21 @@ class FavouritesScreen extends ConsumerStatefulWidget {
       _FavouritesScreenState();
 }
 
+// ... (keep all your existing imports)
+
 class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    ref.read(favouriteProvider).getUserFav(UserData.ins.userId!);
-    AnalyticsService.instance.logScreenView(screenName: 'favourite screen');
-  }
+  // ... (keep your existing initState)
 
   @override
   Widget build(BuildContext context) {
+    final favouriteState = ref.watch(favouriteProvider);
+    final size = MediaQuery.of(context).size;
+
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
         if (!didPop) {
-          ref.watch(bottomNavBarProvider).setPageIndex(0);
+          ref.read(bottomNavBarProvider).setPageIndex(0);
         }
       },
       child: AppBackgroundWidget(
@@ -45,36 +45,151 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
           padding: const EdgeInsets.only(left: 15, right: 15),
           child: RefreshIndicator(
             backgroundColor: AppColors.darkBlue,
-            onRefresh: () {
-              return ref
-                  .read(favouriteProvider)
-                  .getUserFav(UserData.ins.userId!);
+            onRefresh: () async {
+              try {
+                await ref.read(favouriteProvider).getUserFav(UserData.ins.userId!);
+              } catch (e) {
+                debugPrint('Refresh error: $e');
+              }
             },
             child: SingleChildScrollView(
-              physics:
-                  const AlwaysScrollableScrollPhysics(), // Allows scroll refresh
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   ResultsTextDropDownWidget(),
                   20.spaceY,
-                  ref.watch(favouriteProvider).usersFavourites == null
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.white,
-                          ),
-                        )
+                  favouriteState.isLoading
+                      ? Center(
+                    child: LoadingAnimationWidget.threeArchedCircle(
+                      color: AppColors.white,
+                      size: 30,
+                    ),
+                  )
+                      : favouriteState.usersFavourites == null ||
+                      favouriteState.usersFavourites!.favorites.isEmpty
+                      ? _buildEmptyState(size)
                       : ResultContainerWidget(
-                          data: ref
-                              .watch(favouriteProvider)
-                              .usersFavourites!
-                              .favorites,
-                        )
+                    data: favouriteState.usersFavourites!.favorites,
+                  ),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEmptyState(Size size) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: size.height * 0.15),
+        // Animated gradient container
+        Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF6A11CB),
+                Color(0xFF2575FC),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.purple.withOpacity(0.4),
+                blurRadius: 20,
+                spreadRadius: 5,
+              )
+            ],
+          ),
+          child: Center(
+            child: Icon(
+              Icons.favorite_border_rounded,
+              size: 80,
+              color: Colors.white.withOpacity(0.9),
+            ),
+          ),
+        ),
+        const SizedBox(height: 30),
+        // Animated text
+        TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 800),
+          tween: Tween<double>(begin: 0, end: 1),
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.scale(
+                scale: value,
+                child: child,
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              Text(
+                'No Favorites Yet',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 10,
+                      color: Colors.purple.withOpacity(0.7),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Start saving your favorite creations\nand they will appear here',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 30),
+        // Shimmering button
+        Shimmer.fromColors(
+          baseColor: Colors.purple[300]!,
+          highlightColor: Colors.blue[200]!,
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigate to explore screen
+              ref.read(bottomNavBarProvider).setPageIndex(1);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.purple.withOpacity(0.5),
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 15,
+              ),
+            ),
+            child: const Text(
+              'Explore Creations',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

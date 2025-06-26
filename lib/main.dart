@@ -1,13 +1,11 @@
 import 'dart:async';
+import 'package:Artleap.ai/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-// import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:Artleap.ai/firebase_options.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/shared/theme/light_theme.dart';
@@ -23,13 +21,20 @@ import 'shared/theme/dark_theme.dart';
 void main() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await MobileAds.instance.initialize();
+
+    // Initialize Firebase first
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    // Initialize other services
     await AppLocal.ins.initStorage();
     await DI.initDI();
+
+    // Set up error handling
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+    // Configure system UI
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.transparent,
@@ -38,20 +43,36 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ));
 
+    // Run the app
     runApp(const ProviderScope(child: MyApp()));
   }, (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
   });
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize notification service after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationService.initialize(context, ref);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Artleap.ai',
       themeMode: ref.watch(themeProvider),
+      debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
       supportedLocales: AppLocalization.supportedLocales,

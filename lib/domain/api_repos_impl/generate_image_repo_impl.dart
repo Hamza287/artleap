@@ -15,10 +15,7 @@ class GenerateImageImpl extends GenerateImageRepo {
           enableLocalPersistence: enableLocalPersistence);
       print(res.data);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      console('REPO : ${result.status}');
       if (result.status == Status.processing) {
-        print(result.data);
-        print("eeeeeeeeeeeeeeeeeeeeee");
         return ApiResponse.processing("ssssssssssssssss");
       } else if (result.status == Status.completed) {
         print(result.data);

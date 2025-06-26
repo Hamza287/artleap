@@ -31,9 +31,6 @@ class HomeRepoImpl extends HomeRepo {
       Response res = await artleapApiService.get(AppConstants.artleapBaseUrl +
           AppApiPaths.getUsersCreations +
           pageNo.toString());
-      print(AppConstants.artleapBaseUrl +
-          AppApiPaths.getUsersCreations +
-          pageNo.toString());
       ApiResponse result = HandlingResponse.returnResponse(res);
       print(res);
       if (result.status == Status.completed) {

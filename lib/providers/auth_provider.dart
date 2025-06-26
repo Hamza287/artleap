@@ -1,4 +1,3 @@
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -168,15 +167,15 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     startLoading(LoginMethod.apple);
     UserCredential? userCred = await _authServices.signInWithApple();
     if (isNotNull(userCred)) {
+      appSnackBar("Success", "SignIn successfully!",
+          const Color.fromARGB(255, 113, 235, 117));
+
       print("lllllllllllllllllllllllllllllllllllll");
 
       print(userCred!.user!.uid);
       print(userCred.user!);
-      appleLogin(
-          userCred.user!.displayName ?? "john doe",
-          userCred.user!.email ?? "",
-          userCred.user!.uid,
-          userCred.user!.photoURL ?? "");
+      appleLogin(userCred.user!.displayName!, userCred.user!.email!,
+          userCred.user!.uid, userCred.user!.photoURL!);
       // googleLogin(
       //     userCred.userCredential!.user!.displayName!,
       //     userCred.userCredential!.user!.email!,
@@ -330,7 +329,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           .read(userProfileProvider)
           .getUserProfileData(userRes.data["user"]['userId']);
       print(userRes);
-      print("lllllllllllllllllll");
       print(userRes.data);
       print(userRes.data["user"]['userId']);
       print(userRes.data["user"]['username']);
@@ -340,11 +338,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
       AppLocal.ins
           .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
-      AppLocal.ins.setUserData(Hivekey.userProfielPic,
-          userRes.data["user"]['profilePic'] ?? AppAssets.artstyle1);
+      AppLocal.ins.setUserData(
+          Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
     }
-    appSnackBar("Success", "SignIn successfully!",
-        const Color.fromARGB(255, 113, 235, 117));
     Future.delayed(const Duration(seconds: 1), () {
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     });

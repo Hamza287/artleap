@@ -115,11 +115,18 @@ class _TrendingCreationsWidgetState
                   itemCount: filteredList.length + 1,
                   itemBuilder: (context, index) {
                     final adIndex = 10;
-                    if (index == adIndex) {
-                      return const NativeAdWidget();
-                    }
+                    // if (index == adIndex) {
+                    //   return const NativeAdWidget();
+                    // }
                     final imageIndex = index > adIndex ? index - 1 : index;
+                    if (imageIndex >= filteredList.length) {
+                      return const SizedBox.shrink();
+                    }
+
                     final image = filteredList[imageIndex];
+                    if (image == null) {
+                      return const SizedBox.shrink();
+                    }
                     return VisibilityDetector(
                       key: Key('image-${image!.id}'),
                       onVisibilityChanged: (info) {

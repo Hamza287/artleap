@@ -39,10 +39,12 @@ class PromptWidget extends ConsumerWidget {
                   ),
                   5.spaceX,
                   Text(
-                    "${ref.watch(userProfileProvider).userProfileData!.user.dailyCredits} Credits",
+                    "${ref.watch(userProfileProvider).userProfileData?.user.dailyCredits ?? 0} Credits",
                     style: AppTextstyle.interMedium(
-                        color: AppColors.white, fontSize: 11),
-                  ),
+                      color: AppColors.white,
+                      fontSize: 11,
+                    ),
+                  )
                 ],
               ),
             ),

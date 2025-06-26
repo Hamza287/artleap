@@ -12,14 +12,10 @@ class LoadModelsListImpl extends LoadModelsListRepo {
   @override
   Future<ApiResponse> getModelsListData(Map<String, dynamic> data,
       {bool enableLocalPersistence = false}) async {
-    print(data);
-    print("dddddddddddd");
     try {
       Response res = await getModelsListApi.postJson("", data,
           enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      console('REPO : ${result.status}');
-      print(res.data);
       if (result.status == Status.completed) {
         List<ModelsListModel> modelsList = await Isolate.run(() =>
             (res.data as List)

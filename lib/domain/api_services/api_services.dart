@@ -28,8 +28,8 @@ class ApiServices extends DioCore {
     dynamic data, {
     bool enableLocalPersistence = false,
   }) async {
-    print(path);
-    print(data);
+    // print(path);
+    // print(data);
     return await dio.post(path,
         data: data,
         options: _options(
@@ -50,8 +50,8 @@ class ApiServices extends DioCore {
           MultipartFile.fromFileSync(image.path)));
     }
     images = [];
-    print(images);
-    print("ggggggggggggggggggg");
+    // print(images);
+    // print("ggggggggggggggggggg");
     return await dio.post(path,
         data: formData, options: _options(enableLocalPersistence));
   }

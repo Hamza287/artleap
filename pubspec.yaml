@@ -41,13 +41,13 @@ dependencies:
   get_it: ^7.6.7
   dio: ^5.4.2+1
   template_expressions: ^3.1.5
-  intl: ^0.19.0
+  intl: 0.19.0
   flutter_riverpod: ^2.5.1
   connectivity_plus: ^6.0.1
   flutter_staggered_grid_view: ^0.7.0
   flutter_localizations:
     sdk: flutter
-  firebase_core: ^3.8.0
+  firebase_core: ^3.14.0
   firebase_auth: ^5.3.3
   # cloud_firestore: ^5.5.0
   google_sign_in: ^6.2.0
@@ -60,14 +60,14 @@ dependencies:
   extended_wrap: ^0.1.5
   cached_network_image: ^3.4.1
   like_button: ^2.0.5
-  permission_handler: ^11.0.1
+  permission_handler: ^12.0.0+1
   share_plus: ^10.0.2
   another_flushbar: ^1.12.30
   # in_app_purchase: ^3.0.6
   flutter_launcher_icons: ^0.14.1
   saver_gallery: ^4.0.0
   firebase_crashlytics: ^4.2.0
-  google_mobile_ads: ^5.2.0
+#  google_mobile_ads: ^5.2.0
   firebase_messaging: ^15.2.0
   flutter_image_compress: ^2.4.0
   visibility_detector: ^0.4.0+2
@@ -77,6 +77,9 @@ dependencies:
   url_launcher: ^6.3.0
   sign_in_with_apple: ^7.0.1
   crypto: ^3.0.6
+  flutter_cache_manager: ^3.4.1
+  flutter_local_notifications: ^19.3.0
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:
@@ -110,6 +113,7 @@ flutter:
     - assets/images/
     - assets/langs/
     - assets/json/
+    - assets/watermark/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
