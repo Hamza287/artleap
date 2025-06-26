@@ -140,7 +140,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
     // Handle null response or null data
     if (response.data == null) {
-      // You might want to add error handling here
       notifyListeners();
       return;
     }

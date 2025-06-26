@@ -1,7 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'generate_image_provider.dart';
-
 class RefreshNotifier extends StateNotifier<bool> {
   RefreshNotifier() : super(false);
 

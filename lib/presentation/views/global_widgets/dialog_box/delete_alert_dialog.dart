@@ -28,7 +28,7 @@ class DeleteAlertDialog extends ConsumerWidget {
           onPressed: () async {
             final success = await ref.read(imageActionsProvider).deleteImage(imageId!);
             if (success) {
-              Navigator.pop(context);
+              // Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const BottomNavBar()),

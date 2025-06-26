@@ -69,7 +69,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   GenerateImageProvider(this.reference) {
     if (freePikStyles.isNotEmpty) {
-      _selectedStyle = freePikStyles[0]['title'];
+      _selectedStyle = freePikStyles[13]['title'];
     }
   }
   set selectedImageNumber(int? value) {

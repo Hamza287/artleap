@@ -52,7 +52,8 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
         status = await Permission.photos.request();
         if (!status.isGranted) {
           if (context.mounted) {
-            appSnackBar('Error', 'Gallery access is required', Colors.red);
+            appSnackBar('Error', 'Gallery access is needed to select reference images. '
+                'Please enable it in app settings.', Colors.red);
           }
           return;
         }

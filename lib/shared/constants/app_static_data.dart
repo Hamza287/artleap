@@ -69,7 +69,7 @@ List<Map<String, String>> textToImageStyles = [
   {"title": "FASHION", "icon": AppAssets.leo_fashion},
   {"title": "FILM", "icon": AppAssets.leo_film},
   {"title": "FOOD", "icon": AppAssets.leo_food},
-  // {"title": "GENERAL", "icon": AppAssets.photo},
+  {"title": "GENERAL", "icon": AppAssets.photo},
   {"title": "HDR", "icon": AppAssets.leo_hdr},
   {"title": "ILLUSTRATION", "icon": AppAssets.leo_illustration},
   // {"title": "LEONARDO", "icon": AppAssets.leo},
