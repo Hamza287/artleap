@@ -103,9 +103,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
         appSnackBar("Success", "Sign up successful", AppColors.green);
-        print(userNameController.text);
-        print("sssssssssssssssssssss");
-        print(userNameController.text);
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
         stopLoading(LoginMethod.signup);
       }
@@ -145,19 +142,16 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   signInWithGoogle() async {
     startLoading(LoginMethod.google);
     AuthResult? userCred = await _authServices.signInWithGoogle();
-    if (isNotNull(userCred)) {
+    if (userCred != null && userCred.userCredential != null && userCred.userCredential!.user != null) {
+      final user = userCred.userCredential!.user!;
       appSnackBar("Success", "SignIn successfully!",
           const Color.fromARGB(255, 113, 235, 117));
 
-      print("lllllllllllllllllllllllllllllllllllll");
-
-      print(userCred!.userCredential!.user!.uid);
-      print(userCred.userCredential!.user!.displayName);
-      googleLogin(
-          userCred.userCredential!.user!.displayName!,
-          userCred.userCredential!.user!.email!,
-          userCred.userCredential!.user!.uid,
-          userCred.userCredential!.user!.photoURL!);
+      await googleLogin(
+          user.displayName ?? 'User',
+          user.email ?? '',
+          user.uid,
+          user.photoURL ?? '');
     }
     stopLoading(LoginMethod.google);
     notifyListeners();
@@ -170,50 +164,16 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Success", "SignIn successfully!",
           const Color.fromARGB(255, 113, 235, 117));
 
-      print("lllllllllllllllllllllllllllllllllllll");
-
       print(userCred!.user!.uid);
       print(userCred.user!);
       appleLogin(userCred.user!.displayName!, userCred.user!.email!,
           userCred.user!.uid, userCred.user!.photoURL!);
-      // googleLogin(
-      //     userCred.userCredential!.user!.displayName!,
-      //     userCred.userCredential!.user!.email!,
-      //     userCred.userCredential!.user!.uid,
-      //     userCred.userCredential!.user!.photoURL!);
     }
     stopLoading(LoginMethod.apple);
     notifyListeners();
   }
 
-  // signInWithFacebook() async {
-  //   startLoading(LoginMethod.facebook);
-  //   AuthResult? userCred = await _authServices.signInWithFacebook();
 
-  //   if (isNotNull(userCred)) {
-  //     appSnackBar("Success", "SignIn successfully!",
-  //         const Color.fromARGB(255, 113, 235, 117));
-  //     AppLocal.ins
-  //         .setUserData(Hivekey.userId, userCred!.userCredential!.user!.uid);
-  //     AppLocal.ins.setUserData(
-  //         Hivekey.userName, userCred.userCredential!.user!.displayName);
-
-  //     AppLocal.ins.setUserData(
-  //         Hivekey.userProfielPic, userCred.userCredential!.user!.photoURL);
-  //     Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-  //     await firestore
-  //         .collection('users')
-  //         .doc(userCred.userCredential!.user!.uid)
-  //         .set({
-  //       'id': userCred.userCredential!.user!.uid,
-  //       'username': userCred.userCredential!.user!.displayName,
-  //       'email': userCred.userCredential!.user!.email,
-  //       'profile_image': userCred.userCredential!.user!.photoURL
-  //     });
-  //   }
-  //   stopLoading(LoginMethod.facebook);
-  //   notifyListeners();
-  // }
 
   void clearControllers() {
     emailController.clear();
@@ -237,14 +197,11 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   }
 
   userLogin(String email, String password) async {
-    print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "email": email,
       "password": password,
     };
-    print(body);
     ApiResponse userRes = await authRepo.login(body: body);
-    print(userRes.data);
     if (userRes.status == Status.completed) {
       reference
           .read(userProfileProvider)
@@ -254,48 +211,30 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     }
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
   }
 
   userSignup(String userName, String email, String password) async {
-    print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
       "password": password,
     };
-    print(body);
-    print("kkkkkkkkkkkkkkkkkkk");
     ApiResponse userRes = await authRepo.signup(body: body);
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
   }
 
   googleLogin(
       String userName, String email, String googleId, String profilePic) async {
-    print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
       "googleId": googleId,
       "profilePic": profilePic
     };
-    print(body);
     ApiResponse userRes = await authRepo.googleLogin(body: body);
     if (userRes.status == Status.completed) {
       reference
           .read(userProfileProvider)
           .getUserProfileData(userRes.data["user"]['userId']);
-      print(userRes);
-      print(userRes.data);
-      print(userRes.data["user"]['userId']);
-      print(userRes.data["user"]['username']);
-      print(userRes.data["user"]['email']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
       AppLocal.ins
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
@@ -307,15 +246,10 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     Future.delayed(const Duration(seconds: 1), () {
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     });
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
   }
 
   appleLogin(
       String userName, String email, String appleId, String profilePic) async {
-    print("entryyyyyyyyyyyyyy");
     Map<String, String> body = {
       "username": userName,
       "email": email,
@@ -328,11 +262,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       reference
           .read(userProfileProvider)
           .getUserProfileData(userRes.data["user"]['userId']);
-      print(userRes);
-      print(userRes.data);
-      print(userRes.data["user"]['userId']);
-      print(userRes.data["user"]['username']);
-      print(userRes.data["user"]['email']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
       AppLocal.ins
           .setUserData(Hivekey.userName, userRes.data["user"]['username']);
@@ -344,9 +273,5 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     Future.delayed(const Duration(seconds: 1), () {
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     });
-    print(userRes.data);
-    print(userRes.message);
-    print(userRes.status);
-    print("lllllllllllllllllll");
   }
 }

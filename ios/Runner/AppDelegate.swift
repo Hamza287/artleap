@@ -6,7 +6,7 @@ import GoogleSignIn
 import UserNotifications
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -73,10 +73,10 @@ extension AppDelegate: MessagingDelegate {
   }
 }
 
-// MARK: - Notification Center Delegate
-extension AppDelegate: UNUserNotificationCenterDelegate {
+// MARK: - Notification Handling
+extension AppDelegate {
   // Handle notifications when app is in foreground
-  func userNotificationCenter(
+  override func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification,
     withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
@@ -85,7 +85,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
   }
 
   // Handle notification taps
-  func userNotificationCenter(
+  override func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse,
     withCompletionHandler completionHandler: @escaping () -> Void
