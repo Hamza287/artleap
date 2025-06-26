@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
@@ -51,9 +52,7 @@ class DropDownsAndGalleryPickWidget extends ConsumerWidget {
         status = await Permission.photos.request();
         if (!status.isGranted) {
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Gallery access is required')),
-            );
+            appSnackBar('Error', 'Gallery access is required', Colors.red);
           }
           return;
         }
