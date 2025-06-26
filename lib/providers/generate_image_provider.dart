@@ -34,7 +34,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   ModelsListModel? _selectedModelName;
   ModelsListModel? get selectedModeldata => _selectedModelName; // Getter
-  int? _selectedItem;
+  int? _selectedItem = 1;
   int? get selectedImageNumber => _selectedItem;
   final List<int> _dropdownItems = [1, 2, 3, 4];
   List<int> get imageNumber => _dropdownItems;

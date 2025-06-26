@@ -26,14 +26,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     ref.read(onboardingProvider).startAutoPageView();
   }
 
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  //   ref.read(onboardingProvider).stopAutoPageView();
-  //   // ref.read(onboardingProvider).pageController.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(

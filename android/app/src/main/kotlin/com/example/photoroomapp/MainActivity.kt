@@ -22,12 +22,12 @@ class MainActivity : FlutterActivity() {
         try {
             val info = packageManager.getPackageInfo(
                 "com.XrDIgital.ImaginaryVerse", // Your package name
-                PackageManager.GET_SIGNATURES
+                PackageManager.GET_SIGNING_CERTIFICATES  // Use this for better compatibility
             )
-            for (signature in info.signatures) {
-                val md = MessageDigest.getInstance("SHA")
+            info.signingInfo?.apkContentsSigners?.forEach { signature ->  // Safe call on signingInfo
+                val md = MessageDigest.getInstance("SHA-256")  // Use SHA-256 for better security
                 md.update(signature.toByteArray())
-                val keyHash = String(Base64.encode(md.digest(), Base64.DEFAULT))
+                val keyHash = Base64.encodeToString(md.digest(), Base64.DEFAULT)  // Use encodeToString
                 Log.d("KeyHash:", keyHash)
             }
         } catch (e: Exception) {
