@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/providers/refresh_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/api_services/api_response.dart';
@@ -40,7 +41,7 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<bool> deleteImage(BuildContext context,String? imageId) async {
+  Future<bool> deleteImage(String? imageId) async {
     loadingState = ImageActionLoading.deleting;
     notifyListeners();
 
@@ -48,10 +49,6 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
       ApiResponse userRes = await imageActionRepo.deleteImage(imageId: imageId!);
       if (userRes.status == Status.completed) {
         appSnackBar("Success", "Image deleted successfully", AppColors.green);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const BottomNavBar()),
-        );
         return true;
       }
     } catch (e) {

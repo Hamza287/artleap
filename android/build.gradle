@@ -1,3 +1,18 @@
+buildscript {
+    ext.kotlin_version = '1.8.0' // Define the Kotlin version here
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Use the defined Kotlin version
+        // Other dependencies
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -8,7 +23,8 @@ allprojects {
             if (details.requested.group == 'org.jetbrains.kotlin') {
                 details.useVersion '1.8.0'
             }
-        }}
+        }
+    }
 }
 
 rootProject.buildDir = "../build"

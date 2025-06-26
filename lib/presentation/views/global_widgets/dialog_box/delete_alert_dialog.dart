@@ -26,8 +26,19 @@ class DeleteAlertDialog extends ConsumerWidget {
         ),
         TextButton(
           onPressed: () async {
-            Navigator.pop(context, false);
-            await ref.read(imageActionsProvider).deleteImage(context,imageId!);
+            final success = await ref.read(imageActionsProvider).deleteImage(imageId!);
+            if (success) {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const BottomNavBar()),
+              );
+            } else {
+              Navigator.pop(context); // close the dialog
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Failed to delete image")),
+              );
+            }
           },
           child: Text(
             'Yes',
