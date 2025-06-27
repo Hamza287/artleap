@@ -109,7 +109,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onpress: () {
                       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
                       ref.read(onboardingProvider).stopAutoPageView();
-                      // ref.read(onboardingProvider).pageController.dispose();
                     },
                   )),
             )

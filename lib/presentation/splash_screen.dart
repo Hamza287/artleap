@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
@@ -21,10 +20,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
-    // Future.microtask(() {
-    //   ref.read(adsProvider).loadNativeAd();
-    //   ref.read(adsProvider).loadBannerAd();
-    // });
     String userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     String userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     WidgetsBinding.instance.addPostFrameCallback((_) {

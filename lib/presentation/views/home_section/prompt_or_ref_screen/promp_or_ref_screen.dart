@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/google_ads/banner_ad.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/dropdowns_and_gallerypick_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/prompt_or_ref_screen/promp_ref_screen_widgets/promp_widget.dart';
@@ -16,7 +15,6 @@ import '../../../../providers/refresh_provider.dart';
 import '../../../../shared/constants/app_assets.dart';
 import '../../../../shared/constants/user_data.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import '../../../google_ads/interstetial_ad.dart';
 
 class PromptOrReferenceScreen extends ConsumerStatefulWidget {
   const PromptOrReferenceScreen({super.key});

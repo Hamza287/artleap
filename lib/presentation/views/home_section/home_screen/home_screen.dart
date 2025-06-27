@@ -11,9 +11,6 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 
-import '../../../../providers/generate_image_provider.dart';
-import '../../../google_ads/interstetial_ad.dart';
-
 class HomeScreen extends ConsumerStatefulWidget {
   static const String routeName = 'home_screen';
   const HomeScreen({super.key});

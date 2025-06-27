@@ -256,7 +256,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       "appleId": appleId,
       "profilePic": profilePic
     };
-    print(body);
     ApiResponse userRes = await authRepo.appleLogin(body: body);
     if (userRes.status == Status.completed) {
       reference

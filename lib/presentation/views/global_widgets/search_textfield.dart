@@ -13,7 +13,6 @@ class SearchTextfield extends ConsumerWidget {
     return Container(
       height: 35,
       width: double.infinity,
-      // margin: EdgeInsets.only(left: 15, right: 15),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7), color: AppColors.greyBlue),
       child: TextField(

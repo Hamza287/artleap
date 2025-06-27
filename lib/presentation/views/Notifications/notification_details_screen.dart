@@ -11,7 +11,6 @@ class NotificationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Handle null message case
     if (message == null) {
       return Scaffold(
         appBar: AppBar(

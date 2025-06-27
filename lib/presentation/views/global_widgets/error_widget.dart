@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../../../domain/auth_services/auth_services.dart';
 import '../../../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/constants/app_textstyle.dart';
@@ -44,11 +42,3 @@ class CustomErrorWidget extends StatelessWidget {
             : SizedBox());
   }
 }
-
-// errorWidget(
-//     {required bool isShow,
-//     String? message,
-//     required AuthResultState? authResultState,
-//     VoidCallback? onTap}) {
-//   return;
-// }

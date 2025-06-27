@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
-import 'package:Artleap.ai/providers/ads_provider.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../../../providers/generate_image_provider.dart';
 import '../../../providers/notification_provider.dart';
 import '../../../providers/user_profile_provider.dart';
-import '../../../providers/home_screen_provider.dart';
 import '../../../shared/constants/user_data.dart';
-import '../../google_ads/banner_ad.dart';
-import '../../google_ads/native_add.dart';
 import '../Notifications/notification_screen.dart';
 import '../global_widgets/search_textfield.dart';
 
@@ -138,10 +133,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
           bottomWidget: pageIndex == 0
               ? Column(
             children: [
-              // const Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 15),
-              //   child: BannerAdWidget(),
-              // ),
               5.spaceY,
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),

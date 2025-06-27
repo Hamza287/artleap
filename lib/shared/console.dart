@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 void console(var value, {LogColors color = LogColors.green}) {
   if (kDebugMode) {
     print(value);
-    // log('${colors[color]}$value\x1B[0m', name: "Log");
   }
 }
 

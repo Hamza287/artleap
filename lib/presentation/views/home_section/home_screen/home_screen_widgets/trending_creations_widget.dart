@@ -14,8 +14,6 @@ import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../../../google_ads/native_add.dart';
-
 class TrendingCreationsWidget extends ConsumerStatefulWidget {
   const TrendingCreationsWidget({super.key});
 
@@ -115,9 +113,6 @@ class _TrendingCreationsWidgetState
                   itemCount: filteredList.length + 1,
                   itemBuilder: (context, index) {
                     final adIndex = 10;
-                    // if (index == adIndex) {
-                    //   return const NativeAdWidget();
-                    // }
                     final imageIndex = index > adIndex ? index - 1 : index;
                     if (imageIndex >= filteredList.length) {
                       return const SizedBox.shrink();
@@ -173,9 +168,6 @@ class _TrendingCreationsWidgetState
                                     imageUrl: image.imageUrl,
                                     alignment: Alignment.center,
                                     fit: BoxFit.cover,
-
-                                    // memCacheHeight: 400,
-                                    // memCacheWidth: 400,
                                     fadeInDuration: Duration.zero,
                                     placeholder: (context, url) =>
                                         Shimmer.fromColors(
@@ -188,8 +180,6 @@ class _TrendingCreationsWidgetState
                                       ),
                                     ),
                                     errorWidget: (context, url, error) {
-                                      print("❌ Failed to load: $url");
-                                      print("🛠 Error: $error");
                                       return Container(
                                         color: Colors.red.withOpacity(0.2),
                                         child: const Center(

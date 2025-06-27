@@ -43,8 +43,6 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
       _transformationController.value = _animation!.value;
     });
     AnalyticsService.instance.logScreenView(screenName: 'full image screen');
-
-    // Load the original image when the screen initializes
     _loadOriginalImage();
   }
 
@@ -56,7 +54,6 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
           _originalImageBytes = response.bodyBytes;
           _isLoadingImage = false;
         });
-        // Apply watermark after loading the original image
         if (_originalImageBytes != null) {
           ref.read(watermarkProvider.notifier).applyWatermark(_originalImageBytes!);
         }
