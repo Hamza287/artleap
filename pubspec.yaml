@@ -68,7 +68,7 @@ dependencies:
   saver_gallery: ^4.0.0
   firebase_crashlytics: ^4.2.0
 #  google_mobile_ads: ^5.2.0
-  firebase_messaging: ^15.2.0
+  firebase_messaging: ^15.2.7
   flutter_image_compress: ^2.4.0
   visibility_detector: ^0.4.0+2
   shimmer: ^3.0.0
