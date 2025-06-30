@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
@@ -18,8 +17,6 @@ import '../shared/navigation/navigation.dart';
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 
 enum LoginMethod { email, signup, google, facebook, apple, forgotPassword }
-
-// Map<LoginMethod, bool> get loaders => _loaders;
 
 final authprovider =
     ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref));
@@ -37,12 +34,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   TextEditingController get confirmPasswordController =>
       _confirmPasswordController;
 
-  bool _loginPasswrdHideShow = true;
-  bool get loginPasswrdHideShow => _loginPasswrdHideShow;
-  bool _signupPasswrdHideShow = true;
-  bool get signupPasswrdHideShow => _signupPasswrdHideShow;
-  bool _confirmPasswrdHideShow = true;
-  bool get confirmPasswrdHideShow => _confirmPasswrdHideShow;
+  bool _loginPasswordHideShow = true;
+  bool get loginPasswordHideShow => _loginPasswordHideShow;
+  bool _signupPasswordHideShow = true;
+  bool get signupPasswordHideShow => _signupPasswordHideShow;
+  bool _confirmPasswordHideShow = true;
+  bool get confirmPasswordHideShow => _confirmPasswordHideShow;
   final Ref reference;
   AuthProvider(this.reference);
   // A map to hold the loader state for each login method
@@ -67,10 +64,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  // void setLoading(bool value) {
-  //   _isLoading = value;
-  //   notifyListeners();
-  // }
   UserAuthResult? authError;
   clearError() {
     authError = null;
@@ -78,7 +71,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   }
 
   signUpWithEmail() async {
-    // setLoading(true);
     if (userNameController.text.isEmpty || emailController.text.isEmpty) {
       authError = UserAuthResult(
           authResultState: AuthResultStatus.error,
@@ -184,13 +176,13 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   obsecureTextFtn(ObsecureText field) {
     switch (field) {
       case ObsecureText.loginPassword:
-        _loginPasswrdHideShow = !_loginPasswrdHideShow;
+        _loginPasswordHideShow = !_loginPasswordHideShow;
         break;
       case ObsecureText.signupPassword:
-        _signupPasswrdHideShow = !_signupPasswrdHideShow;
+        _signupPasswordHideShow = !_signupPasswordHideShow;
         break;
       case ObsecureText.confirmPassword:
-        _confirmPasswrdHideShow = !_confirmPasswrdHideShow;
+        _confirmPasswordHideShow = !_confirmPasswordHideShow;
         break;
     }
     notifyListeners();

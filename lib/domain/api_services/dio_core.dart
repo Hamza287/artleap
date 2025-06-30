@@ -11,16 +11,5 @@ class DioCore {
       sendTimeout: const Duration(minutes: 3),
       receiveTimeout: const Duration(minutes: 3),
     ));
-    // _dio.interceptors.add(PrettyDioLogger());
-    // _dio.interceptors.add(ConnectivityInterceptor());
-    // _dio.interceptors.add(RequestInterceptor());
-    // _dio.interceptors.add(ErrorInterceptor());
-
-    // // _dio.interceptors.add(RetryInterceptor());
-    // if (AppConstants.responseMode == ResponseMode.mock) {
-    //   _dio.interceptors.add(MockInterceptor());
-    // } else if (AppConstants.responseMode == ResponseMode.real) {
-    //   _dio.interceptors.add(ProdResponseInterceptor());
-    // }
   }
 }

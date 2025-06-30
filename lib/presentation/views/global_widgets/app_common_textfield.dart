@@ -24,11 +24,11 @@ class AppCommonTextfield extends ConsumerWidget {
     // Determine if text should be obscured based on the enum
     bool obscure = false;
     if (obsecureTextType == ObsecureText.loginPassword) {
-      obscure = auth.loginPasswrdHideShow;
+      obscure = auth.loginPasswordHideShow;
     } else if (obsecureTextType == ObsecureText.signupPassword) {
-      obscure = auth.signupPasswrdHideShow;
+      obscure = auth.signupPasswordHideShow;
     } else if (obsecureTextType == ObsecureText.confirmPassword) {
-      obscure = auth.confirmPasswrdHideShow;
+      obscure = auth.confirmPasswordHideShow;
     }
 
     return Container(

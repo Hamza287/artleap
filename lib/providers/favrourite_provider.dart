@@ -9,7 +9,6 @@ import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:saver_gallery/saver_gallery.dart';
-
 import '../services/watermark_service.dart';
 
 final favProvider =

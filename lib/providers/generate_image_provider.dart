@@ -25,7 +25,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   GenerateHighQualityImageModel? _generatedHighQualityImage;
   GenerateHighQualityImageModel? get generatedHighQualityImage =>
       _generatedHighQualityImage;
-  // final FirebaseStorage _storage = FirebaseStorage.instance;
 
   bool _isGenerateImageLoading = false;
   bool get isGenerateImageLoading => _isGenerateImageLoading;
@@ -114,8 +113,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       "presetStyle": _selectedStyle,
       "num_images": _selectedItem,
       "aspectRatio": _aspectRatio,
-      // "width": 1024,
-      // "height": 1024
     };
     ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
     if (generateImageRes.status == Status.completed) {

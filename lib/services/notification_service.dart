@@ -170,17 +170,14 @@ class NotificationService {
   static Future<void> _manageToken() async {
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
       print('Token refreshed: $newToken');
-      // Send to your server
     });
 
     String? token = await _firebaseMessaging.getToken();
     print('Current FCM Token: $token');
-    // Send to your server
   }
 
   static void _handleNotificationTap(String payload, WidgetRef ref) {
     final data = jsonDecode(payload) as Map<String, dynamic>;
     print('Tapped with data: $data');
-    // You can add additional handling based on the payload
   }
 }
