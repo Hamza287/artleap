@@ -79,8 +79,6 @@ class PictureOptionsWidget extends ConsumerWidget {
                         dotPrimaryColor: AppColors.redColor,
                         dotSecondaryColor: AppColors.redColor),
                     onTap: (isLiked) async {
-                      print(currentUserId);
-                      print(imageId);
                       AnalyticsService.instance
                           .logButtonClick(buttonName: 'Generate button event');
                       try {
@@ -106,7 +104,6 @@ class PictureOptionsWidget extends ConsumerWidget {
           ),
           GestureDetector(
             onTap: () {
-              print(imageUrl!);
               uint8ListImage != null
                   ? ref
                   .read(favProvider)

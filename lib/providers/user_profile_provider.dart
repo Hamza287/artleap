@@ -61,7 +61,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (userProfileDataRes.status == Status.completed) {
       _otherUserProfileData = userProfileDataRes.data as UserProfileModel;
     } else {
-      print(userProfileDataRes.status);
+      // print(userProfileDataRes.status);
     }
     notifyListeners();
   }
@@ -88,7 +88,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (response.status == Status.completed) {
       getUserProfileData(UserData.ins.userId ?? "");
     } else {
-      print(response.status);
+      // print(response.status);
     }
     notifyListeners();
   }

@@ -97,6 +97,7 @@ class NotificationService {
         importance: Importance.max,
         priority: Priority.high,
         color: Colors.blueAccent,
+        icon: '@mipmap/ic_launcher',
       );
 
       final iosDetails = DarwinNotificationDetails(
@@ -131,6 +132,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           color: Colors.blue,
+          icon: '@mipmap/ic_launcher',
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,
@@ -169,15 +171,15 @@ class NotificationService {
 
   static Future<void> _manageToken() async {
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-      print('Token refreshed: $newToken');
+      // print('Token refreshed: $newToken');
     });
 
     String? token = await _firebaseMessaging.getToken();
-    print('Current FCM Token: $token');
+    // print('Current FCM Token: $token');
   }
 
   static void _handleNotificationTap(String payload, WidgetRef ref) {
     final data = jsonDecode(payload) as Map<String, dynamic>;
-    print('Tapped with data: $data');
+    // print('Tapped with data: $data');
   }
 }

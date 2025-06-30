@@ -10,7 +10,6 @@ class ImageActionsImpl extends ImageActionsRepo {
   @override
   Future<ApiResponse> deleteImage({required String? imageId}) async {
     try {
-      print(AppConstants.artleapBaseUrl + AppApiPaths.deleteImage + imageId!);
       Response res =
           await artleapApiService.delete(AppApiPaths.deleteImage + imageId!);
       ApiResponse result = HandlingResponse.returnResponse(res);
@@ -30,11 +29,10 @@ class ImageActionsImpl extends ImageActionsRepo {
     try {
       Response res = await artleapApiService.postJson(
           "${AppApiPaths.reportImage}$imageId/report", body);
-      print(
-        "${AppConstants.artleapBaseUrl}${AppApiPaths.reportImage}$imageId/report",
-      );
+      // print(
+      //   "${AppConstants.artleapBaseUrl}${AppApiPaths.reportImage}$imageId/report",
+      // );
       ApiResponse result = HandlingResponse.returnResponse(res);
-      print(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);
       } else {

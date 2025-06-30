@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/users_creations_model.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/shared/constants/app_assets.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import 'package:http/http.dart' as http;
 import 'package:visibility_detector/visibility_detector.dart';
 import '../domain/api_services/api_response.dart';
 import '../shared/app_persistance/app_local.dart';
@@ -110,7 +108,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
         openAppSettings();
       }
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 
@@ -120,7 +118,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     var userProfilePicture =
         AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
-    // print(userProfilePicture);
     UserData.ins.setUserData(
         id: userid,
         name: userName,
