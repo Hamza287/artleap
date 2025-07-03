@@ -108,23 +108,22 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
           actions:  [
             Consumer(
               builder: (context, ref, _) {
-                final unreadCount = ref.watch(notificationProvider)
-                    .where((n) => !n.isRead)
-                    .length;
+                final userId = UserData.ins.userId;
+                if (userId == null) return const SizedBox();
+
+                final notifications = ref.watch(notificationProvider(userId));
+                final unreadCount = notifications.maybeWhen(
+                  data: (notifs) => notifs.where((n) => !n.isRead).length,
+                  orElse: () => 0,
+                );
 
                 return IconButton(
                   icon: Badge(
                     label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                    child: const Icon(
-                      Icons.notifications,
-                      color: AppColors.white,
-                    ),
+                    child: const Icon(Icons.notifications, color: AppColors.white),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(
-                        context,
-                        NotificationScreen.routeName
-                    );
+                    Navigator.pushNamed(context, NotificationScreen.routeName);
                   },
                 );
               },

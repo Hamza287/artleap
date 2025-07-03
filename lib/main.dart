@@ -1,5 +1,7 @@
 import 'dart:async';
-import 'package:Artleap.ai/services/notification_service.dart';
+import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
+import 'package:Artleap.ai/providers/auth_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ import 'package:Artleap.ai/firebase_options.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/shared/theme/light_theme.dart';
 import 'di/di.dart';
+import 'providers/notification_provider.dart';
+import 'domain/notification_services/notification_service.dart' hide notificationServiceProvider;
 import 'shared/navigation/navigator_key.dart';
 import 'shared/navigation/route_generator.dart';
 import 'providers/localization_provider.dart';
@@ -42,9 +46,15 @@ void main() {
       systemNavigationBarIconBrightness: Brightness.light,
       statusBarIconBrightness: Brightness.light,
     ));
-
     // Run the app
-    runApp(const ProviderScope(child: MyApp()));
+    runApp(
+      ProviderScope(
+        overrides: [
+          notificationServiceProvider.overrideWith((ref) => NotificationService(ref)),
+        ],
+        child: const MyApp(),
+      ),
+    );
   }, (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
   });
@@ -58,15 +68,34 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
+  Timer? _refreshTokenTimer;
   @override
   void initState() {
     super.initState();
-    // Initialize notification service after first frame
+    Future.microtask(() async {
+      await ref.read(authprovider).ensureValidFirebaseToken();
+
+      // Refresh token every hour
+      _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
+        await ref.read(authprovider).ensureValidFirebaseToken();
+        debugPrint('✅ Firebase token refreshed.');
+      });
+    });
+
+    Future.microtask(() => ref.read(firebaseNotificationServiceProvider).initialize());
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      NotificationService.initialize(context, ref);
+      final userId = UserData.ins.userId;
+      if (userId != null) {
+        ref.read(notificationProvider(userId).notifier).loadNotifications();
+      }
     });
   }
 
+  @override
+  void dispose() {
+    _refreshTokenTimer?.cancel(); // Clean up timer on app close
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

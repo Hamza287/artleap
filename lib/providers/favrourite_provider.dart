@@ -9,8 +9,7 @@ import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:saver_gallery/saver_gallery.dart';
-
-import '../services/watermark_service.dart';
+import '../domain/watermark_services/watermark_service.dart';
 
 final favProvider =
     ChangeNotifierProvider<FavouriteProvider>((ref) => FavouriteProvider());
@@ -51,7 +50,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
 
       // 3. Save to gallery (modified to use watermarked image)
       final result = await SaverGallery.saveImage(
-        watermarkedBytes, // Using watermarked bytes instead of original
+        watermarkedBytes,
         quality: 60,
         fileName: "artleap_${DateTime.now().millisecondsSinceEpoch}.jpg",
         androidRelativePath: "DCIM/artleapImages",
@@ -59,7 +58,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
         extension: "jpg",
       );
 
-      appSnackBar("Success", "Image saved with watermark", AppColors.blue);
+      appSnackBar("Success", "Image saved Successfully", AppColors.blue);
     } catch (e) {
       appSnackBar("Error", "Error downloading image: $e", AppColors.redColor);
     } finally {

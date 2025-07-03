@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_widgets/continue_button.dart';
 import 'package:Artleap.ai/providers/onboarding_provider.dart';

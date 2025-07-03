@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
@@ -53,14 +52,11 @@ class AuthServices {
           "Email has been sent",
           'Please check your email inbox and click on the link to  reset your password',
           AppColors.green);
-      // return UserAuthResult(authType: AuthType.email, userCredential: user);
     } on FirebaseAuthException catch (e) {
       // console(e);
       AuthResultStatus status = AuthExceptionHandler.handleException(e);
       String message = AuthExceptionHandler.generateExceptionMessage(status);
       appSnackBar("Failed", message, AppColors.redColor);
-      // console(';;;;;;;;;;;;;;;;;;;;;;;;;;');
-      // return null;
     }
   }
 
@@ -78,7 +74,6 @@ class AuthServices {
           await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
-      // return await FirebaseAuth.instance.signInWithCredential(credential);
       return AuthResult(
           userCredential:
               await FirebaseAuth.instance.signInWithCredential(credential));
@@ -110,12 +105,10 @@ class AuthServices {
   }
 
   String generateNonce([int length = 32]) {
-    final charset =
-        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final random = List.generate(
         length,
-        (_) => charset[
-            (DateTime.now().millisecondsSinceEpoch + _ * 31) % charset.length]);
+        (_) => charset[(DateTime.now().millisecondsSinceEpoch + _ * 31) % charset.length]);
     return random.join();
   }
 

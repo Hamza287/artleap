@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/watermark_service.dart';
+import '../domain/watermark_services/watermark_service.dart';
 
 final watermarkProvider = StateNotifierProvider<WatermarkNotifier, WatermarkState>((ref) {
   return WatermarkNotifier();

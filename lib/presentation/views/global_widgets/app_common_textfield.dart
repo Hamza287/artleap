@@ -24,11 +24,11 @@ class AppCommonTextfield extends ConsumerWidget {
     // Determine if text should be obscured based on the enum
     bool obscure = false;
     if (obsecureTextType == ObsecureText.loginPassword) {
-      obscure = auth.loginPasswrdHideShow;
+      obscure = auth.loginPasswordHideShow;
     } else if (obsecureTextType == ObsecureText.signupPassword) {
-      obscure = auth.signupPasswrdHideShow;
+      obscure = auth.signupPasswordHideShow;
     } else if (obsecureTextType == ObsecureText.confirmPassword) {
-      obscure = auth.confirmPasswrdHideShow;
+      obscure = auth.confirmPasswordHideShow;
     }
 
     return Container(
@@ -38,7 +38,7 @@ class AppCommonTextfield extends ConsumerWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(8),
         border:
-            Border.all(color: AppColors.black.withOpacity(0.2), width: 0.50),
+            Border.all(color: AppColors.black.withValues(), width: 0.50),
       ),
       child: TextField(
         controller: controller,
@@ -49,7 +49,7 @@ class AppCommonTextfield extends ConsumerWidget {
               : EdgeInsets.only(left: 8, bottom: 8),
           hintText: hintText,
           hintStyle: AppTextstyle.interMedium(
-            color: AppColors.black.withOpacity(0.5),
+            color: AppColors.black.withValues(),
             fontSize: 14,
           ),
           border: InputBorder.none,
@@ -57,7 +57,7 @@ class AppCommonTextfield extends ConsumerWidget {
               ? IconButton(
                   icon: Icon(
                     obscure ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.black.withOpacity(0.5),
+                    color: AppColors.black.withValues(),
                     size: 20,
                   ),
                   onPressed: () {

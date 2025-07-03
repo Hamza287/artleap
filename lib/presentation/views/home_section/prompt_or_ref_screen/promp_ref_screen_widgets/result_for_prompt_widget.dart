@@ -8,6 +8,8 @@ import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 
+import '../../../../../shared/utilities/safe_network_image.dart';
+
 class ResultForPromptWidget extends ConsumerWidget {
   const ResultForPromptWidget({super.key});
 
@@ -53,12 +55,6 @@ class ResultForPromptWidget extends ConsumerWidget {
           ],
         ),
         10.spaceY,
-
-        // ref.watch(generateImageProvider).generatedData == null
-        //     ? const SizedBox()
-        //     : ref.watch(generateImageProvider).generatedData != null
-        //         ?
-
         if (ref
             .watch(generateImageProvider)
             .generatedTextToImageData
@@ -71,40 +67,12 @@ class ResultForPromptWidget extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.only(
                       top: 10, right: 10, left: 10, bottom: 10),
-                  child: ref
-                              .watch(generateImageProvider)
-                              .generatedTextToImageData
-                              .length ==
-                          1
+                  child: ref.watch(generateImageProvider).generatedTextToImageData.length == 1
                       ? GestureDetector(
                           onTap: () {
-                            print(UserData.ins.userName);
-                            print(ref
-                                .watch(generateImageProvider)
-                                .generatedTextToImageData[0]!
-                                .id);
-                            print(ref
-                                .watch(generateImageProvider)
-                                .generatedTextToImageData[0]!
-                                .imageUrl);
-                            print(ref
-                                .watch(generateImageProvider)
-                                .generatedTextToImageData[0]!
-                                .prompt);
-                            print(ref
-                                .watch(generateImageProvider)
-                                .generatedTextToImageData[0]!
-                                .presetStyle);
-                            print(ref
-                                .watch(generateImageProvider)
-                                .generatedTextToImageData[0]!
-                                .imageUrl);
-
                             Navigation.pushNamed(SeePictureScreen.routeName,
                                 arguments: SeePictureParams(
                                   profileName: UserData.ins.userName,
-                                  // isRecentGeneration: true,
-                                  // othersUserId: UserData.ins.userId,
                                   userId: UserData.ins.userId,
                                   imageId: ref
                                       .watch(generateImageProvider)
@@ -136,13 +104,19 @@ class ResultForPromptWidget extends ConsumerWidget {
                                 height: 380,
                                 margin:
                                     const EdgeInsets.only(left: 0, right: 0),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(ref
-                                            .watch(generateImageProvider)
-                                            .generatedTextToImageData[0]!
-                                            .imageUrl),
-                                        fit: BoxFit.fill)),
+                                // decoration: BoxDecoration(
+                                //     image: DecorationImage(
+                                //         image: NetworkImage(ref
+                                //             .watch(generateImageProvider)
+                                //             .generatedTextToImageData[0]!
+                                //             .imageUrl),
+                                //         fit: BoxFit.fill),
+                                // ),
+                                child: SafeNetworkImage(
+                                  imageUrl: ref.watch(generateImageProvider).generatedTextToImageData[0]!.imageUrl,
+                                  placeholder: (_, __) => Center(child: CircularProgressIndicator()),
+                                  errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+                                ),
                               ),
                             ),
                           ),
@@ -197,9 +171,15 @@ class ResultForPromptWidget extends ConsumerWidget {
                                 width: 150,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    image: DecorationImage(
-                                        image: NetworkImage(e!.imageUrl),
-                                        fit: BoxFit.fill)),
+                                    // image: DecorationImage(
+                                    //     image: NetworkImage(e!.imageUrl),
+                                    //     fit: BoxFit.fill),
+                                ),
+                                child: SafeNetworkImage(
+                                  imageUrl: e!.imageUrl,
+                                  placeholder: (_, __) => Center(child: CircularProgressIndicator()),
+                                  errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+                                ),
                               ),
                             );
                           },
@@ -248,18 +228,16 @@ class ResultForPromptWidget extends ConsumerWidget {
                 child: Container(
                   height: 300,
                   margin: const EdgeInsets.only(left: 0, right: 0),
-                  // decoration: BoxDecoration(
-                  //     image: DecorationImage(
-                  //         image: NetworkImage(ref
-                  //             .watch(generateImageProvider)
-                  //             .generatedImage!
-                  //             .output[0]),
-                  //         fit: BoxFit.fill)),
-                  child: CachedNetworkImage(
-                      imageUrl: ref
-                          .watch(generateImageProvider)
-                          .generatedImage[0]!
-                          .imageUrl),
+                  // child: CachedNetworkImage(
+                  //     imageUrl: ref
+                  //         .watch(generateImageProvider)
+                  //         .generatedImage[0]!
+                  //         .imageUrl),
+                  child: SafeNetworkImage(
+                    imageUrl: ref.watch(generateImageProvider).generatedImage[0]!.imageUrl,
+                    placeholder: (_, __) => Center(child: CircularProgressIndicator()),
+                    errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+                  ),
                 ),
               ),
             ),
@@ -287,13 +265,8 @@ class ResultForPromptWidget extends ConsumerWidget {
                 itemCount:
                     ref.watch(generateImageProvider).generatedImage.length,
                 itemBuilder: (context, index) {
-                  // var e =
-                  //     ref.watch(generateImageProvider).generatedImage[index];
-                  // Uint8List bytes = base64Decode(e!.imageUrl);
                   return GestureDetector(
                     onTap: () {
-                      // Uint8List bytes = base64Decode(e.image);
-                      print(UserData.ins.userName);
                       Navigation.pushNamed(SeePictureScreen.routeName,
                           arguments: SeePictureParams(
                               profileName: UserData.ins.userName,
@@ -335,50 +308,6 @@ class ResultForPromptWidget extends ConsumerWidget {
               ),
             ),
           ),
-        20.spaceY,
-        // if (ref.watch(generateImageProvider).generatedImage.length > 1)
-        //   ...ref.watch(generateImageProvider).generatedImage.map(
-        //     (e) {
-        //       return GestureDetector(
-        //           onTap: () {
-        //             // Uint8List bytes = base64Decode(e.image);
-        //             print(UserData.ins.userName);
-        //             Navigation.pushNamed(SeePictureScreen.routeName,
-        //                 arguments: SeePictureParams(
-        //                     profileName: UserData.ins.userName,
-        //                     // isRecentGeneration: true,
-        //                     modelName: e.presetStyle,
-        //                     prompt: e.prompt,
-        //                     image: e.imageUrl
-        //                     // uint8ListImage: bytes,
-        //                     // isHomeScreenNavigation: false
-        //                     ));
-        //           },
-        //           child: Container(
-        //             width: double.infinity,
-        //             decoration: BoxDecoration(
-        //                 borderRadius: BorderRadius.circular(10),
-        //                 color: AppColors.blue),
-        //             child: Padding(
-        //               padding: const EdgeInsets.only(
-        //                   top: 10, right: 10, left: 10, bottom: 10),
-        //               child: Container(
-        //                 height: 380,
-        //                 margin: const EdgeInsets.only(left: 0, right: 0),
-        //                 // decoration: BoxDecoration(
-        //                 //     image: DecorationImage(
-        //                 //         image: NetworkImage(ref
-        //                 //             .watch(generateImageProvider)
-        //                 //             .generatedImage!
-        //                 //             .output[0]),
-        //                 //         fit: BoxFit.fill)),
-        //                 child: CachedNetworkImage(imageUrl: e!.imageUrl),
-        //               ),
-        //             ),
-        //           ));
-        //     },
-        //   ),
-
         80.spaceY,
       ],
     );

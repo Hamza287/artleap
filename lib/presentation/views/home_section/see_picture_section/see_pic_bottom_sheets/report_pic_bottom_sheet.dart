@@ -4,10 +4,6 @@ import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/s
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/row_buttons.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/others_bottom_sheet.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import 'package:Artleap.ai/providers/report_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-
 import '../../../../../shared/constants/app_static_data.dart';
 import '../../../../../shared/shared.dart';
 

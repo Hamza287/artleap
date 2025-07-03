@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
-
 import '../../shared/constants/app_assets.dart';
 
 class RegistrationBackgroundWidget extends ConsumerWidget {
@@ -20,10 +19,9 @@ class RegistrationBackgroundWidget extends ConsumerWidget {
           width: double.infinity,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage(
-                    bgImage ?? AppAssets.backgroundImage,
-                  ),
-                  fit: BoxFit.cover)),
+                  image: AssetImage(bgImage ?? AppAssets.backgroundImage),
+                  fit: BoxFit.cover),
+          ),
           child: widget,
         ),
       ),

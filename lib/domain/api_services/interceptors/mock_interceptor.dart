@@ -1,8 +1,6 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings, unnecessary_string_escapes
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:Artleap.ai/shared/console.dart';
 import 'package:template_expressions/template_expressions.dart';
 
 class MockInterceptor extends Interceptor {
@@ -86,8 +84,6 @@ class MockInterceptor extends Interceptor {
               'baseUrl': options.baseUrl,
               'method': options.method,
               'path': options.path,
-              // 'uri': options.uri.,
-              // 'connectTimeout': options.connectTimeout
             });
 
     if (options.data != null) {
@@ -153,8 +149,7 @@ class MockInterceptor extends Interceptor {
     ).process(context: exContext);
 
     handler.resolve(Response(
-      data: json.decode(
-          resData), // i decoded it to make same as real data it was encoded previously
+      data: json.decode(resData),
       requestOptions: options,
       statusCode: statusCode,
     ));

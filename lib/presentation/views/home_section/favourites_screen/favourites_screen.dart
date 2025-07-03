@@ -4,16 +4,12 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/favourites_screen_widgets/result_container_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/favourites_screen_widgets/results_text_dropdown_widget.dart';
-import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:shimmer/shimmer.dart' show Shimmer;
-
 import '../../../../providers/add_image_to_fav_provider.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';
 import '../../../../shared/constants/app_colors.dart';
-import '../../../../shared/constants/app_textstyle.dart';
-import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
 class FavouritesScreen extends ConsumerStatefulWidget {
   const FavouritesScreen({super.key});
@@ -23,11 +19,7 @@ class FavouritesScreen extends ConsumerStatefulWidget {
       _FavouritesScreenState();
 }
 
-// ... (keep all your existing imports)
-
 class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
-  // ... (keep your existing initState)
-
   @override
   Widget build(BuildContext context) {
     final favouriteState = ref.watch(favouriteProvider);
@@ -101,7 +93,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.purple.withOpacity(0.4),
+                color: Colors.purple.withValues(),
                 blurRadius: 20,
                 spreadRadius: 5,
               )
@@ -111,7 +103,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
             child: Icon(
               Icons.favorite_border_rounded,
               size: 80,
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(),
             ),
           ),
         ),
@@ -140,7 +132,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                   shadows: [
                     Shadow(
                       blurRadius: 10,
-                      color: Colors.purple.withOpacity(0.7),
+                      color: Colors.purple.withValues(),
                     )
                   ],
                 ),
@@ -151,7 +143,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(),
                 ),
               ),
             ],
@@ -169,7 +161,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,
-              shadowColor: Colors.purple.withOpacity(0.5),
+              shadowColor: Colors.purple.withValues(),
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

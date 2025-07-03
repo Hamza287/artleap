@@ -6,15 +6,6 @@ import 'dio_core.dart';
 
 class ApiServices extends DioCore {
   ApiServices({required String baseUrl}) : super(baseUrl);
-  // var header1 = {
-  //   'Content-Type': 'application/json',
-  // };
-
-  // var header2 = {
-  //   'Accept': 'application/json',
-  //   'Authorization':
-  //       'Bearer sk-TK90Aqi6YFV4nwZd1j32pQbQYCcvJ0bYhJjISDb7K2zcoOSu'
-  // };
   Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters,
       bool enableLocalPersistence = false}) async {
@@ -28,8 +19,6 @@ class ApiServices extends DioCore {
     dynamic data, {
     bool enableLocalPersistence = false,
   }) async {
-    // print(path);
-    // print(data);
     return await dio.post(path,
         data: data,
         options: _options(
@@ -50,8 +39,6 @@ class ApiServices extends DioCore {
           MultipartFile.fromFileSync(image.path)));
     }
     images = [];
-    // print(images);
-    // print("ggggggggggggggggggg");
     return await dio.post(path,
         data: formData, options: _options(enableLocalPersistence));
   }

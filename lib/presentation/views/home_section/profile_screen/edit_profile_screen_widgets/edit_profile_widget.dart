@@ -1,10 +1,11 @@
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../../../../../providers/user_profile_provider.dart';
+import '../policies_screens/privacy_policy_screen.dart';
 import 'separator_widget.dart';
 
 class EditProfileWidget extends ConsumerWidget {
@@ -77,12 +78,27 @@ class EditProfileWidget extends ConsumerWidget {
 
           GestureDetector(
             onTap: () {
-              ref.read(userProfileProvider).launchAnyUrl(
-                  "https://x-r.digital/privacy-policy/artleap-ai/");
+              Navigator.pushNamed(
+                context,
+                PrivacyPolicyScreen.routeName,
+              );
             },
             child: IconWithTextTile(
               imageIcon: AppAssets.privacyicon,
               title: "Privacy Policy",
+            ),
+          ),
+          50.spaceY,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                HelpScreen.routeName,
+              );
+            },
+            child: IconWithTextTile(
+              imageIcon: AppAssets.questionmark,
+              title: "Help",
             ),
           ),
           50.spaceY,

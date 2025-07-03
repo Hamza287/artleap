@@ -23,8 +23,6 @@ import '../api_repos_abstract/add_to_fav_repo.dart';
 import '../api_repos_impl/add_to_fav_impl.dart';
 
 mixin BaseRepo {
-  // final DummyRepo _dummyRepo = DummyRepoImpl();
-  // DummyRepo get dummyRepo => _dummyRepo;
   final ReqResRepo _reqresRepo = ReqResRepoImpl();
   ReqResRepo get reqresRepo => _reqresRepo;
   final GenerateImageRepo _generateImageRepo = GenerateImageImpl();
@@ -33,8 +31,6 @@ mixin BaseRepo {
   GenerateImg2ImgRepo get generateImgToImgRepo => _generateImgToImgRepo;
   final LoadModelsListRepo _modelsListRepo = LoadModelsListImpl();
   LoadModelsListRepo get modelListRepo => _modelsListRepo;
-  // final UserProfileRepo _userProfileRepo = UserProfileRepoImpl();
-  // UserProfileRepo get userProfileRepo => _userProfileRepo;
   final FavouritRepo _favouriteRepo = FavouriteRepoImpl();
   FavouritRepo get favouriteRepo => _favouriteRepo;
   final AddToFavRepo _addToFav = AddToFavImpl();

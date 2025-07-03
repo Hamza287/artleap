@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../../shared/constants/app_colors.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
 
 class ResultsTextDropDownWidget extends ConsumerWidget {
   ResultsTextDropDownWidget({super.key});
-  String? _selectedItem;
-  List<String> _dropdownItems = [
-    "Recently Added",
-    "My Generations",
-    "Community",
-    "Advanced Filters"
-  ];
+  // String? _selectedItem;
+  // List<String> _dropdownItems = [
+  //   "Recently Added",
+  //   "My Generations",
+  //   "Community",
+  //   "Advanced Filters"
+  // ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(

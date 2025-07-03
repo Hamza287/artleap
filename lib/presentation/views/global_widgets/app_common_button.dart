@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-
-import '../../../shared/constants/app_textstyle.dart';
 
 class CommonButton extends StatelessWidget {
   final String? title;

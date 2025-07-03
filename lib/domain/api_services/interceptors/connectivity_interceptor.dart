@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import '../../../shared/constants/app_constants.dart';
-import '../../../shared/console.dart';
 
 class ConnectivityInterceptor extends Interceptor {
   @override

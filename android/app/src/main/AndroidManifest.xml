@@ -14,7 +14,8 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="high_importance_channel" />
+            android:value="high_importance_channel"
+            android:resource="@mipmap/ic_launcher" />
 
         <!-- AdMob App ID -->
         <meta-data

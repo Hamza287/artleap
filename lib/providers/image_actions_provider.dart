@@ -1,11 +1,7 @@
-import 'package:Artleap.ai/providers/refresh_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../domain/api_services/api_response.dart';
 import '../domain/base_repo/base_repo.dart';
 import 'package:flutter/material.dart';
-
-import '../presentation/views/home_section/bottom_nav_bar.dart';
 import '../shared/app_snack_bar.dart';
 import '../shared/constants/app_colors.dart';
 

@@ -20,6 +20,17 @@ class AppConstants {
 
   // static const String artleapBaseUrl = "http://192.168.11.204:8000/api/";
   static const String artleapBaseUrl = "http://43.205.54.198:8000/api/";
+
+  // notification related apis
+  static const String notificationsBasePath = "notifications/";
+  static const String getUserNotificationsPath = "${notificationsBasePath}user/";
+  static const String markAsReadPath = "${notificationsBasePath}";
+  static const String deleteNotificationPath = "${notificationsBasePath}";
+  static const String createNotificationPath = "${notificationsBasePath}";
+  static const String markAllAsReadPath = "${notificationsBasePath}mark-all-read";
+  // Notification types
+  static const String generalNotificationType = "general";
+  static const String userNotificationType = "user";
 }
 
 enum Environment { development, staging, production }

@@ -10,9 +10,6 @@ class Base {
       instanceName: AppConstants.generateHighQualityImage);
   ApiServices get textToHighQualityImageService =>
       _textToHighQualityImageService;
-  // final ApiServices _imgToimgService =
-  //     getIt.get<ApiServices>(instanceName: AppConstants.artleapBaseUrl);
-  // ApiServices get imgToimgService => _imgToimgService;
 
   final ApiServices _otherApiServices =
       getIt.get<ApiServices>(instanceName: AppConstants.otherBaseUrl);
@@ -32,10 +29,4 @@ class Base {
   final ApiServices _postTextToImage =
       getIt.get<ApiServices>(instanceName: AppConstants.artleapBaseUrl);
   ApiServices get postTextToImage => _postTextToImage;
-
-  // final ApiServices _apiServices = ApiServices(baseUrl: AppConstants.baseUrl);
-  // ApiServices get apiServices => _apiServices;
-  // final ApiServices _otherApiServices =
-  //     ApiServices(baseUrl: AppConstants.otherBaseUrl);
-  // ApiServices get otherApiServices => _otherApiServices;
 }

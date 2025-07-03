@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
+import '../shared/app_persistance/app_data.dart';
 import '../shared/app_snack_bar.dart';
 import '../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../shared/constants/app_colors.dart';
@@ -18,8 +18,6 @@ import '../shared/navigation/navigation.dart';
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 
 enum LoginMethod { email, signup, google, facebook, apple, forgotPassword }
-
-// Map<LoginMethod, bool> get loaders => _loaders;
 
 final authprovider =
     ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref));
@@ -37,12 +35,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   TextEditingController get confirmPasswordController =>
       _confirmPasswordController;
 
-  bool _loginPasswrdHideShow = true;
-  bool get loginPasswrdHideShow => _loginPasswrdHideShow;
-  bool _signupPasswrdHideShow = true;
-  bool get signupPasswrdHideShow => _signupPasswrdHideShow;
-  bool _confirmPasswrdHideShow = true;
-  bool get confirmPasswrdHideShow => _confirmPasswrdHideShow;
+  bool _loginPasswordHideShow = true;
+  bool get loginPasswordHideShow => _loginPasswordHideShow;
+  bool _signupPasswordHideShow = true;
+  bool get signupPasswordHideShow => _signupPasswordHideShow;
+  bool _confirmPasswordHideShow = true;
+  bool get confirmPasswordHideShow => _confirmPasswordHideShow;
   final Ref reference;
   AuthProvider(this.reference);
   // A map to hold the loader state for each login method
@@ -67,18 +65,31 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  // void setLoading(bool value) {
-  //   _isLoading = value;
-  //   notifyListeners();
-  // }
   UserAuthResult? authError;
   clearError() {
     authError = null;
     notifyListeners();
   }
 
+  Future<void> storeFirebaseAuthToken({bool forceRefresh = false}) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final idToken = await user.getIdToken(forceRefresh);
+      AppData.instance.setToken(idToken!);
+    }
+  }
+
+  Future<void> ensureValidFirebaseToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final idToken = await user.getIdToken(true); // true = force refresh
+      AppData.instance.setToken(idToken!);
+    }
+  }
+
+
+
   signUpWithEmail() async {
-    // setLoading(true);
     if (userNameController.text.isEmpty || emailController.text.isEmpty) {
       authError = UserAuthResult(
           authResultState: AuthResultStatus.error,
@@ -126,7 +137,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       authError = user;
     } else if (isNotNull(user)) {
       userLogin(emailController.text, passwordController.text);
-
+      await storeFirebaseAuthToken();
       appSnackBar("Success", "Sign in successful", AppColors.green);
       clearControllers();
     }
@@ -144,6 +155,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     AuthResult? userCred = await _authServices.signInWithGoogle();
     if (userCred != null && userCred.userCredential != null && userCred.userCredential!.user != null) {
       final user = userCred.userCredential!.user!;
+      await storeFirebaseAuthToken();
       appSnackBar("Success", "SignIn successfully!",
           const Color.fromARGB(255, 113, 235, 117));
 
@@ -161,6 +173,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     startLoading(LoginMethod.apple);
     UserCredential? userCred = await _authServices.signInWithApple();
     if (isNotNull(userCred)) {
+      await storeFirebaseAuthToken();
       appSnackBar("Success", "SignIn successfully!",
           const Color.fromARGB(255, 113, 235, 117));
 
@@ -184,13 +197,13 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   obsecureTextFtn(ObsecureText field) {
     switch (field) {
       case ObsecureText.loginPassword:
-        _loginPasswrdHideShow = !_loginPasswrdHideShow;
+        _loginPasswordHideShow = !_loginPasswordHideShow;
         break;
       case ObsecureText.signupPassword:
-        _signupPasswrdHideShow = !_signupPasswrdHideShow;
+        _signupPasswordHideShow = !_signupPasswordHideShow;
         break;
       case ObsecureText.confirmPassword:
-        _confirmPasswrdHideShow = !_confirmPasswrdHideShow;
+        _confirmPasswordHideShow = !_confirmPasswordHideShow;
         break;
     }
     notifyListeners();
