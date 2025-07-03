@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
-import 'package:Artleap.ai/shared/constants/app_static_data.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 

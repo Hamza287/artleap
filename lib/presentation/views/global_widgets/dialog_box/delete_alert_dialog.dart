@@ -2,7 +2,6 @@ import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import '../../../../providers/refresh_provider.dart';
 import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
 

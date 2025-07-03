@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:Artleap.ai/domain/api_repos_abstract/auth_repo.dart';
 import 'package:Artleap.ai/shared/constants/app_constants.dart';
-
-import '../../shared/console.dart';
 import '../../shared/constants/app_api_paths.dart';
 import '../api_services/api_response.dart';
 import '../api_services/handling_response.dart';

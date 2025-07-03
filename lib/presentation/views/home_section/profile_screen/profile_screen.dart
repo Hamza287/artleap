@@ -35,7 +35,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userProfile = ref.watch(userProfileProvider).userProfileData;
-    final userId = UserData.ins.userId;
     final userName = UserData.ins.userName;
 
     return PopScope(

@@ -6,12 +6,10 @@ import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_se
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
-
 import '../../../../shared/constants/app_colors.dart';
 import '../../global_widgets/app_common_button.dart';
 import '../../global_widgets/error_widget.dart';
 import 'signup_screen_widgets/already_have_account_text.dart';
-import 'signup_screen_widgets/signup_screen_text.dart';
 
 class SignUpScreen extends ConsumerWidget {
   static const String routeName = 'signup_screen';

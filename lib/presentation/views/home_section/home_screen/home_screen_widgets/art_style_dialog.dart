@@ -1,11 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen_widgets/filter_result_chips.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-
-import '../../../../../providers/home_screen_provider.dart';
-import '../../../../../providers/models_list_provider.dart';
 
 class ArtStyleDilog extends ConsumerWidget {
   const ArtStyleDilog({super.key});

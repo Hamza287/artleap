@@ -8,6 +8,7 @@ import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
+import '../shared/app_persistance/app_data.dart';
 import '../shared/app_snack_bar.dart';
 import '../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../shared/constants/app_colors.dart';
@@ -70,6 +71,24 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+  Future<void> storeFirebaseAuthToken({bool forceRefresh = false}) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final idToken = await user.getIdToken(forceRefresh);
+      AppData.instance.setToken(idToken!);
+    }
+  }
+
+  Future<void> ensureValidFirebaseToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final idToken = await user.getIdToken(true); // true = force refresh
+      AppData.instance.setToken(idToken!);
+    }
+  }
+
+
+
   signUpWithEmail() async {
     if (userNameController.text.isEmpty || emailController.text.isEmpty) {
       authError = UserAuthResult(
@@ -118,7 +137,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       authError = user;
     } else if (isNotNull(user)) {
       userLogin(emailController.text, passwordController.text);
-
+      await storeFirebaseAuthToken();
       appSnackBar("Success", "Sign in successful", AppColors.green);
       clearControllers();
     }
@@ -136,6 +155,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     AuthResult? userCred = await _authServices.signInWithGoogle();
     if (userCred != null && userCred.userCredential != null && userCred.userCredential!.user != null) {
       final user = userCred.userCredential!.user!;
+      await storeFirebaseAuthToken();
       appSnackBar("Success", "SignIn successfully!",
           const Color.fromARGB(255, 113, 235, 117));
 
@@ -153,6 +173,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     startLoading(LoginMethod.apple);
     UserCredential? userCred = await _authServices.signInWithApple();
     if (isNotNull(userCred)) {
+      await storeFirebaseAuthToken();
       appSnackBar("Success", "SignIn successfully!",
           const Color.fromARGB(255, 113, 235, 117));
 

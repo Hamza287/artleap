@@ -1,136 +1,270 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
-class NotificationDetailScreen extends StatelessWidget {
-  final RemoteMessage? message;
-  static const String routeName = '/notification-details';
+import '../../../providers/notification_provider.dart';
+import '../global_widgets/app_common_button.dart';
+import '../global_widgets/dialog_box/notification_delele_dialog.dart';
 
-  const NotificationDetailScreen({super.key, this.message});
+class NotificationDetailScreen extends ConsumerWidget {
+  static const routeName = '/notification-details';
+  final AppNotification notification;
+
+  const NotificationDetailScreen({
+    Key? key,
+    required this.notification,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    if (message == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Notification Error'),
-          backgroundColor: AppColors.darkBlue,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.redColor),
-              const SizedBox(height: 16),
-              Text(
-                'Notification data not available',
-                style: AppTextstyle.interMedium(fontSize: 18),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'The notification content could not be loaded',
-                style: AppTextstyle.interRegular(),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.baseGreenColor,
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Go Back',
-                  style: AppTextstyle.interMedium(color: AppColors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // Safe access to notification properties
-    final notification = message!.notification;
-    final notificationData = message!.data;
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          notification?.title ?? 'Notification',
-          style: AppTextstyle.interMedium(color: AppColors.white),
+          'Notification Details',
+          style: AppTextstyle.interBold(
+            fontSize: 20,
+            color: AppColors.white,
+          ),
         ),
+        centerTitle: true,
         backgroundColor: AppColors.darkBlue,
+        elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.white),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () => _handleDelete(context, ref,notification.id),
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.darkBlue, AppColors.purple],
+          ),
+        ),
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (notification?.body != null) ...[
-                Text(
-                  notification!.body!,
-                  style: AppTextstyle.interRegular(
-                    fontSize: 16,
-                    color: AppColors.white,
-                  ),
-                ),
+              _buildHeaderSection(),
+              const SizedBox(height: 24),
+              _buildContentSection(),
+              if (notification.data?.isNotEmpty ?? false) ...[
                 const SizedBox(height: 24),
+                _buildDataSection(),
               ],
-              if (notificationData.isNotEmpty)
-                Card(
-                  color: AppColors.greyBlue,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Additional Data:',
-                          style: AppTextstyle.interMedium(
-                            color: AppColors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        ...notificationData.entries.map((entry) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Text(
-                              '${entry.key}: ${entry.value}',
-                              style: AppTextstyle.interRegular(
-                                color: AppColors.lightgrey,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
-                ),
-              // Add empty state if no content is available
-              if (notification?.body == null && notificationData.isEmpty)
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.info_outline,
-                          size: 64,
-                          color: AppColors.lightgrey),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No content available',
-                        style: AppTextstyle.interMedium(
-                          color: AppColors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              const SizedBox(height: 32),
+              if (_hasAction()) _buildActionButton(context),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildHeaderSection() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: AppColors.lightPurple,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            _getNotificationIcon(notification.type),
+            color: AppColors.white,
+            size: 28,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                notification.title,
+                style: AppTextstyle.interBold(
+                  fontSize: 20,
+                  color: AppColors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                DateFormat('MMM d, y • h:mm a').format(notification.timestamp),
+                style: AppTextstyle.interRegular(
+                  fontSize: 14,
+                  color: AppColors.lightgrey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContentSection() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.greyBlue.withValues(),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        notification.body,
+        style: AppTextstyle.interRegular(
+          fontSize: 16,
+          color: AppColors.white.withValues(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Details',
+          style: AppTextstyle.interBold(
+            fontSize: 18,
+            color: AppColors.white,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.greyBlue.withValues(),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: notification.data!.entries.map((entry) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${entry.key}: ',
+                      style: AppTextstyle.interMedium(
+                        fontSize: 14,
+                        color: AppColors.lightPurple,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        entry.value.toString(),
+                        style: AppTextstyle.interRegular(
+                          fontSize: 14,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    return Center(
+      child: CommonButton(
+        title: _getActionText(notification.type),
+        onpress: () => _handleNotificationAction(context),
+        gradient: const LinearGradient(
+          colors: [AppColors.lightPurple, AppColors.matepink],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleDelete(BuildContext context, WidgetRef ref,String notificationId) async {
+    final shouldDelete = await showDeleteConfirmationDialog(
+        context,
+        notificationId: notificationId,
+        userId: UserData.ins.userId!,
+    );
+    if (shouldDelete ?? false) {
+      try {
+        await ref.read(notificationProvider(UserData.ins.userId!).notifier)
+            .deleteNotification(notification.id,UserData.ins.userId!);
+        if (context.mounted) {
+          Navigator.pop(context, true); // Return true to indicate deletion
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to delete notification: ${e.toString()}'),
+              backgroundColor: AppColors.redColor,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  IconData _getNotificationIcon(String type) {
+    switch (type) {
+      case 'system':
+        return Icons.info_outline;
+      case 'message':
+        return Icons.message;
+      case 'alert':
+        return Icons.warning_rounded;
+      default:
+        return Icons.notifications;
+    }
+  }
+
+  bool _hasAction() {
+    return notification.type == 'message' ||
+        notification.data?['action'] != null;
+  }
+
+  String _getActionText(String type) {
+    switch (type) {
+      case 'message':
+        return 'Reply to Message';
+      case 'alert':
+        return 'View Alert Details';
+      default:
+        return 'View More';
+    }
+  }
+
+  void _handleNotificationAction(BuildContext context) {
+    switch (notification.type) {
+      case 'message':
+      // Navigate to chat screen
+      // Example: Navigator.pushNamed(context, ChatScreen.routeName);
+        break;
+      case 'alert':
+      // Handle alert action
+        break;
+      default:
+        if (notification.data?['url'] != null) {
+          // Open URL
+          // Example: launchUrl(Uri.parse(notification.data!['url']));
+        }
+    }
   }
 }

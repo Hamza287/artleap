@@ -1,9 +1,6 @@
 import 'dart:isolate';
-
 import 'package:dio/dio.dart';
 import 'package:Artleap.ai/domain/api_models/models_list_model.dart';
-
-import '../../shared/console.dart';
 import '../api_repos_abstract/load_models_list_repo.dart';
 import '../api_services/api_response.dart';
 import '../api_services/handling_response.dart';

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/common_button.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/bottom_sheet_widget.dart/other_textfield.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-
-import '../../../../../providers/report_provider.dart';
-import '../../../../../shared/constants/app_colors.dart';
 import 'bottom_sheet_widget.dart/header_text.dart';
 
 class OthersBottomSheet extends ConsumerWidget {

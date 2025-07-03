@@ -2,7 +2,6 @@ import 'dart:isolate';
 import 'package:dio/dio.dart';
 import 'package:Artleap.ai/domain/api_repos_abstract/generate_image_repo.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
-import '../../shared/console.dart';
 import '../api_models/generate_high_q_model.dart';
 import '../api_services/handling_response.dart';
 

@@ -257,4 +257,13 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     _filteredCreations = List.from(_communityImagesList);
     notifyListeners();
   }
+
+  Future<void> refreshUserCreations() async {
+    _page = 0;
+    _communityImagesList.clear();
+    _filteredCreations.clear();
+    notifyListeners();
+    await getUserCreations();
+  }
+
 }

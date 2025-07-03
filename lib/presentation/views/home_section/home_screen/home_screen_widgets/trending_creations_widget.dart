@@ -123,7 +123,7 @@ class _TrendingCreationsWidgetState
                       return const SizedBox.shrink();
                     }
                     return VisibilityDetector(
-                      key: Key('image-${image!.id}'),
+                      key: Key('image-${image.id}'),
                       onVisibilityChanged: (info) {
                         if (!mounted) return;
                         const double bufferZone = 300.0;

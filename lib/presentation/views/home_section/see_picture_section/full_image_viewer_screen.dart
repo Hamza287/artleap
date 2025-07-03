@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import '../../../../providers/watermark_provider.dart';
+import 'package:Artleap.ai/providers/watermark_provider.dart';
+import '../../../../providers/full_image_state_provider.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
 class FullImageViewerScreen extends ConsumerStatefulWidget {
@@ -20,17 +19,11 @@ class FullImageViewerScreen extends ConsumerStatefulWidget {
 
 class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     with SingleTickerProviderStateMixin {
-  final TransformationController _transformationController =
-  TransformationController();
-
+  final TransformationController _transformationController = TransformationController();
   late AnimationController _animationController;
   Animation<Matrix4>? _animation;
-
   final double _minScale = 1.0;
   final double _maxScale = 5.0;
-
-  Uint8List? _originalImageBytes;
-  bool _isLoadingImage = true;
 
   @override
   void initState() {
@@ -40,32 +33,29 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
       duration: const Duration(milliseconds: 300),
     );
     _animationController.addListener(() {
-      _transformationController.value = _animation!.value;
+      if (_animation != null) {
+        _transformationController.value = _animation!.value;
+      }
     });
+
     AnalyticsService.instance.logScreenView(screenName: 'full image screen');
-    _loadOriginalImage();
+
+    // Delay the image loading until after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadImage();
+    });
   }
 
-  Future<void> _loadOriginalImage() async {
-    try {
-      final response = await http.get(Uri.parse(widget.params!.Image!));
-      if (response.statusCode == 200) {
-        setState(() {
-          _originalImageBytes = response.bodyBytes;
-          _isLoadingImage = false;
-        });
-        if (_originalImageBytes != null) {
-          ref.read(watermarkProvider.notifier).applyWatermark(_originalImageBytes!);
-        }
-      } else {
-        setState(() {
-          _isLoadingImage = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _isLoadingImage = false;
-      });
+  Future<void> _loadImage() async {
+    final imageUrl = widget.params?.Image;
+    if (imageUrl == null || imageUrl.isEmpty) return;
+
+    await ref.read(fullImageProvider.notifier).loadOriginalImage(imageUrl);
+
+    // Apply watermark after image is loaded
+    final imageBytes = ref.read(fullImageProvider).originalImageBytes;
+    if (imageBytes != null && mounted) {
+      ref.read(watermarkProvider.notifier).applyWatermark(imageBytes);
     }
   }
 
@@ -73,6 +63,7 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
   void dispose() {
     _animationController.dispose();
     _transformationController.dispose();
+    // ref.read(fullImageProvider.notifier).reset();
     super.dispose();
   }
 
@@ -83,10 +74,11 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
       _animateTransformation(Matrix4.identity());
     } else {
       final newScale = _maxScale / 2;
-      final RenderBox renderBox = context.findRenderObject() as RenderBox;
-      final Size screenSize = renderBox.size;
-      final Offset screenCenter =
-      Offset(screenSize.width / 2, screenSize.height / 2);
+      final renderBox = context.findRenderObject() as RenderBox?;
+      if (renderBox == null) return;
+
+      final screenSize = renderBox.size;
+      final screenCenter = Offset(screenSize.width / 2, screenSize.height / 2);
 
       final targetMatrix = Matrix4.identity()
         ..translate(
@@ -108,10 +100,53 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     _animationController.forward(from: 0);
   }
 
+  Widget _buildImageContent() {
+    final fullImageState = ref.watch(fullImageProvider);
+    final watermarkState = ref.watch(watermarkProvider);
+    final imageUrl = widget.params?.Image;
+
+    if (fullImageState.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (fullImageState.error != null) {
+      return Center(
+        child: Text(
+          fullImageState.error!,
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
+    }
+
+    if (watermarkState.isLoading) {
+      return imageUrl != null
+          ? CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.contain,
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      )
+          : const Center(child: Icon(Icons.error));
+    }
+
+    if (watermarkState.watermarkedImage != null) {
+      return Image.memory(
+        watermarkState.watermarkedImage!,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+      );
+    }
+
+    return imageUrl != null
+        ? CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.contain,
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+    )
+        : const Center(child: Icon(Icons.error));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final watermarkState = ref.watch(watermarkProvider);
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.darkBlue,
@@ -132,22 +167,7 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: _isLoadingImage
-                      ? const Center(child: CircularProgressIndicator())
-                      : watermarkState.isLoading
-                      ? CachedNetworkImage(
-                    imageUrl: widget.params!.Image!,
-                    fit: BoxFit.contain,
-                  )
-                      : watermarkState.watermarkedImage != null
-                      ? Image.memory(
-                    watermarkState.watermarkedImage!,
-                    fit: BoxFit.contain,
-                  )
-                      : CachedNetworkImage(
-                    imageUrl: widget.params!.Image!,
-                    fit: BoxFit.contain,
-                  ),
+                  child: _buildImageContent(),
                 ),
               ),
             ),

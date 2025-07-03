@@ -1,8 +1,5 @@
 import 'dart:isolate';
-
 import 'package:dio/dio.dart';
-
-import '../../shared/console.dart';
 import '../../shared/constants/app_api_paths.dart';
 import '../api_models/text_to_image_model.dart';
 import '../api_repos_abstract/text_to_image_repo.dart';

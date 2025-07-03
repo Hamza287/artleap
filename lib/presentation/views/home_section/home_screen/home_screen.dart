@@ -24,7 +24,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favouriteProvider).getUserFav(UserData.ins.userId ?? "");
       ref.read(userProfileProvider).updateUserCredits();

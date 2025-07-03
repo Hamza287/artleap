@@ -1,5 +1,5 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
@@ -11,6 +11,7 @@ import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_scre
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import '../../presentation/views/Notifications/notification_details_screen.dart';
 import '../../presentation/views/Notifications/notification_screen.dart';
+import '../../presentation/views/home_section/profile_screen/policies_screens/privacy_policy_screen.dart';
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
@@ -19,13 +20,9 @@ class RouteGenerator {
   static Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case SplashScreen.routeName:
-        return route(const SplashScreen(
-            // params: settings.arguments as HomeScreenArgs?
-            ));
+        return route(const SplashScreen());
       case LoginScreen.routeName:
-        return route(const LoginScreen(
-            // params: settings.arguments as HomeScreenArgs?
-            ));
+        return route(const LoginScreen());
       case LoginORsignUpScreen.routeName:
         return route(const LoginORsignUpScreen());
       case SignUpScreen.routeName:
@@ -41,7 +38,6 @@ class RouteGenerator {
         return route(EditProfileScreen(
           params: settings.arguments as EditProfileSreenParams?,
         ));
-
       case OtherUserProfileScreen.routeName:
         return route(OtherUserProfileScreen(
           params: settings.arguments as OtherUserProfileParams?,
@@ -54,22 +50,20 @@ class RouteGenerator {
             params: settings.arguments as FullImageScreenParams,
           ),
         );
+      case PrivacyPolicyScreen.routeName:
+        return route(const PrivacyPolicyScreen());
       case NotificationScreen.routeName:
-        return MaterialPageRoute(builder: (_) => const NotificationScreen());
+        return route(const NotificationScreen());
       case NotificationDetailScreen.routeName:
-        final message = settings.arguments;
-        return MaterialPageRoute(
-          builder: (_) => NotificationDetailScreen(
-            message: message is RemoteMessage ? message : null,
-          ),
-        );
+        final args = settings.arguments as AppNotification;
+        return route(NotificationDetailScreen(notification: args));
       default:
         return route(const ErrorRoute());
     }
   }
-}
 
-Route route(Widget screen) => MaterialPageRoute(builder: (context) => screen);
+  static Route route(Widget screen) => MaterialPageRoute(builder: (context) => screen);
+}
 
 class ErrorRoute extends StatelessWidget {
   const ErrorRoute({Key? key}) : super(key: key);
