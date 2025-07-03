@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
@@ -85,6 +86,19 @@ class EditProfileWidget extends ConsumerWidget {
             child: IconWithTextTile(
               imageIcon: AppAssets.privacyicon,
               title: "Privacy Policy",
+            ),
+          ),
+          50.spaceY,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                HelpScreen.routeName,
+              );
+            },
+            child: IconWithTextTile(
+              imageIcon: AppAssets.questionmark,
+              title: "Help",
             ),
           ),
           50.spaceY,

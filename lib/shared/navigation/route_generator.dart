@@ -11,6 +11,7 @@ import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_scre
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import '../../presentation/views/Notifications/notification_details_screen.dart';
 import '../../presentation/views/Notifications/notification_screen.dart';
+import '../../presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
 import '../../presentation/views/home_section/profile_screen/policies_screens/privacy_policy_screen.dart';
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
@@ -52,6 +53,8 @@ class RouteGenerator {
         );
       case PrivacyPolicyScreen.routeName:
         return route(const PrivacyPolicyScreen());
+      case HelpScreen.routeName:
+        return route(const HelpScreen());
       case NotificationScreen.routeName:
         return route(const NotificationScreen());
       case NotificationDetailScreen.routeName:

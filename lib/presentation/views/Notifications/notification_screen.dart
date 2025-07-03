@@ -240,14 +240,6 @@ class NotificationCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (!notification.isRead)
-                          IconButton(
-                            icon: const Icon(Icons.check, size: 20),
-                            color: AppColors.white,
-                            onPressed: onMarkAsRead,
-                            tooltip: 'Mark as read',
-                          ),
-                        // Add delete icon button here
                         IconButton(
                           icon: const Icon(Icons.delete_outline, size: 20),
                           color: AppColors.redColor, // Red color for delete
@@ -288,7 +280,8 @@ class NotificationCard extends StatelessWidget {
                               'MARK AS READ',
                               style: AppTextstyle.interRegular(
                                 fontSize: 12,
-                                color: AppColors.lightPurple,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                           ),
