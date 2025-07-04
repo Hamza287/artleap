@@ -37,6 +37,7 @@ target 'Runner' do
   pod 'Firebase/Firestore'    # Firestore support
   pod 'Firebase/Auth'         # Authentication support
   pod 'Firebase/Analytics'    # Analytics (optional)
+  pod 'Firebase/Crashlytics'
 
   target 'RunnerTests' do
     inherit! :search_paths
