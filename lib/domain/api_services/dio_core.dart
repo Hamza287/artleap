@@ -13,10 +13,10 @@ class DioCore {
       receiveTimeout: const Duration(minutes: 3),
     ));
     // Add interceptors if needed
-    _dio.interceptors.add(LogInterceptor(
-      request: true,
-      responseBody: true,
-      requestBody: true,
-    ));
+    // _dio.interceptors.add(LogInterceptor(
+    //   request: true,
+    //   responseBody: true,
+    //   requestBody: true,
+    // ));
   }
 }
