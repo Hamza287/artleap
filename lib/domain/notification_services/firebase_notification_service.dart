@@ -125,6 +125,7 @@ class FirebaseNotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
+  // In FirebaseNotificationService.dart
   void _handleMessage(RemoteMessage message) async {
     try {
       final notification = AppNotification(
@@ -138,25 +139,34 @@ class FirebaseNotificationService {
             : AppConstants.generalNotificationType,
       );
 
-      // Add to provider
-      final userId = UserData.ins.userId;
+      // Get userId - priority order:
+      // 1. From message data (for user-specific notifications)
+      // 2. From logged-in user (fallback)
+      final messageUserId = message.data['userId'];
+      final userId = messageUserId ?? UserData.ins.userId;
+
       if (userId != null) {
         ref.read(notificationProvider(userId).notifier).addNotification(notification);
-
-        // ⬇️ Call backend API to save notification
-        await ref.read(notificationServiceProvider).createNotification(
-          title: notification.title,
-          body: notification.body,
-          type: notification.type,
-          userId: notification.type == AppConstants.generalNotificationType ? null : userId,
-          data: notification.data,
-        );
       }
+
+      // For backend - use message userId if available, otherwise use logged-in user
+      final backendUserId = notification.type == AppConstants.generalNotificationType
+          ? null
+          : (messageUserId ?? userId);
+
+      print('Using backendUserId: $backendUserId');
+
+      await ref.read(notificationServiceProvider).createNotification(
+        title: notification.title,
+        body: notification.body,
+        type: notification.type,
+        userId: backendUserId,
+        data: notification.data,
+      );
     } catch (e) {
       debugPrint('❌ Error handling notification: $e');
     }
   }
-
 
 }
 

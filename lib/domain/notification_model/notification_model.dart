@@ -42,7 +42,7 @@ class AppNotification {
       body: message.notification?.body ?? '',
       timestamp: DateTime.now(),
       data: message.data,
-      type: message.data['type'] ?? 'general',
+      type: message.data['type'] ?? (message.data['userId'] != null ? 'user' : 'general'),
     );
   }
 
