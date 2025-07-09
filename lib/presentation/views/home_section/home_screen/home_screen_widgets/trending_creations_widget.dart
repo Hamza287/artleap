@@ -71,7 +71,7 @@ class _TrendingCreationsWidgetState
               },
               child: Image.asset(
                 AppAssets.selecticon,
-                scale: 2.5,
+                scale: 2.5,color: Colors.black,
               ),
             ),
           ),

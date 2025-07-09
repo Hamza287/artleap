@@ -87,7 +87,6 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
                                 appSnackBar("Error", "Please write your prompt", AppColors.redColor);
                               } else if (generateImageProviderState.images.isNotEmpty) {
                                 ref.watch(generateImageProvider).generateImgToImg();
-                                Navigation.pushNamed(ResultScreenRedesign.routeName);
                               } else {
                                 AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
                                 ref.read(generateImageProvider).generateTextToImage();

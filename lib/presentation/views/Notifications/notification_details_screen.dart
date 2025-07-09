@@ -27,16 +27,17 @@ class NotificationDetailScreen extends ConsumerWidget {
           'Notification Details',
           style: AppTextstyle.interBold(
             fontSize: 20,
-            color: AppColors.white,
+            color: AppColors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.darkBlue,
+        foregroundColor: Colors.black,
+        backgroundColor: AppColors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.white),
+        iconTheme: const IconThemeData(color: AppColors.black),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_outline),
+            icon: const Icon(Icons.delete_outline,color: Colors.red,),
             onPressed: () => _handleDelete(context, ref,notification.id),
           ),
         ],
@@ -47,7 +48,7 @@ class NotificationDetailScreen extends ConsumerWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.darkBlue, AppColors.purple],
+            colors: [AppColors.white, AppColors.white],
           ),
         ),
         child: SingleChildScrollView(
@@ -84,7 +85,7 @@ class NotificationDetailScreen extends ConsumerWidget {
           ),
           child: Icon(
             _getNotificationIcon(notification.type),
-            color: AppColors.white,
+            color: AppColors.black,
             size: 28,
           ),
         ),
@@ -97,7 +98,7 @@ class NotificationDetailScreen extends ConsumerWidget {
                 notification.title,
                 style: AppTextstyle.interBold(
                   fontSize: 20,
-                  color: AppColors.white,
+                  color: AppColors.black,
                 ),
               ),
               const SizedBox(height: 4),
@@ -105,7 +106,7 @@ class NotificationDetailScreen extends ConsumerWidget {
                 DateFormat('MMM d, y • h:mm a').format(notification.timestamp),
                 style: AppTextstyle.interRegular(
                   fontSize: 14,
-                  color: AppColors.lightgrey,
+                  color: Colors.black54,
                 ),
               ),
             ],
@@ -120,14 +121,14 @@ class NotificationDetailScreen extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.greyBlue.withValues(),
+        color: AppColors.white.withValues(),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         notification.body,
         style: AppTextstyle.interRegular(
           fontSize: 16,
-          color: AppColors.white.withValues(),
+          color: AppColors.black.withValues(),
         ),
       ),
     );
@@ -141,14 +142,14 @@ class NotificationDetailScreen extends ConsumerWidget {
           'Details',
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: AppColors.white,
+            color: AppColors.black,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.greyBlue.withValues(),
+            color: AppColors.white.withValues(),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -170,7 +171,7 @@ class NotificationDetailScreen extends ConsumerWidget {
                         entry.value.toString(),
                         style: AppTextstyle.interRegular(
                           fontSize: 14,
-                          color: AppColors.white,
+                          color: AppColors.black,
                         ),
                       ),
                     ),

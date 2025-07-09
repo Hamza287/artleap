@@ -62,22 +62,22 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           'Notifications${unreadCount > 0 ? ' ($unreadCount)' : ''}',
           style: AppTextstyle.interBold(
             fontSize: 20,
-            color: AppColors.white,
+            color: Colors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.darkBlue,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         actions: [
           if (unreadCount > 0)
             IconButton(
-              icon: const Icon(Icons.done_all, color: AppColors.white),
+              icon: const Icon(Icons.done_all, color: Colors.black),
               onPressed: _markAllAsRead,
               tooltip: 'Mark all as read',
             ),
           IconButton(
-            icon: const Icon(Icons.refresh, color: AppColors.white),
+            icon: const Icon(Icons.refresh, color: Colors.black),
             onPressed: _loadNotifications,
             tooltip: 'Refresh',
           ),
@@ -88,7 +88,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.darkBlue, AppColors.purple],
+            colors: [Colors.white, AppColors.white],
           ),
         ),
         child: notificationsAsync.when(
@@ -109,7 +109,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
             return RefreshIndicator(
               backgroundColor: AppColors.lightPurple,
-              color: AppColors.white,
+              color: Colors.black,
               onRefresh: _loadNotifications,
               child: ListView.separated(
                 padding: const EdgeInsets.all(16),
