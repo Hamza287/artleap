@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/notification_provider.dart';
+import '../../../providers/theme_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 import '../Notifications/notification_screen.dart';
@@ -59,6 +62,12 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
           ),
           shape: BoxShape.circle,
           color: AppColors.white,
+          border: Border.all(
+            color: ref.watch(bottomNavBarProvider).pageIndex == 3
+                ? const Color(0xFFAB8AFF) // Purple when selected
+                : AppColors.darkBlue, // Dark blue when unselected
+            width: 2,
+          ),
         ),
       );
     }
@@ -67,121 +76,83 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     return Container(
       height: 35,
       width: 35,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
+      decoration: BoxDecoration(
+        image: const DecorationImage(
           image: AssetImage(AppAssets.artstyle1),
           fit: BoxFit.cover,
         ),
         shape: BoxShape.circle,
         color: AppColors.white,
+        border: Border.all(
+          color: ref.watch(bottomNavBarProvider).pageIndex == 3
+              ? const Color(0xFFAB8AFF) // Purple when selected
+              : AppColors.darkBlue, // Dark blue when unselected
+          width: 2,
+        ),
       ),
     );
-  }
-
-  String _getAppBarTitle(int pageIndex) {
-    switch (pageIndex) {
-      case 1:
-        return "Image Generation";
-      case 2:
-        return "Your Favourites";
-      default:
-        return "";
-    }
-  }
-
-  List<Color> _getAppBarColors(int pageIndex) {
-    return pageIndex == 3
-        ? [AppColors.lightIndigo, AppColors.darkIndigo]
-        : [AppColors.darkBlue, AppColors.darkBlue];
   }
 
   @override
   Widget build(BuildContext context) {
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
-
     return SafeArea(
       child: Scaffold(
-        appBar: CommonAppBar(
-          title: _getAppBarTitle(pageIndex),
-          listOfColors: _getAppBarColors(pageIndex),
-          actions:  [
-            Consumer(
-              builder: (context, ref, _) {
-                final userId = UserData.ins.userId;
-                if (userId == null) return const SizedBox();
-
-                final notifications = ref.watch(notificationProvider(userId));
-                final unreadCount = notifications.maybeWhen(
-                  data: (notifs) => notifs.where((n) => !n.isRead).length,
-                  orElse: () => 0,
-                );
-
-                return IconButton(
-                  icon: Badge(
-                    label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                    child: const Icon(Icons.notifications, color: AppColors.white),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, NotificationScreen.routeName);
-                  },
-                );
-              },
-            ),
-          ],
-          bottomWidget: pageIndex == 0
-              ? Column(
-            children: [
-              5.spaceY,
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: SearchTextfield(),
-              ),
-            ],
-          )
-              : null,
-        ),
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: Container(
-          height: 55,
+          height: 65,
           width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.lightBlue, AppColors.blue],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavButton(
-                icon: Icons.home,
-                index: 0,
-                currentIndex: pageIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
-              ),
-              _buildNavButton(
-                icon: Icons.add,
-                index: 1,
-                currentIndex: pageIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
-              ),
-              _buildNavButton(
-                icon: Icons.favorite,
-                index: 2,
-                currentIndex: pageIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
-              ),
-              InkWell(
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
-                child: _buildProfilePicture(),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 2,
+                spreadRadius: 2,
+                offset: const Offset(0, -2),
               ),
             ],
           ),
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 10.0,
+                sigmaY: 10.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavButton(
+                    icon: Icons.home,
+                    index: 0,
+                    currentIndex: pageIndex,
+                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
+                  ),
+                  _buildNavButton(
+                    icon: Icons.add_circle,
+                    index: 1,
+                    currentIndex: pageIndex,
+                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
+                  ),
+                  _buildNavButton(
+                    icon: Icons.groups,
+                    index: 2,
+                    currentIndex: pageIndex,
+                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
+                  ),
+                  _buildNavButton(
+                    icon: Icons.person,
+                    index: 3,
+                    currentIndex: pageIndex,
+                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-        body: (pageIndex >= 0 &&
-            pageIndex < bottomNavBarState.widgets.length)
+        body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
             ? bottomNavBarState.widgets[pageIndex]
             : const Center(child: CircularProgressIndicator()),
       ),
@@ -202,10 +173,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
         child: Center(
           child: Icon(
             icon,
-            size: 30,
+            size: 33,
             color: currentIndex == index
-                ? AppColors.white
-                : AppColors.lightgrey,
+                ? const Color(0xFFAB8AFF)
+                : AppColors.darkBlue,
           ),
         ),
       ),

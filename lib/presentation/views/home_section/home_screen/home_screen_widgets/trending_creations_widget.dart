@@ -87,7 +87,7 @@ class _TrendingCreationsWidgetState
             )
           : Container(
               decoration: BoxDecoration(
-                color: AppColors.darkIndigo,
+                color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(

@@ -37,23 +37,24 @@ class PromptScreenButton extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border(
             top: BorderSide(
-              color: AppColors.lightgrey
-                  .withOpacity(0.8), // Set your desired color here
-              width: 1.0, // Optional: set border thickness
+              color: AppColors.lightgrey.withOpacity(0.8),
+              width: 1.0,
             ),
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.indigo.withOpacity(0.8),
-              blurRadius: 12,
-              spreadRadius: 0.10,
-              offset: Offset(0, 0),
-            ),
+              color: Colors.grey.withOpacity(0.3),
+              offset: const Offset(0, 3),
+              blurRadius: 6,
+              spreadRadius: 0,
+              blurStyle: BlurStyle.normal,
+            )
           ],
-          gradient: LinearGradient(
-              colors: [AppColors.indigo, AppColors.lightPurple],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
+          gradient: RadialGradient(
+              colors: [Color(0x8EFFFFFF), Color(0xFF683FEA),],
+              center: Alignment.center,
+              radius: 3.5,
+          ),
         ),
         child: isLoading
             ? Center(

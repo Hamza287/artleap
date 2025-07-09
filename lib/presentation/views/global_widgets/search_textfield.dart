@@ -8,25 +8,53 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class SearchTextfield extends ConsumerWidget {
   const SearchTextfield({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 35,
-      width: double.infinity,
+      height: 48,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7), color: AppColors.greyBlue),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        border: Border.all(
+          color: Colors.black,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: TextField(
+        style: AppTextstyle.interRegular(
+          fontSize: 16,
+          color: Colors.black,
+        ),
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 4, bottom: 15),
+          contentPadding: const EdgeInsets.only(
+            left: 16,
+            bottom: 16,
+            top: 16,
+          ),
           enabledBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           hintText: "Search AI Creations",
-          hintStyle:
-              AppTextstyle.interRegular(fontSize: 14, color: AppColors.white),
-          prefixIcon: Image.asset(
-            AppAssets.searchicon,
-            scale: 4.5,
+          hintStyle: AppTextstyle.interRegular(
+            fontSize: 16,
+            color: Colors.grey.shade600,
+          ),
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 12, right: 8),
+            child: Image.asset(
+              AppAssets.searchicon,
+              width: 20,
+              height: 20,
+              color: Colors.grey.shade700,
+            ),
           ),
         ),
         onChanged: (value) {

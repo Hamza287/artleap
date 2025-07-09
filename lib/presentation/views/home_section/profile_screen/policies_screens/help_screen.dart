@@ -13,6 +13,28 @@ class HelpScreen extends StatefulWidget {
 
 class _HelpScreenState extends State<HelpScreen> {
   bool _isSendingEmail = false;
+  final _faqItems = [
+    {
+      'question': 'How do I create a new artwork?',
+      'answer': 'Tap the "+" button on the home screen to start a new creation. '
+          'Select your canvas size and begin painting with our tools.',
+    },
+    {
+      'question': 'Where are my saved artworks stored?',
+      'answer': 'All your artworks are saved in the "My Gallery" section. '
+          'You can access them anytime from the bottom navigation.',
+    },
+    {
+      'question': 'How do I share my artwork?',
+      'answer': 'Open any artwork and tap the share icon. '
+          'You can share directly to social media or save to your device.',
+    },
+    {
+      'question': 'What subscription options are available?',
+      'answer': 'We offer monthly and yearly subscriptions. '
+          'Go to "Account" > "Subscription" to view available plans.',
+    },
+  ];
 
   Future<void> _launchEmail() async {
     if (_isSendingEmail) return;
@@ -20,44 +42,61 @@ class _HelpScreenState extends State<HelpScreen> {
     setState(() => _isSendingEmail = true);
 
     try {
+      const email = 'info@x-r.digital';
+      const subject = 'Artleap App Support Request';
+      const body = 'Hello Mimar Studios team,\n\nI need help with...';
+
       final Uri emailLaunchUri = Uri(
         scheme: 'mailto',
-        path: 'info@x-r.digital',
+        path: email,
         queryParameters: {
-          'subject': 'Artleap App Support Request',
-          'body': 'Hello Mimar Studios team,\n\nI need help with...',
+          'subject': Uri.encodeComponent(subject),
+          'body': Uri.encodeComponent(body),
         },
       );
 
       if (await canLaunchUrl(emailLaunchUri)) {
-        await launchUrl(emailLaunchUri);
+        await launchUrl(
+          emailLaunchUri,
+          mode: LaunchMode.externalApplication,
+        );
       } else {
-        throw 'Email client not found';
+        // Fallback for devices that don't properly report email apps
+        await launchUrl(
+          Uri.parse('https://mail.google.com/mail/?view=cm&fs=1&to=$email&su=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}'),
+          mode: LaunchMode.externalApplication,
+        );
       }
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString().contains('not found')
-                ? 'No email app installed'
-                : 'Failed to open email',
-            style: AppTextstyle.interRegular(color: AppColors.white),
-          ),
-          backgroundColor: AppColors.redColor,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          margin: const EdgeInsets.all(20),
-        ),
+      _showErrorSnackBar(
+        'Failed to open email. Please ensure you have an email app installed.',
       );
+      debugPrint('Email launch error: $e');
     } finally {
       if (mounted) {
         setState(() => _isSendingEmail = false);
       }
     }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: AppTextstyle.interRegular(color: AppColors.white),
+        ),
+        backgroundColor: AppColors.redColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.all(20),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -82,7 +121,7 @@ class _HelpScreenState extends State<HelpScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with decorative element
+            // Header section
             _buildSectionHeader('Need Help?'),
             const SizedBox(height: 10),
             Text(
@@ -96,22 +135,10 @@ class _HelpScreenState extends State<HelpScreen> {
             // FAQ Section
             _buildSectionHeader('Frequently Asked Questions'),
             const SizedBox(height: 20),
-            _buildFAQItem(
-              question: 'How do I create a new artwork?',
-              answer: 'Tap the "+" button on the home screen to start a new creation. Select your canvas size and begin painting with our tools.',
-            ),
-            _buildFAQItem(
-              question: 'Where are my saved artworks stored?',
-              answer: 'All your artworks are saved in the "My Gallery" section. You can access them anytime from the bottom navigation.',
-            ),
-            _buildFAQItem(
-              question: 'How do I share my artwork?',
-              answer: 'Open any artwork and tap the share icon. You can share directly to social media or save to your device.',
-            ),
-            _buildFAQItem(
-              question: 'What subscription options are available?',
-              answer: 'We offer monthly and yearly subscriptions. Go to "Account" > "Subscription" to view available plans.',
-            ),
+            ..._faqItems.map((item) => _buildFAQItem(
+              question: item['question']!,
+              answer: item['answer']!,
+            )),
 
             // Contact Section
             const SizedBox(height: 40),
@@ -125,64 +152,14 @@ class _HelpScreenState extends State<HelpScreen> {
             ),
             const SizedBox(height: 25),
 
+            // Contact button
             Center(
-              child: ElevatedButton.icon(
-                onPressed: _isSendingEmail ? null : _launchEmail,
-                icon: _isSendingEmail
-                    ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.white,
-                  ),
-                )
-                    : const Icon(Icons.email_outlined, size: 20),
-                label: Text(
-                  _isSendingEmail ? 'Opening...' : 'Contact Support',
-                  style: AppTextstyle.interMedium(
-                    color: AppColors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.lightPurple,
-                  foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 25,
-                    vertical: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 3,
-                  shadowColor: AppColors.lightPurple.withOpacity(0.3),
-                ),
-              ),
+              child: _buildContactButton(),
             ),
 
             // Footer
             const SizedBox(height: 40),
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    'Mimar Studios Team',
-                    style: AppTextstyle.interMedium(
-                      color: AppColors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    'We appreciate your feedback',
-                    style: AppTextstyle.interRegular(
-                      color: AppColors.white.withOpacity(0.6),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildFooter(),
           ],
         ),
       ),
@@ -233,6 +210,65 @@ class _HelpScreenState extends State<HelpScreen> {
         tilePadding: const EdgeInsets.symmetric(horizontal: 16),
         iconColor: AppColors.lightPurple,
         collapsedIconColor: AppColors.lightPurple,
+      ),
+    );
+  }
+
+  Widget _buildContactButton() {
+    return ElevatedButton.icon(
+      onPressed: _isSendingEmail ? null : _launchEmail,
+      icon: _isSendingEmail
+          ? const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: AppColors.white,
+        ),
+      )
+          : const Icon(Icons.email_outlined, size: 20),
+      label: Text(
+        _isSendingEmail ? 'Opening...' : 'Contact Support',
+        style: AppTextstyle.interMedium(
+          color: AppColors.white,
+          fontSize: 16,
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.lightPurple,
+        foregroundColor: AppColors.white,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 25,
+          vertical: 15,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 3,
+        shadowColor: AppColors.lightPurple.withOpacity(0.3),
+      ),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            'Mimar Studios Team',
+            style: AppTextstyle.interMedium(
+              color: AppColors.white.withOpacity(0.9),
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            'We appreciate your feedback',
+            style: AppTextstyle.interRegular(
+              color: AppColors.white.withOpacity(0.6),
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }

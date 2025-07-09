@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/common/privacy_policy_accept.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
@@ -39,7 +40,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               email: userEmail);
           Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
         } else {
-          Navigation.pushNamedAndRemoveUntil(OnboardingScreen.routeName);
+          Navigation.pushNamedAndRemoveUntil(AcceptPrivacyPolicyScreen.routeName);
         }
       },
     );

@@ -1,6 +1,6 @@
+import 'package:Artleap.ai/presentation/views/interest_onboarding_screens/interest_onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_widgets/continue_button.dart';
 import 'package:Artleap.ai/providers/onboarding_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
@@ -106,7 +106,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   alignment: Alignment.bottomCenter,
                   child: ContinueButton(
                     onpress: () {
-                      Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+                      Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreen.routeName);
                       ref.read(onboardingProvider).stopAutoPageView();
                     },
                   )),

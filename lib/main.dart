@@ -93,7 +93,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   void dispose() {
-    _refreshTokenTimer?.cancel(); // Clean up timer on app close
+    _refreshTokenTimer?.cancel();
     super.dispose();
   }
   @override
@@ -103,7 +103,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       themeMode: ref.watch(themeProvider),
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      darkTheme: darkTheme,
+      darkTheme: lightTheme,
       supportedLocales: AppLocalization.supportedLocales,
       locale: ref.watch(localizationProvider),
       localizationsDelegates: const [

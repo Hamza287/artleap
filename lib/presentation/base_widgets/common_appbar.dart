@@ -23,17 +23,16 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       automaticallyImplyLeading: false,
       shadowColor: AppColors.darkBlue,
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: AppColors.white,
       flexibleSpace: Container(
         height: double.infinity,
         decoration: BoxDecoration(
-            color: AppColors.darkBlue,
-            gradient: LinearGradient(
-                colors: listOfColors ?? [AppColors.darkBlue, AppColors.darkBlue])),
+            color: AppColors.white,
+            ),
       ),
       title: Text(
         title!,
-        style: AppTextstyle.interMedium(fontSize: 18, color: AppColors.white),
+        style: AppTextstyle.interMedium(fontSize: 18, color: AppColors.black),
       ),
       centerTitle: true,
       actions: actions,

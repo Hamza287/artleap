@@ -15,7 +15,7 @@ class AppBackgroundWidget extends ConsumerWidget {
           height: double.infinity,
           width: double.infinity,
           decoration: BoxDecoration(
-              color: AppColors.darkBlue),
+              color: AppColors.white),
           child: widget,
         ),
       ),
