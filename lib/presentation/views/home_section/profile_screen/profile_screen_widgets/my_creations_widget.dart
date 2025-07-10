@@ -22,35 +22,18 @@ class MyCreationsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.darkBlue,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
       ),
       child: Padding(
-        padding:
-            const EdgeInsets.only(top: 30, right: 15, left: 15, bottom: 20),
+        padding: const EdgeInsets.only(right: 10, left: 10, bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                userName != null
-                    ? Text(
-                        "$userName Creations",
-                        style: AppTextstyle.interMedium(
-                            color: AppColors.white, fontSize: 14),
-                      )
-                    : Text(
-                        "Creations",
-                        style: AppTextstyle.interMedium(
-                            color: AppColors.white, fontSize: 14),
-                      ),
-              ],
-            ),
             const SizedBox(height: 20),
             listofCreations.isEmpty
                 ? Center(

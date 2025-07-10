@@ -7,7 +7,6 @@ import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widg
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/providers/theme_provider.dart';
 import 'package:Artleap.ai/providers/notification_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
@@ -69,7 +68,6 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeProvider);
 
     return PopScope(
       canPop: false,
@@ -103,17 +101,6 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
           title: _getAppBarTitle(0), // Using 0 for home page
           listOfColors: _getAppBarColors(0),
           actions: [
-            IconButton(
-              icon: Icon(
-                themeMode == ThemeMode.dark
-                    ? Icons.brightness_7
-                    : Icons.brightness_4,
-              ),
-              onPressed: () {
-                ref.read(themeProvider.notifier).toggle();
-              },
-              color: Colors.black,
-            ),
             Consumer(
               builder: (context, ref, _) {
                 final userId = UserData.ins.userId;
