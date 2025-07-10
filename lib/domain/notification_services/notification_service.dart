@@ -25,7 +25,7 @@ class NotificationService {
       if (userId.isEmpty) throw ArgumentError('User ID cannot be empty');
 
       final notifications = await _repository.getUserNotifications(userId);
-      return notifications ?? [];
+      return notifications;
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
       ErrorHandler.showError(error);

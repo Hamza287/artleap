@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen_widgets/art_style_dialog.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_assets.dart';
@@ -13,6 +12,8 @@ import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+import 'art_style_dialog.dart';
 
 class TrendingCreationsWidget extends ConsumerStatefulWidget {
   const TrendingCreationsWidget({super.key});

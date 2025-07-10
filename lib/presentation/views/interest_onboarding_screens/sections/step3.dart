@@ -65,7 +65,7 @@ class Step3 extends ConsumerWidget {
                           border: Border.all(
                             color: isSelected
                                 ? const Color(0xFF875EFF)
-                                : Colors.grey.shade300 ?? Colors.grey,
+                                : Colors.grey.shade300,
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(4.0),

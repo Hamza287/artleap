@@ -1,11 +1,12 @@
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_userprofile_widgets/upgrade_plan_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
+import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/privacy_policy_screen.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../policies_screens/privacy_policy_screen.dart';
 import 'separator_widget.dart';
 
 class EditProfileWidget extends ConsumerWidget {
@@ -14,128 +15,199 @@ class EditProfileWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            40.spaceY,
-      
-            // 30.spaceY,
-            GestureDetector(
-              onTap: () {
-                Navigation.pop();
-              },
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppColors.white,
+    final iconSize = MediaQuery.of(context).size.width * 0.06; // Responsive icon size
+    final padding = EdgeInsets.symmetric(
+      horizontal: MediaQuery.of(context).size.width * 0.05,
+      vertical: 16,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Padding(
+          padding: padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () => Navigation.pop(),
+                child: Icon(
+                  Icons.arrow_back_rounded,
+                  color: AppColors.white,
+                  size: iconSize,
+                ),
               ),
-            ),
-            40.spaceY,
-            Row(
-              children: [
-                Container(
-                  height: 75,
-                  width: 75,
-                  decoration: BoxDecoration(
+              const SizedBox(height: 30),
+
+              // Profile Section
+              Row(
+                children: [
+                  Container(
+                    width: constraints.maxWidth * 0.18,
+                    height: constraints.maxWidth * 0.18,
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                          image: params!.profileImage == ''
-                              ? AssetImage(
-                                  AppAssets.profilepic,
-                                )
-                              : NetworkImage(
-                                  params!.profileImage ?? AppAssets.profilepic,
-                                ),
-                          fit: BoxFit.cover)),
-                ),
-                20.spaceX,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      params!.userName ?? "user name",
-                      style: AppTextstyle.interMedium(
-                          color: AppColors.white, fontSize: 14),
+                        image: params!.profileImage == ''
+                            ? const AssetImage(AppAssets.profilepic) as ImageProvider
+                            : NetworkImage(params!.profileImage ?? AppAssets.profilepic),
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    10.spaceY,
-                    Text(
-                      params!.userEmail ?? "username@gmail.com",
-                      style: AppTextstyle.interMedium(
-                          color: AppColors.white, fontSize: 12),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            50.spaceY,
-            SeparatorWidget(
-              title: "General",
-            ),
-            20.spaceY,
-      
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  PrivacyPolicyScreen.routeName,
-                );
-              },
-              child: IconWithTextTile(
-                imageIcon: AppAssets.privacyicon,
-                title: "Privacy Policy",
+                  ),
+                  const SizedBox(width: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        params!.userName ?? "user name",
+                        style: AppTextstyle.interMedium(
+                          color: AppColors.white,
+                          fontSize: constraints.maxWidth * 0.04,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        params!.userEmail ?? "username@gmail.com",
+                        style: AppTextstyle.interMedium(
+                          color: AppColors.white,
+                          fontSize: constraints.maxWidth * 0.035,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            20.spaceY,
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  HelpScreen.routeName,
-                );
-              },
-              child: IconWithTextTile(
-                imageIcon: AppAssets.questionmark,
-                title: "Help",
+              const SizedBox(height: 20),
+              UpgradeToProBanner(),
+              const SizedBox(height: 20),
+              _buildSection(
+                context,
+                title: "General",
+                items: [
+                  _ProfileMenuItem(
+                    icon: AppAssets.userinfoicon,
+                    title: "Personal Information",
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: AppAssets.copyicon,
+                    title: "Current Plan",
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: AppAssets.privacyicon,
+                    title: "Privacy Policy",
+                    onTap: () => _navigateTo(context, PrivacyPolicyScreen.routeName),
+                  ),
+                  _ProfileMenuItem(
+                    icon: AppAssets.privacyicon,
+                    title: "Payment Method",
+                    onTap: () => _navigateTo(context, PrivacyPolicyScreen.routeName),
+                  ),
+                  _ProfileMenuItem(
+                    icon: AppAssets.dark,
+                    title: "Dark Mode",
+                    onTap: () => _navigateTo(context, PrivacyPolicyScreen.routeName),
+                  ),
+                ],
               ),
-            ),
-            50.spaceY,
-            SeparatorWidget(
-              title: "About",
-            ),
-            20.spaceY,
-            InkWell(
-              onTap: () {
-                AppLocal.ins.clearUSerData(Hivekey.userId);
-                Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-              },
-              child: IconWithTextTile(
-                imageIcon: AppAssets.logouticon,
+              const SizedBox(height: 40),
+
+              // About Section
+              _buildSection(
+                context,
+                title: "About",
+                items: [
+                  _ProfileMenuItem(
+                    icon: AppAssets.facebooklogin,
+                    title: "Follow us on Social Media",
+                    onTap: () => _navigateTo(context, PrivacyPolicyScreen.routeName),
+                  ),
+                  _ProfileMenuItem(
+                    icon: AppAssets.privacyicon,
+                    title: "Help Center",
+                    onTap: () => _navigateTo(context, HelpScreen.routeName),
+                  ),
+                  _ProfileMenuItem(
+                    icon: AppAssets.abouticon,
+                    title: "About Artleap",
+                    onTap: () => _navigateTo(context, PrivacyPolicyScreen.routeName),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+
+              // Account Actions
+              _ProfileMenuItem(
+                icon: AppAssets.logouticon,
                 title: "Logout",
-                titleColor: AppColors.redColor,
+                color: AppColors.redColor,
+                onTap: () {
+                  AppLocal.ins.clearUSerData(Hivekey.userId);
+                  Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+                },
               ),
-            ),
-            20.spaceY,
-            InkWell(
-              onTap: () {
-                showDialog(
+              const SizedBox(height: 20),
+              _ProfileMenuItem(
+                icon: AppAssets.deleteicon,
+                title: "Delete Account",
+                color: AppColors.redColor,
+                onTap: () => showDialog(
                   context: context,
                   builder: (context) => const DeleteAccountDialog(),
-                );
-              },
-              child: IconWithTextTile(
-                imageIcon: AppAssets.deleteicon,
-                title: "Delete Account",
-                titleColor: AppColors.redColor,
+                ),
               ),
-            ),
-            80.spaceY,
-      
-            // NativeAdWidget()
-          ],
-        ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSection(BuildContext context, {required String title, required List<_ProfileMenuItem> items}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SeparatorWidget(title: title),
+        const SizedBox(height: 20),
+        ...items,
+      ],
+    );
+  }
+
+  void _navigateTo(BuildContext context, String routeName) {
+    Navigator.pushNamed(context, routeName);
+  }
+}
+
+class _ProfileMenuItem extends StatelessWidget {
+  final String icon;
+  final String title;
+  final Color? color;
+  final VoidCallback onTap;
+
+  const _ProfileMenuItem({
+    required this.icon,
+    required this.title,
+    this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return  GestureDetector(
+      onTap:onTap,
+      child: Column(
+        children: [
+          IconWithTextTile(
+            imageIcon: icon,
+            title: title ?? '',
+            titleColor: color,
+          ),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

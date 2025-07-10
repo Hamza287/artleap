@@ -2,7 +2,6 @@ import 'package:Artleap.ai/presentation/views/common/privacy_policy_accept.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';

@@ -1,5 +1,4 @@
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

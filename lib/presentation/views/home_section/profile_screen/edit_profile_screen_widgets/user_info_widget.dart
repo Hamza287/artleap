@@ -26,7 +26,7 @@ class IconWithTextTile extends ConsumerWidget {
         Text(
           title!,
           style: AppTextstyle.interMedium(
-              fontSize: 12, color: titleColor ?? AppColors.white),
+              fontSize: 13, color: titleColor ?? AppColors.white),
         ),
       ],
     );

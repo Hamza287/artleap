@@ -1,16 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../../../providers/notification_provider.dart';
-import '../../../providers/theme_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
-import '../Notifications/notification_screen.dart';
-import '../global_widgets/search_textfield.dart';
 
 class BottomNavBar extends ConsumerStatefulWidget {
   static const String routeName = "bottom_nav_bar_screen";

@@ -20,7 +20,6 @@ import 'providers/localization_provider.dart';
 import 'providers/theme_provider.dart';
 import 'shared/app_persistance/app_local.dart';
 import 'shared/localization/app_localization.dart';
-import 'shared/theme/dark_theme.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {

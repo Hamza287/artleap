@@ -17,8 +17,8 @@ class EditProfileScreen extends ConsumerWidget {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [AppColors.lightIndigo, AppColors.darkIndigo])),
+          color: Color(0x990A0025),
+        ),
         child: UserInfoAndEditWidget(
           params: params,
         ),
