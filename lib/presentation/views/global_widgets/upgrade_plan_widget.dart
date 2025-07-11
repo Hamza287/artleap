@@ -10,7 +10,7 @@ class UpgradeToProBanner extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
-          // Handle upgrade tap
+          Navigator.of(context).pushNamed("choose_plan_screen");
         },
         child: Container(
           height: 100,

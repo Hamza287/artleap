@@ -1,5 +1,5 @@
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_userprofile_widgets/upgrade_plan_widget.dart';
+import 'package:Artleap.ai/presentation/views/global_widgets/upgrade_plan_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';

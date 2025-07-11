@@ -11,6 +11,7 @@ import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_scre
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import '../../presentation/views/Notifications/notification_details_screen.dart';
 import '../../presentation/views/Notifications/notification_screen.dart';
+import '../../presentation/views/about/about_artleap_screen.dart';
 import '../../presentation/views/common/privacy_policy_accept.dart';
 import '../../presentation/views/home_section/new_prompt_section/result/result_prompt_screen.dart';
 import '../../presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
@@ -20,6 +21,7 @@ import '../../presentation/views/login_and_signup_section/login_section/login_sc
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
 import '../../presentation/views/payment/choose_plan_screen.dart';
+import '../../presentation/views/payment/current_plan_screen.dart';
 
 class RouteGenerator {
   static Route generateRoute(RouteSettings settings) {
@@ -32,12 +34,16 @@ class RouteGenerator {
         return route(const AcceptPrivacyPolicyScreen());
       case ChoosePlanScreen.routeName:
         return route(const ChoosePlanScreen());
+      case AboutArtleapScreen.routeName:
+        return route(const AboutArtleapScreen());
       case LoginScreen.routeName:
         return route(const LoginScreen());
       case LoginORsignUpScreen.routeName:
         return route(const LoginORsignUpScreen());
       case SignUpScreen.routeName:
         return route(const SignUpScreen());
+      case SubscriptionStatusScreen.routeName:
+        return route(const SubscriptionStatusScreen());
       case OnboardingScreen.routeName:
         return route(const OnboardingScreen());
       case BottomNavBar.routeName:

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
-class HelpScreen extends StatefulWidget {
+import '../../../../../providers/help_screen_provider.dart';
+
+class HelpScreen extends ConsumerWidget {
   const HelpScreen({super.key});
   static const routeName = '/help-screen';
 
-  @override
-  State<HelpScreen> createState() => _HelpScreenState();
-}
-
-class _HelpScreenState extends State<HelpScreen> {
-  bool _isSendingEmail = false;
-  final _faqItems = [
+  final List<Map<String, dynamic>> faqItems = const [
     {
       'question': 'How do I create a new artwork?',
       'answer': 'Tap the "+" button on the home screen to start a new creation. '
@@ -36,10 +33,83 @@ class _HelpScreenState extends State<HelpScreen> {
     },
   ];
 
-  Future<void> _launchEmail() async {
-    if (_isSendingEmail) return;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(helpScreenProvider);
+    final notifier = ref.read(helpScreenProvider.notifier);
 
-    setState(() => _isSendingEmail = true);
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: AppBar(
+        title: Text(
+          'Help Center',
+          style: AppTextstyle.interBold(
+            color: AppColors.darkBlue,
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header section
+            _buildSectionHeader('Need Help?'),
+            const SizedBox(height: 10),
+            Text(
+              'We\'re here to assist you with any questions or issues you might have.',
+              style: AppTextstyle.interRegular(
+                color: AppColors.darkBlue.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // FAQ Section
+            _buildSectionHeader('Frequently Asked Questions'),
+            const SizedBox(height: 20),
+            ...faqItems.map((item) => _buildFAQItem(
+              question: item['question']!,
+              answer: item['answer']!,
+            )),
+
+            // Contact Section
+            const SizedBox(height: 40),
+            _buildSectionHeader('Still Need Help?'),
+            const SizedBox(height: 15),
+            Text(
+              'Our support team is ready to help you with any questions or issues.',
+              style: AppTextstyle.interRegular(
+                color: AppColors.darkBlue.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 25),
+
+            // Contact button
+            Center(
+              child: _buildContactButton(
+                isLoading: isLoading,
+                onPressed: () => _launchEmail(notifier, context),
+              ),
+            ),
+
+            // Footer
+            const SizedBox(height: 40),
+            _buildFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _launchEmail(HelpScreenNotifier notifier, BuildContext context) async {
+    if (notifier.state) return;
+
+    notifier.setLoading(true);
 
     try {
       const email = 'info@x-r.digital';
@@ -61,27 +131,27 @@ class _HelpScreenState extends State<HelpScreen> {
           mode: LaunchMode.externalApplication,
         );
       } else {
-        // Fallback for devices that don't properly report email apps
         await launchUrl(
           Uri.parse('https://mail.google.com/mail/?view=cm&fs=1&to=$email&su=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}'),
           mode: LaunchMode.externalApplication,
         );
       }
     } catch (e) {
-      if (!mounted) return;
+      if (!context.mounted) return;
 
       _showErrorSnackBar(
+        context,
         'Failed to open email. Please ensure you have an email app installed.',
       );
       debugPrint('Email launch error: $e');
     } finally {
-      if (mounted) {
-        setState(() => _isSendingEmail = false);
+      if (context.mounted) {
+        notifier.setLoading(false);
       }
     }
   }
 
-  void _showErrorSnackBar(String message) {
+  void _showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -99,78 +169,11 @@ class _HelpScreenState extends State<HelpScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-      appBar: AppBar(
-        title: Text(
-          'Help Center',
-          style: AppTextstyle.interBold(
-            color: AppColors.white,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: AppColors.darkBlue,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.white),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header section
-            _buildSectionHeader('Need Help?'),
-            const SizedBox(height: 10),
-            Text(
-              'We\'re here to assist you with any questions or issues you might have.',
-              style: AppTextstyle.interRegular(
-                color: AppColors.white.withOpacity(0.7),
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            // FAQ Section
-            _buildSectionHeader('Frequently Asked Questions'),
-            const SizedBox(height: 20),
-            ..._faqItems.map((item) => _buildFAQItem(
-              question: item['question']!,
-              answer: item['answer']!,
-            )),
-
-            // Contact Section
-            const SizedBox(height: 40),
-            _buildSectionHeader('Still Need Help?'),
-            const SizedBox(height: 15),
-            Text(
-              'Our support team is ready to help you with any questions or issues.',
-              style: AppTextstyle.interRegular(
-                color: AppColors.white.withOpacity(0.7),
-              ),
-            ),
-            const SizedBox(height: 25),
-
-            // Contact button
-            Center(
-              child: _buildContactButton(),
-            ),
-
-            // Footer
-            const SizedBox(height: 40),
-            _buildFooter(),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildSectionHeader(String text) {
     return Text(
       text,
       style: AppTextstyle.interBold(
-        color: AppColors.white,
+        color: AppColors.darkBlue,
         fontSize: 18,
       ),
     );
@@ -180,10 +183,10 @@ class _HelpScreenState extends State<HelpScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: AppColors.darkBlue.withOpacity(0.5),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.greyBlue.withOpacity(0.3),
+          color: AppColors.white.withOpacity(0.5),
           width: 1,
         ),
       ),
@@ -191,7 +194,7 @@ class _HelpScreenState extends State<HelpScreen> {
         title: Text(
           question,
           style: AppTextstyle.interMedium(
-            color: AppColors.white,
+            color: AppColors.darkBlue,
             fontSize: 16,
           ),
         ),
@@ -201,23 +204,26 @@ class _HelpScreenState extends State<HelpScreen> {
             child: Text(
               answer,
               style: AppTextstyle.interRegular(
-                color: AppColors.white.withOpacity(0.8),
+                color: AppColors.darkBlue.withOpacity(0.8),
                 fontSize: 14,
               ),
             ),
           ),
         ],
         tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-        iconColor: AppColors.lightPurple,
-        collapsedIconColor: AppColors.lightPurple,
+        iconColor: AppColors.darkBlue,
+        collapsedIconColor: AppColors.darkBlue,
       ),
     );
   }
 
-  Widget _buildContactButton() {
+  Widget _buildContactButton({
+    required bool isLoading,
+    required VoidCallback onPressed,
+  }) {
     return ElevatedButton.icon(
-      onPressed: _isSendingEmail ? null : _launchEmail,
-      icon: _isSendingEmail
+      onPressed: isLoading ? null : onPressed,
+      icon: isLoading
           ? const SizedBox(
         width: 20,
         height: 20,
@@ -228,14 +234,14 @@ class _HelpScreenState extends State<HelpScreen> {
       )
           : const Icon(Icons.email_outlined, size: 20),
       label: Text(
-        _isSendingEmail ? 'Opening...' : 'Contact Support',
+        isLoading ? 'Opening...' : 'Contact Support',
         style: AppTextstyle.interMedium(
           color: AppColors.white,
           fontSize: 16,
         ),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.lightPurple,
+        backgroundColor: AppColors.darkBlue,
         foregroundColor: AppColors.white,
         padding: const EdgeInsets.symmetric(
           horizontal: 25,
@@ -245,7 +251,7 @@ class _HelpScreenState extends State<HelpScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 3,
-        shadowColor: AppColors.lightPurple.withOpacity(0.3),
+        shadowColor: AppColors.darkBlue.withOpacity(0.3),
       ),
     );
   }
@@ -257,14 +263,14 @@ class _HelpScreenState extends State<HelpScreen> {
           Text(
             'Mimar Studios Team',
             style: AppTextstyle.interMedium(
-              color: AppColors.white.withOpacity(0.9),
+              color: AppColors.darkBlue.withOpacity(0.9),
             ),
           ),
           const SizedBox(height: 5),
           Text(
             'We appreciate your feedback',
             style: AppTextstyle.interRegular(
-              color: AppColors.white.withOpacity(0.6),
+              color: AppColors.darkBlue.withOpacity(0.6),
               fontSize: 12,
             ),
           ),

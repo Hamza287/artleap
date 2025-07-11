@@ -13,7 +13,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(),
       body: Container(
-        decoration: _buildBackgroundDecoration(),
+        color: AppColors.white, // Changed to white background
         child: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -40,26 +40,16 @@ class PrivacyPolicyScreen extends StatelessWidget {
         'Privacy Policy',
         style: AppTextstyle.interBold(
           fontSize: 20,
-          color: AppColors.white,
+          color: AppColors.darkBlue, // Changed to dark blue
         ),
       ),
       centerTitle: true,
-      backgroundColor: AppColors.darkBlue,
-      iconTheme: const IconThemeData(color: AppColors.white),
+      backgroundColor: AppColors.white, // Changed to white
+      iconTheme: const IconThemeData(
+          color: AppColors.darkBlue), // Changed to dark blue
       elevation: 0,
       scrolledUnderElevation: 4,
-      shadowColor: AppColors.darkBlue.withValues(),
-    );
-  }
-
-  BoxDecoration _buildBackgroundDecoration() {
-    return const BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [AppColors.darkBlue, AppColors.purple],
-        stops: [0.1, 0.9],
-      ),
+      shadowColor: AppColors.white.withOpacity(0.3), // Lighter shadow
     );
   }
 
@@ -72,7 +62,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           'Privacy Policy',
           style: AppTextstyle.interBold(
             fontSize: 32,
-            color: AppColors.white,
+            color: AppColors.darkBlue, // Changed to dark blue
           ),
         ),
         const SizedBox(height: 8),
@@ -80,7 +70,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           'Last updated: ${DateFormat('MMMM d, y').format(DateTime.now())}',
           style: AppTextstyle.interRegular(
             fontSize: 14,
-            color: AppColors.lightgrey,
+            color: AppColors.darkBlue.withOpacity(0.6), // Darker grey
           ),
         ),
         const SizedBox(height: 16),
@@ -88,10 +78,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.darkBlue.withValues(),
+            color: AppColors.white.withOpacity(0.1), // Very light grey
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppColors.lightPurple.withValues(),
+              color: AppColors.white.withOpacity(0.3), // Light border
               width: 1,
             ),
           ),
@@ -99,7 +89,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             'Mimar Technologies Inc. ("we", "us", "our") is committed to protecting your privacy. This policy explains how we collect, use, and safeguard your information in our Artleap AI image generation application.',
             style: AppTextstyle.interRegular(
               fontSize: 16,
-              color: AppColors.white.withValues(),
+              color: AppColors.darkBlue, // Changed to dark blue
             ),
           ),
         ),
@@ -208,10 +198,10 @@ While we implement robust protections, absolute security cannot be guaranteed.
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: AppColors.darkBlue.withValues(),
+        color: AppColors.white.withOpacity(0.1), // Very light grey
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.lightPurple.withValues(),
+          color: AppColors.white.withOpacity(0.3), // Light border
           width: 1,
         ),
       ),
@@ -224,7 +214,7 @@ While we implement robust protections, absolute security cannot be guaranteed.
               children: [
                 Icon(
                   icon,
-                  color: AppColors.lightPurple,
+                  color: AppColors.darkBlue, // Changed to dark blue
                   size: 24,
                 ),
                 const SizedBox(width: 12),
@@ -233,7 +223,7 @@ While we implement robust protections, absolute security cannot be guaranteed.
                     title,
                     style: AppTextstyle.interBold(
                       fontSize: 20,
-                      color: AppColors.white,
+                      color: AppColors.darkBlue, // Changed to dark blue
                     ),
                   ),
                 ),
@@ -246,7 +236,7 @@ While we implement robust protections, absolute security cannot be guaranteed.
                 content,
                 style: AppTextstyle.interRegular(
                   fontSize: 15,
-                  color: AppColors.white.withValues(),
+                  color: AppColors.darkBlue, // Changed to dark blue
                 ),
               ),
             ),
@@ -260,7 +250,7 @@ While we implement robust protections, absolute security cannot be guaranteed.
     return Column(
       children: [
         const Divider(
-          color: AppColors.lightgrey,
+          color: AppColors.white, // Light grey divider
           thickness: 0.5,
           height: 1,
         ),
@@ -269,16 +259,15 @@ While we implement robust protections, absolute security cannot be guaranteed.
           'By using Artleap, you acknowledge that you have read and understood this Privacy Policy and agree to our Terms of Service.',
           style: AppTextstyle.interRegular(
             fontSize: 14,
-            color: AppColors.lightgrey,
+            color: AppColors.darkBlue.withOpacity(0.6), // Darker grey
           ),
-          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 24),
         Text(
           '© ${DateTime.now().year} Mimar Technologies Inc.\nAll rights reserved.',
           style: AppTextstyle.interRegular(
             fontSize: 12,
-            color: AppColors.lightgrey.withValues(),
+            color: AppColors.darkBlue.withOpacity(0.6), // Darker grey
           ),
           textAlign: TextAlign.center,
         ),

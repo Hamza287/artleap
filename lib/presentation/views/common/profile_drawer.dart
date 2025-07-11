@@ -5,7 +5,7 @@ import 'package:Artleap.ai/shared/shared.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
-import '../home_section/profile_screen/other_userprofile_widgets/upgrade_plan_widget.dart';
+import '../global_widgets/upgrade_plan_widget.dart';
 
 class ProfileDrawer extends ConsumerWidget {
   final String profileImage;
@@ -130,22 +130,22 @@ class ProfileDrawer extends ConsumerWidget {
                       _ProfileMenuItem(
                         icon: AppAssets.copyicon,
                         title: "Current Plan",
-                        onTap: () {},
+                        onTap: () => _navigateTo(context, '/subscription-status'),
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.privacyicon,
                         title: "Privacy Policy",
-                        onTap: () => _navigateTo(context, '/privacy'),
+                        onTap: () => _navigateTo(context, '/privacy-policy'),
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.privacyicon,
                         title: "Payment Method",
-                        onTap: () => _navigateTo(context, '/payment'),
+                        onTap: () => _navigateTo(context, 'choose-plan-screen'),
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.dark,
                         title: "Dark Mode",
-                        onTap: () => _toggleDarkMode(ref),
+                        onTap: () {},
                       ),
                     ],
                   ),
@@ -159,17 +159,17 @@ class ProfileDrawer extends ConsumerWidget {
                       _ProfileMenuItem(
                         icon: AppAssets.facebooklogin,
                         title: "Follow us on Social Media",
-                        onTap: () => _launchSocialMedia(),
+                        onTap: () {},
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.privacyicon,
                         title: "Help Center",
-                        onTap: () => _navigateTo(context, '/help'),
+                        onTap: () => _navigateTo(context, '/help-screen'),
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.abouticon,
                         title: "About Artleap",
-                        onTap: () => _navigateTo(context, '/about'),
+                        onTap: () => _navigateTo(context, '/about-artleap'),
                       ),
                     ],
                   ),
@@ -180,14 +180,14 @@ class ProfileDrawer extends ConsumerWidget {
                         icon: AppAssets.logouticon,
                         title: "Logout",
                         color: AppColors.redColor,
-                        onTap: () => _logout(context),
+                        onTap: (){},
                       ),
                       SizedBox(height: screenHeight * 0.02),
                       _ProfileMenuItem(
                         icon: AppAssets.deleteicon,
                         title: "Delete Account",
                         color: AppColors.redColor,
-                        onTap: () => _showDeleteDialog(context),
+                        onTap: (){},
                       ),
                     ],
                   ),
@@ -215,26 +215,6 @@ class ProfileDrawer extends ConsumerWidget {
   void _navigateTo(BuildContext context, String routeName) {
     Navigator.pop(context); // Close drawer first
     Navigator.pushNamed(context, routeName);
-  }
-
-  void _logout(BuildContext context) {
-    Navigator.pop(context); // Close drawer
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-  }
-
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => const DeleteAccountDialog(),
-    );
-  }
-
-  void _toggleDarkMode(WidgetRef ref) {
-    // Implement dark mode toggle logic
-  }
-
-  void _launchSocialMedia() {
-    // Implement social media launch logic
   }
 }
 
