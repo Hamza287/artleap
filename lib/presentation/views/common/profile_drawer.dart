@@ -6,6 +6,7 @@ import '../home_section/profile_screen/edit_profile_screen_widgets/delete_accoun
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
+import '../login_and_signup_section/login_section/login_screen.dart';
 
 class ProfileDrawer extends ConsumerWidget {
   final String profileImage;
@@ -180,14 +181,20 @@ class ProfileDrawer extends ConsumerWidget {
                         icon: AppAssets.logouticon,
                         title: "Logout",
                         color: AppColors.redColor,
-                        onTap: (){},
+                        onTap: (){
+                          AppLocal.ins.clearUSerData(Hivekey.userId);
+                          Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+                        },
                       ),
                       SizedBox(height: screenHeight * 0.02),
                       _ProfileMenuItem(
                         icon: AppAssets.deleteicon,
                         title: "Delete Account",
                         color: AppColors.redColor,
-                        onTap: (){},
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => const DeleteAccountDialog(),
+                        ),
                       ),
                     ],
                   ),
