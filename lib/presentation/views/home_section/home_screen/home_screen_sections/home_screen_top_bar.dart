@@ -64,7 +64,7 @@ class HomeScreenTopBar extends ConsumerWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: Add Get Pro logic
+                  Navigator.of(context).pushNamed("choose_plan_screen");
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF923CFF),

@@ -19,6 +19,7 @@ import '../../presentation/views/interest_onboarding_screens/interest_onboarding
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
+import '../../presentation/views/payment/choose_plan_screen.dart';
 
 class RouteGenerator {
   static Route generateRoute(RouteSettings settings) {
@@ -29,6 +30,8 @@ class RouteGenerator {
         return route(const InterestOnboardingScreen());
       case AcceptPrivacyPolicyScreen.routeName:
         return route(const AcceptPrivacyPolicyScreen());
+      case ChoosePlanScreen.routeName:
+        return route(const ChoosePlanScreen());
       case LoginScreen.routeName:
         return route(const LoginScreen());
       case LoginORsignUpScreen.routeName:
