@@ -10,7 +10,7 @@ class PictureInfoWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 120,
+      height: 320,
       margin: EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -32,7 +32,46 @@ class PictureInfoWidget extends ConsumerWidget {
               ),
             ],
           ),
+          10.spaceY,
+          _primaryActionButton(
+            icon: Icons.open_in_full,
+            label: "Generate Prompt",
+            onPressed: () {},
+          ),
+          _primaryActionButton(
+            icon: Icons.open_in_full,
+            label: "Upscale",
+            onPressed: () {},
+          ),
+          _primaryActionButton(
+            icon: Icons.brush_outlined,
+            label: "Add/ Remove Object",
+            onPressed: () {},
+          ),
         ],
+      ),
+    );
+  }
+  Widget _primaryActionButton(
+      {required IconData icon,
+        required String label,
+        required VoidCallback onPressed}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: double.infinity,
+        height: 56,
+        child: ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon),
+          label: Text(label),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF9B59FF),
+            foregroundColor: Colors.white,
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
       ),
     );
   }
@@ -51,12 +90,12 @@ class InfoText extends ConsumerWidget {
         Text(
           title!,
           style:
-              AppTextstyle.interRegular(fontSize: 16, color: AppColors.white),
+              AppTextstyle.interRegular(fontSize: 16, color: AppColors.darkBlue),
         ),
         Text(
           info!,
           style:
-              AppTextstyle.interRegular(fontSize: 14, color: AppColors.white),
+              AppTextstyle.interRegular(fontSize: 14, color: AppColors.darkBlue),
         )
       ],
     );

@@ -149,9 +149,9 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor:  const Color(0xFF923CFF),
         appBar: AppBar(
-          backgroundColor: AppColors.darkBlue,
+          backgroundColor:  const Color(0xFF923CFF),
           iconTheme: const IconThemeData(color: AppColors.white),
         ),
         body: Padding(

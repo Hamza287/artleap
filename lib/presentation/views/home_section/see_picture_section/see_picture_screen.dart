@@ -39,15 +39,13 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [AppColors.lightIndigo, AppColors.darkIndigo])),
+        color: AppColors.white,
         child: Container(
           width: double.infinity,
           height: double.infinity,
           margin: const EdgeInsets.only(top: 70),
           decoration: const BoxDecoration(
-              color: AppColors.darkBlue,
+              color: AppColors.white,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20), topRight: Radius.circular(20))),
           child: SingleChildScrollView(
@@ -61,7 +59,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                     children: [
                       Text("In A mystical field",
                           style: AppTextstyle.interMedium(
-                              fontSize: 16, color: AppColors.white)),
+                              fontSize: 16, color: AppColors.darkBlue)),
                       GestureDetector(
                         onTap: () {
                           Navigation.pop();

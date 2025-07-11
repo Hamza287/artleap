@@ -32,18 +32,18 @@ class PictureOptionsWidget extends ConsumerWidget {
   String? imageId;
   PictureOptionsWidget(
       {super.key,
-        this.imageUrl,
-        this.prompt,
-        this.modelName,
-        this.creatorName,
-        this.creatorEmail,
-        this.isGeneratedScreenNavigation,
-        this.isRecentGeneration,
-        this.uint8ListImage,
-        this.currentUserId,
-        this.otherUserId,
-        this.index,
-        this.imageId});
+      this.imageUrl,
+      this.prompt,
+      this.modelName,
+      this.creatorName,
+      this.creatorEmail,
+      this.isGeneratedScreenNavigation,
+      this.isRecentGeneration,
+      this.uint8ListImage,
+      this.currentUserId,
+      this.otherUserId,
+      this.index,
+      this.imageId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,7 +57,7 @@ class PictureOptionsWidget extends ConsumerWidget {
             width: 50,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.white.withOpacity(0.4))),
+                border: Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,15 +66,15 @@ class PictureOptionsWidget extends ConsumerWidget {
                   padding: const EdgeInsets.only(left: 3),
                   child: LikeButton(
                     isLiked:
-                    ref.watch(favouriteProvider).usersFavourites != null
-                        ? ref
-                        .watch(favouriteProvider)
-                        .usersFavourites!
-                        .favorites
-                        .any((img) => img.id == imageId)
-                        ? true
-                        : false
-                        : false,
+                        ref.watch(favouriteProvider).usersFavourites != null
+                            ? ref
+                                    .watch(favouriteProvider)
+                                    .usersFavourites!
+                                    .favorites
+                                    .any((img) => img.id == imageId)
+                                ? true
+                                : false
+                            : false,
                     bubblesColor: const BubblesColor(
                         dotPrimaryColor: AppColors.redColor,
                         dotSecondaryColor: AppColors.redColor),
@@ -97,7 +97,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                 Text(
                   "Save",
                   style: AppTextstyle.interRegular(
-                      color: AppColors.white, fontSize: 6.5),
+                      color: AppColors.darkBlue, fontSize: 6.5),
                 )
               ],
             ),
@@ -106,8 +106,8 @@ class PictureOptionsWidget extends ConsumerWidget {
             onTap: () {
               uint8ListImage != null
                   ? ref
-                  .read(favProvider)
-                  .downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
+                      .read(favProvider)
+                      .downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
                   : ref.read(favProvider).downloadImage(imageUrl!);
               AnalyticsService.instance
                   .logButtonClick(buttonName: 'download button event');
@@ -117,29 +117,31 @@ class PictureOptionsWidget extends ConsumerWidget {
               width: 50,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.white.withOpacity(0.4))),
+                  border:
+                      Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
               child: ref.watch(favProvider).isDownloading == true
                   ? Center(
-                child: LoadingAnimationWidget.threeArchedCircle(
-                  color: AppColors.white,
-                  size: 30,
-                ),
-              )
+                      child: LoadingAnimationWidget.threeArchedCircle(
+                        color: AppColors.darkBlue,
+                        size: 30,
+                      ),
+                    )
                   : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppAssets.downloadicon,
-                    scale: 2.3,
-                  ),
-                  2.spaceY,
-                  Text(
-                    "Download",
-                    style: AppTextstyle.interRegular(
-                        color: AppColors.white, fontSize: 6.5),
-                  )
-                ],
-              ),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          AppAssets.downloadicon,
+                          scale: 2.3,
+                          color: AppColors.darkBlue,
+                        ),
+                        2.spaceY,
+                        Text(
+                          "Download",
+                          style: AppTextstyle.interRegular(
+                              color: AppColors.darkBlue, fontSize: 6.5),
+                        )
+                      ],
+                    ),
             ),
           ),
           GestureDetector(
@@ -153,19 +155,21 @@ class PictureOptionsWidget extends ConsumerWidget {
               width: 50,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.white.withOpacity(0.4))),
+                  border:
+                      Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
                     AppAssets.shareicon,
                     scale: 2.3,
+                    color: AppColors.darkBlue,
                   ),
                   2.spaceY,
                   Text(
                     "Share",
                     style: AppTextstyle.interRegular(
-                        color: AppColors.white, fontSize: 6.5),
+                        color: AppColors.darkBlue, fontSize: 6.5),
                   )
                 ],
               ),
@@ -191,29 +195,30 @@ class PictureOptionsWidget extends ConsumerWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border:
-                    Border.all(color: AppColors.redColor.withOpacity(0.4))),
+                        Border.all(color: AppColors.redColor.withOpacity(0.4))),
                 child: ref.watch(imageActionsProvider).isDeleting
                     ? Center(
-                  child: LoadingAnimationWidget.threeArchedCircle(
-                    color: AppColors.white,
-                    size: 30,
-                  ),
-                )
+                        child: LoadingAnimationWidget.threeArchedCircle(
+                          color: AppColors.redColor,
+                          size: 30,
+                        ),
+                      )
                     : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppAssets.trashicon,
-                      scale: 2.3,
-                    ),
-                    2.spaceY,
-                    Text(
-                      "Delete",
-                      style: AppTextstyle.interRegular(
-                          color: AppColors.white, fontSize: 6.5),
-                    )
-                  ],
-                ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            AppAssets.trashicon,
+                            scale: 2.3,
+                            color:AppColors.redColor,
+                          ),
+                          2.spaceY,
+                          Text(
+                            "Delete",
+                            style: AppTextstyle.interRegular(
+                                color: AppColors.redColor, fontSize: 6.5),
+                          )
+                        ],
+                      ),
               ),
             ),
           GestureDetector(

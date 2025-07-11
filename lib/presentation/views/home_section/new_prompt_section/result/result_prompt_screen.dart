@@ -14,7 +14,8 @@ class ResultScreenRedesign extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
-    final generatedTextToImageData = ref.watch(generateImageProvider).generatedTextToImageData;
+    final generatedTextToImageData =
+        ref.watch(generateImageProvider).generatedTextToImageData;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
     return Scaffold(
@@ -63,24 +64,26 @@ class ResultScreenRedesign extends ConsumerWidget {
             // Main Image Container with Shimmer
             if (isLoading)
               _buildShimmerContainer(300)
-            else if (generatedTextToImageData.isNotEmpty && generatedTextToImageData.length == 1)
-              _buildSingleImageResult(context, ref, generatedTextToImageData[0]!)
+            else if (generatedTextToImageData.isNotEmpty &&
+                generatedTextToImageData.length == 1)
+              _buildSingleImageResult(
+                  context, ref, generatedTextToImageData[0]!)
             else if (generatedTextToImageData.length > 1)
-                _buildMultipleImagesResult(context, ref, generatedTextToImageData)
-              else if (generatedImages.isNotEmpty && generatedImages.length == 1)
-                  _buildSingleGeneratedImage(context, ref, generatedImages[0]!)
-                else if (generatedImages.length > 1)
-                    _buildMultipleGeneratedImages(context, ref, generatedImages)
-                  else
-                    Container(
-                      height: 300,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Center(child: Text("No generated images")),
-                    ),
+              _buildMultipleImagesResult(context, ref, generatedTextToImageData)
+            else if (generatedImages.isNotEmpty && generatedImages.length == 1)
+              _buildSingleGeneratedImage(context, ref, generatedImages[0]!)
+            else if (generatedImages.length > 1)
+              _buildMultipleGeneratedImages(context, ref, generatedImages)
+            else
+              Container(
+                height: 300,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Center(child: Text("No generated images")),
+              ),
 
             const SizedBox(height: 16),
             // Action Buttons with Shimmer
@@ -92,7 +95,8 @@ class ResultScreenRedesign extends ConsumerWidget {
                 children: [
                   _iconButton(Icons.share_outlined, onPressed: () {}),
                   _iconButton(Icons.download_outlined, onPressed: () {}),
-                  _iconButton(Icons.delete_outline, onPressed: () {}, isDelete: true),
+                  _iconButton(Icons.delete_outline,
+                      onPressed: () {}, isDelete: true),
                 ],
               ),
 
@@ -124,12 +128,14 @@ class ResultScreenRedesign extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Text("Re-Generate", style: TextStyle(color: Colors.white, fontSize: 16)),
+                      Text("Re-Generate",
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
                       SizedBox(width: 8),
                       Icon(Icons.auto_fix_high, color: Colors.white),
                       SizedBox(width: 8),
@@ -158,7 +164,8 @@ class ResultScreenRedesign extends ConsumerWidget {
                 children: [
                   const Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Prompt", style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text("Prompt",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -174,11 +181,18 @@ class ResultScreenRedesign extends ConsumerWidget {
                       children: [
                         SingleChildScrollView(
                           child: Text(
-                            ref.watch(generateImageProvider).promptTextController.text.isNotEmpty
-                                ? ref.watch(generateImageProvider).promptTextController.text
+                            ref
+                                    .watch(generateImageProvider)
+                                    .promptTextController
+                                    .text
+                                    .isNotEmpty
+                                ? ref
+                                    .watch(generateImageProvider)
+                                    .promptTextController
+                                    .text
                                 : generatedImages.isNotEmpty
-                                ? generatedImages[0]!.prompt
-                                : "No prompt available",
+                                    ? generatedImages[0]!.prompt
+                                    : "No prompt available",
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),
@@ -193,7 +207,8 @@ class ResultScreenRedesign extends ConsumerWidget {
                             label: const Text("Edit Prompt"),
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
                             ),
                           ),
                         ),
@@ -232,7 +247,8 @@ class ResultScreenRedesign extends ConsumerWidget {
     );
   }
 
-  Widget _buildSingleImageResult(BuildContext context, WidgetRef ref, dynamic imageData) {
+  Widget _buildSingleImageResult(
+      BuildContext context, WidgetRef ref, dynamic imageData) {
     return GestureDetector(
       onTap: () {
         Navigation.pushNamed(SeePictureScreen.routeName,
@@ -241,7 +257,8 @@ class ResultScreenRedesign extends ConsumerWidget {
               userId: UserData.ins.userId,
               imageId: imageData.id,
               modelName: ref.watch(generateImageProvider).selectedStyle,
-              prompt: ref.watch(generateImageProvider).promptTextController.text,
+              prompt:
+                  ref.watch(generateImageProvider).promptTextController.text,
               image: imageData.imageUrl,
             ));
       },
@@ -256,14 +273,16 @@ class ResultScreenRedesign extends ConsumerWidget {
           child: SafeNetworkImage(
             imageUrl: imageData.imageUrl,
             placeholder: (_, __) => _buildShimmerContainer(300),
-            errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+            errorWidget: (_, __, error) =>
+                Icon(Icons.error_outline, color: Colors.red),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildMultipleImagesResult(BuildContext context, WidgetRef ref, List<dynamic> images) {
+  Widget _buildMultipleImagesResult(
+      BuildContext context, WidgetRef ref, List<dynamic> images) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -291,7 +310,10 @@ class ResultScreenRedesign extends ConsumerWidget {
                       userId: UserData.ins.userId,
                       imageId: images[index]!.id,
                       modelName: ref.watch(generateImageProvider).selectedStyle,
-                      prompt: ref.watch(generateImageProvider).promptTextController.text,
+                      prompt: ref
+                          .watch(generateImageProvider)
+                          .promptTextController
+                          .text,
                       image: images[index]!.imageUrl,
                     ));
               },
@@ -300,7 +322,8 @@ class ResultScreenRedesign extends ConsumerWidget {
                 child: SafeNetworkImage(
                   imageUrl: images[index]!.imageUrl,
                   placeholder: (_, __) => _buildShimmerContainer(155),
-                  errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+                  errorWidget: (_, __, error) =>
+                      Icon(Icons.error_outline, color: Colors.red),
                 ),
               ),
             );
@@ -310,7 +333,8 @@ class ResultScreenRedesign extends ConsumerWidget {
     );
   }
 
-  Widget _buildSingleGeneratedImage(BuildContext context, WidgetRef ref, dynamic image) {
+  Widget _buildSingleGeneratedImage(
+      BuildContext context, WidgetRef ref, dynamic image) {
     return GestureDetector(
       onTap: () {
         Navigation.pushNamed(SeePictureScreen.routeName,
@@ -333,14 +357,16 @@ class ResultScreenRedesign extends ConsumerWidget {
           child: SafeNetworkImage(
             imageUrl: image.imageUrl,
             placeholder: (_, __) => _buildShimmerContainer(300),
-            errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+            errorWidget: (_, __, error) =>
+                Icon(Icons.error_outline, color: Colors.red),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildMultipleGeneratedImages(BuildContext context, WidgetRef ref, List<dynamic> images) {
+  Widget _buildMultipleGeneratedImages(
+      BuildContext context, WidgetRef ref, List<dynamic> images) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -376,7 +402,8 @@ class ResultScreenRedesign extends ConsumerWidget {
                 child: SafeNetworkImage(
                   imageUrl: images[index]!.imageUrl,
                   placeholder: (_, __) => _buildShimmerContainer(155),
-                  errorWidget: (_, __, error) => Icon(Icons.error_outline, color: Colors.red),
+                  errorWidget: (_, __, error) =>
+                      Icon(Icons.error_outline, color: Colors.red),
                 ),
               ),
             );
@@ -407,19 +434,22 @@ class ResultScreenRedesign extends ConsumerWidget {
       highlightColor: Colors.grey[100]!,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(3, (index) => Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        )),
+        children: List.generate(
+            3,
+            (index) => Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                )),
       ),
     );
   }
 
-  Widget _iconButton(IconData icon, {required VoidCallback onPressed, bool isDelete = false}) {
+  Widget _iconButton(IconData icon,
+      {required VoidCallback onPressed, bool isDelete = false}) {
     return Container(
       height: 50,
       width: 50,
@@ -437,7 +467,10 @@ class ResultScreenRedesign extends ConsumerWidget {
     );
   }
 
-  Widget _primaryActionButton({required IconData icon, required String label, required VoidCallback onPressed}) {
+  Widget _primaryActionButton(
+      {required IconData icon,
+      required String label,
+      required VoidCallback onPressed}) {
     return SizedBox(
       width: double.infinity,
       height: 56,
@@ -448,7 +481,8 @@ class ResultScreenRedesign extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF9B59FF),
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );
