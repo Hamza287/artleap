@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreenTopBar extends ConsumerWidget {
-  const HomeScreenTopBar({super.key});
+  final VoidCallback? onMenuTap;
+  const HomeScreenTopBar({super.key, this.onMenuTap});
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,6 +19,10 @@ class HomeScreenTopBar extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              GestureDetector(
+                onTap: onMenuTap,
+                child: const Icon(Icons.menu, size: 28, color: Colors.black),
+              ),
               Container(
                 height: 36,
                 width: 70,

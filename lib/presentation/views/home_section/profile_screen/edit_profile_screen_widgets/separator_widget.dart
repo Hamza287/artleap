@@ -24,8 +24,7 @@ class SeparatorWidget extends ConsumerWidget {
           5.spaceX,
           Container(
             height: 1,
-            width: 260,
-            // width: double.infinity,
+            width: 200,
             color: AppColors.white.withOpacity(0.5),
           )
         ],
