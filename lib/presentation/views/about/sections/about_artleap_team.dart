@@ -37,22 +37,22 @@ class AboutArtleapTeamSection extends StatelessWidget {
               TeamMemberCard(
                 name: 'Alex Chen',
                 role: 'Founder & CEO',
-                imagePath: 'assets/images/team/alex.jpg',
+                imagePath: 'assets/images/photo.jpg',
               ),
               TeamMemberCard(
                 name: 'Maria Rodriguez',
                 role: 'Lead AI Engineer',
-                imagePath: 'assets/images/team/maria.jpg',
+                imagePath: 'assets/images/photo.jpg',
               ),
               TeamMemberCard(
                 name: 'James Wilson',
                 role: 'Creative Director',
-                imagePath: 'assets/images/team/james.jpg',
+                imagePath: 'assets/images/photo.jpg',
               ),
               TeamMemberCard(
                 name: 'Priya Patel',
                 role: 'UX Designer',
-                imagePath: 'assets/images/team/priya.jpg',
+                imagePath: 'assets/images/photo.jpg',
               ),
             ],
           ),
