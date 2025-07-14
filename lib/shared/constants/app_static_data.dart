@@ -34,6 +34,7 @@ List<Map> filterResult = [
 ];
 
 List<Map<String, String>> freePikStyles = [
+  {"title": "mockup", "icon": AppAssets.mockup},
   {"title": "photo", "icon": AppAssets.photo},
   {"title": "cartoon", "icon": AppAssets.cartoon},
   {"title": "3d", "icon": AppAssets.threeD},
@@ -47,7 +48,6 @@ List<Map<String, String>> freePikStyles = [
   {"title": "dark", "icon": AppAssets.dark},
   {"title": "art-nouveau", "icon": AppAssets.photo},
   {"title": "sketch", "icon": AppAssets.sketch},
-  {"title": "mockup", "icon": AppAssets.mockup},
   {"title": "cyberpunk", "icon": AppAssets.cyberpunk},
   {"title": "anime", "icon": AppAssets.anime},
   {"title": "watercolor", "icon": AppAssets.watercolor},
@@ -114,21 +114,21 @@ final List<String> sexualWordsList = [
   "sex", "sexual", "sexuality", "sexy",
   "xxx", "x x x",
   "nude", "nudes", "naked", "nekked",
-  "porn", "p o r n", "pornhub", "porn hub",
+  "porn", "porn", "pornhub", "porn hub",
   "xnxx", "xxxvideos", "xxx videos",
   "erotic", "erotica", "sensual", "provocative",
 
   // Body parts / slang
-  "boobs", "boob", "b o o b s", "breasts", "nipples", "nipple",
-  "penis", "p e n i s", "dick", "d i c k", "cock", "c o c k",
-  "pussy", "p u s s y", "vagina", "vag", "v a g", "clit", "c l i t",
-  "butt", "booty", "b u t t", "ass", "a s s", "arse", "anal", "anus",
+  "boobs", "boob", "boobs", "breasts", "nipples", "nipple",
+  "penis", "penis", "dick", "dick", "cock", "cock",
+  "pussy", "pussy", "vagina", "vag", "vag", "clit", "clit",
+  "butt", "booty", "butt", "ass", "ass", "arse", "anal", "anus",
   "bum", "bums", "thighs", "balls", "scrotum", "testicles",
   "tits", "tit", "hooter", "hooters", "privates", "genitals", "crotch",
 
   // Sexual acts / descriptions
   "masturbation", "masturbate", "fingering", "blowjob", "blow job", "bj",
-  "handjob", "hand job", "hj", "cum", "c u m", "cumming", "ejaculate",
+  "handjob", "hand job", "hj", "cum", "cum", "cumming", "ejaculate",
   "ejaculation", "orgasm", "deepthroat", "deep throat", "coitus",
   "penetration", "humping", "grinding", "squirting", "moaning",
   "kissing", "foreplay", "seduction", "sensuality", "tease", "lust",

@@ -56,7 +56,7 @@ class _OtherUserProfileScreenState
                           Navigator.pop(context);
                         },
                         child: const Icon(Icons.arrow_back_ios_new_outlined,
-                            color: AppColors.white, size: 20),
+                            color: AppColors.darkBlue, size: 20),
                       ),
                     ],
                   ),

@@ -27,14 +27,16 @@ class ImageControlsWidget extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Expanded(
               child: _buildImageSelectionButton(context, ref, images),
             ),
-            12.spaceX,
+            10.spaceX,
             Expanded(
               child: _buildInspirationButton(context),
             ),
+            7.spaceX,
           ],
         ),
         40.spaceY,

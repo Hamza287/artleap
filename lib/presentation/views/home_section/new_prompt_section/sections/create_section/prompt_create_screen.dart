@@ -55,7 +55,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
       },
       child: AppBackgroundWidget(
         widget: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 5),
+          padding: const EdgeInsets.only(left: 15, right: 15),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

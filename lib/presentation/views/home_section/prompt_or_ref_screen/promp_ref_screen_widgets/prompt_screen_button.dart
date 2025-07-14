@@ -45,13 +45,13 @@ class PromptScreenButton extends ConsumerWidget {
             BoxShadow(
               color: Colors.grey.withOpacity(0.3),
               offset: const Offset(0, 3),
-              blurRadius: 6,
+              blurRadius: 3,
               spreadRadius: 0,
               blurStyle: BlurStyle.normal,
             )
           ],
           gradient: RadialGradient(
-              colors: [Color(0x8EFFFFFF), Color(0xFF683FEA),],
+              colors: [Color(0xFFA47CF3), Color(0xFF683FEA),],
               center: Alignment.center,
               radius: 3.5,
           ),

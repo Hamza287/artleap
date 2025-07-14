@@ -39,20 +39,20 @@ class ProfileInfoWidget extends ConsumerWidget {
                                   .user
                                   .profilePic)),
                           shape: BoxShape.circle,
-                          color: AppColors.white),
+                          color: AppColors.darkBlue),
                     )
                   : Container(
                       height: 55,
                       width: 55,
                       decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: AppColors.white),
+                          shape: BoxShape.circle, color: AppColors.darkBlue),
                       child: Image.asset(AppAssets.profilepic),
                     ),
               10.spaceY,
               Text(
                 profileName ?? "User Name",
                 style: AppTextstyle.interRegular(
-                    color: AppColors.white, fontSize: 14),
+                    color: AppColors.darkBlue, fontSize: 14),
               )
             ],
           ),
@@ -69,7 +69,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                           Text(
                             "Creations",
                             style: AppTextstyle.interRegular(
-                                fontSize: 12, color: AppColors.white),
+                                fontSize: 12, color: AppColors.darkBlue),
                           ),
                           Text(
                             ref
@@ -80,7 +80,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                                 .length
                                 .toString(),
                             style: AppTextstyle.interMedium(
-                                fontSize: 14, color: AppColors.white),
+                                fontSize: 14, color: AppColors.darkBlue),
                           )
                         ],
                       ),
@@ -91,7 +91,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                           Text(
                             "Follower",
                             style: AppTextstyle.interRegular(
-                                fontSize: 12, color: AppColors.white),
+                                fontSize: 12, color: AppColors.darkBlue),
                           ),
                           Text(
                             ref
@@ -109,7 +109,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                                     .length
                                     .toString(),
                             style: AppTextstyle.interMedium(
-                                fontSize: 14, color: AppColors.white),
+                                fontSize: 14, color: AppColors.darkBlue),
                           )
                         ],
                       ),
@@ -120,7 +120,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                           Text(
                             "Following",
                             style: AppTextstyle.interRegular(
-                                fontSize: 12, color: AppColors.white),
+                                fontSize: 12, color: AppColors.darkBlue),
                           ),
                           Text(
                             ref
@@ -138,7 +138,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                                     .length
                                     .toString(),
                             style: AppTextstyle.interMedium(
-                                fontSize: 14, color: AppColors.white),
+                                fontSize: 14, color: AppColors.darkBlue),
                           )
                         ],
                       ),
@@ -171,7 +171,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                                 color: AppColors.seaBlue, width: 0.5)),
                         child: ref.watch(userProfileProvider).isloading
                             ? LoadingAnimationWidget.threeArchedCircle(
-                                color: AppColors.white,
+                                color:AppColors.darkBlue,
                                 size: 20,
                               )
                             : Center(
@@ -195,17 +195,17 @@ class ProfileInfoWidget extends ConsumerWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             border:
-                                Border.all(color: AppColors.white, width: 0.5)),
+                                Border.all(color: AppColors.darkBlue, width: 0.5)),
                         child: ref.watch(userProfileProvider).isloading
                             ? LoadingAnimationWidget.threeArchedCircle(
-                                color: AppColors.white,
+                                color: AppColors.darkBlue,
                                 size: 20,
                               )
                             : Center(
                                 child: Text(
                                   "Follow",
                                   style: AppTextstyle.interMedium(
-                                      color: AppColors.white, fontSize: 12),
+                                      color: AppColors.darkBlue, fontSize: 12),
                                 ),
                               ),
                       ),

@@ -40,7 +40,7 @@ class MyCreationsWidget extends StatelessWidget {
                     child: Text(
                       "No data yet",
                       style: AppTextstyle.interBold(
-                          fontSize: 15, color: AppColors.white),
+                          fontSize: 15, color: AppColors.darkBlue),
                     ),
                   )
                 : GridView.builder(
@@ -80,7 +80,7 @@ class MyCreationsWidget extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: AppColors.white,
+                            color: AppColors.darkBlue,
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),

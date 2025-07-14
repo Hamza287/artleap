@@ -22,7 +22,7 @@ class PromptWidget extends ConsumerWidget {
         Stack(
           children: [
             Container(
-              height: 200,
+              height: 240,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(

@@ -129,7 +129,7 @@ class ProfileDrawer extends ConsumerWidget {
                         onTap: () {},
                       ),
                       _ProfileMenuItem(
-                        icon: AppAssets.copyicon,
+                        icon: AppAssets.currentPlan,
                         title: "Current Plan",
                         onTap: () => _navigateTo(context, '/subscription-status'),
                       ),
@@ -139,12 +139,12 @@ class ProfileDrawer extends ConsumerWidget {
                         onTap: () => _navigateTo(context, '/privacy-policy'),
                       ),
                       _ProfileMenuItem(
-                        icon: AppAssets.privacyicon,
+                        icon: AppAssets.payment,
                         title: "Payment Method",
                         onTap: () => _navigateTo(context, 'choose-plan-screen'),
                       ),
                       _ProfileMenuItem(
-                        icon: AppAssets.dark,
+                        icon: AppAssets.darkMode,
                         title: "Dark Mode",
                         onTap: () {},
                       ),
@@ -158,12 +158,12 @@ class ProfileDrawer extends ConsumerWidget {
                     title: "About",
                     items: [
                       _ProfileMenuItem(
-                        icon: AppAssets.facebooklogin,
+                        icon: AppAssets.follow,
                         title: "Follow us on Social Media",
                         onTap: () {},
                       ),
                       _ProfileMenuItem(
-                        icon: AppAssets.privacyicon,
+                        icon: AppAssets.helpCenter,
                         title: "Help Center",
                         onTap: () => _navigateTo(context, '/help-screen'),
                       ),

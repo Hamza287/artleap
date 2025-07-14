@@ -21,8 +21,24 @@ class HomeScreenTopBar extends ConsumerWidget {
             children: [
               GestureDetector(
                 onTap: onMenuTap,
-                child: const Icon(Icons.menu, size: 28, color: Colors.black),
+                child: SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: Center(
+                    child: Transform.scale(
+                      scale: 1.3,
+                      child: Image.asset(
+                        AppAssets.sidebar,
+                        color: Colors.black54,
+                        height: 40, // actual image size
+                        width: 40,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
               ),
+
               Container(
                 height: 36,
                 width: 70,

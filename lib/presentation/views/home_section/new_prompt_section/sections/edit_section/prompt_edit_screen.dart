@@ -1,3 +1,5 @@
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
 class PromptEditScreen extends StatelessWidget {
@@ -48,7 +50,7 @@ class PromptEditScreen extends StatelessWidget {
                             Icon(
                               Icons.add_photo_alternate_outlined,
                               size: isLargeScreen ? 60 : 50,
-                              color: Colors.black,
+                              color: Color(0xFF9A57FF),
                             ),
                             SizedBox(height: isSmallScreen ? 8 : 10),
                             Text(
@@ -99,38 +101,34 @@ class PromptEditScreen extends StatelessWidget {
                         children: [
                           _featureButton(
                             "Add Object",
-                            Icons.edit,
+                            AppAssets.pencil,
                             isActive: true,
                             isSmallScreen: isSmallScreen,
                           ),
                           _featureButton(
                             "Remove Object",
-                            Icons.remove,
+                            AppAssets.editObject,
                             isSmallScreen: isSmallScreen,
                           ),
                           _featureButton(
                             "Remove Background",
-                            Icons.blur_on,
+                            AppAssets.removeBackground,
                             isSmallScreen: isSmallScreen,
                           ),
                         ],
                       ),
                     ),
-
-                    SizedBox(height: isSmallScreen ? 12 : 16),
-
-                    // Instruction Text
+                    SizedBox(height: isSmallScreen ? 20 : 26),
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: isSmallScreen ? 12 : 20),
+                          horizontal: isSmallScreen ? 12 : 10),
                       child: Text(
                         "Draw on the image above to select it and add a prompt to add or replace an object",
-                        style: TextStyle(fontSize: isSmallScreen ? 12 : 13),
-                        textAlign: TextAlign.center,
+                        style: AppTextstyle.interBold(fontSize: isSmallScreen ? 12 : 13,color: Colors.black),
+                        textAlign: TextAlign.left,
                       ),
                     ),
-
-                    SizedBox(height: isSmallScreen ? 12 : 40),
+                    SizedBox(height: isSmallScreen ? 12 : 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -161,7 +159,7 @@ class PromptEditScreen extends StatelessWidget {
                     ),
                     // Generate Button
                     Padding(
-                      padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+                      padding: EdgeInsets.all(isSmallScreen ? 8 : 10),
                       child: SizedBox(
                         width: double.infinity,
                         height: isLargeScreen ? 64 : 56,
@@ -239,7 +237,7 @@ class PromptEditScreen extends StatelessWidget {
 
   Widget _featureButton(
       String label,
-      IconData icon, {
+      String icon, {
         bool isActive = false,
         bool isSmallScreen = false,
       }) {
@@ -255,16 +253,16 @@ class PromptEditScreen extends StatelessWidget {
             height: buttonSize,
             width: buttonSize,
             decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF9A57FF) : Colors.white,
+              color: isActive ? const Color(0xFF9A57FF) : Color(0xFFDCD5F1),
               borderRadius: BorderRadius.circular(12),
               border: BoxBorder.all(
-                color: isActive ? Colors.transparent : Colors.black54,
+                color: isActive ? Colors.transparent : Color(0xFFDCD5F1),
               )
             ),
-            child: Icon(
+            child: Image.asset(
               icon,
-              color: isActive ? Colors.white : Colors.black,
-              size: buttonSize * 0.5,
+              color: Colors.white,
+              height: buttonSize * 0.5,
             ),
           ),
           SizedBox(height: isSmallScreen ? 4 : 6),

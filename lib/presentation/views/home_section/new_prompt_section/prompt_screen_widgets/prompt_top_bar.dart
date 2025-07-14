@@ -85,13 +85,13 @@ class PromptTopBar extends ConsumerWidget {
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const SizedBox(width: 8), // Initial padding
               _navButton(
                 context,
                 ref,
-                Icons.add_circle,
+                AppAssets.editObject,
                 "Create",
                 PromptNavItem.create,
                 currentNav == PromptNavItem.create,
@@ -99,7 +99,7 @@ class PromptTopBar extends ConsumerWidget {
               _navButton(
                 context,
                 ref,
-                Icons.remove_circle_outline,
+                AppAssets.editObject,
                 "Edit Object",
                 PromptNavItem.edit,
                 currentNav == PromptNavItem.edit,
@@ -107,7 +107,7 @@ class PromptTopBar extends ConsumerWidget {
               _navButton(
                 context,
                 ref,
-                Icons.play_circle,
+                AppAssets.animate,
                 "Animate",
                 PromptNavItem.animate,
                 currentNav == PromptNavItem.animate,
@@ -115,7 +115,7 @@ class PromptTopBar extends ConsumerWidget {
               _navButton(
                 context,
                 ref,
-                Icons.auto_fix_high,
+                AppAssets.enhance,
                 "Enhance",
                 PromptNavItem.enhance,
                 currentNav == PromptNavItem.enhance,
@@ -132,7 +132,7 @@ class PromptTopBar extends ConsumerWidget {
   Widget _navButton(
       BuildContext context,
       WidgetRef ref,
-      IconData icon,
+      String icon,
       String label,
       PromptNavItem navItem,
       bool selected,
@@ -150,15 +150,21 @@ class PromptTopBar extends ConsumerWidget {
               height: 58,
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: selected ? AppColors.white : Colors.white,
+                gradient: selected ? LinearGradient(colors: [
+                  Color(0xFFD59FFF),
+                  Color(0xFF875EFF),
+                ]) : LinearGradient(colors: [
+                  Color(0xFFCFC1F7),
+                  Color(0xFFCFC1F7),
+                ]),
                 borderRadius: BorderRadius.circular(12),
                 border: selected
                     ? Border.all(color: const Color(0xFF923CFF), width: 2)
                     : Border.all(color: Colors.grey.shade300),
               ),
-              child: Icon(icon,
-                color: selected ? const Color(0xFF923CFF) : Colors.black54,
-                size: 28,
+              child: Image.asset(
+                 icon,
+                 height: 18,
               ),
             ),
           ),

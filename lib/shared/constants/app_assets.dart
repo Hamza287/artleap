@@ -106,4 +106,17 @@ class AppAssets {
   //json
   static const splashanimation = "${jsondir}splashanimation.json";
   static const splashscreen = "${jsondir}splashscreen.mp4";
+
+    //new icons
+   static const animate = "${iconsdir}animate.png";
+   static const enhance = "${iconsdir}edit_object.png";
+   static const editObject = "${iconsdir}enhance.png";
+   static const pencil = "${iconsdir}Pencil.png";
+   static const removeBackground = "${iconsdir}background_remover.png";
+   static const sidebar = "${iconsdir}sidebar.png";
+   static const currentPlan = "${iconsdir}current_plan.png";
+   static const payment = "${iconsdir}payment.png";
+   static const darkMode = "${iconsdir}dark_mode.png";
+   static const follow = "${iconsdir}follow_social.png";
+   static const helpCenter = "${iconsdir}help_center.png";
 }

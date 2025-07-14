@@ -19,7 +19,7 @@ class IconWithTextTile extends ConsumerWidget {
           width: 25,
           child: Image.asset(
             imageIcon!,
-            scale: 2,
+            scale: 1,
           ),
         ),
         12.spaceX,

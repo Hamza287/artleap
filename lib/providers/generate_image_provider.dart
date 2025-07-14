@@ -68,7 +68,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   GenerateImageProvider(this.reference) {
     if (freePikStyles.isNotEmpty) {
-      _selectedStyle = freePikStyles[13]['title'];
+      _selectedStyle = freePikStyles[0]['title'];
     }
   }
   set selectedImageNumber(int? value) {
@@ -148,7 +148,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> generateImgToImg() async {
     setGenerateImageLoader(true);
-    // print(images);
     Map<String, dynamic> data = {
       "prompt": promptTextController.text,
       "userId": UserData.ins.userId,
@@ -157,8 +156,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       "presetStyle": selectedStyle,
       "num_images": selectedImageNumber,
     };
-    // print(data);
-    // print("Sending request to API...");
     ApiResponse generateImageRes =
         await generateImgToImgRepo.generateImgToImg(data, images);
     var generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
@@ -171,9 +168,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
       images = [];
     } else {
-      // print(generateImageRes.status);
       images = [];
-
       setGenerateImageLoader(false);
     }
     notifyListeners();
@@ -191,8 +186,22 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   void checkSexualWords(String input) {
     final lowerInput = input.toLowerCase();
-    bool found = sexualWordsList.any((word) => lowerInput.contains(word));
-    _containsSexualWords = found;
+    final matchedWords = <String>[];
+
+    for (final word in sexualWordsList) {
+      final pattern = RegExp(r'\b' + RegExp.escape(word) + r'\b', caseSensitive: false);
+      if (pattern.hasMatch(lowerInput)) {
+        matchedWords.add(word);
+      }
+    }
+    if (matchedWords.isNotEmpty) {
+      print('Matched sexual words: $matchedWords');
+    } else {
+      print('No sexual words found.');
+    }
+    _containsSexualWords = matchedWords.isNotEmpty;
     notifyListeners();
   }
+
+
 }
