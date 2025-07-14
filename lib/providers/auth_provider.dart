@@ -232,7 +232,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       "email": email,
       "password": password,
     };
-    ApiResponse userRes = await authRepo.signup(body: body);
+    await authRepo.signup(body: body);
   }
 
   googleLogin(

@@ -12,7 +12,7 @@ class ArtStyleDilog extends ConsumerWidget {
       margin: const EdgeInsets.only(left: 20, right: 20, top: 110, bottom: 140),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: AppColors.blue,
+        color: AppColors.white,
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 15, right: 15),
@@ -40,7 +40,7 @@ class ArtStyleDilog extends ConsumerWidget {
             Text(
               "Filter Results",
               style: AppTextstyle.interMedium(
-                  color: AppColors.white, fontSize: 16),
+                  color: AppColors.darkBlue, fontSize: 16),
             ),
             10.spaceY,
             const FilterResultChips(),

@@ -13,7 +13,8 @@ import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/shared/theme/light_theme.dart';
 import 'di/di.dart';
 import 'providers/notification_provider.dart';
-import 'domain/notification_services/notification_service.dart' hide notificationServiceProvider;
+import 'domain/notification_services/notification_service.dart'
+    hide notificationServiceProvider;
 import 'shared/navigation/navigator_key.dart';
 import 'shared/navigation/route_generator.dart';
 import 'providers/localization_provider.dart';
@@ -49,7 +50,8 @@ void main() {
     runApp(
       ProviderScope(
         overrides: [
-          notificationServiceProvider.overrideWith((ref) => NotificationService(ref)),
+          notificationServiceProvider
+              .overrideWith((ref) => NotificationService(ref)),
         ],
         child: const MyApp(),
       ),
@@ -81,7 +83,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       });
     });
 
-    Future.microtask(() => ref.read(firebaseNotificationServiceProvider).initialize());
+    Future.microtask(
+        () => ref.read(firebaseNotificationServiceProvider).initialize());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userId = UserData.ins.userId;
       if (userId != null) {
@@ -95,6 +98,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     _refreshTokenTimer?.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

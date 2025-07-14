@@ -205,7 +205,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                         ),
                       ),
                       MyCreationsWidget(
-                        listofCreations: userPersonalData.user.images ?? [],
+                        listofCreations: userPersonalData.user.images,
                         userName: userName,
                       ),
                     ],

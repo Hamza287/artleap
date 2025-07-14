@@ -106,17 +106,17 @@ class NotificationService {
     }
   }
 
-  void _navigateToMessage(String routeName, {Object? arguments}) {
-    try {
-      final context = navigatorKey?.currentContext;
-      if (context == null) throw StateError('Navigator context is not available');
+  // void _navigateToMessage(String routeName, {Object? arguments}) {
+  //   try {
+  //     final context = navigatorKey?.currentContext;
+  //     if (context == null) throw StateError('Navigator context is not available');
 
-      Navigator.of(context).pushNamed(routeName, arguments: arguments);
-    } catch (e) {
-      final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
-    }
-  }
+  //     Navigator.of(context).pushNamed(routeName, arguments: arguments);
+  //   } catch (e) {
+  //     final error = ErrorHandler.handleError(e);
+  //     ErrorHandler.showError(error);
+  //   }
+  // }
 
   void _setupInteractions() {
     try {

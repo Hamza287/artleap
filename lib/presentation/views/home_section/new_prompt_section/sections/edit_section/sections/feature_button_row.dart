@@ -1,0 +1,103 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:Artleap.ai/providers/prompt_edit_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
+
+class FeatureButtonsRow extends ConsumerWidget {
+  final bool isSmallScreen;
+
+  const FeatureButtonsRow({super.key, required this.isSmallScreen});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(promptEditProvider);
+    final activeFeature = state.activeFeature;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _FeatureButton(
+          label: "Add Object",
+          icon: AppAssets.pencil,
+          isActive: activeFeature == EditFeature.addObject,
+          isSmallScreen: isSmallScreen,
+          onTap: () => ref.read(promptEditProvider.notifier)
+              .setActiveFeature(EditFeature.addObject),
+        ),
+        _FeatureButton(
+          label: "Remove Object",
+          icon: AppAssets.editObject,
+          isActive: activeFeature == EditFeature.removeObject,
+          isSmallScreen: isSmallScreen,
+          onTap: () => ref.read(promptEditProvider.notifier)
+              .setActiveFeature(EditFeature.removeObject),
+        ),
+        _FeatureButton(
+          label: "Remove Background",
+          icon: AppAssets.removeBackground,
+          isActive: activeFeature == EditFeature.removeBackground,
+          isSmallScreen: isSmallScreen,
+          onTap: () => ref.read(promptEditProvider.notifier)
+              .setActiveFeature(EditFeature.removeBackground),
+        ),
+      ],
+    );
+  }
+}
+
+class _FeatureButton extends StatelessWidget {
+  final String label;
+  final String icon;
+  final bool isActive;
+  final bool isSmallScreen;
+  final VoidCallback onTap;
+
+  const _FeatureButton({
+    required this.label,
+    required this.icon,
+    required this.isActive,
+    required this.isSmallScreen,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonSize = isSmallScreen ? 40.0 : 80.0;
+    final fontSize = isSmallScreen ? 10.0 : 11.0;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: buttonSize,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: buttonSize,
+              width: buttonSize,
+              decoration: BoxDecoration(
+                color: isActive ? const Color(0xFF9A57FF) : const Color(0xFFDCD5F1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                icon,
+                color: Colors.white,
+                height: buttonSize * 0.5,
+              ),
+            ),
+            SizedBox(height: isSmallScreen ? 4 : 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w500,
+                color: isActive ? const Color(0xFF9A57FF) : Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

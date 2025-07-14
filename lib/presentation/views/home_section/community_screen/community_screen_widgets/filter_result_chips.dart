@@ -35,14 +35,14 @@ class FilterResultChips extends ConsumerWidget {
                     color:
                         ref.watch(homeScreenProvider).selectedStyleTitle == null
                             ? AppColors.pinkColor
-                            : AppColors.white,
+                            : AppColors.darkBlue,
                   ),
                 ),
                 child: Text(
                   "All Styles",
                   style: AppTextstyle.interMedium(
                     fontSize: 12,
-                    color: AppColors.white,
+                    color: AppColors.darkBlue,
                   ),
                 ),
               ),
@@ -63,7 +63,7 @@ class FilterResultChips extends ConsumerWidget {
                       color: ref.watch(homeScreenProvider).selectedStyleTitle ==
                               e["title"]
                           ? AppColors.pinkColor
-                          : AppColors.white,
+                          : AppColors.darkBlue,
                     ),
                   ),
                   child: Row(
@@ -85,7 +85,7 @@ class FilterResultChips extends ConsumerWidget {
                         e["title"]!.toUpperCase(),
                         style: AppTextstyle.interRegular(
                           fontSize: 12,
-                          color: AppColors.white,
+                          color: AppColors.darkBlue,
                         ),
                       ),
                     ],

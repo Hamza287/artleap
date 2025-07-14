@@ -1,4 +1,3 @@
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class FilterOfTheDay extends StatelessWidget {

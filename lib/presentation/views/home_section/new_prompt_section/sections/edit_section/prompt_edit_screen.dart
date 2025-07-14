@@ -1,15 +1,21 @@
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:Artleap.ai/providers/prompt_edit_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'sections/action_button_row.dart';
+import 'sections/feature_button_row.dart';
+import 'sections/image_upload_widget.dart';
+import 'sections/undo_redo_buttons.dart';
 
-class PromptEditScreen extends StatelessWidget {
+class PromptEditScreen extends ConsumerWidget {
   const PromptEditScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.width < 375;
     final isLargeScreen = size.width > 600;
+    final state = ref.watch(promptEditProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -17,9 +23,7 @@ class PromptEditScreen extends StatelessWidget {
         builder: (context, constraints) {
           return SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: isSmallScreen ? 12 : 16,
@@ -28,103 +32,34 @@ class PromptEditScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: isSmallScreen ? 12 : 20),
+                    SizedBox(height: isSmallScreen ? 7 : 10),
 
-                    // Image Upload Container
-                    Container(
-                      height: isLargeScreen
-                          ? constraints.maxHeight * 0.6
-                          : constraints.maxHeight * 0.4,
-                      constraints: BoxConstraints(
-                        maxHeight: constraints.maxHeight * 0.5,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade600),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_photo_alternate_outlined,
-                              size: isLargeScreen ? 60 : 50,
-                              color: Color(0xFF9A57FF),
-                            ),
-                            SizedBox(height: isSmallScreen ? 8 : 10),
-                            Text(
-                              "Upload Image",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                                fontSize: isSmallScreen ? 14 : 16,
-                              ),
-                            ),
-                          ],
-                        ),
+                    if (state.showUndoRedo) const UndoRedoButtons(),
+
+                    // Image Upload Container with GestureDetector
+                    GestureDetector(
+                      onTap: () => ref.read(promptEditProvider.notifier).pickImage(),
+                      child: ImageUploadContainer(
+                        isLargeScreen: isLargeScreen,
+                        maxHeight: constraints.maxHeight,
                       ),
                     ),
 
                     SizedBox(height: isSmallScreen ? 12 : 16),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: constraints.maxWidth * 0.9,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _roundIconButton(
-                            icon: Icons.share,
-                            size: isSmallScreen ? 40 : 50,
-                          ),
-                          _roundIconButton(
-                            icon: Icons.download,
-                            size: isSmallScreen ? 40 : 50,
-                          ),
-                          _roundIconButton(
-                            icon: Icons.delete,
-                            borderColor: Colors.red,
-                            size: isSmallScreen ? 40 : 50,
-                          ),
-                        ],
-                      ),
-                    ),
+                    ActionButtonsRow(isSmallScreen: isSmallScreen),
 
                     SizedBox(height: isSmallScreen ? 16 : 60),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: constraints.maxWidth,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _featureButton(
-                            "Add Object",
-                            AppAssets.pencil,
-                            isActive: true,
-                            isSmallScreen: isSmallScreen,
-                          ),
-                          _featureButton(
-                            "Remove Object",
-                            AppAssets.editObject,
-                            isSmallScreen: isSmallScreen,
-                          ),
-                          _featureButton(
-                            "Remove Background",
-                            AppAssets.removeBackground,
-                            isSmallScreen: isSmallScreen,
-                          ),
-                        ],
-                      ),
-                    ),
+                    FeatureButtonsRow(isSmallScreen: isSmallScreen),
+
                     SizedBox(height: isSmallScreen ? 20 : 26),
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: isSmallScreen ? 12 : 10),
                       child: Text(
                         "Draw on the image above to select it and add a prompt to add or replace an object",
-                        style: AppTextstyle.interBold(fontSize: isSmallScreen ? 12 : 13,color: Colors.black),
+                        style: AppTextstyle.interBold(
+                            fontSize: isSmallScreen ? 12 : 13,
+                            color: Colors.black),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -134,30 +69,32 @@ class PromptEditScreen extends StatelessWidget {
                       children: [
                         const Align(
                           alignment: Alignment.centerLeft,
-                          child: Text("Prompt", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black54)),
+                          child: Text("Prompt",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54)),
                         ),
                         const SizedBox(height: 8),
                         Container(
                           width: double.infinity,
-                          height: 200, // Fixed height
+                          height: 200,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: Colors.black54),
                           ),
-                          child: Stack(
+                          child: const Stack(
                             children: [
                               SingleChildScrollView(
-                                child: Text("No prompt available", style: const TextStyle(fontSize: 16),
-                                ),
+                                child: Text("No prompt available",
+                                    style: TextStyle(fontSize: 16)),
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    // Generate Button
                     Padding(
                       padding: EdgeInsets.all(isSmallScreen ? 8 : 10),
                       child: SizedBox(
@@ -208,74 +145,6 @@ class PromptEditScreen extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _roundIconButton({
-    required IconData icon,
-    Color borderColor = Colors.black54,
-    double size = 49,
-  }) {
-    return SizedBox(
-      height: size,
-      width: 110,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: borderColor, width: 1),
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
-        child: Icon(
-          icon,
-          color: borderColor,
-          size: size * 0.6,
-        ),
-      ),
-    );
-  }
-
-  Widget _featureButton(
-      String label,
-      String icon, {
-        bool isActive = false,
-        bool isSmallScreen = false,
-      }) {
-    final buttonSize = isSmallScreen ? 40.0 : 80.0;
-    final fontSize = isSmallScreen ? 10.0 : 11.0;
-
-    return SizedBox(
-      width: buttonSize,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: buttonSize,
-            width: buttonSize,
-            decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF9A57FF) : Color(0xFFDCD5F1),
-              borderRadius: BorderRadius.circular(12),
-              border: BoxBorder.all(
-                color: isActive ? Colors.transparent : Color(0xFFDCD5F1),
-              )
-            ),
-            child: Image.asset(
-              icon,
-              color: Colors.white,
-              height: buttonSize * 0.5,
-            ),
-          ),
-          SizedBox(height: isSmallScreen ? 4 : 6),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w500,
-              color: isActive ? const Color(0xFF9A57FF) : Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }

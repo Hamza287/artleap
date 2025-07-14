@@ -32,9 +32,9 @@ class PromptScreen extends ConsumerWidget {
       case PromptNavItem.edit:
         return const PromptEditScreen();
       case PromptNavItem.animate:
-        return const PromptOrReferenceScreen();
+        return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
       case PromptNavItem.enhance:
-        return const PromptOrReferenceScreen();
+        return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
     }
   }
 }

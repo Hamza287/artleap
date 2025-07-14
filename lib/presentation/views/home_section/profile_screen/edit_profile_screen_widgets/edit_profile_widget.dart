@@ -203,7 +203,7 @@ class _ProfileMenuItem extends StatelessWidget {
         children: [
           IconWithTextTile(
             imageIcon: icon,
-            title: title ?? '',
+            title: title,
             titleColor: color,
           ),
           const SizedBox(height: 10),

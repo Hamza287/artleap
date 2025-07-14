@@ -49,7 +49,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
       );
 
       // 3. Save to gallery (modified to use watermarked image)
-      final result = await SaverGallery.saveImage(
+       await SaverGallery.saveImage(
         watermarkedBytes,
         quality: 60,
         fileName: "artleap_${DateTime.now().millisecondsSinceEpoch}.jpg",

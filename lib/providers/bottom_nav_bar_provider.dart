@@ -4,7 +4,6 @@ import 'package:Artleap.ai/presentation/views/home_section/new_user_profile/user
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../presentation/views/home_section/community_screen/community_screen.dart';
-import '../presentation/views/home_section/profile_screen/profile_screen.dart';
 
 final bottomNavBarProvider = ChangeNotifierProvider<BottomNavBarProvider>(
     (ref) => BottomNavBarProvider());

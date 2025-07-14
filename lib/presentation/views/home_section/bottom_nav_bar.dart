@@ -27,65 +27,65 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     });
   }
 
-  Widget _buildProfilePicture() {
-    final userProfileState = ref.watch(userProfileProvider);
+  // Widget _buildProfilePicture() {
+  //   final userProfileState = ref.watch(userProfileProvider);
 
-    if (userProfileState.isloading) {
-      return const SizedBox(
-        height: 35,
-        width: 35,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.indigo,
-            strokeWidth: 2,
-          ),
-        ),
-      );
-    }
+  //   if (userProfileState.isloading) {
+  //     return const SizedBox(
+  //       height: 35,
+  //       width: 35,
+  //       child: Center(
+  //         child: CircularProgressIndicator(
+  //           color: AppColors.indigo,
+  //           strokeWidth: 2,
+  //         ),
+  //       ),
+  //     );
+  //   }
 
-    final profilePic = userProfileState.userProfileData?.user.profilePic;
+  //   final profilePic = userProfileState.userProfileData?.user.profilePic;
 
-    if (profilePic != null && profilePic.isNotEmpty) {
-      return Container(
-        height: 35,
-        width: 35,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(profilePic),
-            fit: BoxFit.cover,
-          ),
-          shape: BoxShape.circle,
-          color: AppColors.white,
-          border: Border.all(
-            color: ref.watch(bottomNavBarProvider).pageIndex == 3
-                ? const Color(0xFFAB8AFF) // Purple when selected
-                : AppColors.darkBlue, // Dark blue when unselected
-            width: 2,
-          ),
-        ),
-      );
-    }
+  //   if (profilePic != null && profilePic.isNotEmpty) {
+  //     return Container(
+  //       height: 35,
+  //       width: 35,
+  //       decoration: BoxDecoration(
+  //         image: DecorationImage(
+  //           image: NetworkImage(profilePic),
+  //           fit: BoxFit.cover,
+  //         ),
+  //         shape: BoxShape.circle,
+  //         color: AppColors.white,
+  //         border: Border.all(
+  //           color: ref.watch(bottomNavBarProvider).pageIndex == 3
+  //               ? const Color(0xFFAB8AFF) // Purple when selected
+  //               : AppColors.darkBlue, // Dark blue when unselected
+  //           width: 2,
+  //         ),
+  //       ),
+  //     );
+  //   }
 
-    // Default profile picture
-    return Container(
-      height: 35,
-      width: 35,
-      decoration: BoxDecoration(
-        image: const DecorationImage(
-          image: AssetImage(AppAssets.artstyle1),
-          fit: BoxFit.cover,
-        ),
-        shape: BoxShape.circle,
-        color: AppColors.white,
-        border: Border.all(
-          color: ref.watch(bottomNavBarProvider).pageIndex == 3
-              ? const Color(0xFFAB8AFF) // Purple when selected
-              : AppColors.darkBlue, // Dark blue when unselected
-          width: 2,
-        ),
-      ),
-    );
-  }
+  //   // Default profile picture
+  //   return Container(
+  //     height: 35,
+  //     width: 35,
+  //     decoration: BoxDecoration(
+  //       image: const DecorationImage(
+  //         image: AssetImage(AppAssets.artstyle1),
+  //         fit: BoxFit.cover,
+  //       ),
+  //       shape: BoxShape.circle,
+  //       color: AppColors.white,
+  //       border: Border.all(
+  //         color: ref.watch(bottomNavBarProvider).pageIndex == 3
+  //             ? const Color(0xFFAB8AFF) // Purple when selected
+  //             : AppColors.darkBlue, // Dark blue when unselected
+  //         width: 2,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
