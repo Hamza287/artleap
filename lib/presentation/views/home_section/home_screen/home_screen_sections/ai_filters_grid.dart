@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
 class AiFiltersGrid extends StatelessWidget {
@@ -17,25 +18,24 @@ class AiFiltersGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 20, bottom: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, bottom: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Ai Filters",
-                style: TextStyle(
+                style: AppTextstyle.interMedium(
                     fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black54
+                    color: Colors.black
                 ),
               ),
-              Text(
+             Text(
                 "Transform your images with a single click",
-                style: TextStyle(
+                style: AppTextstyle.interMedium(
                     fontSize: 16,
-                    color: Colors.black54,
+                    color: Colors.black,
                 ),
               ),
             ],
@@ -72,7 +72,7 @@ class AiFiltersGrid extends StatelessWidget {
                           color: Colors.blueAccent,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text("New", style: TextStyle(color: Colors.white, fontSize: 10)),
+                        child: Text("New", style: AppTextstyle.interMedium(color: Colors.white, fontSize: 10)),
                       )
                           : const SizedBox(),
                     ),

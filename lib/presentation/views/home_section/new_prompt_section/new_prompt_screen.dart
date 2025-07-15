@@ -4,7 +4,6 @@ import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/se
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../providers/prompt_nav_provider.dart';
-import '../prompt_or_ref_screen/promp_or_ref_screen.dart';
 
 class PromptScreen extends ConsumerWidget {
   const PromptScreen({super.key});

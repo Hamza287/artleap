@@ -6,6 +6,7 @@ import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:Artleap.ai/shared/utilities/safe_network_image.dart';
+import '../../../global_widgets/artleap_top_bar.dart';
 
 class ResultScreenRedesign extends ConsumerWidget {
   const ResultScreenRedesign({super.key});
@@ -20,47 +21,39 @@ class ResultScreenRedesign extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Result',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-              fontSize: 18,
-            )),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: ElevatedButton(
-              onPressed: () {}, // TODO: Get Pro
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                backgroundColor: const Color(0xFF9B59FF),
-                shape: StadiumBorder(),
-                elevation: 0,
-              ),
-              child: Row(
-                children: const [
-                  Icon(Icons.workspace_premium, size: 16, color: Colors.white),
-                  SizedBox(width: 4),
-                  Text("Get Pro", style: TextStyle(color: Colors.white)),
-                ],
-              ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: SafeArea(
+          child: Container(
+            color: AppColors.topBar,
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: ArtLeapTopBar(),
             ),
           ),
-        ],
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: 30),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Row(
+                children: [
+                  IconButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back),
+                  ),
+                  Text('Back',style: AppTextstyle.interMedium(fontSize: 20),)
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
             // Main Image Container with Shimmer
             if (isLoading)
               _buildShimmerContainer(300)
@@ -87,18 +80,18 @@ class ResultScreenRedesign extends ConsumerWidget {
 
             const SizedBox(height: 16),
             // Action Buttons with Shimmer
-            if (isLoading)
-              _buildShimmerActionButtons()
-            else
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _iconButton(Icons.share_outlined, onPressed: () {}),
-                  _iconButton(Icons.download_outlined, onPressed: () {}),
-                  _iconButton(Icons.delete_outline,
-                      onPressed: () {}, isDelete: true),
-                ],
-              ),
+            // if (isLoading)
+            //   _buildShimmerActionButtons()
+            // else
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //     children: [
+            //       _iconButton(Icons.share_outlined, onPressed: () {}),
+            //       _iconButton(Icons.download_outlined, onPressed: () {}),
+            //       _iconButton(Icons.delete_outline,
+            //           onPressed: () {}, isDelete: true),
+            //     ],
+            //   ),
 
             const SizedBox(height: 16),
             // Re-generate Button with Shimmer
@@ -133,15 +126,21 @@ class ResultScreenRedesign extends ConsumerWidget {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text("Re-Generate",
+                    children: [
+                      const Text("Re-Generate",
                           style: TextStyle(color: Colors.white, fontSize: 16)),
-                      SizedBox(width: 8),
-                      Icon(Icons.auto_fix_high, color: Colors.white),
-                      SizedBox(width: 8),
-                      Icon(Icons.monetization_on, color: Colors.yellow),
-                      SizedBox(width: 4),
-                      Text("20", style: TextStyle(color: Colors.white)),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.auto_awesome, color: Colors.white),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28.0),
+                        child: Row(
+                          children: [
+                            Image.asset(AppAssets.stackofcoins,width: 30,height: 30,),
+                            const SizedBox(width: 4),
+                            const Text("20", style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),

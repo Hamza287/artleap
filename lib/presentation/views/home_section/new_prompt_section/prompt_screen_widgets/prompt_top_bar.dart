@@ -1,8 +1,8 @@
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../providers/prompt_nav_provider.dart';
+import '../../../global_widgets/artleap_top_bar.dart';
 
 class PromptTopBar extends ConsumerWidget {
   const PromptTopBar({super.key});
@@ -11,121 +11,61 @@ class PromptTopBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentNav = ref.watch(promptNavProvider);
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: 36,
-                width: 70,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 1.2,
-                  ),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppAssets.stackofcoins,
-                      height: 18,
-                      color: Colors.amber[700],
-                    ),
-                    3.spaceX,
-                    Text(
-                      "${ref.watch(userProfileProvider).userProfileData?.user.dailyCredits ?? 0}",
-                      style: AppTextstyle.interMedium(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const Text(
-                "Art leap",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed("choose_plan_screen");
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF923CFF),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  "✨ Get Pro",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
-              ),
-            ],
+    return Container(
+      color: AppColors.topBar,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ArtLeapTopBar(),
           ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // Navigation Buttons - Now properly aligned in one line
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const SizedBox(width: 8), // Initial padding
-              _navButton(
-                context,
-                ref,
-                AppAssets.editObject,
-                "Create",
-                PromptNavItem.create,
-                currentNav == PromptNavItem.create,
-              ),
-              _navButton(
-                context,
-                ref,
-                AppAssets.editObject,
-                "Edit Object",
-                PromptNavItem.edit,
-                currentNav == PromptNavItem.edit,
-              ),
-              _navButton(
-                context,
-                ref,
-                AppAssets.animate,
-                "Animate",
-                PromptNavItem.animate,
-                currentNav == PromptNavItem.animate,
-              ),
-              _navButton(
-                context,
-                ref,
-                AppAssets.enhance,
-                "Enhance",
-                PromptNavItem.enhance,
-                currentNav == PromptNavItem.enhance,
-              ),
-              const SizedBox(width: 8), // End padding
-            ],
+          const SizedBox(height: 20), // Navigation Buttons - Now properly aligned in one line
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(width: 8), // Initial padding
+                _navButton(
+                  context,
+                  ref,
+                  AppAssets.create,
+                  "Create",
+                  PromptNavItem.create,
+                  currentNav == PromptNavItem.create,
+                ),
+                _navButton(
+                  context,
+                  ref,
+                  AppAssets.editObject,
+                  "Edit Object",
+                  PromptNavItem.edit,
+                  currentNav == PromptNavItem.edit,
+                ),
+                _navButton(
+                  context,
+                  ref,
+                  AppAssets.animate,
+                  "Animate",
+                  PromptNavItem.animate,
+                  currentNav == PromptNavItem.animate,
+                ),
+                _navButton(
+                  context,
+                  ref,
+                  AppAssets.enhance,
+                  "Enhance",
+                  PromptNavItem.enhance,
+                  currentNav == PromptNavItem.enhance,
+                ),
+                const SizedBox(width: 8), // End padding
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-      ],
+          const SizedBox(height: 10),
+        ],
+      ),
     );
   }
 

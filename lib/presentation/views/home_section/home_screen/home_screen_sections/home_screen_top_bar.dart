@@ -86,13 +86,23 @@ class HomeScreenTopBar extends ConsumerWidget {
                   backgroundColor: const Color(0xFF923CFF),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(86),
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  "✨ Get Pro",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset(
+                      AppAssets.proBtn,
+                      height: 30,
+                    ),
+
+                    const Text(
+                      "Get Pro",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ],
                 ),
               ),
             ],

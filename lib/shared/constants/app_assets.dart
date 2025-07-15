@@ -119,4 +119,6 @@ class AppAssets {
    static const darkMode = "${iconsdir}dark_mode.png";
    static const follow = "${iconsdir}follow_social.png";
    static const helpCenter = "${iconsdir}help_center.png";
+   static const proBtn = "${iconsdir}pro_btn.png";
+   static const create = "${iconsdir}create.png";
 }

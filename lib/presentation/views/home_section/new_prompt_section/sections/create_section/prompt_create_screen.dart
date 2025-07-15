@@ -13,7 +13,7 @@ import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../prompt_or_ref_screen/promp_ref_screen_widgets/prompt_screen_button.dart';
+import '../../prompt_screen_widgets/prompt_screen_button.dart';
 import 'create_section_widget/ImageControlWidget.dart';
 import 'create_section_widget/prompt_widget.dart';
 

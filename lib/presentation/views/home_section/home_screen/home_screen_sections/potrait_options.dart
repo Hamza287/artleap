@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
 class PortraitOptions extends StatelessWidget {
@@ -11,14 +12,13 @@ class PortraitOptions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Title at the top
-        const Padding(
-          padding: EdgeInsets.only(left: 20, bottom: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, bottom: 8),
           child: Text(
             "Portrait",
-            style: TextStyle(
+            style: AppTextstyle.interMedium(
               fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black54
+              color: Colors.black,
             ),
           ),
         ),
@@ -46,8 +46,8 @@ class PortraitOptions extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       label,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
+                      style: AppTextstyle.interMedium(
+
                       ),
                     ),
                   ],

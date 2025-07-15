@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
 class TrendingStyles extends StatelessWidget {
@@ -17,14 +18,14 @@ class TrendingStyles extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 20, bottom: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, bottom: 8),
           child: Text(
             "Trending styles",
-            style: TextStyle(
+            style: AppTextstyle.interMedium(
                 fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.black54),
+                color: Colors.black
+            ),
           ),
         ),
         const SizedBox(height: 12),
@@ -45,8 +46,8 @@ class TrendingStyles extends StatelessWidget {
                 child: Center(
                   child: Text(
                     styles[index],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
+                    style: AppTextstyle.interMedium(
+                      color: Colors.black54
                     ),
                   ),
                 ),

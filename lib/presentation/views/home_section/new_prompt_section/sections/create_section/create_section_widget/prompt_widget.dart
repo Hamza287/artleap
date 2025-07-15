@@ -33,11 +33,10 @@ class PromptWidget extends ConsumerWidget {
                 // Actual gradient border
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF923CFF),
-                    Colors.black,
-                    Color(0xFF923CFF)
+                    Color(0xFF875EFF),
+                    Color(0xFFFC24F5)
                   ],
-                  stops: const [0.0, 0.5, 1.0],
+                  stops: const [0.0, 1.0],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),

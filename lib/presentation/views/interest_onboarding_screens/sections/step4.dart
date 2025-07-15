@@ -36,7 +36,7 @@ class Step4 extends ConsumerWidget {
             Text(
               "Let's Get to Know You Better",
               style: AppTextstyle.interBold(
-                fontSize: isSmallScreen ? 20.0 : 24.0,
+                fontSize: isSmallScreen ? 24.0 : 28.0,
                 color: Colors.black,
               ),
             ),
@@ -44,7 +44,7 @@ class Step4 extends ConsumerWidget {
             Text(
               "Select the option that best describes your role. Voicify tailors its features to suit your needs",
               style: AppTextstyle.interRegular(
-                fontSize: isSmallScreen ? 14.0 : 16.0,
+                fontSize: isSmallScreen ? 16.0 : 18.0,
                 color: Colors.grey,
               ),
             ),
@@ -113,12 +113,19 @@ class Step4 extends ConsumerWidget {
                   ),
                   disabledBackgroundColor: Colors.grey.shade300,
                 ),
-                child: Text(
-                  "Continue",
-                  style: AppTextstyle.interBold(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Continue",
+                      style: AppTextstyle.interBold(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    Icon(Icons.arrow_forward_ios_outlined,size: 16,color: Colors.white,)
+                  ],
                 ),
               ),
             ),

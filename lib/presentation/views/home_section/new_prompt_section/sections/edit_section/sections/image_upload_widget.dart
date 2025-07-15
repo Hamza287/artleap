@@ -19,7 +19,7 @@ class ImageUploadContainer extends ConsumerWidget {
     final uploadedImage = state.uploadedImageFile;
 
     return Container(
-      height: isLargeScreen ? maxHeight * 0.6 : maxHeight * 0.4,
+      height: 364,
       constraints: BoxConstraints(maxHeight: maxHeight * 0.5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -47,8 +47,8 @@ class ImageUploadContainer extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.add_photo_alternate_outlined,
-                    size: isLargeScreen ? 60 : 50,
-                    color: const Color(0xFF9A57FF),
+                    size: isLargeScreen ? 100 : 100,
+                    color: const Color(0xFFBC95FA),
                   ),
                   const SizedBox(height: 10),
                   const Text(

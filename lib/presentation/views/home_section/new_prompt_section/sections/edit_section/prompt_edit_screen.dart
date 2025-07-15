@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/prompt_edit_provider.dart';
@@ -64,36 +65,39 @@ class PromptEditScreen extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(height: isSmallScreen ? 12 : 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text("Prompt",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54)),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          width: double.infinity,
-                          height: 200,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.black54),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Prompt",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
                           ),
-                          child: const Stack(
-                            children: [
-                              SingleChildScrollView(
-                                child: Text("No prompt available",
-                                    style: TextStyle(fontSize: 16)),
-                              ),
-                            ],
+                          const SizedBox(height: 8),
+                          Container(
+                            width: double.infinity,
+                            height: 200,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.black54),
+                            ),
+                            child: const Stack(
+                              children: [
+                                SingleChildScrollView(
+                                  child: Text("No prompt available",
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(isSmallScreen ? 8 : 10),
@@ -115,18 +119,16 @@ class PromptEditScreen extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Generate now ✨",
+                                "Generate now",
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 14 : 16,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(width: isSmallScreen ? 6 : 10),
-                              Icon(
-                                Icons.monetization_on,
-                                color: Colors.amber,
-                                size: isSmallScreen ? 18 : 24,
-                              ),
+                              10.spaceX,
+                              Icon(Icons.auto_awesome,color: Colors.white,size: 20,),
+                              SizedBox(width: isSmallScreen ? 20 : 24),
+                              Image.asset(AppAssets.stackofcoins,width: 30,height: 30,),
                               Text(
                                 "20",
                                 style: TextStyle(

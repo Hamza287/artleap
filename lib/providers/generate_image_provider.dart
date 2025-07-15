@@ -102,6 +102,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+
   String? dataUrl;
   generateTextToImage() async {
     setGenerateImageLoader(true);
@@ -202,6 +203,5 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     _containsSexualWords = matchedWords.isNotEmpty;
     notifyListeners();
   }
-
 
 }

@@ -41,21 +41,21 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
             vertical: screenHeight * 0.04,
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Spacer(flex: 1),
 
               Text(
                 'Ready to dive into a world of\nlimitless possibilities?',
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontSize: isSmallScreen ? 18 : 20,
+                  fontSize: isSmallScreen ? 20 : 22,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
 
-              SizedBox(height: screenHeight * 0.04),
+              SizedBox(height: screenHeight * 0.08),
 
               // Gradient headline
               ShaderMask(
@@ -66,23 +66,23 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                 },
                 child: Text(
                   'Take the leap,\nand we\'ll turn\nit into art!',
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: isSmallScreen ? 28 : 32,
+                    fontSize: isSmallScreen ? 48 : 52,
                     fontWeight: FontWeight.bold,
                     color: Colors.white, // Required for ShaderMask
-                    height: 1.4,
+                    height: 1.1,
                   ),
                 ),
               ),
 
-              SizedBox(height: screenHeight * 0.04),
+              SizedBox(height: screenHeight * 0.13),
 
               Text(
                 'With AI at your fingertips, every\nidea transforms into a stunning\nmasterpiece',
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontSize: isSmallScreen ? 14 : 16,
+                  fontSize: isSmallScreen ? 16 : 22,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
                   height: 1.5,
@@ -138,9 +138,9 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(10),
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFB26EFF), Color(0xFF805DFF)],
+                      colors: [Color(0xFFD765FF), Color(0xFF6D40DA)],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     )

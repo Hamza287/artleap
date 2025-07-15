@@ -34,7 +34,7 @@ class Step1 extends ConsumerWidget {
             Text(
               "Let's Get to Know You Better",
               style: AppTextstyle.interBold(
-                fontSize: isSmallScreen ? 20.0 : 24.0,
+                fontSize: isSmallScreen ? 24.0 : 28.0,
                 color: Colors.black,
               ),
             ),
@@ -42,7 +42,7 @@ class Step1 extends ConsumerWidget {
             Text(
               "Select the option that best describes your role. Voicify tailors its features to suit your needs",
               style: AppTextstyle.interRegular(
-                fontSize: isSmallScreen ? 14.0 : 16.0,
+                fontSize: isSmallScreen ? 16.0 : 18.0,
                 color: Colors.grey,
               ),
             ),
@@ -55,7 +55,9 @@ class Step1 extends ConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6.0),
                     child: GestureDetector(
-                      onTap: () => ref.read(selectedRoleIndexProvider.notifier).state = index,
+                      onTap: () => ref
+                          .read(selectedRoleIndexProvider.notifier)
+                          .state = index,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16.0,
@@ -101,22 +103,31 @@ class Step1 extends ConsumerWidget {
                 onPressed: selectedIndex == null
                     ? null
                     : () {
-                  ref.read(interestOnboardingStepProvider.notifier).state++;
-                },
+                        ref
+                            .read(interestOnboardingStepProvider.notifier)
+                            .state++;
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF875EFF),
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   disabledBackgroundColor: Colors.grey.shade300,
                 ),
-                child: Text(
-                  "Continue",
-                  style: AppTextstyle.interBold(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Continue",
+                      style: AppTextstyle.interBold(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    Icon(Icons.arrow_forward_ios_outlined,size: 16,color: Colors.white,)
+                  ],
                 ),
               ),
             ),

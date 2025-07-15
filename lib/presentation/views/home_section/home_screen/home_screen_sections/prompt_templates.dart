@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
 class PromptTemplates extends StatelessWidget {
@@ -17,14 +18,14 @@ class PromptTemplates extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 20, bottom: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, bottom: 8),
           child: Text(
             "Prompt Templates",
-            style: TextStyle(
+            style: AppTextstyle.interMedium(
                 fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.black54),
+                color: Colors.black
+            ),
           ),
         ),
         const SizedBox(height: 12),
