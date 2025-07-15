@@ -188,13 +188,13 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                               const SizedBox(height: 16),
                               Row(
                                 children: [
-                                  const Icon(Icons.star, color: Colors.amber),
+                                  const Icon(Icons.auto_awesome, color: Color(0xFF8962EB)),
                                   const SizedBox(width: 10),
                                   Text(
-                                    '${userPersonalData.user.images.length.toString()} generations',
-                                    style: AppTextstyle.interRegular(
+                                    '${userPersonalData.user.images.length.toString()} Generations',
+                                    style: AppTextstyle.interMedium(
                                         fontSize: 18,
-                                        color: Colors.deepPurpleAccent,
+                                        color: Color(0xFF8962EB),
                                         fontWeight: FontWeight.bold
                                     ),
                                   ),

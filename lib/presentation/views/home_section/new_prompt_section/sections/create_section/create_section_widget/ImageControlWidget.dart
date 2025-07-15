@@ -12,7 +12,6 @@ import '../image_control_widgets/inspiration_button.dart';
 import '../image_control_widgets/ratio_selection_card.dart';
 import '../image_control_widgets/style_selection_card.dart';
 
-
 class ImageControlsWidget extends ConsumerWidget {
   final VoidCallback onImageSelected;
 
@@ -53,30 +52,40 @@ class ImageControlsWidget extends ConsumerWidget {
           ],
         ),
         40.spaceY,
-        Text(
-          "Number of Images",
-          style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
-        ),
-        8.spaceY,
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: provider.imageNumber.map((number) {
-            return RatioSelectionCard(
-              text: number.toString(),
-              isSelected: number == selectedImageNumber,
-              onTap: () => ref.read(generateImageProvider.notifier).selectedImageNumber = number,
-            );
-          }).toList(),
+        Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Number of Images",
+                  style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: provider.imageNumber.map((number) {
+                    return RatioSelectionCard(
+                      text: number.toString(),
+                      isSelected: number == selectedImageNumber,
+                      onTap: () => ref.read(generateImageProvider.notifier).selectedImageNumber = number,
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
         ),
         24.spaceY,
-        Text(
-          "Aspect Ratio",
-          style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
-        ),
-        const SizedBox(height: 8),
         SizedBox(
-          height: 60,
+          height: 90, // increase height to fit both text & ListView
           width: double.infinity,
           child: Card(
             elevation: 4,
@@ -85,62 +94,78 @@ class ImageControlsWidget extends ConsumerWidget {
             ),
             margin: const EdgeInsets.symmetric(horizontal: 4),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: freePikAspectRatio.length,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final ratio = freePikAspectRatio[index];
-                  return RatioSelectionCard(
-                    text: ratio['title'] ?? '',
-                    isSelected: ratio['value'] == selectedRatio,
-                    onTap: () => ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'],
-                    isSmall: true,
-                  );
-                },
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Aspect Ratio",
+                    style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: freePikAspectRatio.length,
+                      separatorBuilder: (context, index) => const SizedBox(width: 8),
+                      itemBuilder: (context, index) {
+                        final ratio = freePikAspectRatio[index];
+                        return RatioSelectionCard(
+                          text: ratio['title'] ?? '',
+                          isSelected: ratio['value'] == selectedRatio,
+                          onTap: () => ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'],
+                          isSmall: true,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
         24.spaceY,
-        Text(
-          "Style",
-          style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
-        ),
-        const SizedBox(height: 8),
         Container(
           height: 200,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  offset: const Offset(0, 3),
-                  blurRadius: 6,
-                  spreadRadius: 0,
-                  blurStyle: BlurStyle.normal,
-                )
-              ]
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                offset: const Offset(0, 3),
+                blurRadius: 6,
+                spreadRadius: 0,
+                blurStyle: BlurStyle.normal,
+              )
+            ],
           ),
-          child: Center(
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: (images.isEmpty ? freePikStyles : textToImageStyles).map((style) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: StyleSelectionCard(
-                    title: style['title'] ?? '',
-                    icon: style['icon'] ?? '',
-                    isSelected: style['title'] == selectedStyle,
-                    onTap: () => ref.read(generateImageProvider.notifier).selectedStyle = style['title'],
-                  ),
-                );
-              }).toList(),
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Style",
+                style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: (images.isEmpty ? freePikStyles : textToImageStyles).map((style) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: StyleSelectionCard(
+                        title: style['title'] ?? '',
+                        icon: style['icon'] ?? '',
+                        isSelected: style['title'] == selectedStyle,
+                        onTap: () => ref.read(generateImageProvider.notifier).selectedStyle = style['title'],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
           ),
         ),
       ],

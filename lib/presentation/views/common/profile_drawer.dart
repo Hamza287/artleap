@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
+import '../../../providers/theme_provider.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
@@ -31,7 +32,10 @@ class ProfileDrawer extends ConsumerWidget {
     );
 
     return Drawer(
-      width: screenWidth * 0.85,
+      width: screenWidth * 0.9,
+      backgroundColor: Colors.transparent,
+      shadowColor: Colors.white,
+      surfaceTintColor: Colors.white,
       child: Stack(
         children: [
           // Background with blur effect
@@ -41,8 +45,8 @@ class ProfileDrawer extends ConsumerWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.darkIndigo.withOpacity(0.8),
-                  AppColors.darkIndigo.withOpacity(0.6),
+                  Color(0x5F0A0025),
+                  Color(0x5E0A0025),
                 ],
               ),
             ),
@@ -50,10 +54,10 @@ class ProfileDrawer extends ConsumerWidget {
 
           // Frosted glass effect
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            filter: ImageFilter.blur(sigmaX: 7.0, sigmaY: 7.0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.transparent,
               ),
             ),
           ),
@@ -141,12 +145,13 @@ class ProfileDrawer extends ConsumerWidget {
                       _ProfileMenuItem(
                         icon: AppAssets.payment,
                         title: "Payment Method",
-                        onTap: () => _navigateTo(context, 'choose-plan-screen'),
+                        onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.darkMode,
                         title: "Dark Mode",
-                        onTap: () {},
+                        isToggle: true,
+                        onTap: () {}, // Keep this empty or remove it
                       ),
                     ],
                   ),
@@ -265,21 +270,25 @@ class _GlassCircleButton extends StatelessWidget {
 }
 
 // Reusable menu item widget
-class _ProfileMenuItem extends StatelessWidget {
+class _ProfileMenuItem extends ConsumerWidget {
   final String icon;
   final String title;
   final Color? color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isToggle;
 
   const _ProfileMenuItem({
     required this.icon,
     required this.title,
     this.color,
-    required this.onTap,
+    this.onTap,
+    this.isToggle = false,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(themeProvider);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -292,10 +301,24 @@ class _ProfileMenuItem extends StatelessWidget {
         ),
         child: Column(
           children: [
-            IconWithTextTile(
-              imageIcon: icon,
-              title: title,
-              titleColor: color ?? Colors.white.withOpacity(0.9),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconWithTextTile(
+                  imageIcon: icon,
+                  title: title,
+                  titleColor: color ?? Colors.white.withOpacity(0.9),
+                ),
+                if (isToggle)
+                  Switch(
+                    value: theme == AppTheme.dark,
+                    onChanged: (value) {
+                      ref.read(themeProvider.notifier).toggle();
+                    },
+                    activeColor: AppColors.purple,
+                    inactiveThumbColor: Colors.grey,
+                  ),
+              ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           ],

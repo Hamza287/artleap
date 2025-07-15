@@ -18,28 +18,30 @@ class AboutArtleapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Hero Section
-            const AboutArtleapHeroSection(),
-
-            // Mission Section
-            const AboutArtleapMissionSection(),
-
-            // Team Section
-            const AboutArtleapTeamSection(),
-
-            // Technology Section
-            const AboutArtleapTechnologySection(),
-
-            // Contact Section
-            const AboutArtleapContactSection(),
-
-            // Footer
-            const AboutArtleapFooter(),
-            const SizedBox(height: 40),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Hero Section
+              const AboutArtleapHeroSection(),
+        
+              // Mission Section
+              const AboutArtleapMissionSection(),
+        
+              // Team Section
+              const AboutArtleapTeamSection(),
+        
+              // Technology Section
+              const AboutArtleapTechnologySection(),
+        
+              // Contact Section
+              const AboutArtleapContactSection(),
+        
+              // Footer
+              const AboutArtleapFooter(),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

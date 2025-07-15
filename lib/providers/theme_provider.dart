@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../shared/constants/theme_constants.dart';
 
-final themeProvider =
-    NotifierProvider<ThemeProvider, ThemeMode>(ThemeProvider.new);
+final themeProvider = NotifierProvider<ThemeProvider, ThemeMode>(ThemeProvider.new);
 
 class ThemeProvider extends Notifier<ThemeMode> {
   int _themeId = 0;

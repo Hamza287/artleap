@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:flutter/material.dart';
 
 class UpgradeToProBanner extends StatelessWidget {
@@ -19,9 +20,15 @@ class UpgradeToProBanner extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFF6A4BEB),
-                Color(0xFF9A57FF),
+                Color(0xFFCB87FF),
+                Color(0xFF9814FF),
+                Color(0xFF4822A7),
               ],
+              stops: [
+                0,
+                0.4,
+                1,
+              ]
             ),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
@@ -38,21 +45,19 @@ class UpgradeToProBanner extends StatelessWidget {
             child: Row(
               children: [
                 // Crown icon
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.amber.shade300,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 3,
+                SizedBox(
+                  height: 38,
+                  width: 38,
+                  child: Center(
+                    child: Transform.scale(
+                      scale: 1.3,
+                      child: Image.asset(
+                        AppAssets.upgrade,
+                        height: 40, // actual image size
+                        width: 40,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  child: const Icon(
-                    Icons.workspace_premium,
-                    color: Colors.white,
-                    size: 24,
                   ),
                 ),
                 const SizedBox(width: 16),

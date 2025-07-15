@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
+import 'package:Artleap.ai/providers/theme_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/shared.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,6 @@ import 'domain/notification_services/notification_service.dart'
 import 'shared/navigation/navigator_key.dart';
 import 'shared/navigation/route_generator.dart';
 import 'providers/localization_provider.dart';
-import 'providers/theme_provider.dart';
 import 'shared/app_persistance/app_local.dart';
 import 'shared/localization/app_localization.dart';
 
@@ -107,7 +108,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       themeMode: ref.watch(themeProvider),
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      darkTheme: lightTheme,
+      darkTheme: darkTheme,
       supportedLocales: AppLocalization.supportedLocales,
       locale: ref.watch(localizationProvider),
       localizationsDelegates: const [

@@ -50,8 +50,8 @@ class SearchTextfield extends ConsumerWidget {
             padding: const EdgeInsets.only(left: 12, right: 8),
             child: Image.asset(
               AppAssets.searchicon,
-              width: 20,
-              height: 20,
+              width: 10,
+              height: 10,
               color: Colors.grey.shade700,
             ),
           ),

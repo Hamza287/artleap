@@ -58,9 +58,6 @@ class ChoosePlanScreen extends ConsumerWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar:   AppBar(
-      ),// Changed from pure white for better contrast
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

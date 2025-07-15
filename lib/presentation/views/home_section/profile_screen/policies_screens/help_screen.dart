@@ -39,7 +39,6 @@ class HelpScreen extends ConsumerWidget {
     final notifier = ref.read(helpScreenProvider.notifier);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
       appBar: AppBar(
         title: Text(
           'Help Center',
@@ -53,54 +52,56 @@ class HelpScreen extends ConsumerWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.darkBlue),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header section
-            _buildSectionHeader('Need Help?'),
-            const SizedBox(height: 10),
-            Text(
-              'We\'re here to assist you with any questions or issues you might have.',
-              style: AppTextstyle.interRegular(
-                color: AppColors.darkBlue.withOpacity(0.7),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header section
+              _buildSectionHeader('Need Help?'),
+              const SizedBox(height: 10),
+              Text(
+                'We\'re here to assist you with any questions or issues you might have.',
+                style: AppTextstyle.interRegular(
+                  color: AppColors.darkBlue.withOpacity(0.7),
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
+              const SizedBox(height: 30),
 
-            // FAQ Section
-            _buildSectionHeader('Frequently Asked Questions'),
-            const SizedBox(height: 20),
-            ...faqItems.map((item) => _buildFAQItem(
-              question: item['question']!,
-              answer: item['answer']!,
-            )),
+              // FAQ Section
+              _buildSectionHeader('Frequently Asked Questions'),
+              const SizedBox(height: 20),
+              ...faqItems.map((item) => _buildFAQItem(
+                question: item['question']!,
+                answer: item['answer']!,
+              )),
 
-            // Contact Section
-            const SizedBox(height: 40),
-            _buildSectionHeader('Still Need Help?'),
-            const SizedBox(height: 15),
-            Text(
-              'Our support team is ready to help you with any questions or issues.',
-              style: AppTextstyle.interRegular(
-                color: AppColors.darkBlue.withOpacity(0.7),
+              // Contact Section
+              const SizedBox(height: 40),
+              _buildSectionHeader('Still Need Help?'),
+              const SizedBox(height: 15),
+              Text(
+                'Our support team is ready to help you with any questions or issues.',
+                style: AppTextstyle.interRegular(
+                  color: AppColors.darkBlue.withOpacity(0.7),
+                ),
               ),
-            ),
-            const SizedBox(height: 25),
+              const SizedBox(height: 25),
 
-            // Contact button
-            Center(
-              child: _buildContactButton(
-                isLoading: isLoading,
-                onPressed: () => _launchEmail(notifier, context),
+              // Contact button
+              Center(
+                child: _buildContactButton(
+                  isLoading: isLoading,
+                  onPressed: () => _launchEmail(notifier, context),
+                ),
               ),
-            ),
 
-            // Footer
-            const SizedBox(height: 40),
-            _buildFooter(),
-          ],
+              // Footer
+              const SizedBox(height: 40),
+              _buildFooter(),
+            ],
+          ),
         ),
       ),
     );

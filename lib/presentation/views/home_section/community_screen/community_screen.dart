@@ -100,33 +100,33 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
         appBar: CommonAppBar(
           title: _getAppBarTitle(0), // Using 0 for home page
           listOfColors: _getAppBarColors(0),
-          actions: [
-            Consumer(
-              builder: (context, ref, _) {
-                final userId = UserData.ins.userId;
-                if (userId == null) return const SizedBox();
-
-                final notifications = ref.watch(notificationProvider(userId));
-                final unreadCount = notifications.maybeWhen(
-                  data: (notifs) => notifs.where((n) => !n.isRead).length,
-                  orElse: () => 0,
-                );
-
-                return IconButton(
-                  icon: Badge(
-                    label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                    child: const Icon(Icons.notifications, color: AppColors.black),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, NotificationScreen.routeName);
-                  },
-                );
-              },
-            ),
-          ],
+          // actions: [
+          //   Consumer(
+          //     builder: (context, ref, _) {
+          //       final userId = UserData.ins.userId;
+          //       if (userId == null) return const SizedBox();
+          //
+          //       final notifications = ref.watch(notificationProvider(userId));
+          //       final unreadCount = notifications.maybeWhen(
+          //         data: (notifs) => notifs.where((n) => !n.isRead).length,
+          //         orElse: () => 0,
+          //       );
+          //
+          //       return IconButton(
+          //         icon: Badge(
+          //           label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
+          //           child: const Icon(Icons.notifications, color: AppColors.black),
+          //         ),
+          //         onPressed: () {
+          //           Navigator.pushNamed(context, NotificationScreen.routeName);
+          //         },
+          //       );
+          //     },
+          //   ),
+          // ],
           bottomWidget: Column(
             children: [
-              5.spaceY,
+              10.spaceY,
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 child: SearchTextfield(),
@@ -136,7 +136,7 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
         ),
         body: AppBackgroundWidget(
           widget: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 10),
             child: RefreshIndicator(
               backgroundColor: AppColors.darkBlue,
               onRefresh: () => ref.read(homeScreenProvider).getUserCreations(),

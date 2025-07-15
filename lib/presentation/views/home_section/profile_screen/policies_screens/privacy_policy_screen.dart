@@ -13,7 +13,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(),
       body: Container(
-        color: AppColors.white, // Changed to white background
         child: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),

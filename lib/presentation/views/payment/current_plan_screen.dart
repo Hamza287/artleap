@@ -27,36 +27,37 @@ class SubscriptionStatusScreen extends ConsumerWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.darkBlue),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth > 600 ? 40 : 20,
-          vertical: 20,
-        ),
-        child: Column(
-          children: [
-            // Current Plan Card
-            _buildCurrentPlanCard(subscription, context),
-            const SizedBox(height: 30),
-
-            // Usage Statistics
-            _buildUsageSection(subscription, context),
-            const SizedBox(height: 30),
-
-            // Plan Features
-            _buildFeaturesSection(subscription),
-            const SizedBox(height: 30),
-
-            // Billing Information
-            _buildBillingSection(subscription, context),
-            const SizedBox(height: 30),
-
-            // Action Buttons
-            _buildActionButtons(context, isActive),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth > 600 ? 40 : 20,
+            vertical: 20,
+          ),
+          child: Column(
+            children: [
+              // Current Plan Card
+              _buildCurrentPlanCard(subscription, context),
+              const SizedBox(height: 30),
+        
+              // Usage Statistics
+              _buildUsageSection(subscription, context),
+              const SizedBox(height: 30),
+        
+              // Plan Features
+              _buildFeaturesSection(subscription),
+              const SizedBox(height: 30),
+        
+              // Billing Information
+              _buildBillingSection(subscription, context),
+              const SizedBox(height: 30),
+        
+              // Action Buttons
+              _buildActionButtons(context, isActive),
+            ],
+          ),
         ),
       ),
     );
