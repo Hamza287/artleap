@@ -10,10 +10,10 @@ class PromoBanner extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
-        height: 280,
+        height: 530,
         decoration: BoxDecoration(
           image: const DecorationImage(
-            image: AssetImage("assets/images/vector.jpg"),
+            image: AssetImage("assets/images/filter_image.png"),
             fit: BoxFit.cover,
           ),
           borderRadius: BorderRadius.circular(20),
@@ -22,7 +22,7 @@ class PromoBanner extends StatelessWidget {
           children: [
             // Title and Subtitle
              Positioned(
-              bottom: 70,
+              bottom: 130,
               left: 30,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +30,7 @@ class PromoBanner extends StatelessWidget {
                   Text(
                     "Special Filter",
                     style: TextStyle(
-                      color: AppColors.darkBlue,
+                      color: AppColors.white,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
@@ -39,7 +39,7 @@ class PromoBanner extends StatelessWidget {
                   Text(
                     "Limited time offer",
                     style: TextStyle(
-                      color: AppColors.darkBlue,
+                      color: AppColors.white,
                       fontSize: 14,
                     ),
                   ),
@@ -51,7 +51,7 @@ class PromoBanner extends StatelessWidget {
             Positioned(
               left: 12,
               right: 12,
-              bottom: 12,
+              bottom: 50,
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
@@ -61,13 +61,19 @@ class PromoBanner extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text(
-                  "Use Filter ✨",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Use Filter ",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                  ],
                 ),
               ),
             ),

@@ -36,7 +36,7 @@ class PortraitOptions extends StatelessWidget {
                       height: 120,
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECE9FF),
+                        color: const Color(0xFFE9EBF5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Center(

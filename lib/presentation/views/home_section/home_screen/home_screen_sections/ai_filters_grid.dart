@@ -57,7 +57,7 @@ class AiFiltersGrid extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECE9FF),
+                  color: const Color(0xFFE9EBF5),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Stack(
