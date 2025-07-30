@@ -78,7 +78,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                   border: Border.all(color: AppColors.seaBlue),
                 ),
                 child: Center(
-                  child: userProfile.isloading
+                  child: userProfile.isLoading
                       ? LoadingAnimationWidget.threeArchedCircle(
                     color: AppColors.darkBlue,
                     size: 20,
@@ -107,7 +107,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                   color: Color(0xff3586f1),
                 ),
                 child: Center(
-                  child: userProfile.isloading
+                  child: userProfile.isLoading
                       ? LoadingAnimationWidget.threeArchedCircle(
                     color: AppColors.white,
                     size: 20,

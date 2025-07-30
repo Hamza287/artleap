@@ -9,6 +9,7 @@ import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/f
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_screen.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
+import '../../domain/subscriptions/subscription_model.dart';
 import '../../presentation/views/Notifications/notification_details_screen.dart';
 import '../../presentation/views/Notifications/notification_screen.dart';
 import '../../presentation/views/about/about_artleap_screen.dart';
@@ -20,8 +21,10 @@ import '../../presentation/views/interest_onboarding_screens/interest_onboarding
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
-import '../../presentation/views/payment/choose_plan_screen.dart';
-import '../../presentation/views/payment/current_plan_screen.dart';
+import '../../presentation/views/subscriptions/choose_plan_screen.dart';
+import '../../presentation/views/subscriptions/current_plan_screen.dart';
+import '../../presentation/views/subscriptions/payment_screen.dart';
+
 
 class RouteGenerator {
   static Route generateRoute(RouteSettings settings) {
@@ -42,8 +45,15 @@ class RouteGenerator {
         return route(const LoginORsignUpScreen());
       case SignUpScreen.routeName:
         return route(const SignUpScreen());
-      case SubscriptionStatusScreen.routeName:
-        return route(const SubscriptionStatusScreen());
+      case CurrentPlanScreen.routeName:
+        return route(const CurrentPlanScreen());
+    // In your route_generator.dart
+      case PaymentScreen.routeName:
+        final args = settings.arguments as SubscriptionPlanModel;
+        return MaterialPageRoute(
+          builder: (_) => PaymentScreen(plan: args),
+          settings: settings,
+        );
       case OnboardingScreen.routeName:
         return route(const OnboardingScreen());
       case BottomNavBar.routeName:

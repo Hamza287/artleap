@@ -114,6 +114,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
         appSnackBar("Success", "Sign up successful", AppColors.green);
+
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
         stopLoading(LoginMethod.signup);
       }
@@ -125,13 +126,10 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     startLoading(LoginMethod.email);
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       stopLoading(LoginMethod.email);
-      authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: "Please fill all the fields");
+      authError = UserAuthResult(authResultState: AuthResultStatus.error, message: "Please fill all the fields");
       return;
     }
-    UserAuthResult user = await _authServices.signInWithEmail(
-        _emailController.text, _passwordController.text);
+    UserAuthResult user = await _authServices.signInWithEmail(_emailController.text, _passwordController.text);
     stopLoading(LoginMethod.email);
     if (user.authResultState == AuthResultStatus.error) {
       authError = user;
@@ -216,12 +214,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     };
     ApiResponse userRes = await authRepo.login(body: body);
     if (userRes.status == Status.completed) {
-      reference
-          .read(userProfileProvider)
-          .getUserProfileData(userRes.data["user"]['userId']);
+      reference.read(userProfileProvider).getUserProfileData(userRes.data["user"]['userId']);
       AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-      AppLocal.ins
-          .setUserData(Hivekey.userName, userRes.data["user"]['username']);
+      AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
       Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
     }
   }

@@ -6,6 +6,7 @@ import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../prompt_screen_widgets/styles_bottom_sheet.dart';
 import '../image_control_widgets/image_preview_widget.dart';
 import '../image_control_widgets/image_selection_button.dart';
 import '../image_control_widgets/inspiration_button.dart';
@@ -24,6 +25,14 @@ class ImageControlsWidget extends ConsumerWidget {
     final selectedRatio = provider.aspectRatio;
     final selectedImageNumber = provider.selectedImageNumber;
     final selectedStyle = provider.selectedStyle;
+
+    // Get styles list based on image presence
+    final styles = images.isEmpty ? freePikStyles : textToImageStyles;
+
+    // Sort to show selected style first and take first 4
+    final displayedStyles = List.from(styles)
+      ..sort((a, b) => a['title'] == selectedStyle ? -1 : 1)
+      ..take(4);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -85,49 +94,97 @@ class ImageControlsWidget extends ConsumerWidget {
         ),
         24.spaceY,
         SizedBox(
-          height: 90, // increase height to fit both text & ListView
+          height: 90,
           width: double.infinity,
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(7),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Aspect Ratio",
-                    style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+          child: Stack(
+            children: [
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Aspect Ratio",
+                        style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            // This prevents the notification from bubbling up
+                            return true;
+                          },
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: freePikAspectRatio.length,
+                            controller: ScrollController(), // Add controller if needed
+                            physics: const BouncingScrollPhysics(),
+                            separatorBuilder: (context, index) => const SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              final ratio = freePikAspectRatio[index];
+                              return RatioSelectionCard(
+                                text: ratio['title'] ?? '',
+                                isSelected: ratio['value'] == selectedRatio,
+                                onTap: () => ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'],
+                                isSmall: true,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: freePikAspectRatio.length,
-                      separatorBuilder: (context, index) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final ratio = freePikAspectRatio[index];
-                        return RatioSelectionCard(
-                          text: ratio['title'] ?? '',
-                          isSelected: ratio['value'] == selectedRatio,
-                          onTap: () => ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'],
-                          isSmall: true,
-                        );
-                      },
+                ),
+              ),
+              // Right edge fade effect
+              Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 20,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        Colors.white.withOpacity(0.1),
+                        Colors.white.withOpacity(0.9),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+              // Scroll indicator
+              Positioned(
+                right: 8,
+                bottom: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Icon(
+                    Icons.chevron_right,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         24.spaceY,
         Container(
-          height: 200,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          height: 180,
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -136,33 +193,72 @@ class ImageControlsWidget extends ConsumerWidget {
                 color: Colors.grey.withOpacity(0.3),
                 offset: const Offset(0, 3),
                 blurRadius: 6,
-                spreadRadius: 0,
-                blurStyle: BlurStyle.normal,
-              )
+              ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Style",
-                style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Style",
+                    style: AppTextstyle.interMedium(fontSize: 14, color: Colors.black),
+                  ),
+                  TextButton(
+                    onPressed: () => showStylesBottomSheet(context, ref),
+                    child: Text(
+                      "View All",
+                      style: AppTextstyle.interMedium(
+                        fontSize: 14,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 2),
               Expanded(
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  children: (images.isEmpty ? freePikStyles : textToImageStyles).map((style) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: StyleSelectionCard(
-                        title: style['title'] ?? '',
-                        icon: style['icon'] ?? '',
-                        isSelected: style['title'] == selectedStyle,
-                        onTap: () => ref.read(generateImageProvider.notifier).selectedStyle = style['title'],
+                  children: [
+                    ...displayedStyles.take(3).map((style) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: StyleSelectionCard(
+                          title: style['title'] ?? '',
+                          icon: style['icon'] ?? '',
+                          isSelected: style['title'] == selectedStyle,
+                          onTap: () => ref.read(generateImageProvider.notifier).selectedStyle = style['title'],
+                        ),
+                      );
+                    }),
+                    // Add "View All" card
+                    if (styles.length > 3)
+                      GestureDetector(
+                        onTap: () => showStylesBottomSheet(context, ref),
+                        child: Container(
+                          width: 120,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.more_horiz, size: 24),
+                              const SizedBox(height: 8),
+                              Text(
+                                "View All",
+                                style: AppTextstyle.interMedium(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    );
-                  }).toList(),
+                  ],
                 ),
               ),
             ],

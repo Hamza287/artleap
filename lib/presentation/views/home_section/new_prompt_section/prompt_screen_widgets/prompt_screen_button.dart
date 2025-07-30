@@ -15,6 +15,7 @@ class PromptScreenButton extends ConsumerWidget {
   final double? width;
   final double? imageIconSize;
   final bool? suffixRow;
+  final String credits;
   const PromptScreenButton(
       {super.key,
       this.title,
@@ -24,7 +25,9 @@ class PromptScreenButton extends ConsumerWidget {
       this.height,
       this.width,
       this.imageIconSize,
-      this.suffixRow});
+      this.suffixRow,
+      this.credits = '2'
+      });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,7 +101,7 @@ class PromptScreenButton extends ConsumerWidget {
                             scale: 1.70,
                           ),
                           Text(
-                            "25",
+                            credits,
                             style: AppTextstyle.interMedium(
                                 color: AppColors.white, fontSize: 12),
                           )

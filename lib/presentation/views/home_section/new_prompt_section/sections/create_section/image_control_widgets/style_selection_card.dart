@@ -26,8 +26,8 @@ class StyleSelectionCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 100,
-            height: 100,
+            width: 70,
+            height: 70,
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
               color: isSelected ? AppColors.white : Colors.white,
@@ -38,14 +38,17 @@ class StyleSelectionCard extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: Image.asset(
-                icon,
-                width: 60,
-                height: 60,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.image,
-                  size: 60,
-                  color: Colors.grey.shade400,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  icon,
+                  width: 60,
+                  height: 60,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.image,
+                    size: 60,
+                    color: Colors.grey.shade400,
+                  ),
                 ),
               ),
             ),

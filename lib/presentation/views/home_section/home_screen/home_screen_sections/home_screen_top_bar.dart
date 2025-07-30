@@ -15,69 +15,65 @@ class HomeScreenTopBar extends ConsumerWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+          padding: const EdgeInsets.only(top: 20, left: 20, right: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: onMenuTap,
-                child: SizedBox(
-                  height: 28,
-                  width: 28,
-                  child: Center(
-                    child: Transform.scale(
-                      scale: 1.3,
-                      child: Image.asset(
-                        AppAssets.sidebar,
-                        color: Colors.black54,
-                        height: 40, // actual image size
-                        width: 40,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              Container(
-                height: 36,
-                width: 70,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 1.2,
-                  ),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppAssets.stackofcoins,
-                      height: 18,
-                      color: Colors.amber[700],
-                    ),
-                    3.spaceX,
-                    Text(
-                      "${ref.watch(userProfileProvider).userProfileData?.user.dailyCredits ?? 0}",
-                      style: AppTextstyle.interMedium(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const Text(
-                "Art leap",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
+             Row(
+               children: [
+                 GestureDetector(
+                   onTap: onMenuTap,
+                   child: SizedBox(
+                     height: 28,
+                     width: 28,
+                     child: Center(
+                       child: Transform.scale(
+                         scale: 1.3,
+                         child: Image.asset(
+                           AppAssets.sidebar,
+                           color: Colors.black,
+                           height: 40, // actual image size
+                           width: 40,
+                           fit: BoxFit.contain,
+                         ),
+                       ),
+                     ),
+                   ),
+                 ),
+                 10.spaceX,
+                 Container(
+                   height: 36,
+                   width: 70,
+                   decoration: BoxDecoration(
+                     borderRadius: BorderRadius.circular(20),
+                     border: Border.all(
+                       color: Colors.black,
+                       width: 1.2,
+                     ),
+                     color: Colors.white,
+                   ),
+                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       Image.asset(
+                         AppAssets.stackofcoins,
+                         height: 18,
+                         color: Colors.amber[700],
+                       ),
+                       3.spaceX,
+                       Text(
+                         "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
+                         style: AppTextstyle.interMedium(
+                           color: Colors.black,
+                           fontSize: 12,
+                           fontWeight: FontWeight.bold,
+                         ),
+                       )
+                     ],
+                   ),
+                 ),
+               ],
+             ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed("choose_plan_screen");

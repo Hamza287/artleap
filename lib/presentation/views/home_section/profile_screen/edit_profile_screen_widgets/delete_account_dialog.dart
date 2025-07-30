@@ -115,7 +115,7 @@ class DeleteAccountDialog extends ConsumerWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: ref.watch(userProfileProvider).isloading
+                    child: ref.watch(userProfileProvider).isLoading
                         ? LoadingAnimationWidget.threeArchedCircle(
                       color: Colors.white,
                       size: 24,

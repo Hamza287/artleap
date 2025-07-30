@@ -1,33 +1,34 @@
 import 'package:dio/dio.dart';
+
 import 'api_response.dart';
 
 class HandlingResponse {
-  static ApiResponse returnResponse(Response response) {
+  static ApiResponse<T> returnResponse<T>(Response response, {T Function(dynamic)? fromJson}) {
     var data = response.data;
 
     // Fallback to handling based on HTTP status codes
     return switch (response.statusCode) {
-      200 => ApiResponse.completed(data),
-      400 => ApiResponse.error('Some Error Occurred'),
-      401 => ApiResponse.unAuthorised('Unauthorized'),
-      403 => ApiResponse.error('Forbidden'),
-      404 => ApiResponse.error('Not Found'),
-      500 => ApiResponse.error('Internal Server Error'),
-      -6 => ApiResponse.error('No Internet Connection'),
-      _ => ApiResponse.error('Unknown Error')
+      200 => ApiResponse<T>.completed(fromJson != null ? fromJson(data) : data),
+      400 => ApiResponse<T>.error('Some Error Occurred'),
+      401 => ApiResponse<T>.unAuthorised('Unauthorized'),
+      403 => ApiResponse<T>.error('Forbidden'),
+      404 => ApiResponse<T>.error('Not Found'),
+      500 => ApiResponse<T>.error('Internal Server Error'),
+      -6 => ApiResponse<T>.error('No Internet Connection'),
+      _ => ApiResponse<T>.error('Unknown Error')
     };
   }
 
-  static ApiResponse returnException(DioException exception) {
+  static ApiResponse<T> returnException<T>(DioException exception) {
     return switch (exception.type) {
       DioExceptionType.connectionTimeout =>
-        ApiResponse.error('Connection Timeout'),
+      ApiResponse<T>.error('Connection Timeout'),
       DioExceptionType.connectionError =>
-        ApiResponse.noInternet('No Internet Connection'),
-      DioExceptionType.badResponse => ApiResponse.error('Some Error Occured'),
-      DioExceptionType.unknown => ApiResponse.error('Some Error Occured'),
-      DioExceptionType.cancel => ApiResponse.error('Request cancelled'),
-      _ => ApiResponse.error('Request cancelled'),
+      ApiResponse<T>.noInternet('No Internet Connection'),
+      DioExceptionType.badResponse => ApiResponse<T>.error('Some Error Occured'),
+      DioExceptionType.unknown => ApiResponse<T>.error('Some Error Occured'),
+      DioExceptionType.cancel => ApiResponse<T>.error('Request cancelled'),
+      _ => ApiResponse<T>.error('Request cancelled'),
     };
   }
 }

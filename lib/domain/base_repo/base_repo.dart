@@ -21,6 +21,8 @@ import 'package:Artleap.ai/domain/api_repos_impl/reqres_repo_impl.dart';
 import 'package:Artleap.ai/domain/api_repos_impl/user_profile_repo_impl.dart';
 import '../api_repos_abstract/add_to_fav_repo.dart';
 import '../api_repos_impl/add_to_fav_impl.dart';
+import '../subscriptions/subscription_repo.dart';
+import '../subscriptions/subscription_repo_impl.dart';
 
 mixin BaseRepo {
   final ReqResRepo _reqresRepo = ReqResRepoImpl();
@@ -45,5 +47,6 @@ mixin BaseRepo {
   FreepikAiGenRepo get freePikRepo => _freePikRepo;
   final UserProfileRepo _userFollowingRepo = UserProfileRepoImpl();
   UserProfileRepo get userFollowingRepo => _userFollowingRepo;
-  
+  final SubscriptionRepo _subscriptionRepo = SubscriptionRepoImpl();
+  SubscriptionRepo get subscriptionRepo => _subscriptionRepo;
 }

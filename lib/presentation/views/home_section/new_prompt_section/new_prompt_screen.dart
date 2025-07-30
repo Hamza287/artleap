@@ -17,7 +17,30 @@ class PromptScreen extends ConsumerWidget {
         children: [
           const PromptTopBar(),
           Expanded(
-            child: _buildCurrentScreen(currentNav),
+            child: Stack(
+              children: [
+                _buildCurrentScreen(currentNav),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    height: 4, // Shadow height
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          offset: const Offset(0, 3),
+                          blurRadius: 6,
+                          spreadRadius: 0,
+                          blurStyle: BlurStyle.normal,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

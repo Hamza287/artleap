@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/providers/theme_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,16 +13,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/firebase_options.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
-import 'package:Artleap.ai/shared/theme/light_theme.dart';
 import 'di/di.dart';
 import 'providers/notification_provider.dart';
-import 'domain/notification_services/notification_service.dart'
-    hide notificationServiceProvider;
-import 'shared/navigation/navigator_key.dart';
-import 'shared/navigation/route_generator.dart';
+import 'domain/notification_services/notification_service.dart' hide notificationServiceProvider;
 import 'providers/localization_provider.dart';
-import 'shared/app_persistance/app_local.dart';
-import 'shared/localization/app_localization.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
@@ -77,7 +71,6 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     Future.microtask(() async {
       await ref.read(authprovider).ensureValidFirebaseToken();
-
       // Refresh token every hour
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
         await ref.read(authprovider).ensureValidFirebaseToken();

@@ -3,7 +3,9 @@ import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_scre
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../providers/refresh_provider.dart';
 import '../../../../providers/user_profile_provider.dart';
+import '../../../../shared/constants/user_data.dart';
 import '../../common/profile_drawer.dart';
 import 'home_screen_sections/ai_filters_grid.dart';
 import 'home_screen_sections/filter_of_day_widget.dart';
@@ -22,9 +24,23 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.refresh(userProfileProvider).updateUserCredits();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
+    final shouldRefresh = ref.watch(refreshProvider);
+
+    if (shouldRefresh && UserData.ins.userId != null) {
+      Future.microtask(() {
+        ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId!);
+      });
+    }
     return Scaffold(
       backgroundColor: AppColors.white,
       key: _scaffoldKey,

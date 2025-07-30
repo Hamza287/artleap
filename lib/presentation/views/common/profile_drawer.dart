@@ -67,6 +67,7 @@ class ProfileDrawer extends ConsumerWidget {
             child: Padding(
               padding: padding,
               child: Column(
+                spacing: 10,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
@@ -77,7 +78,6 @@ class ProfileDrawer extends ConsumerWidget {
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.02),
                   Row(
                     children: [
                       Container(
@@ -120,9 +120,7 @@ class ProfileDrawer extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.02),
                   UpgradeToProBanner(), // Uncomment if you have this widget
-                  SizedBox(height: screenHeight * 0.02),
                   _buildSection(
                     context,
                     title: "General",
@@ -155,9 +153,6 @@ class ProfileDrawer extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.04),
-
-                  // About Section
                   _buildSection(
                     context,
                     title: "About",
@@ -179,23 +174,23 @@ class ProfileDrawer extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.03),
                   Column(
+                    spacing: 2,
                     children: [
                       _ProfileMenuItem(
                         icon: AppAssets.logouticon,
                         title: "Logout",
-                        color: AppColors.redColor,
+                        color: Color(0xFFE53935),
                         onTap: (){
                           AppLocal.ins.clearUSerData(Hivekey.userId);
                           Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
                         },
                       ),
-                      SizedBox(height: screenHeight * 0.02),
+                      // SizedBox(height: screenHeight * 0.01),
                       _ProfileMenuItem(
                         icon: AppAssets.deleteicon,
                         title: "Delete Account",
-                        color: AppColors.redColor,
+                        color: Color(0xFFFF2A28),
                         onTap: () => showDialog(
                           context: context,
                           builder: (context) => const DeleteAccountDialog(),
@@ -216,9 +211,9 @@ class ProfileDrawer extends ConsumerWidget {
   Widget _buildSection(BuildContext context, {required String title, required List<_ProfileMenuItem> items}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 2,
       children: [
         SeparatorWidget(title: title),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         ...items,
       ],
     );

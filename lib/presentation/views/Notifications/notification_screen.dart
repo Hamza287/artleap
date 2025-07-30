@@ -83,50 +83,52 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           ),
         ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, AppColors.white],
+      body: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.white, AppColors.white],
+            ),
           ),
-        ),
-        child: notificationsAsync.when(
-          loading: () => const LoadingIndicator(),
-          error: (error, stack) => ErrorState(
-            message: 'Failed to load notifications',
-            onRetry: _loadNotifications,
-          ),
-          data: (notifications) {
-            if (notifications.isEmpty) {
-              return EmptyState(
-                icon: Icons.notifications_off,
-                title: 'No Notifications yet',
-                subtitle: 'When we have something to show, it will appear here',
-                iconColor: AppColors.lightPurple,
+          child: notificationsAsync.when(
+            loading: () => const LoadingIndicator(),
+            error: (error, stack) => ErrorState(
+              message: 'Failed to load notifications',
+              onRetry: _loadNotifications,
+            ),
+            data: (notifications) {
+              if (notifications.isEmpty) {
+                return EmptyState(
+                  icon: Icons.notifications_off,
+                  title: 'No Notifications yet',
+                  subtitle: 'When we have something to show, it will appear here',
+                  iconColor: AppColors.lightPurple,
+                );
+              }
+        
+              return RefreshIndicator(
+                backgroundColor: AppColors.lightPurple,
+                color: Colors.black,
+                onRefresh: _loadNotifications,
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: notifications.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final notification = notifications[index];
+                    return NotificationCard(
+                      notification: notification,
+                      onTap: () => _handleNotificationTap(notification, userId),
+                      onMarkAsRead: () => _markAsRead(notification.id, userId),
+                      onDelete: _handleDelete, // Pass the delete function
+                    );
+                  },
+                ),
               );
-            }
-
-            return RefreshIndicator(
-              backgroundColor: AppColors.lightPurple,
-              color: Colors.black,
-              onRefresh: _loadNotifications,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: notifications.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final notification = notifications[index];
-                  return NotificationCard(
-                    notification: notification,
-                    onTap: () => _handleNotificationTap(notification, userId),
-                    onMarkAsRead: () => _markAsRead(notification.id, userId),
-                    onDelete: _handleDelete, // Pass the delete function
-                  );
-                },
-              ),
-            );
-          },
+            },
+          ),
         ),
       ),
     );

@@ -102,29 +102,56 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+  // Add this to your GenerateImageProvider class
+  void clearGeneratedData() {
+    _generatedImage.clear();
+    _generatedTextToImageData.clear();
+    _generatedHighQualityImage = null;
+    _promptTextController.clear();
+    images.clear();
+    listOfImagesBytes.clear();
+    notifyListeners();
+  }
+
 
   String? dataUrl;
-  generateTextToImage() async {
-    setGenerateImageLoader(true);
-    Map<String, dynamic> mapdata = {
-      "prompt": _promptTextController.text,
-      "userId": UserData.ins.userId,
-      "username": UserData.ins.userName,
-      "creatorEmail": UserData.ins.userEmail,
-      "presetStyle": _selectedStyle,
-      "num_images": _selectedItem,
-      "aspectRatio": _aspectRatio,
-    };
-    ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
-    if (generateImageRes.status == Status.completed) {
-      var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
-      _generatedTextToImageData.addAll(generatedData.images);
-      reference.read(userProfileProvider).deductUserCredits();
+  Future<bool> generateTextToImage() async {
+    try {
+      setGenerateImageLoader(true);
+
+      Map<String, dynamic> mapdata = {
+        "prompt": _promptTextController.text,
+        "userId": UserData.ins.userId,
+        "username": UserData.ins.userName,
+        "creatorEmail": UserData.ins.userEmail,
+        "presetStyle": _selectedStyle,
+        "num_images": _selectedItem,
+        "aspectRatio": _aspectRatio,
+        "generationType": 'prompt'
+      };
+
+      ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
+      if (generateImageRes.status == Status.completed) {
+        var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
+        _generatedTextToImageData.addAll(generatedData.images);
+        reference.read(userProfileProvider).deductCredits(
+            creditsToDeduct: 2,
+            generationType: 'prompt'
+        );
+        setGenerateImageLoader(false);
+        notifyListeners();
+        return true; // Explicit return on success
+      } else {
+        setGenerateImageLoader(false);
+        notifyListeners();
+        return false; // Explicit return on API failure
+      }
+    } catch (e) {
+      debugPrint('Image generation error: $e');
       setGenerateImageLoader(false);
-    } else {
-      setGenerateImageLoader(false);
+      notifyListeners();
+      return false; // Explicit return on exception
     }
-    notifyListeners();
   }
 
   Future<void> pickImage() async {
@@ -147,32 +174,41 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<void> generateImgToImg() async {
-    setGenerateImageLoader(true);
-    Map<String, dynamic> data = {
-      "prompt": promptTextController.text,
-      "userId": UserData.ins.userId,
-      "username": UserData.ins.userName,
-      "creatorEmail": UserData.ins.userEmail,
-      "presetStyle": selectedStyle,
-      "num_images": selectedImageNumber,
-    };
-    ApiResponse generateImageRes =
-        await generateImgToImgRepo.generateImgToImg(data, images);
-    var generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
-    if (generateImageRes.status == Status.completed) {
-      // clearVarData();
-      _generatedImage.addAll(generatedData.images);
+  Future<bool> generateImgToImg() async {
+    try {
+      setGenerateImageLoader(true);
+      notifyListeners();
+      final Map<String, dynamic> data = {
+        "prompt": promptTextController.text,
+        "userId": UserData.ins.userId,
+        "username": UserData.ins.userName,
+        "creatorEmail": UserData.ins.userEmail,
+        "presetStyle": selectedStyle,
+        "num_images": selectedImageNumber,
+        "generationType": 'image'
+      };
 
-      setGenerateImageLoader(false);
-      selectedStyle = null;
+      final ApiResponse generateImageRes = await generateImgToImgRepo.generateImgToImg(data, images);
+      if (generateImageRes.status == Status.completed) {
+        final generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
+        _generatedImage.addAll(generatedData.images);
 
-      images = [];
-    } else {
-      images = [];
+        selectedStyle = null;
+        images = [];
+        return true;
+      } else {
+        images = [];
+        return false;
+      }
+    } catch (e) {
+      // Handle unexpected errors
+      debugPrint('Image generation error: $e');
+      return false; // Failure
+    } finally {
+      // Always ensure loader is stopped
       setGenerateImageLoader(false);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   bool isValidUrl(String url) {

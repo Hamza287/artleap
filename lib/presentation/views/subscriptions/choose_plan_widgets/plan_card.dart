@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../providers/plan_cards_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import '../../../../domain/subscriptions/subscription_model.dart';
 
-class PlanCard extends ConsumerWidget {
-  final String title;
-  final String description;
-  final String generations;
-  final List<String> features;
+class PlanCard extends StatelessWidget {
+  final SubscriptionPlanModel plan;
   final bool isSelected;
-  final int index;
+  final VoidCallback onSelect;
 
   const PlanCard({
     super.key,
-    required this.title,
-    required this.description,
-    required this.generations,
-    required this.features,
+    required this.plan,
     required this.isSelected,
-    required this.index,
+    required this.onSelect,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => ref.read(planProvider.notifier).selectPlan(index),
+      onTap: onSelect,
       child: Container(
         width: 280,
         height: 480,
@@ -31,60 +26,49 @@ class PlanCard extends ConsumerWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected
-                ? const Color(0xFF9B6EFF)
-                : Colors.black.withOpacity(0.1),
+            color: isSelected ? AppColors.purple : Colors.black.withOpacity(0.1),
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? const Color(0xFF9B6EFF)
-                    : Colors.grey.withOpacity(0.2),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
+                color: isSelected ? AppColors.purple : Colors.grey.withOpacity(0.2),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
-                    style: TextStyle(
+                    plan.name,
+                    style: AppTextstyle.interBold(
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
                       color: isSelected ? Colors.white : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    description,
-                    style: TextStyle(
+                    plan.description,
+                    style: AppTextstyle.interRegular(
                       fontSize: 14,
                       color: isSelected ? Colors.white : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    generations,
-                    style: TextStyle(
+                    '\$${plan.price.toStringAsFixed(2)}/${_getPlanPeriod(plan.type)}',
+                    style: AppTextstyle.interMedium(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
                       color: isSelected ? Colors.white : Colors.black,
                     ),
                   ),
                 ],
               ),
             ),
-
-            // Features Section
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -92,16 +76,19 @@ class PlanCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'What the plan contains',
-                        style: TextStyle(
+                      Text(
+                        'Plan Features',
+                        style: AppTextstyle.interBold(
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
                           color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 16),
-                      ...features.map((feature) => _featureRow(feature)).toList(),
+                      ...plan.features.map((feature) => _featureRow(feature)).toList(),
+                      const SizedBox(height: 16),
+                      _featureRow('Image Generations: ${plan.imageGenerationCredits}'),
+                      _featureRow('Prompt Generations: ${plan.promptGenerationCredits}'),
+                      _featureRow('Total Credits: ${plan.totalCredits}'),
                     ],
                   ),
                 ),
@@ -122,7 +109,7 @@ class PlanCard extends ConsumerWidget {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: AppTextstyle.interRegular(
                 fontSize: 14,
                 color: Colors.black,
               ),
@@ -136,5 +123,20 @@ class PlanCard extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _getPlanPeriod(String type) {
+    switch (type.toLowerCase()) {
+      case 'weekly':
+        return 'week';
+      case 'monthly':
+        return 'month';
+      case 'yearly':
+        return 'year';
+      case 'trial':
+        return 'trial';
+      default:
+        return '';
+    }
   }
 }

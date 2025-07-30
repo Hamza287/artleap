@@ -1,5 +1,4 @@
 import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
-import 'package:Artleap.ai/presentation/views/Notifications/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +6,6 @@ import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widg
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/providers/notification_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';

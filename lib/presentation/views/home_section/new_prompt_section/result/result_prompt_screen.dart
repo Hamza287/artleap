@@ -15,8 +15,7 @@ class ResultScreenRedesign extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
-    final generatedTextToImageData =
-        ref.watch(generateImageProvider).generatedTextToImageData;
+    final generatedTextToImageData = ref.watch(generateImageProvider).generatedTextToImageData;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
     return Scaffold(
@@ -44,9 +43,10 @@ class ResultScreenRedesign extends ConsumerWidget {
               child: Row(
                 children: [
                   IconButton(
-                      onPressed: (){
-                        Navigator.pop(context);
-                      },
+                    onPressed: () {
+                      ref.read(generateImageProvider).clearGeneratedData();
+                      Navigator.pop(context);
+                    },
                       icon: Icon(Icons.arrow_back),
                   ),
                   Text('Back',style: AppTextstyle.interMedium(fontSize: 20),)
@@ -427,44 +427,44 @@ class ResultScreenRedesign extends ConsumerWidget {
     );
   }
 
-  Widget _buildShimmerActionButtons() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(
-            3,
-            (index) => Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                )),
-      ),
-    );
-  }
-
-  Widget _iconButton(IconData icon,
-      {required VoidCallback onPressed, bool isDelete = false}) {
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        color: isDelete ? Colors.transparent : Colors.white,
-        border: Border.all(
-          color: isDelete ? Colors.red : Colors.grey.shade300,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: isDelete ? Colors.red : Colors.black),
-        onPressed: onPressed,
-      ),
-    );
-  }
+  // Widget _buildShimmerActionButtons() {
+  //   return Shimmer.fromColors(
+  //     baseColor: Colors.grey[300]!,
+  //     highlightColor: Colors.grey[100]!,
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       children: List.generate(
+  //           3,
+  //           (index) => Container(
+  //                 height: 50,
+  //                 width: 50,
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.white,
+  //                   borderRadius: BorderRadius.circular(12),
+  //                 ),
+  //               )),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _iconButton(IconData icon,
+  //     {required VoidCallback onPressed, bool isDelete = false}) {
+  //   return Container(
+  //     height: 50,
+  //     width: 50,
+  //     decoration: BoxDecoration(
+  //       color: isDelete ? Colors.transparent : Colors.white,
+  //       border: Border.all(
+  //         color: isDelete ? Colors.red : Colors.grey.shade300,
+  //       ),
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     child: IconButton(
+  //       icon: Icon(icon, color: isDelete ? Colors.red : Colors.black),
+  //       onPressed: onPressed,
+  //     ),
+  //   );
+  // }
 
   Widget _primaryActionButton(
       {required IconData icon,

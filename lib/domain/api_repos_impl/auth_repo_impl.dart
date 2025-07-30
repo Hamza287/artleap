@@ -2,16 +2,27 @@ import 'package:dio/dio.dart';
 import 'package:Artleap.ai/domain/api_repos_abstract/auth_repo.dart';
 import 'package:Artleap.ai/shared/constants/app_constants.dart';
 import '../../shared/constants/app_api_paths.dart';
+import '../../shared/constants/user_data.dart';
 import '../api_services/api_response.dart';
 import '../api_services/handling_response.dart';
 
 class AuthRepoImpl extends AuthRepo {
   @override
+  @override
   Future<ApiResponse> login({required Map<String, dynamic> body}) async {
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.login, body);
       ApiResponse result = HandlingResponse.returnResponse(res);
+      print('Login Api Response : $res');
       if (result.status == Status.completed) {
+        // Set user data immediately after successful login
+        final userData = res.data['user'];
+        UserData.ins.setUserData(
+          id: userData['userId'] ?? '',
+          name: userData['username'] ?? '',
+          userprofilePicture: userData['profilePic'] ?? '',
+          email: userData['email'] ?? '',
+        );
         return ApiResponse.completed(res.data);
       } else {
         return result;
@@ -25,7 +36,7 @@ class AuthRepoImpl extends AuthRepo {
   Future<ApiResponse> signup({required Map<String, dynamic> body}) async {
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.signup, body);
-      print(AppConstants.artleapBaseUrl + AppApiPaths.signup);
+      print('SignUp Api Response : $res');
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);
@@ -40,8 +51,7 @@ class AuthRepoImpl extends AuthRepo {
   @override
   Future<ApiResponse> googleLogin({required Map<String, dynamic> body}) async {
     try {
-      Response res =
-          await artleapApiService.postJson(AppApiPaths.googleLogin, body);
+      Response res = await artleapApiService.postJson(AppApiPaths.googleLogin, body);
       print(AppConstants.artleapBaseUrl + AppApiPaths.googleLogin);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {

@@ -4,19 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../providers/user_profile_provider.dart';
 
 class ArtLeapTopBar extends ConsumerWidget {
-  String title;
-  ArtLeapTopBar({super.key,this.title = 'Artleap'});
+  final String title;
+  ArtLeapTopBar({super.key,this.title = 'Creation Studio'});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final credits = ref.watch(userProfileProvider).userProfileData?.user.dailyCredits ?? 0;
+    final credits = ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0;
 
     return Padding(
       padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Coin Box
           Container(
             height: 36,
             width: 70,
@@ -52,8 +51,7 @@ class ArtLeapTopBar extends ConsumerWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+              fontSize: 17,
               color: Colors.black,
             ),
           ),

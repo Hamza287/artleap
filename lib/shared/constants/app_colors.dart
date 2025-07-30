@@ -23,5 +23,5 @@ class AppColors {
   static const seaBlue = Color(0xff3893FF);
   static const greyBlue = Color(0xff252452);
   static const daisyBrush = Color(0xff4A2D97);
-  static const topBar = Color(0xfff3eeff);
+  static const topBar = Color(0xffffffff);
 }

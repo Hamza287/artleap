@@ -12,56 +12,16 @@ class PromptTopBar extends ConsumerWidget {
     final currentNav = ref.watch(promptNavProvider);
 
     return Container(
-      color: AppColors.topBar,
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ArtLeapTopBar(),
           ),
-          const SizedBox(height: 20), // Navigation Buttons - Now properly aligned in one line
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const SizedBox(width: 8), // Initial padding
-                _navButton(
-                  context,
-                  ref,
-                  AppAssets.create,
-                  "Create",
-                  PromptNavItem.create,
-                  currentNav == PromptNavItem.create,
-                ),
-                _navButton(
-                  context,
-                  ref,
-                  AppAssets.editObject,
-                  "Edit Object",
-                  PromptNavItem.edit,
-                  currentNav == PromptNavItem.edit,
-                ),
-                _navButton(
-                  context,
-                  ref,
-                  AppAssets.animate,
-                  "Animate",
-                  PromptNavItem.animate,
-                  currentNav == PromptNavItem.animate,
-                ),
-                _navButton(
-                  context,
-                  ref,
-                  AppAssets.enhance,
-                  "Enhance",
-                  PromptNavItem.enhance,
-                  currentNav == PromptNavItem.enhance,
-                ),
-                const SizedBox(width: 8), // End padding
-              ],
-            ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _buildDropdown(context, ref, currentNav),
           ),
           const SizedBox(height: 10),
         ],
@@ -69,57 +29,137 @@ class PromptTopBar extends ConsumerWidget {
     );
   }
 
-  Widget _navButton(
-      BuildContext context,
-      WidgetRef ref,
-      String icon,
-      String label,
-      PromptNavItem navItem,
-      bool selected,
-      ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: () => ref.read(promptNavProvider.notifier).setNavItem(navItem),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 70,
-              height: 58,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                gradient: selected ? LinearGradient(colors: [
-                  Color(0xFFD59FFF),
-                  Color(0xFF875EFF),
-                ]) : LinearGradient(colors: [
-                  Color(0xFFCFC1F7),
-                  Color(0xFFCFC1F7),
-                ]),
-                borderRadius: BorderRadius.circular(12),
-                border: selected
-                    ? Border.all(color: const Color(0xFF923CFF), width: 2)
-                    : Border.all(color: Colors.grey.shade300),
-              ),
-              child: Image.asset(
-                 icon,
-                 height: 18,
+  Widget _buildDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav) {
+    final options = [
+      _DropdownOption(
+        icon: AppAssets.create,
+        label: "Create",
+        value: PromptNavItem.create,
+      ),
+      _DropdownOption(
+        icon: AppAssets.editObject,
+        label: "Edit Object",
+        value: PromptNavItem.edit,
+      ),
+      _DropdownOption(
+        icon: AppAssets.animate,
+        label: "Animate",
+        value: PromptNavItem.animate,
+      ),
+      _DropdownOption(
+        icon: AppAssets.enhance,
+        label: "Enhance",
+        value: PromptNavItem.enhance,
+      ),
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButton<PromptNavItem>(
+        value: currentNav,
+        isExpanded: true,
+        underline: const SizedBox(), // Remove default underline
+        dropdownColor: Colors.white, // Background color of dropdown menu
+        icon: Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: Icon(
+            Icons.arrow_drop_down,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        items: options.map((option) {
+          return DropdownMenuItem<PromptNavItem>(
+            value: option.value,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  Image.asset(
+                    option.icon,
+                    height: 18,
+                    color: currentNav == option.value ? const Color(0xFF923CFF) : Colors.black87,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    option.label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: currentNav == option.value ? const Color(0xFF923CFF) : Colors.black87,
+                      fontWeight: currentNav == option.value ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              color: selected ? const Color(0xFF923CFF) : Colors.black87,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ],
+          );
+        }).toList(),
+        onChanged: (value) {
+          if (value != null) {
+            ref.read(promptNavProvider.notifier).setNavItem(value);
+          }
+        },
+        selectedItemBuilder: (BuildContext context) {
+          return options.map((option) {
+            return Container(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        gradient: currentNav == option.value
+                            ? LinearGradient(colors: [
+                          Color(0xFFD59FFF),
+                          Color(0xFF875EFF),
+                        ])
+                            : LinearGradient(colors: [
+                          Color(0xFFCFC1F7),
+                          Color(0xFFCFC1F7),
+                        ]),
+                        borderRadius: BorderRadius.circular(12),
+                        // Removed the border property
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          option.icon,
+                          height: 18,
+                          color: currentNav == option.value ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      option.label,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: currentNav == option.value ? const Color(0xFF923CFF) : Colors.black87,
+                        fontWeight: currentNav == option.value ? FontWeight.w600 : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList();
+        },
       ),
     );
   }
+}
+
+class _DropdownOption {
+  final String icon;
+  final String label;
+  final PromptNavItem value;
+
+  _DropdownOption({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 }

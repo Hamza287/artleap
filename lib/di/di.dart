@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import '../domain/api_services/api_services.dart';
+import '../domain/subscriptions/subscription_repo_impl.dart';
 import '../shared/constants/app_constants.dart';
 
 GetIt getIt = GetIt.instance;
@@ -30,6 +31,7 @@ class DI {
     getIt.registerLazySingleton<ApiServices>(
         () => ApiServices(baseUrl: AppConstants.freePikImageUrl),
         instanceName: AppConstants.freePikImageUrl);
+    getIt.registerSingleton<SubscriptionRepoImpl>(SubscriptionRepoImpl());
     await getIt.allReady();
   }
 }

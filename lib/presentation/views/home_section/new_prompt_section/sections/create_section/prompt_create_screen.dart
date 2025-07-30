@@ -26,12 +26,20 @@ class PromptCreateScreen extends ConsumerStatefulWidget {
 }
 
 class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,49 +61,97 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
           ref.watch(bottomNavBarProvider).setPageIndex(0);
         }
       },
-      child: AppBackgroundWidget(
-        widget: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Scaffold(
+        body: AppBackgroundWidget(
+          widget: Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15),
+            child: Stack(
               children: [
-                40.spaceY,
-                const PromptWidget(),
-                40.spaceY,
-                ImageControlsWidget(
-                  onImageSelected: () {
-                    ref.read(generateImageProvider).pickImage();
-                    AnalyticsService.instance.logButtonClick(
-                        buttonName: 'picking image from gallery button event');
-                  },
+                SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      20.spaceY,
+                      const PromptWidget(),
+                      20.spaceY,
+                      ImageControlsWidget(
+                        onImageSelected: () {
+                          ref.read(generateImageProvider).pickImage();
+                          AnalyticsService.instance.logButtonClick(
+                              buttonName: 'picking image from gallery button event');
+                        },
+                      ),
+                      // Add extra space where the button would normally be
+                      SizedBox(height: 75), // Button height + padding
+                      20.spaceY,
+                    ],
+                  ),
                 ),
-                40.spaceY,
-                PromptScreenButton(
-                  height: 55,
-                  width: double.infinity,
-                  imageIcon: AppAssets.generateicon,
-                  title: "Generate",
-                  suffixRow: true,
-                  onpress: (userProfile == null || userProfile.user.dailyCredits == 0) ? () {
-                    appSnackBar("Oops!", "You have reached your daily limit. Thank you!", AppColors.indigo);}
-                      : generateImageProviderState.containsSexualWords ? () {
-                              appSnackBar("Warning!","Your prompt contains sexual words.", AppColors.redColor);}
-                          : () {if (generateImageProviderState.selectedImageNumber == null && generateImageProviderState.images.isEmpty) {
-                                appSnackBar("Error", "Please select number of images", AppColors.redColor);
-                              } else if (generateImageProviderState.promptTextController.text.isEmpty) {
-                                appSnackBar("Error", "Please write your prompt", AppColors.redColor);
-                              } else if (generateImageProviderState.images.isNotEmpty) {
-                                ref.watch(generateImageProvider).generateImgToImg();
-                              } else {
-                                AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
-                                ref.read(generateImageProvider).generateTextToImage();
-                                Navigation.pushNamed(ResultScreenRedesign.routeName);
-                              }
-                            },
-                  isLoading: generateImageProviderState.isGenerateImageLoading,
+                // Sticky button positioned at bottom
+                Positioned(
+                  bottom: 20,
+                  left: 15,
+                  right: 15,
+                  child: PromptScreenButton(
+                    height: 55,
+                    width: double.infinity,
+                    imageIcon: AppAssets.generateicon,
+                    title: "Generate",
+                    suffixRow: true,
+                    credits: generateImageProviderState.images.isNotEmpty ? '24' : '2',
+                    onpress: (userProfile == null || userProfile.user.totalCredits <= 0)
+                        ? () {
+                      appSnackBar("Oops!", "You have reached your daily limit. Thank you!", AppColors.indigo);
+                    }
+                        : generateImageProviderState.containsSexualWords
+                        ? () {
+                      appSnackBar("Warning!", "Your prompt contains sexual words.", AppColors.redColor);
+                    }
+                        : () async {
+                      // Common validation checks
+                      if (generateImageProviderState.selectedImageNumber == null && generateImageProviderState.images.isEmpty) {
+                        appSnackBar("Error", "Please select number of images", AppColors.redColor);
+                      } else if (generateImageProviderState.promptTextController.text.isEmpty) {
+                        appSnackBar("Error", "Please write your prompt", AppColors.redColor);
+                      }
+                      // Credit validation for text-to-image
+                      else if (generateImageProviderState.images.isEmpty) {
+                        final requiredCredits = generateImageProviderState.selectedImageNumber! * 2;
+                        if (userProfile.user.totalCredits < requiredCredits) {
+                          appSnackBar("Insufficient Credits",
+                              "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
+                              AppColors.redColor);
+                        } else {
+                          AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
+                          final success = await ref.read(generateImageProvider.notifier).generateTextToImage();
+                          if (success && mounted) {
+                            Navigation.pushNamed(ResultScreenRedesign.routeName);
+                          } else if (mounted) {
+                            appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
+                          }
+                        }
+                      }
+                      // Credit validation for image-to-image
+                      else {
+                        final requiredCredits = generateImageProviderState.selectedImageNumber! * 24;
+                        if (userProfile.user.totalCredits < requiredCredits) {
+                          appSnackBar("Insufficient Credits",
+                              "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
+                              AppColors.redColor);
+                        } else {
+                          final success = await ref.read(generateImageProvider.notifier).generateImgToImg();
+                          if (success && mounted) {
+                            Navigation.pushNamed(ResultScreenRedesign.routeName);
+                          } else if (mounted) {
+                            appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
+                          }
+                        }
+                      }
+                    },
+                    isLoading: generateImageProviderState.isGenerateImageLoading,
+                  ),
                 ),
-                20.spaceY,
               ],
             ),
           ),
