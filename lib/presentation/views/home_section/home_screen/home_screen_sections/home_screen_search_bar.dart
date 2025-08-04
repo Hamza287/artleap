@@ -10,7 +10,16 @@ class HomeScreenSearchBar extends StatelessWidget {
       child: TextField(
         decoration: InputDecoration(
           hintText: "Search AI Creations",
-          prefixIcon: const Icon(Icons.search),
+          hintStyle: TextStyle(color: Colors.grey[200]!),
+          prefixIcon: Icon(Icons.search,color: Colors.grey[200],),
+          focusedBorder:OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[200]!),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[200]!),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),

@@ -16,17 +16,19 @@ class ActionButtonsRow extends ConsumerWidget {
         children: [
           _RoundIconButton(
             icon: Icons.share,
+            borderColor: Colors.grey[200]!,
             size: isSmallScreen ? 40 : 50,
             onPressed: () {}, // Implement share functionality
           ),
           _RoundIconButton(
             icon: Icons.download,
+            borderColor: Colors.grey[200]!,
             size: isSmallScreen ? 40 : 50,
             onPressed: () {}, // Implement download functionality
           ),
           _RoundIconButton(
             icon: Icons.delete,
-            borderColor: Colors.red,
+            borderColor: Colors.grey[200]!,
             size: isSmallScreen ? 40 : 50,
             onPressed: () => ref.read(promptEditProvider.notifier).removeImage(),
           ),

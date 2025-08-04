@@ -88,68 +88,77 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
                     ],
                   ),
                 ),
-                // Sticky button positioned at bottom
+                // White background container for the button area
                 Positioned(
-                  bottom: 20,
-                  left: 15,
-                  right: 15,
-                  child: PromptScreenButton(
-                    height: 55,
-                    width: double.infinity,
-                    imageIcon: AppAssets.generateicon,
-                    title: "Generate",
-                    suffixRow: true,
-                    credits: generateImageProviderState.images.isNotEmpty ? '24' : '2',
-                    onpress: (userProfile == null || userProfile.user.totalCredits <= 0)
-                        ? () {
-                      appSnackBar("Oops!", "You have reached your daily limit. Thank you!", AppColors.indigo);
-                    }
-                        : generateImageProviderState.containsSexualWords
-                        ? () {
-                      appSnackBar("Warning!", "Your prompt contains sexual words.", AppColors.redColor);
-                    }
-                        : () async {
-                      // Common validation checks
-                      if (generateImageProviderState.selectedImageNumber == null && generateImageProviderState.images.isEmpty) {
-                        appSnackBar("Error", "Please select number of images", AppColors.redColor);
-                      } else if (generateImageProviderState.promptTextController.text.isEmpty) {
-                        appSnackBar("Error", "Please write your prompt", AppColors.redColor);
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.only(
+                      left: 15,
+                      right: 15,
+                      top: 20,
+                      bottom: 20,
+                    ),
+                    child: PromptScreenButton(
+                      height: 55,
+                      width: double.infinity,
+                      imageIcon: AppAssets.generateicon,
+                      title: "Generate",
+                      suffixRow: true,
+                      credits: generateImageProviderState.images.isNotEmpty ? '24' : '2',
+                      onpress: (userProfile == null || userProfile.user.totalCredits <= 0)
+                          ? () {
+                        appSnackBar("Oops!", "You have reached your daily limit. Thank you!", AppColors.indigo);
                       }
-                      // Credit validation for text-to-image
-                      else if (generateImageProviderState.images.isEmpty) {
-                        final requiredCredits = generateImageProviderState.selectedImageNumber! * 2;
-                        if (userProfile.user.totalCredits < requiredCredits) {
-                          appSnackBar("Insufficient Credits",
-                              "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
-                              AppColors.redColor);
-                        } else {
-                          AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
-                          final success = await ref.read(generateImageProvider.notifier).generateTextToImage();
-                          if (success && mounted) {
-                            Navigation.pushNamed(ResultScreenRedesign.routeName);
-                          } else if (mounted) {
-                            appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
+                          : generateImageProviderState.containsSexualWords
+                          ? () {
+                        appSnackBar("Warning!", "Your prompt contains sexual words.", AppColors.redColor);
+                      }
+                          : () async {
+                        // Common validation checks
+                        if (generateImageProviderState.selectedImageNumber == null && generateImageProviderState.images.isEmpty) {
+                          appSnackBar("Error", "Please select number of images", AppColors.redColor);
+                        } else if (generateImageProviderState.promptTextController.text.isEmpty) {
+                          appSnackBar("Error", "Please write your prompt", AppColors.redColor);
+                        }
+                        // Credit validation for text-to-image
+                        else if (generateImageProviderState.images.isEmpty) {
+                          final requiredCredits = generateImageProviderState.selectedImageNumber! * 2;
+                          if (userProfile.user.totalCredits < requiredCredits) {
+                            appSnackBar("Insufficient Credits",
+                                "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
+                                AppColors.redColor);
+                          } else {
+                            AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
+                            final success = await ref.read(generateImageProvider.notifier).generateTextToImage();
+                            if (success && mounted) {
+                              Navigation.pushNamed(ResultScreenRedesign.routeName);
+                            } else if (mounted) {
+                              appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
+                            }
                           }
                         }
-                      }
-                      // Credit validation for image-to-image
-                      else {
-                        final requiredCredits = generateImageProviderState.selectedImageNumber! * 24;
-                        if (userProfile.user.totalCredits < requiredCredits) {
-                          appSnackBar("Insufficient Credits",
-                              "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
-                              AppColors.redColor);
-                        } else {
-                          final success = await ref.read(generateImageProvider.notifier).generateImgToImg();
-                          if (success && mounted) {
-                            Navigation.pushNamed(ResultScreenRedesign.routeName);
-                          } else if (mounted) {
-                            appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
+                        // Credit validation for image-to-image
+                        else {
+                          final requiredCredits = generateImageProviderState.selectedImageNumber! * 24;
+                          if (userProfile.user.totalCredits < requiredCredits) {
+                            appSnackBar("Insufficient Credits",
+                                "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
+                                AppColors.redColor);
+                          } else {
+                            final success = await ref.read(generateImageProvider.notifier).generateImgToImg();
+                            if (success && mounted) {
+                              Navigation.pushNamed(ResultScreenRedesign.routeName);
+                            } else if (mounted) {
+                              appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
+                            }
                           }
                         }
-                      }
-                    },
-                    isLoading: generateImageProviderState.isGenerateImageLoading,
+                      },
+                      isLoading: generateImageProviderState.isGenerateImageLoading,
+                    ),
                   ),
                 ),
               ],

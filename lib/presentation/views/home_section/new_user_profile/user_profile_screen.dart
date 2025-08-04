@@ -14,7 +14,7 @@ import '../profile_screen/profile_screen_widgets/my_creations_widget.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   const UserProfileScreen({super.key});
-
+  static const String routeName = "user_profile_screen";
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _UserProfileScreenState();
 }

@@ -7,30 +7,31 @@ class InspirationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Handle inspiration button press
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 4,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.grey.shade300),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.lightbulb_outline, color: AppColors.purple),
-          const SizedBox(width: 8),
-          Text(
-            "Inspiration",
-            style: AppTextstyle.interMedium(fontSize: 14),
+    return Tooltip(
+      message: 'Coming Soon',
+      child: ElevatedButton(
+        onPressed: null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[200],
+          foregroundColor: Colors.black,
+          elevation: 4,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: Colors.grey[200]!),
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lightbulb_outline, color: AppColors.purple),
+            const SizedBox(width: 8),
+            Text(
+              "Inspiration",
+              style: AppTextstyle.interMedium(fontSize: 14),
+            ),
+          ],
+        ),
       ),
     );
   }

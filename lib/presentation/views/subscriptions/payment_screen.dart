@@ -1,34 +1,177 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import '../../../domain/api_services/api_response.dart';
-import '../../../domain/subscriptions/subscription_model.dart';
-import '../../../domain/subscriptions/subscription_repo_provider.dart';
-import '../home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
-// Create a provider for the loading state
+
 final paymentLoadingProvider = StateProvider<bool>((ref) => false);
+final termsAcceptedProvider = StateProvider<bool>((ref) => false);
 
-class PaymentScreen extends ConsumerWidget {
+class PaymentScreen extends ConsumerStatefulWidget {
   static const String routeName = "payment_screen";
   final SubscriptionPlanModel plan;
+
   const PaymentScreen({super.key, required this.plan});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final paymentMethods = ['Google Pay']; // Only Google Pay option
+  ConsumerState<PaymentScreen> createState() => _PaymentScreenState();
+}
+
+class _PaymentScreenState extends ConsumerState<PaymentScreen> {
+  bool _isInitialized = false;
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeInAppPurchase();
+    _listenToPurchaseUpdates();
+  }
+
+  @override
+  void dispose() {
+    _purchaseSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initializeInAppPurchase() async {
+    try {
+      final bool available = await InAppPurchase.instance.isAvailable();
+      if (!available) {
+        if (mounted) {
+          appSnackBar('Error', 'In-app purchases not available', Colors.red);
+        }
+        return;
+      }
+      setState(() => _isInitialized = true);
+    } catch (e) {
+      if (mounted) {
+        appSnackBar('Error', 'Failed to initialize payment service: $e', Colors.red);
+      }
+    }
+  }
+
+  void _listenToPurchaseUpdates() {
+    _purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
+          (purchaseDetailsList) {
+        _handlePurchaseUpdates(purchaseDetailsList);
+      },
+      onError: (error) {
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        if (mounted) {
+          appSnackBar('Error', 'Purchase error: $error', Colors.red);
+        }
+      },
+    );
+  }
+
+  void _handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) {
+    for (var purchaseDetails in purchaseDetailsList) {
+      switch (purchaseDetails.status) {
+        case PurchaseStatus.pending:
+        // Purchase is pending - no action needed
+          break;
+        case PurchaseStatus.canceled:
+          ref.read(paymentLoadingProvider.notifier).state = false;
+          if (mounted) {
+            appSnackBar('Info', 'Purchase was canceled', Colors.orange);
+          }
+          break;
+        case PurchaseStatus.error:
+          ref.read(paymentLoadingProvider.notifier).state = false;
+          if (mounted) {
+            appSnackBar(
+                'Error',
+                'Purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
+                Colors.red
+            );
+          }
+          break;
+        case PurchaseStatus.purchased:
+        case PurchaseStatus.restored:
+        // Success case - handled by your main purchase stream
+          break;
+      }
+    }
+  }
+
+  Future<void> _handleSubscription() async {
+    if (!_isInitialized) {
+      appSnackBar('Error', 'Payment service not initialized', Colors.red);
+      return;
+    }
+
+    if (!ref.read(termsAcceptedProvider)) {
+      appSnackBar('Error', 'Please accept the terms and conditions', Colors.red);
+      return;
+    }
+
+    ref.read(paymentLoadingProvider.notifier).state = true;
+
+    try {
+      final productId = widget.plan.googleProductId;
+      final ProductDetailsResponse response = await InAppPurchase.instance.queryProductDetails({productId});
+
+      if (response.notFoundIDs.isNotEmpty) {
+        if (mounted) {
+          appSnackBar('Error', 'Plan not available', Colors.red);
+        }
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        return;
+      }
+
+      if (response.productDetails.isEmpty) {
+        if (mounted) {
+          appSnackBar('Error', 'No product details found', Colors.red);
+        }
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        return;
+      }
+
+      final ProductDetails productDetails = response.productDetails.first;
+      final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
+      final bool purchaseInitiated = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+
+      if (!purchaseInitiated && mounted) {
+        appSnackBar('Error', 'Failed to initiate purchase', Colors.red);
+        ref.read(paymentLoadingProvider.notifier).state = false;
+      }
+    } catch (e) {
+      if (mounted) {
+        appSnackBar('Error', 'Purchase error: $e', Colors.red);
+      }
+      ref.read(paymentLoadingProvider.notifier).state = false;
+    }
+  }
+
+  String _getPlanPeriod(String type) {
+    switch (type.toLowerCase()) {
+      case 'basic':
+        return 'week';
+      case 'standard':
+        return 'month';
+      case 'premium':
+        return 'year';
+      case 'trial':
+        return 'trial';
+      default:
+        return '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLoading = ref.watch(paymentLoadingProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Payment',
-          style: AppTextstyle.interBold(
-            fontSize: 20,
-            color: AppColors.darkBlue,
-          ),
+          'Confirm Purchase',
+          style: AppTextstyle.interBold(fontSize: 20, color: AppColors.darkBlue),
         ),
         centerTitle: true,
         elevation: 0,
@@ -57,14 +200,14 @@ class PaymentScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          plan.name,
+                          widget.plan.name,
                           style: AppTextstyle.interBold(
                             fontSize: 20,
                             color: AppColors.purple,
                           ),
                         ),
                         Text(
-                          '\$${plan.price.toStringAsFixed(2)}/${_getPlanPeriod(plan.type)}',
+                          '\$${widget.plan.price.toStringAsFixed(2)}/${_getPlanPeriod(widget.plan.type)}',
                           style: AppTextstyle.interBold(
                             fontSize: 20,
                             color: AppColors.purple,
@@ -73,7 +216,15 @@ class PaymentScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    ...plan.features.take(3).map((feature) => Padding(
+                    Text(
+                      'Product ID: ${widget.plan.googleProductId}',
+                      style: AppTextstyle.interRegular(
+                        fontSize: 14,
+                        color: AppColors.darkBlue.withOpacity(0.5),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ...widget.plan.features.take(3).map((feature) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Row(
                         children: [
@@ -103,7 +254,7 @@ class PaymentScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Payment method tile (only Google Pay)
+              // Payment method tile
               Container(
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(16),
@@ -117,11 +268,7 @@ class PaymentScreen extends ConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.android, // Google Pay icon
-                      size: 24,
-                      color: AppColors.purple,
-                    ),
+                    const Icon(Icons.android, size: 24, color: AppColors.purple),
                     const SizedBox(width: 16),
                     Text(
                       'Google Pay',
@@ -134,12 +281,16 @@ class PaymentScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              // Terms and conditions checkbox
+              // Terms checkbox
               Row(
                 children: [
                   Checkbox(
-                    value: true,
-                    onChanged: (value) {}, // Implement logic if needed
+                    value: ref.watch(termsAcceptedProvider),
+                    onChanged: (value) {
+                      if (value != null) {
+                        ref.read(termsAcceptedProvider.notifier).state = value;
+                      }
+                    },
                   ),
                   Expanded(
                     child: RichText(
@@ -176,29 +327,26 @@ class PaymentScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 height: 50,
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final isLoading = ref.watch(paymentLoadingProvider);
-                    return ElevatedButton(
-                      onPressed: isLoading ? null : () => _handleSubscription(ref, context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.purple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        disabledBackgroundColor: AppColors.purple.withOpacity(0.5),
-                      ),
-                      child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                        'Subscribe Now',
-                        style: AppTextstyle.interBold(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    );
-                  },
+                child: ElevatedButton(
+                  onPressed: (!_isInitialized || isLoading || !ref.read(termsAcceptedProvider))
+                      ? null
+                      : _handleSubscription,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.purple,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    disabledBackgroundColor: AppColors.purple.withOpacity(0.5),
+                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                    'Subscribe Now',
+                    style: AppTextstyle.interBold(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -206,49 +354,5 @@ class PaymentScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _handleSubscription(WidgetRef ref, BuildContext context) async {
-    ref.read(paymentLoadingProvider.notifier).state = true;
-    try {
-      final response = await ref.read(subscriptionServiceProvider).subscribe(
-        UserData.ins.userId!,
-        plan.id,
-        'Google Pay', // Hardcoded since it's the only option
-      );
-
-      if (response.status == Status.completed) {
-        if (context.mounted) {
-          appSnackBar('Success', 'Subscription Successful', Colors.green);
-          Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
-          ref.refresh(currentSubscriptionProvider(UserData.ins.userId!));
-        }
-      } else if (context.mounted) {
-        appSnackBar('Error', response.message ?? 'Subscription failed', Colors.red);
-      }
-    } catch (e) {
-      if (context.mounted) {
-        appSnackBar('Error', 'An error occurred during subscription', Colors.red);
-      }
-    } finally {
-      if (context.mounted) {
-        ref.read(paymentLoadingProvider.notifier).state = false;
-      }
-    }
-  }
-
-  String _getPlanPeriod(String type) {
-    switch (type.toLowerCase()) {
-      case 'weekly':
-        return 'week';
-      case 'monthly':
-        return 'month';
-      case 'yearly':
-        return 'year';
-      case 'trial':
-        return 'trial';
-      default:
-        return '';
-    }
   }
 }

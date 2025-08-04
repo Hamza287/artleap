@@ -1,7 +1,6 @@
-import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
-
 class SubscriptionPlanModel {
   final String id;
+  final String googleProductId;
   final String name;
   final String type;
   final String description;
@@ -11,11 +10,13 @@ class SubscriptionPlanModel {
   final int promptGenerationCredits;
   final List<String> features;
   final bool isActive;
+  final int version;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
 
   SubscriptionPlanModel({
     required this.id,
+    required this.googleProductId,
     required this.name,
     required this.type,
     required this.description,
@@ -25,13 +26,15 @@ class SubscriptionPlanModel {
     required this.promptGenerationCredits,
     required this.features,
     required this.isActive,
+    required this.version,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory SubscriptionPlanModel.fromJson(Map<String, dynamic> json) {
     return SubscriptionPlanModel(
       id: json['_id'] ?? '',
+      googleProductId: json['googleProductId'] ?? '',
       name: json['name'] ?? '',
       type: json['type'] ?? '',
       description: json['description'] ?? '',
@@ -41,14 +44,16 @@ class SubscriptionPlanModel {
       promptGenerationCredits: json['promptGenerationCredits'] ?? 0,
       features: List<String>.from(json['features'] ?? []),
       isActive: json['isActive'] ?? true,
+      version: json['version'] ?? 1,
       createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
+      'googleProductId': googleProductId,
       'name': name,
       'type': type,
       'description': description,
@@ -58,8 +63,9 @@ class SubscriptionPlanModel {
       'promptGenerationCredits': promptGenerationCredits,
       'features': features,
       'isActive': isActive,
+      'version': version,
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 }
@@ -76,8 +82,8 @@ class UserSubscriptionModel {
   final bool autoRenew;
   final DateTime? cancelledAt;
   final DateTime createdAt;
-  final DateTime updatedAt;
-  final SubscriptionPlanModel? plan;
+  final DateTime? updatedAt;
+  final SubscriptionPlanModel? planSnapshot;
   final int usedImageCredits;
   final int usedPromptCredits;
 
@@ -93,22 +99,20 @@ class UserSubscriptionModel {
     required this.autoRenew,
     this.cancelledAt,
     required this.createdAt,
-    required this.updatedAt,
-    this.plan,
+    this.updatedAt,
+    this.planSnapshot,
     this.usedImageCredits = 0,
     this.usedPromptCredits = 0,
   });
 
   factory UserSubscriptionModel.fromJson(Map<String, dynamic> json) {
-    // Handle free subscription case where planId might be missing
     final planId = json['planId'] is String
         ? json['planId']
         : json['planId']?['_id'] ?? '';
 
-    // Handle free subscription case where endDate might be null
     final endDate = json['endDate'] != null
         ? DateTime.parse(json['endDate'])
-        : DateTime.now().add(const Duration(days: 365 * 10)); // Far future date for free tier
+        : DateTime.now().add(const Duration(days: 365 * 10));
 
     return UserSubscriptionModel(
       id: json['_id'] ?? '',
@@ -122,8 +126,8 @@ class UserSubscriptionModel {
       autoRenew: json['autoRenew'] ?? true,
       cancelledAt: json['cancelledAt'] != null ? DateTime.parse(json['cancelledAt']) : null,
       createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
-      plan: json['planId'] is Map ? SubscriptionPlanModel.fromJson(json['planId']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      planSnapshot: json['planSnapshot'] != null ? SubscriptionPlanModel.fromJson(json['planSnapshot']) : null,
       usedImageCredits: json['usedImageCredits'] ?? 0,
       usedPromptCredits: json['usedPromptCredits'] ?? 0,
     );
@@ -142,8 +146,10 @@ class UserSubscriptionModel {
       'autoRenew': autoRenew,
       'cancelledAt': cancelledAt?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      'plan': plan?.toJson(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'planSnapshot': planSnapshot?.toJson(),
+      'usedImageCredits': usedImageCredits,
+      'usedPromptCredits': usedPromptCredits,
     };
   }
 }

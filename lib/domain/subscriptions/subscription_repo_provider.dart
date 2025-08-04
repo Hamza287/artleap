@@ -3,6 +3,7 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_impl.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
+
 final subscriptionRepoProvider = Provider<SubscriptionRepoImpl>((ref) => SubscriptionRepoImpl());
 
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
@@ -25,7 +26,7 @@ final currentSubscriptionProvider = FutureProvider.family<UserSubscriptionModel?
   if (response.status == Status.completed) {
     return response.data;
   }
-  throw Exception(response.message);
+  return null; // Handle no active subscription
 });
 
 final generationLimitsProvider = FutureProvider.family<GenerationLimitsModel, Map<String, String>>((ref, params) async {

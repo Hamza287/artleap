@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/personal_information/personal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
@@ -37,6 +38,8 @@ class RouteGenerator {
         return route(const AcceptPrivacyPolicyScreen());
       case ChoosePlanScreen.routeName:
         return route(const ChoosePlanScreen());
+      case PersonalInformationScreen.routeName:
+        return route(const PersonalInformationScreen());
       case AboutArtleapScreen.routeName:
         return route(const AboutArtleapScreen());
       case LoginScreen.routeName:

@@ -15,10 +15,10 @@ final cancelSubscriptionLoadingProvider = StateProvider<bool>((ref) => false);
 
 class CancelSubscriptionDialog {
   static Future<void> show(
-      BuildContext context,
-      WidgetRef ref,
-      UserSubscriptionModel subscription,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+    UserSubscriptionModel subscription,
+  ) async {
     bool? immediate = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -30,6 +30,100 @@ class CancelSubscriptionDialog {
             insetPadding: const EdgeInsets.all(20),
             child: Stack(
               children: [
+                // Container(
+                //   padding: const EdgeInsets.all(24),
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(16),
+                //     boxShadow: [
+                //       BoxShadow(
+                //         color: Colors.black.withOpacity(0.1),
+                //         blurRadius: 20,
+                //         spreadRadius: 2,
+                //       ),
+                //     ],
+                //   ),
+                //   child: Column(
+                //     mainAxisSize: MainAxisSize.min,
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Row(
+                //         children: [
+                //           Container(
+                //             padding: const EdgeInsets.all(8),
+                //             decoration: BoxDecoration(
+                //               color: AppColors.redColor.withOpacity(0.1),
+                //               borderRadius: BorderRadius.circular(12),
+                //             ),
+                //             child: Icon(
+                //               Icons.unsubscribe,
+                //               color: AppColors.redColor,
+                //               size: 28,
+                //             ),
+                //           ),
+                //           const SizedBox(width: 12),
+                //           Text(
+                //             'Cancel Subscription',
+                //             style: AppTextstyle.interBold(
+                //               fontSize: 20,
+                //               color: AppColors.darkBlue,
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //       const SizedBox(height: 20),
+                //       Text(
+                //         'How would you like to cancel your subscription?',
+                //         style: AppTextstyle.interRegular(
+                //           fontSize: 16,
+                //           color: AppColors.darkBlue.withOpacity(0.8),
+                //         ),
+                //       ),
+                //       const SizedBox(height: 24),
+                //       Column(
+                //         children: [
+                //           _buildCancelOption(
+                //             context,
+                //             ref,
+                //             icon: Icons.calendar_today,
+                //             title: 'End of Billing Period',
+                //             subtitle:
+                //             'Continue benefits until ${DateFormat('MMM d, y').format(subscription.endDate)}',
+                //             isImmediate: false,
+                //             isLoading: isLoading,
+                //           ),
+                //           const SizedBox(height: 12),
+                //           // _buildCancelOption(
+                //           //   context,
+                //           //   ref,
+                //           //   icon: Icons.block,
+                //           //   title: 'Cancel Immediately',
+                //           //   subtitle: 'Lose access to premium features now',
+                //           //   isImmediate: true,
+                //           //   isLoading: isLoading,
+                //           // ),
+                //         ],
+                //       ),
+                //       const SizedBox(height: 24),
+                //       TextButton(
+                //         onPressed: isLoading ? null : () => Navigator.pop(context),
+                //         style: TextButton.styleFrom(
+                //           padding: const EdgeInsets.symmetric(vertical: 12),
+                //           shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(12),
+                //           ),
+                //         ),
+                //         child: Text(
+                //           'Go Back',
+                //           style: AppTextstyle.interMedium(
+                //             fontSize: 16,
+                //             color: AppColors.darkBlue.withOpacity(0.6),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -45,81 +139,107 @@ class CancelSubscriptionDialog {
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.redColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.unsubscribe,
-                              color: AppColors.redColor,
-                              size: 28,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Cancel Subscription',
-                            style: AppTextstyle.interBold(
-                              fontSize: 20,
-                              color: AppColors.darkBlue,
-                            ),
-                          ),
-                        ],
+                      // Warning Icon
+                      Container(
+                        width: 92,
+                        height: 92,
+                        decoration: BoxDecoration(
+                          color: AppColors.redColor.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.delete_outline_sharp,
+                          size: 36,
+                          color: AppColors.redColor,
+                        ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
+
+                      // Title
                       Text(
-                        'How would you like to cancel your subscription?',
+                        'Cancel Plan',
+                        style: AppTextstyle.interBold(
+                          fontSize: 24,
+                          color: AppColors.darkBlue,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Message
+                      Text(
+                        'You wont be charged for the next month, but can continue remaining benefits until ${DateFormat('MMM d, y').format(subscription.endDate)}',
                         style: AppTextstyle.interRegular(
                           fontSize: 16,
                           color: AppColors.darkBlue.withOpacity(0.8),
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 24),
-                      Column(
+                      const SizedBox(height: 32),
+
+                      // Buttons Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildCancelOption(
-                            context,
-                            ref,
-                            icon: Icons.calendar_today,
-                            title: 'End of Billing Period',
-                            subtitle:
-                            'Continue benefits until ${DateFormat('MMM d, y').format(subscription.endDate)}',
-                            isImmediate: false,
-                            isLoading: isLoading,
+                          // Cancel Button
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                side: BorderSide(color: AppColors.darkBlue),
+                              ),
+                              child: Text(
+                                'Cancel',
+                                style: AppTextstyle.interMedium(
+                                  color: AppColors.darkBlue,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
                           ),
-                          const SizedBox(height: 12),
-                          _buildCancelOption(
-                            context,
-                            ref,
-                            icon: Icons.block,
-                            title: 'Cancel Immediately',
-                            subtitle: 'Lose access to premium features now',
-                            isImmediate: true,
-                            isLoading: isLoading,
+                          const SizedBox(width: 16),
+
+                          // Delete Button
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () {
+                                      ref
+                                          .read(
+                                              cancelSubscriptionLoadingProvider
+                                                  .notifier)
+                                          .state = true;
+                                      Navigator.pop(context, false);
+                                    },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.redColor,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                'Delete',
+                                style: AppTextstyle.interMedium(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 24),
-                      TextButton(
-                        onPressed: isLoading ? null : () => Navigator.pop(context),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          'Go Back',
-                          style: AppTextstyle.interMedium(
-                            fontSize: 16,
-                            color: AppColors.darkBlue.withOpacity(0.6),
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -177,22 +297,22 @@ class CancelSubscriptionDialog {
   }
 
   static Widget _buildCancelOption(
-      BuildContext context,
-      WidgetRef ref, {
-        required IconData icon,
-        required String title,
-        required String subtitle,
-        required bool isImmediate,
-        required bool isLoading,
-      }) {
+    BuildContext context,
+    WidgetRef ref, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool isImmediate,
+    required bool isLoading,
+  }) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: isLoading
           ? null
           : () {
-        ref.read(cancelSubscriptionLoadingProvider.notifier).state = true;
-        Navigator.pop(context, isImmediate);
-      },
+              ref.read(cancelSubscriptionLoadingProvider.notifier).state = true;
+              Navigator.pop(context, isImmediate);
+            },
       child: Opacity(
         opacity: isLoading ? 0.6 : 1.0,
         child: Container(

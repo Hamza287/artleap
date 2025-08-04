@@ -128,7 +128,7 @@ class ProfileDrawer extends ConsumerWidget {
                       _ProfileMenuItem(
                         icon: AppAssets.userinfoicon,
                         title: "Personal Information",
-                        onTap: () {},
+                        onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.currentPlan,
@@ -149,7 +149,7 @@ class ProfileDrawer extends ConsumerWidget {
                         icon: AppAssets.darkMode,
                         title: "Dark Mode",
                         isToggle: true,
-                        onTap: () {}, // Keep this empty or remove it
+                        onTap: () {},
                       ),
                     ],
                   ),

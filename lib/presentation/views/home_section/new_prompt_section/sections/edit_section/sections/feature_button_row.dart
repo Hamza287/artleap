@@ -70,7 +70,8 @@ class _FeatureButton extends StatelessWidget {
     final buttonWidth = isSmallScreen ? 80.0 : 100.0;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: null,
+      // onTap: onTap,
       child: Container(
         width: buttonWidth+12,
         margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -81,7 +82,7 @@ class _FeatureButton extends StatelessWidget {
               height: buttonSize + 12,
               width: buttonSize + 12,
               decoration: BoxDecoration(
-                color: isActive ? const Color(0xFFCCBBFF) : Colors.transparent,
+                color: isActive ? Colors.grey[200]! : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -89,7 +90,7 @@ class _FeatureButton extends StatelessWidget {
                   height: buttonSize - 4,
                   width: buttonSize - 4,
                   decoration: BoxDecoration(
-                    color: isActive ? const Color(0xFF9A57FF) : const Color(0xFFDCD5F1),
+                    color: isActive ? Colors.grey[200]! : const Color(0xFFDCD5F1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Image.asset(

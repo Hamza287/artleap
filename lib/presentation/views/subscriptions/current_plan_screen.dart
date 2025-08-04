@@ -1,6 +1,6 @@
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
@@ -10,7 +10,6 @@ import 'current_plan_sections/billing_section.dart';
 import 'current_plan_sections/current_plan_card.dart';
 import 'current_plan_sections/plan_action_buttons.dart';
 import 'current_plan_sections/plan_usage_section.dart';
-
 
 class CurrentPlanScreen extends ConsumerStatefulWidget {
   static const String routeName = '/subscription-status';
@@ -85,9 +84,8 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                   onPressed: () async {
                     try {
                       await ref.refresh(currentSubscriptionProvider(userId));
-                      print(error);
                     } catch (e) {
-                      print('Error during refresh: $e');
+                      debugPrint('Error during refresh: $e');
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -108,78 +106,80 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
             ),
           ),
           data: (subscription) {
-            final isActive = subscription?.isActive == true ;
-            final planName = subscription?.plan?.name ?? 'Free';
-            if(subscription?.cancelledAt != null){
-                return  Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'You do not have any Subscription Right Now ',
-                          style: AppTextstyle.interRegular(
-                            fontSize: 16,
-                            color: AppColors.redColor,
-                          ),
+            // Handle null subscription or canceled subscription
+            if (subscription == null || subscription.cancelledAt != null || !subscription.isActive) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'You do not have an active subscription',
+                        style: AppTextstyle.interRegular(
+                          fontSize: 16,
+                          color: AppColors.redColor,
                         ),
-                        10.spaceY,
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, ChoosePlanScreen.routeName);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.darkBlue,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
+                      ),
+                      10.spaceY,
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, ChoosePlanScreen.routeName);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.darkBlue,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text(
-                              'Subscribe Now',
-                              style: AppTextstyle.interBold(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Subscribe Now',
+                            style: AppTextstyle.interBold(
+                              fontSize: 16,
+                              color: Colors.white,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-            } else {
-              return SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth > 600 ? 40 : 20,
-                  vertical: 20,
-                ),
-                child: Column(
-                  children: [
-                    CurrentPlanCard(
-                      planName: planName,
-                      isActive: isActive,
-                      subscription: subscription,
-                    ),
-                    const SizedBox(height: 30),
-                    UsageSection(subscription: subscription),
-                    const SizedBox(height: 30),
-                    if (subscription != null)
-                      BillingSection(subscription: subscription),
-                    const SizedBox(height: 30),
-                    ActionButtons(
-                      isActive: isActive,
-                      subscription: subscription,
-                    ),
-                  ],
                 ),
               );
             }
+
+            // Use planSnapshot for plan details
+            final planName = subscription.planSnapshot?.name ?? 'Free';
+            final isActive = subscription.isActive;
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth > 600 ? 40 : 20,
+                vertical: 20,
+              ),
+              child: Column(
+                children: [
+                  CurrentPlanCard(
+                    planName: planName,
+                    isActive: isActive,
+                    subscription: subscription,
+                  ),
+                  const SizedBox(height: 30),
+                  UsageSection(subscription: subscription),
+                  const SizedBox(height: 30),
+                  BillingSection(subscription: subscription),
+                  const SizedBox(height: 30),
+                  ActionButtons(
+                    isActive: isActive,
+                    subscription: subscription,
+                  ),
+                ],
+              ),
+            );
           },
         ),
       ),

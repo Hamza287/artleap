@@ -4,11 +4,50 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../providers/prompt_nav_provider.dart';
 import '../../../global_widgets/artleap_top_bar.dart';
 
-class PromptTopBar extends ConsumerWidget {
+class PromptTopBar extends ConsumerStatefulWidget {
   const PromptTopBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PromptTopBar> createState() => _PromptTopBarState();
+}
+
+class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _heightAnimation;
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _heightAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _toggleExpansion() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentNav = ref.watch(promptNavProvider);
 
     return Container(
@@ -53,101 +92,130 @@ class PromptTopBar extends ConsumerWidget {
       ),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: DropdownButton<PromptNavItem>(
-        value: currentNav,
-        isExpanded: true,
-        underline: const SizedBox(), // Remove default underline
-        dropdownColor: Colors.white, // Background color of dropdown menu
-        icon: Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Icon(
-            Icons.arrow_drop_down,
-            color: Colors.grey.shade700,
+    return Column(
+      children: [
+        // Selected option card
+        GestureDetector(
+          onTap: _toggleExpansion,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFFD59FFF),
+                        const Color(0xFF875EFF),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      options.firstWhere((opt) => opt.value == currentNav).icon,
+                      height: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  options.firstWhere((opt) => opt.value == currentNav).label,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                const Spacer(),
+                RotationTransition(
+                  turns: Tween(begin: 0.0, end: 0.5).animate(_heightAnimation),
+                  child: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        items: options.map((option) {
-          return DropdownMenuItem<PromptNavItem>(
-            value: option.value,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  Image.asset(
-                    option.icon,
-                    height: 18,
-                    color: currentNav == option.value ? const Color(0xFF923CFF) : Colors.black87,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    option.label,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: currentNav == option.value ? const Color(0xFF923CFF) : Colors.black87,
-                      fontWeight: currentNav == option.value ? FontWeight.w600 : FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-        onChanged: (value) {
-          if (value != null) {
-            ref.read(promptNavProvider.notifier).setNavItem(value);
-          }
-        },
-        selectedItemBuilder: (BuildContext context) {
-          return options.map((option) {
-            return Container(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        gradient: currentNav == option.value
-                            ? LinearGradient(colors: [
-                          Color(0xFFD59FFF),
-                          Color(0xFF875EFF),
-                        ])
-                            : LinearGradient(colors: [
-                          Color(0xFFCFC1F7),
-                          Color(0xFFCFC1F7),
-                        ]),
-                        borderRadius: BorderRadius.circular(12),
-                        // Removed the border property
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          option.icon,
-                          height: 18,
-                          color: currentNav == option.value ? Colors.white : Colors.black87,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      option.label,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: currentNav == option.value ? const Color(0xFF923CFF) : Colors.black87,
-                        fontWeight: currentNav == option.value ? FontWeight.w600 : FontWeight.normal,
-                      ),
-                    ),
-                  ],
+        const SizedBox(height: 4),
+        // Dropdown options
+        SizeTransition(
+          sizeFactor: _heightAnimation,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
-              ),
-            );
-          }).toList();
-        },
-      ),
+              ],
+            ),
+            child: Column(
+              children: options.where((opt) => opt.value != currentNav).map((option) {
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      ref.read(promptNavProvider.notifier).setNavItem(option.value);
+                      _toggleExpansion();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                option.icon,
+                                height: 18,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            option.label,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

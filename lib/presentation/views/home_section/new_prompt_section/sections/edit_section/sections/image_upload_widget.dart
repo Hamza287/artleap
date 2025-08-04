@@ -24,7 +24,7 @@ class ImageUploadContainer extends ConsumerWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
-        border: Border.all(color: Colors.grey.shade600),
+        border: Border.all(color: Colors.grey[200]!),
       ),
       child: Stack(
         children: [
@@ -48,13 +48,13 @@ class ImageUploadContainer extends ConsumerWidget {
                   Icon(
                     Icons.add_photo_alternate_outlined,
                     size: isLargeScreen ? 100 : 100,
-                    color: const Color(0xFFBC95FA),
+                    color: Colors.grey[200],
                   ),
                   const SizedBox(height: 10),
-                  const Text(
+                  Text(
                     "Upload Image",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.grey[200],
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),

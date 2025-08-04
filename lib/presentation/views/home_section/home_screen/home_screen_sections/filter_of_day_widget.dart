@@ -20,7 +20,7 @@ class FilterOfTheDay extends StatelessWidget {
               'Filters of Day',
               style: AppTextstyle.interMedium(
                 fontSize: 18,
-                color: AppColors.black,
+                color: Colors.grey[200]!,
               ),
             ),
           ),
@@ -29,7 +29,7 @@ class FilterOfTheDay extends StatelessWidget {
             height: 289,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color:const Color(0xFFE9EBF5) ,
+              color:Colors.grey[200],
             ),
             child: Stack(
               children: [
@@ -40,25 +40,26 @@ class FilterOfTheDay extends StatelessWidget {
                   child: Container(
                     height: 60,
                     decoration: BoxDecoration(
-                      gradient: RadialGradient(
-                        tileMode: TileMode.clamp,
-                          radius: 2,
-                          colors: [
-                        Color(0xFFD4BEFF),
-                        Color(0xFF683FEA),
-                          ],
-                      ),
+                      color: Colors.grey[200],
+                      // gradient: RadialGradient(
+                      //   tileMode: TileMode.clamp,
+                      //     radius: 2,
+                      //     colors: [
+                      //   Color(0xFFD4BEFF),
+                      //   Color(0xFF683FEA),
+                      //     ],
+                      // ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.purple.withOpacity(0.3),
+                          color: Colors.grey[200]!,
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
                       ],
                     ),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,

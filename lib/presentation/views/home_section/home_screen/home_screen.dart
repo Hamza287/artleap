@@ -69,7 +69,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 24),
               const PromptTemplates(),
               const SizedBox(height: 24),
-              const PromoBanner(),
+              // const PromoBanner(),
             ],
           ),
         ),

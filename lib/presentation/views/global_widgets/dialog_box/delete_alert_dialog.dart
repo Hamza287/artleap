@@ -36,23 +36,23 @@ class DeleteAlertDialog extends ConsumerWidget {
           children: [
             // Warning Icon
             Container(
-              width: 72,
-              height: 72,
+              width: 92,
+              height: 92,
               decoration: BoxDecoration(
-                color: AppColors.lightBlue.withOpacity(0.2),
+                color: AppColors.redColor.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.warning_rounded,
+                Icons.delete_outline_sharp,
                 size: 36,
-                color: AppColors.darkBlue,
+                color: AppColors.redColor,
               ),
             ),
             const SizedBox(height: 24),
 
             // Title
             Text(
-              'Delete Confirmation',
+              'Are you sure you want to delete this ?',
               style: AppTextstyle.interBold(
                 fontSize: 20,
                 color: AppColors.darkBlue,
@@ -63,7 +63,7 @@ class DeleteAlertDialog extends ConsumerWidget {
 
             // Message
             Text(
-              'Are you sure you want to delete this image? This action cannot be undone.',
+              'You are deleting this image. This action cant be undone later.',
               style: AppTextstyle.interRegular(
                 fontSize: 16,
                 color: AppColors.darkBlue.withOpacity(0.8),
@@ -89,7 +89,7 @@ class DeleteAlertDialog extends ConsumerWidget {
                     ),
                     child: Text(
                       'Cancel',
-                      style: AppTextstyle.interBold(
+                      style: AppTextstyle.interMedium(
                         color: AppColors.darkBlue,
                         fontSize: 16,
                       ),
@@ -119,7 +119,7 @@ class DeleteAlertDialog extends ConsumerWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkBlue,
+                      backgroundColor: AppColors.redColor,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -128,7 +128,7 @@ class DeleteAlertDialog extends ConsumerWidget {
                     ),
                     child: Text(
                       'Delete',
-                      style: AppTextstyle.interBold(
+                      style: AppTextstyle.interMedium(
                         color: Colors.white,
                         fontSize: 16,
                       ),

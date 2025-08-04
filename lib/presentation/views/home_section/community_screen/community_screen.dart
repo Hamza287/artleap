@@ -98,30 +98,6 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
         appBar: CommonAppBar(
           title: _getAppBarTitle(0), // Using 0 for home page
           listOfColors: _getAppBarColors(0),
-          // actions: [
-          //   Consumer(
-          //     builder: (context, ref, _) {
-          //       final userId = UserData.ins.userId;
-          //       if (userId == null) return const SizedBox();
-          //
-          //       final notifications = ref.watch(notificationProvider(userId));
-          //       final unreadCount = notifications.maybeWhen(
-          //         data: (notifs) => notifs.where((n) => !n.isRead).length,
-          //         orElse: () => 0,
-          //       );
-          //
-          //       return IconButton(
-          //         icon: Badge(
-          //           label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-          //           child: const Icon(Icons.notifications, color: AppColors.black),
-          //         ),
-          //         onPressed: () {
-          //           Navigator.pushNamed(context, NotificationScreen.routeName);
-          //         },
-          //       );
-          //     },
-          //   ),
-          // ],
           bottomWidget: Column(
             children: [
               10.spaceY,

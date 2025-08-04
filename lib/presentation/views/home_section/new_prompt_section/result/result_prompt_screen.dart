@@ -15,7 +15,8 @@ class ResultScreenRedesign extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
-    final generatedTextToImageData = ref.watch(generateImageProvider).generatedTextToImageData;
+    final generatedTextToImageData =
+        ref.watch(generateImageProvider).generatedTextToImageData;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
     return Scaffold(
@@ -47,9 +48,12 @@ class ResultScreenRedesign extends ConsumerWidget {
                       ref.read(generateImageProvider).clearGeneratedData();
                       Navigator.pop(context);
                     },
-                      icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                   ),
-                  Text('Back',style: AppTextstyle.interMedium(fontSize: 20),)
+                  Text(
+                    'Back',
+                    style: AppTextstyle.interMedium(fontSize: 20),
+                  )
                 ],
               ),
             ),
@@ -62,21 +66,21 @@ class ResultScreenRedesign extends ConsumerWidget {
               _buildSingleImageResult(
                   context, ref, generatedTextToImageData[0]!)
             else if (generatedTextToImageData.length > 1)
-              _buildMultipleImagesResult(context, ref, generatedTextToImageData)
-            else if (generatedImages.isNotEmpty && generatedImages.length == 1)
-              _buildSingleGeneratedImage(context, ref, generatedImages[0]!)
-            else if (generatedImages.length > 1)
-              _buildMultipleGeneratedImages(context, ref, generatedImages)
-            else
-              Container(
-                height: 300,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Center(child: Text("No generated images")),
-              ),
+                _buildMultipleImagesResult(context, ref, generatedTextToImageData)
+              else if (generatedImages.isNotEmpty && generatedImages.length == 1)
+                  _buildSingleGeneratedImage(context, ref, generatedImages[0]!)
+                else if (generatedImages.length > 1)
+                    _buildMultipleGeneratedImages(context, ref, generatedImages)
+                  else
+                    Container(
+                      height: 300,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Center(child: Text("No generated images")),
+                    ),
 
             const SizedBox(height: 16),
             // Action Buttons with Shimmer
@@ -86,10 +90,9 @@ class ResultScreenRedesign extends ConsumerWidget {
             //   Row(
             //     mainAxisAlignment: MainAxisAlignment.spaceAround,
             //     children: [
-            //       _iconButton(Icons.share_outlined, onPressed: () {}),
-            //       _iconButton(Icons.download_outlined, onPressed: () {}),
-            //       _iconButton(Icons.delete_outline,
-            //           onPressed: () {}, isDelete: true),
+            //       _comingSoonIconButton(Icons.share_outlined),
+            //       _comingSoonIconButton(Icons.download_outlined),
+            //       _comingSoonIconButton(Icons.delete_outline, isDelete: true),
             //     ],
             //   ),
 
@@ -98,63 +101,20 @@ class ResultScreenRedesign extends ConsumerWidget {
             if (isLoading)
               _buildShimmerContainer(56)
             else
-              Container(
-                width: double.infinity,
-                height: 56,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF9B59FF), Color(0xFF7F51F5)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.deepPurple.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    ref.read(generateImageProvider).generateTextToImage();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Re-Generate",
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.auto_awesome, color: Colors.white),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0),
-                        child: Row(
-                          children: [
-                            Image.asset(AppAssets.stackofcoins,width: 30,height: 30,),
-                            const SizedBox(width: 4),
-                            const Text("20", style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+              _comingSoonPrimaryButton(
+                icon: Icons.auto_awesome,
+                label: "Re Generate",
               ),
 
             const SizedBox(height: 20),
-// Prompt Section with Shimmer
+            // Prompt Section with Shimmer
             if (isLoading)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildShimmerContainer(20, width: 100),
                   const SizedBox(height: 8),
-                  _buildShimmerContainer(200), // Updated height
+                  _buildShimmerContainer(200),
                 ],
               )
             else
@@ -169,7 +129,7 @@ class ResultScreenRedesign extends ConsumerWidget {
                   const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
-                    height: 200, // Fixed height
+                    height: 200,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -181,34 +141,26 @@ class ResultScreenRedesign extends ConsumerWidget {
                         SingleChildScrollView(
                           child: Text(
                             ref
-                                    .watch(generateImageProvider)
-                                    .promptTextController
-                                    .text
-                                    .isNotEmpty
+                                .watch(generateImageProvider)
+                                .promptTextController
+                                .text
+                                .isNotEmpty
                                 ? ref
-                                    .watch(generateImageProvider)
-                                    .promptTextController
-                                    .text
+                                .watch(generateImageProvider)
+                                .promptTextController
+                                .text
                                 : generatedImages.isNotEmpty
-                                    ? generatedImages[0]!.prompt
-                                    : "No prompt available",
+                                ? generatedImages[0]!.prompt
+                                : "No prompt available",
                             style: const TextStyle(fontSize: 16),
                           ),
                         ),
                         Positioned(
                           bottom: 0,
                           right: 0,
-                          child: TextButton.icon(
-                            onPressed: () {
-                              // TODO: Implement edit prompt functionality
-                            },
-                            icon: const Icon(Icons.edit_outlined, size: 18),
-                            label: const Text("Edit Prompt"),
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                            ),
+                          child: _comingSoonTextButton(
+                            icon: Icons.edit_outlined,
+                            label: "Edit Prompt",
                           ),
                         ),
                       ],
@@ -222,10 +174,9 @@ class ResultScreenRedesign extends ConsumerWidget {
             if (isLoading)
               _buildShimmerContainer(56)
             else
-              _primaryActionButton(
+              _comingSoonPrimaryButton(
                 icon: Icons.open_in_full,
                 label: "Upscale",
-                onPressed: () {},
               ),
 
             const SizedBox(height: 12),
@@ -233,10 +184,9 @@ class ResultScreenRedesign extends ConsumerWidget {
             if (isLoading)
               _buildShimmerContainer(56)
             else
-              _primaryActionButton(
+              _comingSoonPrimaryButton(
                 icon: Icons.brush_outlined,
                 label: "Add/ Remove Object",
-                onPressed: () {},
               ),
 
             const SizedBox(height: 80),
@@ -257,7 +207,7 @@ class ResultScreenRedesign extends ConsumerWidget {
               imageId: imageData.id,
               modelName: ref.watch(generateImageProvider).selectedStyle,
               prompt:
-                  ref.watch(generateImageProvider).promptTextController.text,
+              ref.watch(generateImageProvider).promptTextController.text,
               image: imageData.imageUrl,
             ));
       },
@@ -273,7 +223,7 @@ class ResultScreenRedesign extends ConsumerWidget {
             imageUrl: imageData.imageUrl,
             placeholder: (_, __) => _buildShimmerContainer(300),
             errorWidget: (_, __, error) =>
-                Icon(Icons.error_outline, color: Colors.red),
+            const Icon(Icons.error_outline, color: Colors.red),
           ),
         ),
       ),
@@ -322,7 +272,7 @@ class ResultScreenRedesign extends ConsumerWidget {
                   imageUrl: images[index]!.imageUrl,
                   placeholder: (_, __) => _buildShimmerContainer(155),
                   errorWidget: (_, __, error) =>
-                      Icon(Icons.error_outline, color: Colors.red),
+                  const Icon(Icons.error_outline, color: Colors.red),
                 ),
               ),
             );
@@ -357,7 +307,7 @@ class ResultScreenRedesign extends ConsumerWidget {
             imageUrl: image.imageUrl,
             placeholder: (_, __) => _buildShimmerContainer(300),
             errorWidget: (_, __, error) =>
-                Icon(Icons.error_outline, color: Colors.red),
+            const Icon(Icons.error_outline, color: Colors.red),
           ),
         ),
       ),
@@ -402,7 +352,7 @@ class ResultScreenRedesign extends ConsumerWidget {
                   imageUrl: images[index]!.imageUrl,
                   placeholder: (_, __) => _buildShimmerContainer(155),
                   errorWidget: (_, __, error) =>
-                      Icon(Icons.error_outline, color: Colors.red),
+                  const Icon(Icons.error_outline, color: Colors.red),
                 ),
               ),
             );
@@ -427,61 +377,70 @@ class ResultScreenRedesign extends ConsumerWidget {
     );
   }
 
-  // Widget _buildShimmerActionButtons() {
-  //   return Shimmer.fromColors(
-  //     baseColor: Colors.grey[300]!,
-  //     highlightColor: Colors.grey[100]!,
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //       children: List.generate(
-  //           3,
-  //           (index) => Container(
-  //                 height: 50,
-  //                 width: 50,
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.white,
-  //                   borderRadius: BorderRadius.circular(12),
-  //                 ),
-  //               )),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _iconButton(IconData icon,
-  //     {required VoidCallback onPressed, bool isDelete = false}) {
-  //   return Container(
-  //     height: 50,
-  //     width: 50,
-  //     decoration: BoxDecoration(
-  //       color: isDelete ? Colors.transparent : Colors.white,
-  //       border: Border.all(
-  //         color: isDelete ? Colors.red : Colors.grey.shade300,
-  //       ),
-  //       borderRadius: BorderRadius.circular(12),
-  //     ),
-  //     child: IconButton(
-  //       icon: Icon(icon, color: isDelete ? Colors.red : Colors.black),
-  //       onPressed: onPressed,
-  //     ),
-  //   );
-  // }
+  Widget _buildShimmerActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _buildShimmerContainer(40, width: 40),
+        _buildShimmerContainer(40, width: 40),
+        _buildShimmerContainer(40, width: 40),
+      ],
+    );
+  }
 
-  Widget _primaryActionButton(
-      {required IconData icon,
-      required String label,
-      required VoidCallback onPressed}) {
+  Widget _comingSoonIconButton(IconData icon, {bool isDelete = false}) {
+    return Tooltip(
+      message: "Coming soon",
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey[200],
+        ),
+        child: IconButton(
+          icon: Icon(icon,
+              color: isDelete ? Colors.grey[600] : Colors.grey[600]),
+          onPressed: null,
+          disabledColor: Colors.grey[200],
+        ),
+      ),
+    );
+  }
+
+  Widget _comingSoonTextButton({
+    required IconData icon,
+    required String label,
+  }) {
+    return Tooltip(
+      message: "Coming soon",
+      child: TextButton.icon(
+        onPressed: null,
+        icon: Icon(icon, size: 18, color: Colors.grey),
+        label: Text(label, style: const TextStyle(color: Colors.grey)),
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        ),
+      ),
+    );
+  }
+
+  Widget _comingSoonPrimaryButton({
+    required IconData icon,
+    required String label,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon),
-        label: Text(label),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF9B59FF),
-          foregroundColor: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Tooltip(
+        message: "Coming soon",
+        child: ElevatedButton.icon(
+          onPressed: null,
+          icon: Icon(icon, color: Colors.grey),
+          label: Text(label, style: const TextStyle(color: Colors.grey)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey[200],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+          ),
         ),
       ),
     );

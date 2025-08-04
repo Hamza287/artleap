@@ -39,7 +39,7 @@ class ActionButtons extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  isActive ? 'Change Plan' : 'Subscribe Now',
+                  isActive && subscription!.planSnapshot?.name != 'Free' ? 'Change Plan' : 'Subscribe Now',
                   style: AppTextstyle.interBold(
                     fontSize: 16,
                     color: Colors.white,
@@ -48,7 +48,7 @@ class ActionButtons extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (isActive && subscription != null)
+            if (isActive && subscription!.planSnapshot?.name != 'Free')
               SizedBox(
                 width: double.infinity,
                 height: 50,

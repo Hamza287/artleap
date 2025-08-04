@@ -40,11 +40,13 @@ class BillingSection extends StatelessWidget {
                 value: DateFormat('MMMM d, y').format(subscription.startDate),
               ),
               const Divider(height: 24, thickness: 0.5),
-              _buildBillingRow(
-                icon: Icons.calendar_today,
-                title: 'End Date',
-                value: DateFormat('MMMM d, y').format(subscription.endDate),
-              ),
+              if(subscription.isActive && subscription.planSnapshot?.name != 'Free') ... [
+                _buildBillingRow(
+                  icon: Icons.calendar_today,
+                  title: 'End Date',
+                  value: DateFormat('MMMM d, y').format(subscription.endDate),
+                ),
+              ],
               if (subscription.paymentMethod != null) ...[
                 const Divider(height: 24, thickness: 0.5),
                 _buildBillingRow(

@@ -2,7 +2,6 @@ import 'package:Artleap.ai/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/prompt_edit_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'sections/action_button_row.dart';
 import 'sections/feature_button_row.dart';
 import 'sections/image_upload_widget.dart';
@@ -39,7 +38,8 @@ class PromptEditScreen extends ConsumerWidget {
 
                     // Image Upload Container with GestureDetector
                     GestureDetector(
-                      onTap: () => ref.read(promptEditProvider.notifier).pickImage(),
+                      onTap: null,
+                      // onTap: () => ref.read(promptEditProvider.notifier).pickImage(),
                       child: ImageUploadContainer(
                         isLargeScreen: isLargeScreen,
                         maxHeight: constraints.maxHeight,
@@ -60,7 +60,7 @@ class PromptEditScreen extends ConsumerWidget {
                         "Draw on the image above to select it and add a prompt to add or replace an object",
                         style: AppTextstyle.interBold(
                             fontSize: isSmallScreen ? 12 : 13,
-                            color: Colors.black),
+                            color: Colors.grey[200]!),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -70,12 +70,12 @@ class PromptEditScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text("Prompt",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
+                                    color: Colors.grey[200])),
                           ),
                           const SizedBox(height: 8),
                           Container(
@@ -85,7 +85,7 @@ class PromptEditScreen extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.black54),
+                              border: Border.all(color: Colors.grey[200]!),
                             ),
                             child: const Stack(
                               children: [
@@ -105,7 +105,7 @@ class PromptEditScreen extends ConsumerWidget {
                         width: double.infinity,
                         height: isLargeScreen ? 64 : 56,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: null,
                           style: ElevatedButton.styleFrom(
                             elevation: 5,
                             shape: RoundedRectangleBorder(
@@ -113,7 +113,7 @@ class PromptEditScreen extends ConsumerWidget {
                             ),
                             padding: EdgeInsets.symmetric(
                                 horizontal: isSmallScreen ? 12 : 20),
-                            backgroundColor: const Color(0xFF9A57FF),
+                            backgroundColor: Colors.grey[200]!,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

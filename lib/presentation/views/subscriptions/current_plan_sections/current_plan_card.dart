@@ -17,6 +17,13 @@ class CurrentPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate remaining credits safely
+    final totalCredits = subscription?.planSnapshot?.totalCredits ?? 0;
+    final usedCredits = (subscription?.usedImageCredits ?? 0) + (subscription?.usedPromptCredits ?? 0);
+    final remainingCredits = totalCredits - usedCredits;
+    final progressValue = totalCredits > 0 ? remainingCredits / totalCredits : 0;
+    final percentageRemaining = (progressValue * 100).toStringAsFixed(0);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -63,14 +70,9 @@ class CurrentPlanCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 15),
-          if (isActive && subscription?.plan != null) ...[
+          if (isActive && subscription?.planSnapshot != null) ...[
             LinearProgressIndicator(
-              value: subscription!.plan!.totalCredits > 0
-                  ? (subscription!.plan!.totalCredits -
-                  (subscription!.usedImageCredits +
-                      subscription!.usedPromptCredits)) /
-                  subscription!.plan!.totalCredits
-                  : 0,
+              value: progressValue.toDouble(),
               backgroundColor: AppColors.white.withOpacity(0.5),
               valueColor: AlwaysStoppedAnimation<Color>(_getPlanColor(planName)),
               minHeight: 8,
@@ -81,21 +83,33 @@ class CurrentPlanCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${(subscription!.plan!.totalCredits).toInt()} of ${subscription!.plan!.totalCredits + (subscription!.usedImageCredits + subscription!.usedPromptCredits)} credits left',
+                  totalCredits > 0
+                      ? '$remainingCredits of $totalCredits credits left'
+                      : 'No credits available',
                   style: AppTextstyle.interRegular(
                     fontSize: 14,
                     color: AppColors.darkBlue.withOpacity(0.7),
                   ),
                 ),
-                Text(
-                  '${(((subscription!.plan!.totalCredits - (subscription!.usedImageCredits + subscription!.usedPromptCredits)) / subscription!.plan!.totalCredits) * 100).toStringAsFixed(0)}% remaining',
-                  style: AppTextstyle.interMedium(
-                    fontSize: 14,
-                    color: AppColors.darkBlue,
+                if (totalCredits > 0)
+                  Text(
+                    '$percentageRemaining% remaining',
+                    style: AppTextstyle.interMedium(
+                      fontSize: 14,
+                      color: AppColors.darkBlue,
+                    ),
                   ),
-                ),
               ],
             ),
+            const SizedBox(height: 10),
+            if (subscription!.planSnapshot!.googleProductId != null)
+              Text(
+                'Product ID: ${subscription!.planSnapshot!.googleProductId}',
+                style: AppTextstyle.interRegular(
+                  fontSize: 12,
+                  color: AppColors.darkBlue.withOpacity(0.5),
+                ),
+              ),
           ] else ...[
             const SizedBox(height: 10),
             Text(
@@ -114,11 +128,13 @@ class CurrentPlanCard extends StatelessWidget {
   Color _getPlanColor(String planName) {
     switch (planName.toLowerCase()) {
       case 'premium':
+      case 'weekly pro':
         return AppColors.purple;
       case 'pro':
       case 'monthly pro':
       case 'standard':
         return AppColors.blue;
+      case 'yearly pro':
       case 'basic':
         return AppColors.green;
       default:

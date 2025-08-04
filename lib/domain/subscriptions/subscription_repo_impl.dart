@@ -14,6 +14,7 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
         AppApiPaths.getSubscriptionPlans,
         enableLocalPersistence: enableLocalPersistence,
       );
+      print('response of the plans data ${response}' );
       final result = HandlingResponse.returnResponse(response);
       if (result.status == Status.processing) {
         return ApiResponse.processing("Fetching plans...");
@@ -38,7 +39,6 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
         data,
         enableLocalPersistence: enableLocalPersistence,
       );
-      print(response);
       final result = HandlingResponse.returnResponse(response);
       if (result.status == Status.processing) {
         return ApiResponse.processing("Subscribing...");
@@ -83,7 +83,6 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
         data,
         enableLocalPersistence: enableLocalPersistence,
       );
-      print(response);
       final result = HandlingResponse.returnResponse(response);
       if (result.status == Status.processing) {
         return ApiResponse.processing("Canceling subscription...");
@@ -101,17 +100,14 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
   @override
   Future<ApiResponse> getCurrentSubscription(String userId, {bool enableLocalPersistence = false}) async {
     try {
-      // Send userId as a query parameter
       final response = await artleapApiService.get(
         '${AppApiPaths.getCurrentSubscription}?userId=$userId',
         enableLocalPersistence: enableLocalPersistence,
       );
       final result = HandlingResponse.returnResponse(response);
-
       if (result.status == Status.processing) {
         return ApiResponse.processing("Fetching subscription...");
       } else if (result.status == Status.completed) {
-        print(response.data['data']);
         if (response.data['data'] != null) {
           final data = await Isolate.run(() => UserSubscriptionModel.fromJson(response.data['data']));
           return ApiResponse.completed(data);
@@ -121,7 +117,7 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
       } else {
         return result;
       }
-    } on DioException catch (e) {;
+    } on DioException catch (e) {
       return HandlingResponse.returnException(e);
     }
   }
@@ -130,7 +126,7 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
   Future<ApiResponse> checkGenerationLimits(String userId, String generationType, {bool enableLocalPersistence = false}) async {
     try {
       final response = await artleapApiService.get(
-        '${AppApiPaths.checkGenerationLimits}$generationType',
+        '${AppApiPaths.checkGenerationLimits}?userId=$userId&generationType=$generationType',
         enableLocalPersistence: enableLocalPersistence,
       );
       final result = HandlingResponse.returnResponse(response);

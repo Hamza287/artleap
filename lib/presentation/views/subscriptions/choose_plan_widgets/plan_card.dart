@@ -20,80 +20,84 @@ class PlanCard extends StatelessWidget {
     return GestureDetector(
       onTap: onSelect,
       child: Container(
-        width: 280,
-        height: 480,
-        margin: const EdgeInsets.only(right: 16),
+        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          color: const Color(0xFF000000),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.purple : Colors.black.withOpacity(0.1),
-            width: isSelected ? 2 : 1,
+            color: isSelected ? const Color(0xFFAD6CFF) : Colors.transparent,
+            width: 2,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.purple : Colors.grey.withOpacity(0.2),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            // Plan title
+            Center(
+              child: Text(
+                plan.name,
+                style: AppTextstyle.interBold(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
+            ),
+            const SizedBox(height: 16),
+
+            // Price and period
+            Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    plan.name,
+                    '\$${plan.price.toStringAsFixed(0)}',
                     style: AppTextstyle.interBold(
-                      fontSize: 20,
-                      color: isSelected ? Colors.white : Colors.black,
+                      fontSize: 36,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    plan.description,
-                    style: AppTextstyle.interRegular(
-                      fontSize: 14,
-                      color: isSelected ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '\$${plan.price.toStringAsFixed(2)}/${_getPlanPeriod(plan.type)}',
+                    'per editor/month\nbilled monthly',
                     style: AppTextstyle.interMedium(
                       fontSize: 14,
-                      color: isSelected ? Colors.white : Colors.black,
+                      color: Colors.white.withOpacity(0.8),
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Plan Features',
-                        style: AppTextstyle.interBold(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ...plan.features.map((feature) => _featureRow(feature)).toList(),
-                      const SizedBox(height: 16),
-                      _featureRow('Image Generations: ${plan.imageGenerationCredits}'),
-                      _featureRow('Prompt Generations: ${plan.promptGenerationCredits}'),
-                      _featureRow('Total Credits: ${plan.totalCredits}'),
-                    ],
+            const SizedBox(height: 24),
+
+            // Features
+            ...plan.features.map((feature) => _featureRow(feature)).toList(),
+            const SizedBox(height: 16),
+            _featureRow('Image Generations: ${plan.imageGenerationCredits}'),
+            _featureRow('Text Variations: ${plan.promptGenerationCredits}'),
+            _featureRow('Total Credits: ${plan.totalCredits}'),
+
+            const SizedBox(height: 24),
+
+            // Choose Button
+            Container(
+              width: double.infinity,
+              height: 44,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white),
+              ),
+              child: const Center(
+                child: Text(
+                  "Choose Plan",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -104,39 +108,25 @@ class PlanCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Icon(
+            check ? Icons.check_circle : Icons.cancel,
+            size: 18,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               title,
-              style: AppTextstyle.interRegular(
+              style: const TextStyle(
                 fontSize: 14,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
-          ),
-          Icon(
-            check ? Icons.check : Icons.close,
-            size: 18,
-            color: check ? Colors.green : Colors.black,
           ),
         ],
       ),
     );
-  }
-
-  String _getPlanPeriod(String type) {
-    switch (type.toLowerCase()) {
-      case 'weekly':
-        return 'week';
-      case 'monthly':
-        return 'month';
-      case 'yearly':
-        return 'year';
-      case 'trial':
-        return 'trial';
-      default:
-        return '';
-    }
   }
 }

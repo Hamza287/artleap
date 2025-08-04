@@ -2,7 +2,6 @@ import '../api_services/api_response.dart';
 import '../base_repo/base.dart';
 import '../api_models/user_profile_model.dart';
 import '../subscriptions/subscription_model.dart';
-import 'package:image_picker/image_picker.dart';
 
 abstract class UserProfileRepo extends Base {
   Future<ApiResponse> followUnFollowUser(Map<String, dynamic> data,

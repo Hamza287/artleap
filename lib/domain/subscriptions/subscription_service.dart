@@ -10,13 +10,18 @@ class SubscriptionService {
     return await _subscriptionRepo.getSubscriptionPlans();
   }
 
-  Future<ApiResponse> subscribe(String userId, String planId, String paymentMethod) async {
+  Future<ApiResponse> subscribe(
+      String userId,
+      String planId,
+      String paymentMethod, {
+        Map<String, dynamic>? verificationData,
+      }) async {
     final data = {
       'userId': userId,
       'planId': planId,
       'paymentMethod': paymentMethod,
+      if (verificationData != null) 'verificationData': verificationData,
     };
-    print('data sending for subscribe $data');
     return await _subscriptionRepo.subscribe(data);
   }
 

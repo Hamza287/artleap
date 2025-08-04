@@ -59,8 +59,7 @@ class UsageSection extends StatelessWidget {
                   data: (limits) => _buildStatCard(
                     icon: Icons.auto_awesome,
                     title: 'Image Credits',
-                    value:
-                    '${limits.remaining}/${subscription?.plan?.imageGenerationCredits ?? 0}',
+                    value: '${limits.remaining}/${subscription?.planSnapshot?.imageGenerationCredits ?? 0}',
                     color: AppColors.purple,
                   ),
                 ),
@@ -80,8 +79,7 @@ class UsageSection extends StatelessWidget {
                   data: (limits) => _buildStatCard(
                     icon: Icons.text_fields,
                     title: 'Prompt Credits',
-                    value:
-                    '${limits.remaining}/${subscription?.plan?.promptGenerationCredits ?? 0}',
+                    value: '${limits.remaining}/${subscription?.planSnapshot?.promptGenerationCredits ?? 0}',
                     color: AppColors.blue,
                   ),
                 ),
