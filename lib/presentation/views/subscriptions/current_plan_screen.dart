@@ -5,6 +5,7 @@ import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import '../../../domain/subscriptions/subscription_repo_provider.dart';
+import '../../../providers/user_profile_provider.dart';
 import 'choose_plan_screen.dart';
 import 'current_plan_sections/billing_section.dart';
 import 'current_plan_sections/current_plan_card.dart';
@@ -29,11 +30,16 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
         ref.refresh(currentSubscriptionProvider(UserData.ins.userId!));
       }
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final userId = UserData.ins.userId;
+    final profileProvider = ref.watch(userProfileProvider);
+    final userPersonalData = profileProvider.userProfileData?.user;
 
     if (userId == null) {
       return Scaffold(
@@ -106,7 +112,6 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
             ),
           ),
           data: (subscription) {
-            // Handle null subscription or canceled subscription
             if (subscription == null || subscription.cancelledAt != null || !subscription.isActive) {
               return Center(
                 child: Padding(
@@ -167,6 +172,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                     planName: planName,
                     isActive: isActive,
                     subscription: subscription,
+                    userPersonalData: userPersonalData,
                   ),
                   const SizedBox(height: 30),
                   UsageSection(subscription: subscription),

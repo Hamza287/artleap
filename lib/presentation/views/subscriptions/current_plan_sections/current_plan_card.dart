@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
@@ -7,19 +8,20 @@ class CurrentPlanCard extends StatelessWidget {
   final String planName;
   final bool isActive;
   final UserSubscriptionModel? subscription;
-
+  final User? userPersonalData;
   const CurrentPlanCard({
     super.key,
     required this.planName,
     required this.isActive,
     required this.subscription,
+    this.userPersonalData,
   });
 
   @override
   Widget build(BuildContext context) {
     // Calculate remaining credits safely
     final totalCredits = subscription?.planSnapshot?.totalCredits ?? 0;
-    final usedCredits = (subscription?.usedImageCredits ?? 0) + (subscription?.usedPromptCredits ?? 0);
+    final usedCredits = (userPersonalData?.usedImageCredits ?? 0) + (userPersonalData?.usedPromptCredits ?? 0);
     final remainingCredits = totalCredits - usedCredits;
     final progressValue = totalCredits > 0 ? remainingCredits / totalCredits : 0;
     final percentageRemaining = (progressValue * 100).toStringAsFixed(0);

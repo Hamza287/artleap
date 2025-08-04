@@ -14,10 +14,12 @@ class PersonalInformationScreen extends ConsumerStatefulWidget {
   const PersonalInformationScreen({super.key});
 
   @override
-  ConsumerState<PersonalInformationScreen> createState() => _PersonalInformationScreenState();
+  ConsumerState<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
 }
 
-class _PersonalInformationScreenState extends ConsumerState<PersonalInformationScreen> {
+class _PersonalInformationScreenState
+    extends ConsumerState<PersonalInformationScreen> {
   @override
   void initState() {
     super.initState();
@@ -38,26 +40,27 @@ class _PersonalInformationScreenState extends ConsumerState<PersonalInformationS
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
-            SliverAppBar(
+              SliverAppBar(
                 expandedHeight: 280,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: user != null
-                      ? ProfileHeader(
-                    profilePic: user.profilePic,
-                    username: user.username,
-                    email: user.email,
-                  ) : Container(color: Colors.grey[200])),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.white),
-                      onPressed: null,
-                      tooltip: "Edit Profile",
-                    ),
-                  ],
-                ),
-                ];
-            },
+                    background: user != null
+                        ? ProfileHeader(
+                            profilePic: user.profilePic,
+                            username: user.username,
+                            email: user.email,
+                          )
+                        : Container(color: Colors.grey[200])),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.white),
+                    onPressed: null,
+                    tooltip: "Edit Profile",
+                  ),
+                ],
+              ),
+            ];
+          },
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -101,7 +104,7 @@ class _PersonalInformationScreenState extends ConsumerState<PersonalInformationS
     return Column(
       children: List.generate(
         4,
-            (index) => Padding(
+        (index) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Container(
             height: 100,
