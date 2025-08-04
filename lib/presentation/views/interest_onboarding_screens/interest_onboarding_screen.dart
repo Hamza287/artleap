@@ -35,6 +35,20 @@ class InterestOnboardingScreen extends ConsumerWidget {
             }
           },
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, 'login_screen');
+            },
+            child: const Text(
+              'Skip',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(

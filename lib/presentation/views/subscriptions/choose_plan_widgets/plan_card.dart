@@ -27,7 +27,7 @@ class PlanCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? const Color(0xFFAD6CFF) : Colors.transparent,
-            width: 2,
+            width: 4,
           ),
         ),
         child: Column(
@@ -80,24 +80,24 @@ class PlanCard extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Choose Button
-            Container(
-              width: double.infinity,
-              height: 44,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white),
-              ),
-              child: const Center(
-                child: Text(
-                  "Choose Plan",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            )
+            // Container(
+            //   width: double.infinity,
+            //   height: 44,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(12),
+            //     border: Border.all(color: Colors.white),
+            //   ),
+            //   child: const Center(
+            //     child: Text(
+            //       "Choose Plan",
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //       ),
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),

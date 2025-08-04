@@ -39,6 +39,7 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
         data,
         enableLocalPersistence: enableLocalPersistence,
       );
+      print("subscription response ${response}");
       final result = HandlingResponse.returnResponse(response);
       if (result.status == Status.processing) {
         return ApiResponse.processing("Subscribing...");

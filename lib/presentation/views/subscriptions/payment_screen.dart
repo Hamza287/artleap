@@ -7,6 +7,7 @@ import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
+import '../../../domain/subscriptions/plan_provider.dart';
 
 final paymentLoadingProvider = StateProvider<bool>((ref) => false);
 final termsAcceptedProvider = StateProvider<bool>((ref) => false);
@@ -50,14 +51,15 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       setState(() => _isInitialized = true);
     } catch (e) {
       if (mounted) {
-        appSnackBar('Error', 'Failed to initialize payment service: $e', Colors.red);
+        appSnackBar(
+            'Error', 'Failed to initialize payment service: $e', Colors.red);
       }
     }
   }
 
   void _listenToPurchaseUpdates() {
     _purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
-          (purchaseDetailsList) {
+      (purchaseDetailsList) {
         _handlePurchaseUpdates(purchaseDetailsList);
       },
       onError: (error) {
@@ -73,7 +75,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     for (var purchaseDetails in purchaseDetailsList) {
       switch (purchaseDetails.status) {
         case PurchaseStatus.pending:
-        // Purchase is pending - no action needed
+          // Purchase is pending - no action needed
           break;
         case PurchaseStatus.canceled:
           ref.read(paymentLoadingProvider.notifier).state = false;
@@ -87,13 +89,12 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
             appSnackBar(
                 'Error',
                 'Purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
-                Colors.red
-            );
+                Colors.red);
           }
           break;
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-        // Success case - handled by your main purchase stream
+          // Success case - handled by your main purchase stream
           break;
       }
     }
@@ -106,7 +107,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     }
 
     if (!ref.read(termsAcceptedProvider)) {
-      appSnackBar('Error', 'Please accept the terms and conditions', Colors.red);
+      appSnackBar(
+          'Error', 'Please accept the terms and conditions', Colors.red);
       return;
     }
 
@@ -114,7 +116,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
     try {
       final productId = widget.plan.googleProductId;
-      final ProductDetailsResponse response = await InAppPurchase.instance.queryProductDetails({productId});
+      final ProductDetailsResponse response =
+          await InAppPurchase.instance.queryProductDetails({productId});
 
       if (response.notFoundIDs.isNotEmpty) {
         if (mounted) {
@@ -133,8 +136,10 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       }
 
       final ProductDetails productDetails = response.productDetails.first;
-      final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
-      final bool purchaseInitiated = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+      final PurchaseParam purchaseParam =
+          PurchaseParam(productDetails: productDetails);
+      final bool purchaseInitiated = await InAppPurchase.instance
+          .buyNonConsumable(purchaseParam: purchaseParam);
 
       if (!purchaseInitiated && mounted) {
         appSnackBar('Error', 'Failed to initiate purchase', Colors.red);
@@ -171,7 +176,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       appBar: AppBar(
         title: Text(
           'Confirm Purchase',
-          style: AppTextstyle.interBold(fontSize: 20, color: AppColors.darkBlue),
+          style:
+              AppTextstyle.interBold(fontSize: 20, color: AppColors.darkBlue),
         ),
         centerTitle: true,
         elevation: 0,
@@ -225,23 +231,24 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                     ),
                     const SizedBox(height: 10),
                     ...widget.plan.features.take(3).map((feature) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.check, size: 16, color: AppColors.purple),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              feature,
-                              style: AppTextstyle.interRegular(
-                                fontSize: 14,
-                                color: AppColors.darkBlue,
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.check,
+                                  size: 16, color: AppColors.purple),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  feature,
+                                  style: AppTextstyle.interRegular(
+                                    fontSize: 14,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ],
                 ),
               ),
@@ -259,22 +266,23 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.darkBlue,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.purple,
+                    color: Colors.red,
                     width: 2,
                   ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.android, size: 24, color: AppColors.purple),
+                    const Icon(Icons.android,
+                        size: 24, color: AppColors.white),
                     const SizedBox(width: 16),
                     Text(
                       'Google Pay',
                       style: AppTextstyle.interMedium(
                         fontSize: 16,
-                        color: AppColors.darkBlue,
+                        color: AppColors.white,
                       ),
                     ),
                   ],
@@ -328,9 +336,15 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: (!_isInitialized || isLoading || !ref.read(termsAcceptedProvider))
+                  onPressed: (!_isInitialized ||
+                          isLoading ||
+                          !ref.read(termsAcceptedProvider))
                       ? null
-                      : _handleSubscription,
+                      : () async {
+                          ref.read(selectedPlanProvider.notifier).state =
+                              widget.plan;
+                          await _handleSubscription();
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.purple,
                     shape: RoundedRectangleBorder(
@@ -341,12 +355,12 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                   child: isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
-                    'Subscribe Now',
-                    style: AppTextstyle.interBold(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
+                          'Subscribe Now',
+                          style: AppTextstyle.interBold(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
             ],

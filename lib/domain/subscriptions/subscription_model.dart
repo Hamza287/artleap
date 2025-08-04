@@ -1,6 +1,7 @@
 class SubscriptionPlanModel {
   final String id;
   final String googleProductId;
+  final String basePlanId;
   final String name;
   final String type;
   final String description;
@@ -17,6 +18,7 @@ class SubscriptionPlanModel {
   SubscriptionPlanModel({
     required this.id,
     required this.googleProductId,
+    required this.basePlanId,
     required this.name,
     required this.type,
     required this.description,
@@ -35,6 +37,7 @@ class SubscriptionPlanModel {
     return SubscriptionPlanModel(
       id: json['_id'] ?? '',
       googleProductId: json['googleProductId'] ?? '',
+      basePlanId: json['basePlanId'] ?? '',
       name: json['name'] ?? '',
       type: json['type'] ?? '',
       description: json['description'] ?? '',
@@ -54,6 +57,7 @@ class SubscriptionPlanModel {
     return {
       '_id': id,
       'googleProductId': googleProductId,
+      'basePlanId': basePlanId,
       'name': name,
       'type': type,
       'description': description,

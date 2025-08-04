@@ -7,11 +7,11 @@ class Step2 extends ConsumerWidget {
   const Step2({super.key});
 
   final List<String> roles = const [
-    'Freelancer',
-    'Content Creator',
-    'Teacher & Instructor',
-    'Social Media Specialist',
-    'Student'
+    'Graphic Designer',
+    'Photographer',
+    'Video Editor',
+    'Illustrator',
+    'Animator'
   ];
 
   @override

@@ -21,6 +21,7 @@ class PlanSelectionContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final plansAsync = ref.watch(subscriptionPlansProvider);
     final selectedPlan = ref.watch(selectedPlanProvider);
+    final pageController = PageController(); // Moved here to sync with tabs
 
     return plansAsync.when(
       loading: () => const LoadingState(),
@@ -33,7 +34,11 @@ class PlanSelectionContent extends ConsumerWidget {
             subtitle: 'No Active Plans Founded',
           );
         }
-        return PlanListContent(plans: plans, selectedPlan: selectedPlan);
+        return PlanListContent(
+          plans: plans,
+          selectedPlan: selectedPlan,
+          pageController: pageController, // Pass controller to sync
+        );
       },
     );
   }
@@ -42,11 +47,13 @@ class PlanSelectionContent extends ConsumerWidget {
 class PlanListContent extends ConsumerWidget {
   final List<SubscriptionPlanModel> plans;
   final SubscriptionPlanModel? selectedPlan;
+  final PageController pageController;
 
   const PlanListContent({
     super.key,
     required this.plans,
     required this.selectedPlan,
+    required this.pageController,
   });
 
   @override
@@ -62,7 +69,6 @@ class PlanListContent extends ConsumerWidget {
         .where((plan) => plan.type.toLowerCase().contains('premium'))
         .toList();
 
-    final pageController = PageController();
     final currentTabIndex = ref.watch(currentTabIndexProvider);
 
     return Scaffold(
@@ -107,9 +113,9 @@ class PlanListContent extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildPlanTab(ref, 'Basic', 0),
-                _buildPlanTab(ref, 'Standard', 1),
-                _buildPlanTab(ref, 'Premium', 2),
+                _buildPlanTab(ref, 'Basic', 0, pageController),
+                _buildPlanTab(ref, 'Standard', 1, pageController),
+                _buildPlanTab(ref, 'Premium', 2, pageController),
               ],
             ),
           ),
@@ -131,18 +137,23 @@ class PlanListContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildPlanTab(WidgetRef ref, String title, int index) {
+  Widget _buildPlanTab(WidgetRef ref, String title, int index, PageController pageController) {
     final currentTabIndex = ref.watch(currentTabIndexProvider);
 
     return GestureDetector(
       onTap: () {
         ref.read(currentTabIndexProvider.notifier).state = index;
+        pageController.animateToPage(
+          index,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           color: currentTabIndex == index
-              ? AppColors.purple.withOpacity(0.2)
+              ? AppColors.purple.withOpacity(0.3) // Slightly darker for visibility
               : Colors.transparent,
           borderRadius: BorderRadius.circular(30),
         ),
@@ -183,16 +194,16 @@ class PlanListContent extends ConsumerWidget {
             const SizedBox(height: 10),
             ...plans
                 .map((plan) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 0),
-                      child: PlanCard(
-                        plan: plan,
-                        isSelected: selectedPlan?.id == plan.id,
-                        onSelect: () => ref
-                            .read(selectedPlanProvider.notifier)
-                            .state = plan,
-                      ),
-                    ))
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 0),
+              child: PlanCard(
+                plan: plan,
+                isSelected: selectedPlan?.id == plan.id,
+                onSelect: () => ref
+                    .read(selectedPlanProvider.notifier)
+                    .state = plan,
+              ),
+            ))
                 .toList(),
             if (selectedPlan != null && plans.contains(selectedPlan))
               _buildContinueButton(context, selectedPlan!)
@@ -210,15 +221,16 @@ class PlanListContent extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       child: SizedBox(
         width: double.infinity,
-        height: 50,
+        height: 70,
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFF61E6), Color(0xFF7D33F9)],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
+            color: Color(0xFF6E3DE6),
+            // gradient: const LinearGradient(
+            //   colors: [Color(0xFFFF61E6), Color(0xFF7D33F9)],
+            //   begin: Alignment.centerLeft,
+            //   end: Alignment.centerRight,
+            // ),
           ),
           child: ElevatedButton(
             onPressed: () {

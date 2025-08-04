@@ -7,11 +7,11 @@ class Step3 extends ConsumerWidget {
   const Step3({super.key});
 
   final List<String> roles = const [
-    'Freelancer',
-    'Content Creator',
-    'Teacher & Instructor',
-    'Social Media Specialist',
-    'Student'
+    'Painter',
+    'Writer',
+    'Musician',
+    'Crafter',
+    'Dancer'
   ];
 
   @override
@@ -111,12 +111,19 @@ class Step3 extends ConsumerWidget {
                   ),
                   disabledBackgroundColor: Colors.grey.shade300,
                 ),
-                child: Text(
-                  "Continue",
-                  style: AppTextstyle.interBold(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Continue",
+                      style: AppTextstyle.interBold(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    Icon(Icons.arrow_forward_ios_outlined,size: 16,color: Colors.white,)
+                  ],
                 ),
               ),
             ),

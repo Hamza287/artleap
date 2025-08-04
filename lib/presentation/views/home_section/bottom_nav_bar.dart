@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
@@ -21,10 +22,11 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userId = UserData.ins.userId;
-      print(userId);
       if (userId != null && userId.isNotEmpty) {
         ref.read(userProfileProvider).getUserProfileData(userId);
         ref.read(userProfileProvider).updateUserCredits();
+      } else {
+        Navigator.pushReplacementNamed(context, LoginScreen.routeName);
       }
     });
   }

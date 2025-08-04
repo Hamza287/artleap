@@ -175,7 +175,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                     userPersonalData: userPersonalData,
                   ),
                   const SizedBox(height: 30),
-                  UsageSection(subscription: subscription),
+                  UsageSection(subscription: subscription, userPersonalData: userPersonalData,),
                   const SizedBox(height: 30),
                   BillingSection(subscription: subscription),
                   const SizedBox(height: 30),

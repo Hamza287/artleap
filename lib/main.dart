@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/presentation/views/subscriptions/payment_screen.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/providers/theme_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
@@ -16,11 +17,12 @@ import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'di/di.dart';
 import 'domain/api_services/api_response.dart';
+import 'domain/subscriptions/plan_provider.dart';
 import 'domain/subscriptions/subscription_repo_provider.dart';
 import 'providers/notification_provider.dart';
-import 'domain/notification_services/notification_service.dart' hide notificationServiceProvider;
+import 'domain/notification_services/notification_service.dart'
+    hide notificationServiceProvider;
 import 'providers/localization_provider.dart';
-
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
@@ -51,7 +53,8 @@ void main() {
     runApp(
       ProviderScope(
         overrides: [
-          notificationServiceProvider.overrideWith((ref) => NotificationService(ref)),
+          notificationServiceProvider
+              .overrideWith((ref) => NotificationService(ref)),
         ],
         child: const MyApp(),
       ),
@@ -76,12 +79,14 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     // Initialize in-app purchase stream
-    final Stream<List<PurchaseDetails>> purchaseUpdated = InAppPurchase.instance.purchaseStream;
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        InAppPurchase.instance.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onError: (error) {
       debugPrint('Purchase stream error: $error');
-      appSnackBar('Error', 'Failed to process purchase stream: $error', Colors.red);
+      appSnackBar(
+          'Error', 'Failed to process purchase stream: $error', Colors.red);
     });
 
     Future.microtask(() async {
@@ -101,11 +106,14 @@ class _MyAppState extends ConsumerState<MyApp> {
     });
   }
 
-  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
+  Future<void> _listenToPurchaseUpdated(
+      List<PurchaseDetails> purchaseDetailsList) async {
+    final selectedPlan = ref.read(selectedPlanProvider);
+    final basePlanId = selectedPlan?.basePlanId;
     for (final purchaseDetails in purchaseDetailsList) {
       if (purchaseDetails.status == PurchaseStatus.pending) {
         debugPrint('Purchase pending: ${purchaseDetails.productID}');
-        appSnackBar( 'Info', 'Purchase is pending', Colors.yellow);
+        appSnackBar('Info', 'Purchase is pending', Colors.yellow);
         continue;
       }
 
@@ -123,19 +131,23 @@ class _MyAppState extends ConsumerState<MyApp> {
         try {
           final response = await subscriptionService.subscribe(
             userId,
-            purchaseDetails.productID, // Maps to googleProductId
+            selectedPlan?.id ?? '', // Maps to googleProductId
             'google_play',
             verificationData: {
               'productId': purchaseDetails.productID,
-              'purchaseToken': purchaseDetails.verificationData.serverVerificationData,
+              'basePlanId': basePlanId,
+              'purchaseToken':
+                  purchaseDetails.verificationData.serverVerificationData,
               'transactionId': purchaseDetails.purchaseID ?? '',
               'platform': 'android',
-              'amount': purchaseDetails.verificationData.localVerificationData.contains('price_amount_micros')
-                  ? (int.parse(purchaseDetails.verificationData.localVerificationData
-                  .split('"price_amount_micros":')[1]
-                  .split(',')[0]) /
-                  1000000)
-                  .toString()
+              'amount': purchaseDetails.verificationData.localVerificationData
+                      .contains('price_amount_micros')
+                  ? (int.parse(purchaseDetails
+                              .verificationData.localVerificationData
+                              .split('"price_amount_micros":')[1]
+                              .split(',')[0]) /
+                          1000000)
+                      .toString()
                   : '0',
             },
           );
@@ -144,28 +156,38 @@ class _MyAppState extends ConsumerState<MyApp> {
 
           if (response.status == Status.completed) {
             debugPrint('Subscription created: ${response.data}');
-            appSnackBar('Success', 'Subscription created successfully', Colors.green);
+            appSnackBar(
+                'Success', 'Subscription created successfully', Colors.green);
             await InAppPurchase.instance.completePurchase(purchaseDetails);
             ref.refresh(currentSubscriptionProvider(userId));
-            navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
+            navigatorKey.currentState
+                ?.pushReplacementNamed(BottomNavBar.routeName);
           } else {
             debugPrint('Subscription creation failed: ${response.message}');
-            appSnackBar('Error', response.message ?? 'Subscription failed', Colors.red);
+            appSnackBar(
+                'Error', response.message ?? 'Subscription failed', Colors.red);
             await InAppPurchase.instance.completePurchase(purchaseDetails);
+            ref.read(paymentLoadingProvider.notifier).state = false;
           }
         } catch (e) {
           debugPrint('Error processing purchase: $e');
           appSnackBar('Error', 'Purchase error: $e', Colors.red);
           await InAppPurchase.instance.completePurchase(purchaseDetails);
+          ref.read(paymentLoadingProvider.notifier).state = false;
         }
       } else if (purchaseDetails.status == PurchaseStatus.error) {
         debugPrint('Purchase error: ${purchaseDetails.error}');
-        appSnackBar('Error', 'Purchase failed: ${purchaseDetails.error?.message ?? 'Unknown error'}', Colors.red);
+        appSnackBar(
+            'Error',
+            'Purchase failed: ${purchaseDetails.error?.message ?? 'Unknown error'}',
+            Colors.red);
         await InAppPurchase.instance.completePurchase(purchaseDetails);
+        ref.read(paymentLoadingProvider.notifier).state = false;
       } else if (purchaseDetails.status == PurchaseStatus.canceled) {
         debugPrint('Purchase canceled by user');
         appSnackBar('Info', 'Purchase canceled', Colors.yellow);
         await InAppPurchase.instance.completePurchase(purchaseDetails);
+        ref.read(paymentLoadingProvider.notifier).state = false;
       }
     }
   }
