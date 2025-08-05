@@ -17,6 +17,21 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine billing period based on plan ID
+    String billingPeriod;
+    switch (plan.type.toLowerCase()) {
+      case 'basic':
+        billingPeriod = 'week';
+        break;
+      case 'standard':
+        billingPeriod = 'month';
+        break;
+      case 'premium':
+        billingPeriod = 'year';
+        break;
+      default:
+        billingPeriod = 'per editor/month\nbilled monthly';
+    }
     return GestureDetector(
       onTap: onSelect,
       child: Container(
@@ -50,20 +65,11 @@ class PlanCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '\$${plan.price.toStringAsFixed(0)}',
+                    '\$${plan.price.toStringAsFixed(0)}/${billingPeriod}',
                     style: AppTextstyle.interBold(
                       fontSize: 36,
                       color: Colors.white,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'per editor/month\nbilled monthly',
-                    style: AppTextstyle.interMedium(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -73,9 +79,9 @@ class PlanCard extends StatelessWidget {
             // Features
             ...plan.features.map((feature) => _featureRow(feature)).toList(),
             const SizedBox(height: 16),
-            _featureRow('Image Generations: ${plan.imageGenerationCredits}'),
-            _featureRow('Text Variations: ${plan.promptGenerationCredits}'),
-            _featureRow('Total Credits: ${plan.totalCredits}'),
+            _featureRow('Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
+            _featureRow('Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
+            _featureRow('Total Credits: ${plan.totalCredits.toInt()}'),
 
             const SizedBox(height: 24),
 

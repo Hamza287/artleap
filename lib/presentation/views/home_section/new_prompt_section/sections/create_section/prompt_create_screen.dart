@@ -14,6 +14,7 @@ import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../prompt_screen_widgets/prompt_screen_button.dart';
+import '../../prompt_screen_widgets/prompt_top_bar.dart';
 import 'create_section_widget/ImageControlWidget.dart';
 import 'create_section_widget/prompt_widget.dart';
 
@@ -63,29 +64,34 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
       },
       child: Scaffold(
         body: AppBackgroundWidget(
-          widget: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
+          widget: GestureDetector(
+            onTap: () {
+              ref.read(isDropdownExpandedProvider.notifier).state = false;
+            },
             child: Stack(
               children: [
-                SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      20.spaceY,
-                      const PromptWidget(),
-                      20.spaceY,
-                      ImageControlsWidget(
-                        onImageSelected: () {
-                          ref.read(generateImageProvider).pickImage();
-                          AnalyticsService.instance.logButtonClick(
-                              buttonName: 'picking image from gallery button event');
-                        },
-                      ),
-                      // Add extra space where the button would normally be
-                      SizedBox(height: 75), // Button height + padding
-                      20.spaceY,
-                    ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        20.spaceY,
+                        const PromptWidget(),
+                        20.spaceY,
+                        ImageControlsWidget(
+                          onImageSelected: () {
+                            ref.read(generateImageProvider).pickImage();
+                            AnalyticsService.instance.logButtonClick(
+                                buttonName:
+                                    'picking image from gallery button event');
+                          },
+                        ),
+                        SizedBox(height: 75),
+                        20.spaceY,
+                      ],
+                    ),
                   ),
                 ),
                 // White background container for the button area
@@ -94,7 +100,20 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
                   left: 0,
                   right: 0,
                   child: Container(
-                    color: Colors.white,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withOpacity(0.5),
+                            Colors.white.withOpacity(0.6),
+                            Colors.white.withOpacity(0.7),
+                            Colors.white.withOpacity(0.8),
+                            Colors.white.withOpacity(0.9),
+                            Colors.white,
+                          ]),
+                    ),
                     padding: const EdgeInsets.only(
                       left: 15,
                       right: 15,
@@ -107,57 +126,102 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen> {
                       imageIcon: AppAssets.generateicon,
                       title: "Generate",
                       suffixRow: true,
-                      credits: generateImageProviderState.images.isNotEmpty ? '24' : '2',
-                      onpress: (userProfile == null || userProfile.user.totalCredits <= 0)
+                      credits: generateImageProviderState.images.isNotEmpty
+                          ? '24'
+                          : '2',
+                      onpress: (userProfile == null ||
+                              userProfile.user.totalCredits <= 0)
                           ? () {
-                        appSnackBar("Oops!", "You have reached your daily limit. Thank you!", AppColors.indigo);
-                      }
+                              appSnackBar(
+                                  "Oops!",
+                                  "You have reached your daily limit. Thank you!",
+                                  AppColors.indigo);
+                            }
                           : generateImageProviderState.containsSexualWords
-                          ? () {
-                        appSnackBar("Warning!", "Your prompt contains sexual words.", AppColors.redColor);
-                      }
-                          : () async {
-                        // Common validation checks
-                        if (generateImageProviderState.selectedImageNumber == null && generateImageProviderState.images.isEmpty) {
-                          appSnackBar("Error", "Please select number of images", AppColors.redColor);
-                        } else if (generateImageProviderState.promptTextController.text.isEmpty) {
-                          appSnackBar("Error", "Please write your prompt", AppColors.redColor);
-                        }
-                        // Credit validation for text-to-image
-                        else if (generateImageProviderState.images.isEmpty) {
-                          final requiredCredits = generateImageProviderState.selectedImageNumber! * 2;
-                          if (userProfile.user.totalCredits < requiredCredits) {
-                            appSnackBar("Insufficient Credits",
-                                "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
-                                AppColors.redColor);
-                          } else {
-                            AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
-                            final success = await ref.read(generateImageProvider.notifier).generateTextToImage();
-                            if (success && mounted) {
-                              Navigation.pushNamed(ResultScreenRedesign.routeName);
-                            } else if (mounted) {
-                              appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
-                            }
-                          }
-                        }
-                        // Credit validation for image-to-image
-                        else {
-                          final requiredCredits = generateImageProviderState.selectedImageNumber! * 24;
-                          if (userProfile.user.totalCredits < requiredCredits) {
-                            appSnackBar("Insufficient Credits",
-                                "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
-                                AppColors.redColor);
-                          } else {
-                            final success = await ref.read(generateImageProvider.notifier).generateImgToImg();
-                            if (success && mounted) {
-                              Navigation.pushNamed(ResultScreenRedesign.routeName);
-                            } else if (mounted) {
-                              appSnackBar("Error", "Failed to Generate Image", AppColors.redColor);
-                            }
-                          }
-                        }
-                      },
-                      isLoading: generateImageProviderState.isGenerateImageLoading,
+                              ? () {
+                                  appSnackBar(
+                                      "Warning!",
+                                      "Your prompt contains sexual words.",
+                                      AppColors.redColor);
+                                }
+                              : () async {
+                                  // Common validation checks
+                                  if (generateImageProviderState
+                                              .selectedImageNumber ==
+                                          null &&
+                                      generateImageProviderState
+                                          .images.isEmpty) {
+                                    appSnackBar(
+                                        "Error",
+                                        "Please select number of images",
+                                        AppColors.redColor);
+                                  } else if (generateImageProviderState
+                                      .promptTextController.text.isEmpty) {
+                                    appSnackBar(
+                                        "Error",
+                                        "Please write your prompt",
+                                        AppColors.redColor);
+                                  }
+                                  // Credit validation for text-to-image
+                                  else if (generateImageProviderState
+                                      .images.isEmpty) {
+                                    final requiredCredits =
+                                        generateImageProviderState
+                                                .selectedImageNumber! *
+                                            2;
+                                    if (userProfile.user.totalCredits <
+                                        requiredCredits) {
+                                      appSnackBar(
+                                          "Insufficient Credits",
+                                          "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
+                                          AppColors.redColor);
+                                    } else {
+                                      AnalyticsService.instance.logButtonClick(
+                                          buttonName: 'Generate button event');
+                                      final success = await ref
+                                          .read(generateImageProvider.notifier)
+                                          .generateTextToImage();
+                                      if (success && mounted) {
+                                        Navigation.pushNamed(
+                                            ResultScreenRedesign.routeName);
+                                      } else if (mounted) {
+                                        appSnackBar(
+                                            "Error",
+                                            "Failed to Generate Image",
+                                            AppColors.redColor);
+                                      }
+                                    }
+                                  }
+                                  // Credit validation for image-to-image
+                                  else {
+                                    final requiredCredits =
+                                        generateImageProviderState
+                                                .selectedImageNumber! *
+                                            24;
+                                    if (userProfile.user.totalCredits <
+                                        requiredCredits) {
+                                      appSnackBar(
+                                          "Insufficient Credits",
+                                          "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
+                                          AppColors.redColor);
+                                    } else {
+                                      final success = await ref
+                                          .read(generateImageProvider.notifier)
+                                          .generateImgToImg();
+                                      if (success && mounted) {
+                                        Navigation.pushNamed(
+                                            ResultScreenRedesign.routeName);
+                                      } else if (mounted) {
+                                        appSnackBar(
+                                            "Error",
+                                            "Failed to Generate Image",
+                                            AppColors.redColor);
+                                      }
+                                    }
+                                  }
+                                },
+                      isLoading:
+                          generateImageProviderState.isGenerateImageLoading,
                     ),
                   ),
                 ),

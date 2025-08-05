@@ -4,14 +4,19 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
+import 'stripe_service.dart';
 
 class PaymentService {
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   final SubscriptionService _subscriptionService;
   final String userId;
+  final Dio dio;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
 
-  PaymentService(this._subscriptionService, this.userId);
+  PaymentService(this._subscriptionService, this.userId, this.dio);
 
   // Initialize the plugin
   Future<bool> initialize() async {
@@ -32,7 +37,7 @@ class PaymentService {
     return response.productDetails;
   }
 
-  // Purchase a subscription
+  // Purchase a subscription (Google Play/Apple Pay)
   Future<ApiResponse> purchaseSubscription(
       String planId,
       String productId,
@@ -72,11 +77,30 @@ class PaymentService {
       }
 
       return ApiResponse.processing('Purchase initiated');
-
     } catch (e) {
       _purchaseSubscription?.cancel();
       return ApiResponse.error(e.toString());
     }
+  }
+
+  // Purchase a subscription with Stripe
+  Future<ApiResponse> purchaseStripeSubscription({
+    required String planId,
+    required int amount, // Amount in cents
+    required String currency,
+    required BuildContext context,
+    required WidgetRef ref,
+  }) async {
+    return await StripeService.purchaseSubscription(
+      planId: planId,
+      amount: amount,
+      currency: currency,
+      userId: userId,
+      subscriptionService: _subscriptionService,
+      context: context,
+      ref: ref,
+      dio: dio,
+    );
   }
 
   Future<void> _handlePurchaseUpdates(
@@ -99,7 +123,6 @@ class PaymentService {
               _inAppPurchase.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
               await androidAddition.consumePurchase(purchaseDetails);
             } else if (Platform.isIOS) {
-              // For iOS, we use completePurchase which is available on PurchaseDetails
               if (purchaseDetails.pendingCompletePurchase) {
                 await _inAppPurchase.completePurchase(purchaseDetails);
               }

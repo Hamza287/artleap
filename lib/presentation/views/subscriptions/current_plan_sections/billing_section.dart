@@ -39,8 +39,9 @@ class BillingSection extends StatelessWidget {
                 title: 'Start Date',
                 value: DateFormat('MMMM d, y').format(subscription.startDate),
               ),
-              const Divider(height: 24, thickness: 0.5),
+
               if(subscription.isActive && subscription.planSnapshot?.name != 'Free') ... [
+                const Divider(height: 24, thickness: 0.5),
                 _buildBillingRow(
                   icon: Icons.calendar_today,
                   title: 'End Date',

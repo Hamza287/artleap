@@ -171,7 +171,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                                 color: AppColors.seaBlue, width: 0.5)),
                         child: ref.watch(userProfileProvider).isLoading
                             ? LoadingAnimationWidget.threeArchedCircle(
-                                color:AppColors.darkBlue,
+                                color: AppColors.darkBlue,
                                 size: 20,
                               )
                             : Center(
@@ -194,8 +194,8 @@ class ProfileInfoWidget extends ConsumerWidget {
                         width: 200,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            border:
-                                Border.all(color: AppColors.darkBlue, width: 0.5)),
+                            border: Border.all(
+                                color: AppColors.darkBlue, width: 0.5)),
                         child: ref.watch(userProfileProvider).isLoading
                             ? LoadingAnimationWidget.threeArchedCircle(
                                 color: AppColors.darkBlue,

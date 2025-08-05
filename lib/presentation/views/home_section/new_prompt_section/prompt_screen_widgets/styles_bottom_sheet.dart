@@ -31,35 +31,31 @@ void showStylesBottomSheet(BuildContext context, WidgetRef ref) {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Top drag handle with close button
-            Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Container(
-                  width: 40,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Select Styles",
+                    style: AppTextstyle.interBold(fontSize: 18),
                   ),
-                ),
-                Positioned(
-                  right: 0,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, size: 24),
-                    onPressed: () => Navigator.pop(context),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.close, size: 24),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Title
-            Text(
-              "Select Style",
-              style: AppTextstyle.interMedium(fontSize: 18),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
-            // Styles grid
             Expanded(
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

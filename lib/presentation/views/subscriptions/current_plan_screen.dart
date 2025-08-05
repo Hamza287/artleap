@@ -166,24 +166,30 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                 horizontal: screenWidth > 600 ? 40 : 20,
                 vertical: 20,
               ),
-              child: Column(
-                children: [
-                  CurrentPlanCard(
-                    planName: planName,
-                    isActive: isActive,
-                    subscription: subscription,
-                    userPersonalData: userPersonalData,
-                  ),
-                  const SizedBox(height: 30),
-                  UsageSection(subscription: subscription, userPersonalData: userPersonalData,),
-                  const SizedBox(height: 30),
-                  BillingSection(subscription: subscription),
-                  const SizedBox(height: 30),
-                  ActionButtons(
-                    isActive: isActive,
-                    subscription: subscription,
-                  ),
-                ],
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - kToolbarHeight,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CurrentPlanCard(
+                      planName: planName,
+                      isActive: isActive,
+                      subscription: subscription,
+                      userPersonalData: userPersonalData,
+                    ),
+                    const SizedBox(height: 30),
+                    UsageSection(subscription: subscription, userPersonalData: userPersonalData),
+                    const SizedBox(height: 30),
+                    BillingSection(subscription: subscription),
+                    const SizedBox(height: 30),
+                    ActionButtons(
+                      isActive: isActive,
+                      subscription: subscription,
+                    ),
+                  ],
+                ),
               ),
             );
           },

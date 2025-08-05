@@ -56,15 +56,15 @@ class SubscriptionCard extends StatelessWidget {
               ),
             if (currentSubscription != null)
               InfoRow(
-                label: "Subscription ID",
+                label: "Subscription",
                 value: currentSubscription!,
                 icon: Icons.receipt_outlined,
               ),
-            const SizedBox(height: 16),
-            ComingSoonButton(
-              label: isSubscribed ? "Manage Subscription" : "Upgrade Plan",
-              icon: Icons.credit_card,
-            ),
+            // const SizedBox(height: 16),
+            // ComingSoonButton(
+            //   label: isSubscribed ? "Manage Subscription" : "Upgrade Plan",
+            //   icon: Icons.credit_card,
+            // ),
           ],
         ),
       ),

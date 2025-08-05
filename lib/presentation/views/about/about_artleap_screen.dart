@@ -29,7 +29,7 @@ class AboutArtleapScreen extends StatelessWidget {
               const AboutArtleapMissionSection(),
         
               // Team Section
-              const AboutArtleapTeamSection(),
+              // const AboutArtleapTeamSection(),
         
               // Technology Section
               const AboutArtleapTechnologySection(),
@@ -39,7 +39,6 @@ class AboutArtleapScreen extends StatelessWidget {
         
               // Footer
               const AboutArtleapFooter(),
-              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -53,13 +52,13 @@ class AboutArtleapScreen extends StatelessWidget {
         'About Artleap',
         style: AppTextstyle.interBold(
           fontSize: 20,
-          color: AppColors.darkBlue,
+          color: AppColors.white,
         ),
       ),
       centerTitle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.darkBlue,
       elevation: 0,
-      iconTheme: const IconThemeData(color: AppColors.darkBlue),
+      iconTheme: const IconThemeData(color: AppColors.white),
     );
   }
 }

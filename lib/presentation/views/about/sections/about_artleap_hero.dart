@@ -14,7 +14,7 @@ class AboutArtleapHeroSection extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.lightPurple.withOpacity(0.1),
+            AppColors.darkBlue,
             AppColors.lightBlue.withOpacity(0.1),
           ],
         ),

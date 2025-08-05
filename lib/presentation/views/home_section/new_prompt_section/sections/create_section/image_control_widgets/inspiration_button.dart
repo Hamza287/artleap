@@ -24,11 +24,11 @@ class InspirationButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.lightbulb_outline, color: AppColors.purple),
+            const Icon(Icons.lightbulb_outline, color: Colors.grey),
             const SizedBox(width: 8),
             Text(
               "Inspiration",
-              style: AppTextstyle.interMedium(fontSize: 14),
+              style: AppTextstyle.interMedium(fontSize: 14,color: Colors.grey),
             ),
           ],
         ),

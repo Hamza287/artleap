@@ -32,22 +32,22 @@ class PictureInfoWidget extends ConsumerWidget {
               ),
             ],
           ),
-          10.spaceY,
-          _primaryActionButton(
-            icon: Icons.open_in_full,
-            label: "Generate Prompt",
-            onPressed: () {},
-          ),
-          _primaryActionButton(
-            icon: Icons.open_in_full,
-            label: "Upscale",
-            onPressed: () {},
-          ),
-          _primaryActionButton(
-            icon: Icons.brush_outlined,
-            label: "Add/ Remove Object",
-            onPressed: () {},
-          ),
+          // 10.spaceY,
+          // _primaryActionButton(
+          //   icon: Icons.open_in_full,
+          //   label: "Generate Prompt",
+          //   onPressed: () {},
+          // ),
+          // _primaryActionButton(
+          //   icon: Icons.open_in_full,
+          //   label: "Upscale",
+          //   onPressed: () {},
+          // ),
+          // _primaryActionButton(
+          //   icon: Icons.brush_outlined,
+          //   label: "Add/ Remove Object",
+          //   onPressed: () {},
+          // ),
         ],
       ),
     );

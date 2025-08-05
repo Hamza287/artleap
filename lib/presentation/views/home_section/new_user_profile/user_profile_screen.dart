@@ -15,6 +15,7 @@ import '../profile_screen/profile_screen_widgets/my_creations_widget.dart';
 class UserProfileScreen extends ConsumerStatefulWidget {
   const UserProfileScreen({super.key});
   static const String routeName = "user_profile_screen";
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _UserProfileScreenState();
 }
@@ -83,7 +84,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                         return IconButton(
                           icon: Badge(
                             label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                            child: const Icon(Icons.notifications, color: AppColors.white,size: 30,),
+                            child: const Icon(Icons.notifications, color: AppColors.white, size: 30),
                           ),
                           onPressed: () {
                             Navigator.pushNamed(context, NotificationScreen.routeName);
@@ -96,7 +97,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
               ),
             ),
             // White content area with profile info
-            SliverToBoxAdapter(
+            SliverFillRemaining(
+              hasScrollBody: true, // Allows scrolling if content exceeds
               child: Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -106,7 +108,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       color: Colors.black12,
                       blurRadius: 10,
                       spreadRadius: 2,
-                    )
+                    ),
                   ],
                 ),
                 child: Padding(
@@ -132,7 +134,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       color: Colors.black.withOpacity(0.1),
                                       blurRadius: 8,
                                       spreadRadius: 2,
-                                    )
+                                    ),
                                   ],
                                   image: profilePic != null && profilePic.isNotEmpty
                                       ? DecorationImage(
@@ -175,13 +177,13 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _buildStatColumn(
-                                      userPersonalData.user.followers.length.toString(),
-                                      'Followers'
+                                    userPersonalData.user.followers.length.toString(),
+                                    'Followers',
                                   ),
                                   const SizedBox(width: 30),
                                   _buildStatColumn(
-                                      userPersonalData.user.following.length.toString(),
-                                      'Following'
+                                    userPersonalData.user.following.length.toString(),
+                                    'Following',
                                   ),
                                 ],
                               ),
@@ -193,9 +195,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                   Text(
                                     '${userPersonalData.user.images.length.toString()} Generations',
                                     style: AppTextstyle.interMedium(
-                                        fontSize: 18,
-                                        color: Color(0xFF8962EB),
-                                        fontWeight: FontWeight.bold
+                                      fontSize: 18,
+                                      color: Color(0xFF8962EB),
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],

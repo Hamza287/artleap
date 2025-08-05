@@ -17,11 +17,11 @@ class ReportImageBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 690,
+      height: 740,
       width: double.infinity,
       // margin: EdgeInsets.only(left: 10, right: 10),
       decoration: const BoxDecoration(
-          color: AppColors.darkBlue,
+          color: AppColors.white,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(25), topRight: Radius.circular(25))),
       child: Column(
@@ -40,7 +40,7 @@ class ReportImageBottomSheet extends ConsumerWidget {
                     width: 25,
                     child: Icon(
                       Icons.cancel,
-                      color: AppColors.white,
+                      color: AppColors.darkBlue,
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class ReportImageBottomSheet extends ConsumerWidget {
                       Container(
                         height: 1,
                         margin: const EdgeInsets.only(left: 5, right: 5),
-                        color: AppColors.white.withOpacity(0.3),
+                        color: AppColors.darkBlue.withOpacity(0.3),
                       ),
                       20.spaceY,
                       Padding(
@@ -78,12 +78,12 @@ class ReportImageBottomSheet extends ConsumerWidget {
                             Text(
                               e["title"],
                               style: AppTextstyle.interRegular(
-                                  color: AppColors.white, fontSize: 14),
+                                  color: AppColors.darkBlue, fontSize: 14),
                             ),
                             if (e["id"] == "5")
                               const Icon(
                                 Icons.arrow_forward_ios,
-                                color: AppColors.white,
+                                color: AppColors.darkBlue,
                                 size: 20,
                               )
                           ],
@@ -94,7 +94,7 @@ class ReportImageBottomSheet extends ConsumerWidget {
                         Container(
                           height: 1,
                           margin: const EdgeInsets.only(left: 5, right: 5),
-                          color: AppColors.white.withOpacity(0.3),
+                          color: AppColors.darkBlue.withOpacity(0.3),
                         ),
                     ],
                   ),

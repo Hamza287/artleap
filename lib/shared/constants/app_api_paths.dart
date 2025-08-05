@@ -32,6 +32,7 @@ class AppApiPaths {
   static const String getCurrentSubscription = "${subscriptionsBasePath}current";
   static const String checkGenerationLimits = "${subscriptionsBasePath}limits/";
 
+  static const String createPaymentIntent = "${subscriptionsBasePath}create-payment-intent";
   // Other paths (from your example)
   static const passengers = "/api/v1/employees";
   static const getReqResUsers = "/users?page=2";

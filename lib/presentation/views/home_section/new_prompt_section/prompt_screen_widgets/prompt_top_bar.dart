@@ -1,74 +1,58 @@
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../providers/prompt_nav_provider.dart';
 import '../../../global_widgets/artleap_top_bar.dart';
 
-class PromptTopBar extends ConsumerStatefulWidget {
+// Provider for dropdown expansion state
+final isDropdownExpandedProvider = StateProvider<bool>((ref) => false);
+
+class PromptTopBar extends ConsumerWidget {
   const PromptTopBar({super.key});
 
   @override
-  ConsumerState<PromptTopBar> createState() => _PromptTopBarState();
-}
-
-class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _heightAnimation;
-  bool _isExpanded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-    _heightAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _toggleExpansion() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final currentNav = ref.watch(promptNavProvider);
+    final isExpanded = ref.watch(isDropdownExpandedProvider);
 
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ArtLeapTopBar(),
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () {
+            if (isExpanded) {
+              ref.read(isDropdownExpandedProvider.notifier).state = false;
+            }
+          },
+          child: Container(
+            color: Colors.transparent,
           ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _buildDropdown(context, ref, currentNav),
+        ),
+        Container(
+
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ArtLeapTopBar(),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _buildDropdown(context, ref, currentNav),
+              ),
+              const SizedBox(height: 10),
+            ],
           ),
-          const SizedBox(height: 10),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav) {
+    final isExpanded = ref.watch(isDropdownExpandedProvider);
+    final animationController = ref.watch(_animationControllerProvider);
+
     final options = [
       _DropdownOption(
         icon: AppAssets.create,
@@ -76,7 +60,7 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
         value: PromptNavItem.create,
       ),
       _DropdownOption(
-        icon: AppAssets.editObject,
+        icon: AppAssets.enhance,
         label: "Edit Object",
         value: PromptNavItem.edit,
       ),
@@ -86,7 +70,7 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
         value: PromptNavItem.animate,
       ),
       _DropdownOption(
-        icon: AppAssets.enhance,
+        icon: AppAssets.editObject,
         label: "Enhance",
         value: PromptNavItem.enhance,
       ),
@@ -94,9 +78,15 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
 
     return Column(
       children: [
-        // Selected option card
         GestureDetector(
-          onTap: _toggleExpansion,
+          onTap: () {
+            ref.read(isDropdownExpandedProvider.notifier).state = !isExpanded;
+            if (isExpanded) {
+              animationController.reverse();
+            } else {
+              animationController.forward();
+            }
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
@@ -127,8 +117,7 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
                   child: Center(
                     child: Image.asset(
                       options.firstWhere((opt) => opt.value == currentNav).icon,
-                      height: 18,
-                      color: Colors.white,
+                      height: 30,
                     ),
                   ),
                 ),
@@ -143,7 +132,7 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
                 ),
                 const Spacer(),
                 RotationTransition(
-                  turns: Tween(begin: 0.0, end: 0.5).animate(_heightAnimation),
+                  turns: Tween(begin: 0.0, end: 0.5).animate(animationController),
                   child: const Icon(
                     Icons.arrow_drop_down,
                     color: Colors.black87,
@@ -154,9 +143,8 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
           ),
         ),
         const SizedBox(height: 4),
-        // Dropdown options
         SizeTransition(
-          sizeFactor: _heightAnimation,
+          sizeFactor: animationController,
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -177,7 +165,8 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
                     borderRadius: BorderRadius.circular(12),
                     onTap: () {
                       ref.read(promptNavProvider.notifier).setNavItem(option.value);
-                      _toggleExpansion();
+                      ref.read(isDropdownExpandedProvider.notifier).state = false;
+                      animationController.reverse();
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -193,8 +182,7 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
                             child: Center(
                               child: Image.asset(
                                 option.icon,
-                                height: 18,
-                                color: Colors.black87,
+                                height: 50,
                               ),
                             ),
                           ),
@@ -218,6 +206,22 @@ class _PromptTopBarState extends ConsumerState<PromptTopBar> with SingleTickerPr
       ],
     );
   }
+}
+
+// Provider for AnimationController
+final _animationControllerProvider = Provider<AnimationController>((ref) {
+  final controller = AnimationController(
+    vsync: _TickerProvider(),
+    duration: const Duration(milliseconds: 300),
+  );
+  ref.onDispose(() => controller.dispose());
+  return controller;
+});
+
+// Ticker provider for AnimationController
+class _TickerProvider extends TickerProvider {
+  @override
+  Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
 }
 
 class _DropdownOption {

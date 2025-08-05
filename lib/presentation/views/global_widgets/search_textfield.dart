@@ -33,11 +33,6 @@ class SearchTextfield extends ConsumerWidget {
           color: Colors.black,
         ),
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(
-            left: 16,
-            bottom: 16,
-            top: 16,
-          ),
           enabledBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -50,8 +45,8 @@ class SearchTextfield extends ConsumerWidget {
             padding: const EdgeInsets.only(left: 12, right: 8),
             child: Image.asset(
               AppAssets.searchicon,
-              width: 10,
-              height: 10,
+              width: 5,
+              height: 5,
               color: Colors.grey.shade700,
             ),
           ),

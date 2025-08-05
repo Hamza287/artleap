@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/theme_provider.dart';
+import '../home_section/favourites_screen/favourites_screen.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
@@ -28,7 +29,7 @@ class ProfileDrawer extends ConsumerWidget {
     final iconSize = screenWidth * 0.06;
     final padding = EdgeInsets.symmetric(
       horizontal: screenWidth * 0.05,
-      vertical: 16,
+      vertical: 1,
     );
 
     return Drawer(
@@ -64,13 +65,12 @@ class ProfileDrawer extends ConsumerWidget {
 
           // Content
           SingleChildScrollView(
-            child: Padding(
-              padding: padding,
-              child: Column(
-                spacing: 10,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 16,right: 16),
+                  child: Align(
                     alignment: Alignment.centerRight,
                     child: _GlassCircleButton(
                       icon: Icons.close,
@@ -78,7 +78,10 @@ class ProfileDrawer extends ConsumerWidget {
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                  Row(
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16,right: 16),
+                  child: Row(
                     children: [
                       Container(
                         width: screenWidth * 0.18,
@@ -120,8 +123,15 @@ class ProfileDrawer extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  UpgradeToProBanner(), // Uncomment if you have this widget
-                  _buildSection(
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16,right: 16),
+                  child: UpgradeToProBanner(),
+                ),
+                10.spaceY,
+                Padding(
+                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16),
+                  child: _buildSection(
                     context,
                     title: "General",
                     items: [
@@ -146,14 +156,23 @@ class ProfileDrawer extends ConsumerWidget {
                         onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
                       ),
                       _ProfileMenuItem(
-                        icon: AppAssets.darkMode,
-                        title: "Dark Mode",
-                        isToggle: true,
-                        onTap: () {},
+                        icon: AppAssets.saveicon,
+                        title: "Favourites",
+                        onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
                       ),
+                      // _ProfileMenuItem(
+                      //   icon: AppAssets.darkMode,
+                      //   title: "Dark Mode",
+                      //   isToggle: true,
+                      //   onTap: () {},
+                      // ),
                     ],
                   ),
-                  _buildSection(
+                ),
+                10.spaceY,
+                Padding(
+                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16),
+                  child: _buildSection(
                     context,
                     title: "About",
                     items: [
@@ -172,35 +191,41 @@ class ProfileDrawer extends ConsumerWidget {
                         title: "About Artleap",
                         onTap: () => _navigateTo(context, '/about-artleap'),
                       ),
+                              
                     ],
                   ),
-                  Column(
-                    spacing: 2,
-                    children: [
-                      _ProfileMenuItem(
-                        icon: AppAssets.logouticon,
-                        title: "Logout",
-                        color: Color(0xFFE53935),
-                        onTap: (){
-                          AppLocal.ins.clearUSerData(Hivekey.userId);
-                          Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-                        },
-                      ),
-                      // SizedBox(height: screenHeight * 0.01),
-                      _ProfileMenuItem(
-                        icon: AppAssets.deleteicon,
-                        title: "Delete Account",
-                        color: Color(0xFFFF2A28),
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (context) => const DeleteAccountDialog(),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color(0x991D0751)
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.05,top: 10,bottom: 20),
+                    child: Column(
+                      children: [
+                        _ProfileMenuItem(
+                          icon: AppAssets.logouticon,
+                          title: "Logout",
+                          color: Color(0xFFE53935),
+                          onTap: () {
+                            AppLocal.ins.clearUSerData(Hivekey.userId);
+                            Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+                          },
                         ),
-                      ),
-                    ],
+                        _ProfileMenuItem(
+                          icon: AppAssets.deleteicon,
+                          title: "Delete Account",
+                          color: Color(0xFFFF2A28),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => const DeleteAccountDialog(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).padding.bottom + screenHeight * 0.02),
-                ],
-              ),
+                )
+              ],
             ),
           ),
         ],
@@ -211,10 +236,16 @@ class ProfileDrawer extends ConsumerWidget {
   Widget _buildSection(BuildContext context, {required String title, required List<_ProfileMenuItem> items}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 2,
+      spacing: 10,
       children: [
         SeparatorWidget(title: title),
-        ...items,
+        SingleChildScrollView(
+          child: Column(
+            spacing: 4,
+            children: items,
+          ),
+          physics: BouncingScrollPhysics(),
+        ),
       ],
     );
   }

@@ -7,7 +7,7 @@ class PromptTemplates extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final styles = [
-      "",
+      "Coming Soon",
       "",
       "",
       "",
@@ -45,7 +45,8 @@ class PromptTemplates extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    styles[index],
+                    'Coming Soon',
+                    // styles[index],
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                     ),

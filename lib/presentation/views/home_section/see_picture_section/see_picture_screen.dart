@@ -36,96 +36,98 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: AppColors.white,
+      body: SafeArea(
         child: Container(
-          width: double.infinity,
           height: double.infinity,
-          margin: const EdgeInsets.only(top: 70),
-          decoration: const BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                20.spaceY,
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("In A mystical field",
-                          style: AppTextstyle.interMedium(
-                              fontSize: 16, color: AppColors.darkBlue)),
-                      GestureDetector(
-                        onTap: () {
-                          Navigation.pop();
-                        },
-                        child: SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: Image.asset(
-                            AppAssets.cross,
-                            scale: 1.50,
+          width: double.infinity,
+          color: AppColors.white,
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            margin: const EdgeInsets.only(top: 70),
+            decoration: const BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  20.spaceY,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("In A mystical field",
+                            style: AppTextstyle.interMedium(
+                                fontSize: 16, color: AppColors.darkBlue)),
+                        GestureDetector(
+                          onTap: () {
+                            Navigation.pop();
+                          },
+                          child: SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: Image.asset(
+                              AppAssets.cross,
+                              scale: 1.50,
+                            ),
                           ),
+                        )
+                      ],
+                    ),
+                  ),
+                  20.spaceY,
+                  if (widget.params!.userId != UserData.ins.userId)
+                    ProfileNameFollowWidget(
+                      profileName: widget.params!.profileName,
+                      userId: widget.params!.userId,
+                    ),
+                  20.spaceY,
+                  GestureDetector(
+                    onTap: () {
+                      Navigation.pushNamed(FullImageViewerScreen.routeName,
+                          arguments: FullImageScreenParams(
+                            Image: widget.params!.image!,
+                          ));
+                    },
+                    child: Container(
+                      height: 350,
+                      margin: const EdgeInsets.only(left: 15, right: 15),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.params!.image!,
+                          fit: BoxFit.fill,
+                          fadeInDuration: Duration.zero,
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                20.spaceY,
-                if (widget.params!.userId != UserData.ins.userId)
-                  ProfileNameFollowWidget(
-                    profileName: widget.params!.profileName,
-                    userId: widget.params!.userId,
-                  ),
-                20.spaceY,
-                GestureDetector(
-                  onTap: () {
-                    Navigation.pushNamed(FullImageViewerScreen.routeName,
-                        arguments: FullImageScreenParams(
-                          Image: widget.params!.image!,
-                        ));
-                  },
-                  child: Container(
-                    height: 350,
-                    margin: const EdgeInsets.only(left: 15, right: 15),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.params!.image!,
-                        fit: BoxFit.fill,
-                        fadeInDuration: Duration.zero,
                       ),
                     ),
                   ),
-                ),
-                20.spaceY,
-                PictureOptionsWidget(
-                  imageId: widget.params!.imageId,
-                  creatorName: widget.params!.profileName,
-                  imageUrl: widget.params!.image ?? "",
-                  prompt: widget.params!.prompt,
-                  modelName: widget.params!.modelName,
-                  uint8ListImage: widget.params!.uint8ListImage,
-                  currentUserId: UserData.ins.userId,
-                  index: widget.params!.index,
-                  creatorEmail: widget.params!.creatorEmail,
-                  otherUserId: widget.params!.userId,
-                ),
-                20.spaceY,
-                PromptTextWidget(
-                  prompt: widget.params!.prompt,
-                ),
-                20.spaceY,
-                PictureInfoWidget(
-                  styleName: widget.params!.modelName,
-                ),
-                20.spaceY,
-              ],
+                  20.spaceY,
+                  PictureOptionsWidget(
+                    imageId: widget.params!.imageId,
+                    creatorName: widget.params!.profileName,
+                    imageUrl: widget.params!.image ?? "",
+                    prompt: widget.params!.prompt,
+                    modelName: widget.params!.modelName,
+                    uint8ListImage: widget.params!.uint8ListImage,
+                    currentUserId: UserData.ins.userId,
+                    index: widget.params!.index,
+                    creatorEmail: widget.params!.creatorEmail,
+                    otherUserId: widget.params!.userId,
+                  ),
+                  20.spaceY,
+                  PromptTextWidget(
+                    prompt: widget.params!.prompt,
+                  ),
+                  20.spaceY,
+                  PictureInfoWidget(
+                    styleName: widget.params!.modelName,
+                  ),
+                  20.spaceY,
+                ],
+              ),
             ),
           ),
         ),

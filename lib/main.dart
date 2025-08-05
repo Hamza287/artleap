@@ -10,10 +10,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/firebase_options.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'di/di.dart';
 import 'domain/api_services/api_response.dart';
@@ -36,6 +38,10 @@ void main() {
     // Initialize other services
     await AppLocal.ins.initStorage();
     await DI.initDI();
+
+    // await dotenv.load(fileName: ".env");
+    // Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+    // await Stripe.instance.applySettings();
 
     // Set up error handling
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -160,8 +166,8 @@ class _MyAppState extends ConsumerState<MyApp> {
                 'Success', 'Subscription created successfully', Colors.green);
             await InAppPurchase.instance.completePurchase(purchaseDetails);
             ref.refresh(currentSubscriptionProvider(userId));
-            navigatorKey.currentState
-                ?.pushReplacementNamed(BottomNavBar.routeName);
+            ref.read(paymentLoadingProvider.notifier).state = false;
+            navigatorKey.currentState ?.pushReplacementNamed(BottomNavBar.routeName);
           } else {
             debugPrint('Subscription creation failed: ${response.message}');
             appSnackBar(

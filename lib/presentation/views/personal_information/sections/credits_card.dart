@@ -73,11 +73,11 @@ class CreditsCard extends StatelessWidget {
               icon: Icons.text_fields_outlined,
               color: Colors.green,
             ),
-            const SizedBox(height: 16),
-            ComingSoonButton(
-              label: "Buy More Credits",
-              icon: Icons.add_circle_outline,
-            ),
+            // const SizedBox(height: 16),
+            // ComingSoonButton(
+            //   label: "Buy More Credits",
+            //   icon: Icons.add_circle_outline,
+            // ),
           ],
         ),
       ),

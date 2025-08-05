@@ -39,11 +39,11 @@ class WatermarkNotifier extends StateNotifier<WatermarkState> {
   final Ref ref;
 
   WatermarkNotifier(this.ref) : super(WatermarkState()) {
-    _initializeWatermarkState();
+    initializeWatermarkState();
   }
 
   // Method to initialize watermark state based on subscription plan
-  Future<void> _initializeWatermarkState() async {
+  Future<void> initializeWatermarkState() async {
     try {
       // Access user profile data from UserProfileProvider
       final userProfile = ref.read(userProfileProvider).userProfileData;

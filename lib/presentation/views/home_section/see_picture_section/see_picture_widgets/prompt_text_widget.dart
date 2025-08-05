@@ -30,7 +30,7 @@ class PromptTextWidget extends ConsumerWidget {
               InkWell(
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: prompt!)).whenComplete(
-                        () {
+                    () {
                       appSnackBar("Copied", "Prompt copied to clipboard",
                           AppColors.green);
                     },
@@ -58,7 +58,7 @@ class PromptTextWidget extends ConsumerWidget {
                   height: 250,
                   width: double.infinity,
                   margin:
-                  EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                      EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
@@ -72,99 +72,101 @@ class PromptTextWidget extends ConsumerWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      // Category Name Container Button
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            )
-                          ],
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              // Handle category name button press
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 3),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.category_outlined,
-                                      color: AppColors.purple),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Category Name",
-                                    style: AppTextstyle.interMedium(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Reference Image Container Button
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            )
-                          ],
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              // Handle reference image button press
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 3),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.image_outlined,
-                                      color: AppColors.purple),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Reference Image",
-                                    style: AppTextstyle.interMedium(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 10),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //     children: [
+                //       // Category Name Container Button
+                //       Container(
+                //         width: MediaQuery.of(context).size.width * 0.4,
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           borderRadius: BorderRadius.circular(12),
+                //           boxShadow: [
+                //             BoxShadow(
+                //               color: Colors.grey.withOpacity(0.3),
+                //               spreadRadius: 1,
+                //               blurRadius: 4,
+                //               offset: Offset(0, 2),
+                //             )
+                //           ],
+                //           border: Border.all(color: Colors.grey.shade300),
+                //         ),
+                //         child: Material(
+                //           color: Colors.transparent,
+                //           child: InkWell(
+                //             borderRadius: BorderRadius.circular(12),
+                //             onTap: () {
+                //               // Handle category name button press
+                //             },
+                //             child: Padding(
+                //               padding: const EdgeInsets.symmetric(
+                //                   vertical: 16, horizontal: 3),
+                //               child: Row(
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   Icon(Icons.category_outlined,
+                //                       color: AppColors.purple),
+                //                   const SizedBox(width: 8),
+                //                   Text(
+                //                     "Category Name",
+                //                     style:
+                //                         AppTextstyle.interMedium(fontSize: 12),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //
+                //       // Reference Image Container Button
+                //       Container(
+                //         width: MediaQuery.of(context).size.width * 0.4,
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           borderRadius: BorderRadius.circular(12),
+                //           boxShadow: [
+                //             BoxShadow(
+                //               color: Colors.grey.withOpacity(0.3),
+                //               spreadRadius: 1,
+                //               blurRadius: 4,
+                //               offset: Offset(0, 2),
+                //             )
+                //           ],
+                //           border: Border.all(color: Colors.grey.shade300),
+                //         ),
+                //         child: Material(
+                //           color: Colors.transparent,
+                //           child: InkWell(
+                //             borderRadius: BorderRadius.circular(12),
+                //             onTap: () {
+                //               // Handle reference image button press
+                //             },
+                //             child: Padding(
+                //               padding: const EdgeInsets.symmetric(
+                //                   vertical: 16, horizontal: 3),
+                //               child: Row(
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   Icon(Icons.image_outlined,
+                //                       color: AppColors.purple),
+                //                   const SizedBox(width: 8),
+                //                   Text(
+                //                     "Reference Image",
+                //                     style:
+                //                         AppTextstyle.interMedium(fontSize: 12),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

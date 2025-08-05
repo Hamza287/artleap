@@ -52,11 +52,11 @@ class _PersonalInformationScreenState
                           )
                         : Container(color: Colors.grey[200])),
                 actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: null,
-                    tooltip: "Edit Profile",
-                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.edit, color: Colors.white),
+                  //   onPressed: null,
+                  //   tooltip: "Edit Profile",
+                  // ),
                 ],
               ),
             ];
@@ -77,7 +77,7 @@ class _PersonalInformationScreenState
                     status: user.subscriptionStatus,
                     planName: user.planName,
                     planType: user.planType,
-                    currentSubscription: user.currentSubscription,
+                    currentSubscription: user.planType,
                     isSubscribed: user.isSubscribed,
                   ),
                   const SizedBox(height: 20),
@@ -90,7 +90,7 @@ class _PersonalInformationScreenState
                     promptGenerationCredits: user.promptGenerationCredits,
                   ),
                   const SizedBox(height: 20),
-                  const AccountActionsCard(),
+                  // const AccountActionsCard(),
                 ],
               ],
             ),

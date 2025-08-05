@@ -9,6 +9,7 @@ class AboutArtleapFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      width: double.infinity,
       color: AppColors.darkBlue,
       child: Column(
         children: [
@@ -26,19 +27,19 @@ class AboutArtleapFooter extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSocialIcon(Icons.facebook),
-              const SizedBox(width: 16),
-              _buildSocialIcon(Icons.face),
-              const SizedBox(width: 16),
-              _buildSocialIcon(Icons.face),
-              const SizedBox(width: 16),
-              _buildSocialIcon(Icons.face),
-            ],
-          ),
-          const SizedBox(height: 24),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     _buildSocialIcon(Icons.facebook),
+          //     const SizedBox(width: 16),
+          //     _buildSocialIcon(Icons.face),
+          //     const SizedBox(width: 16),
+          //     _buildSocialIcon(Icons.face),
+          //     const SizedBox(width: 16),
+          //     _buildSocialIcon(Icons.face),
+          //   ],
+          // ),
+          // const SizedBox(height: 24),
           Text(
             '© ${DateTime.now().year} Mimar Technologies Inc. All rights reserved.',
             style: AppTextstyle.interRegular(

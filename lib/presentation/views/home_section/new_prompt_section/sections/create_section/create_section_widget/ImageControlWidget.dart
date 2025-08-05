@@ -78,7 +78,7 @@ class ImageControlsWidget extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Wrap(
-                  spacing: 8,
+                  spacing: 16,
                   runSpacing: 8,
                   children: provider.imageNumber.map((number) {
                     return RatioSelectionCard(
@@ -117,7 +117,6 @@ class ImageControlsWidget extends ConsumerWidget {
                       Expanded(
                         child: NotificationListener<ScrollNotification>(
                           onNotification: (scrollNotification) {
-                            // This prevents the notification from bubbling up
                             return true;
                           },
                           child: ListView.separated(
@@ -125,7 +124,7 @@ class ImageControlsWidget extends ConsumerWidget {
                             itemCount: freePikAspectRatio.length,
                             controller: ScrollController(), // Add controller if needed
                             physics: const BouncingScrollPhysics(),
-                            separatorBuilder: (context, index) => const SizedBox(width: 8),
+                            separatorBuilder: (context, index) => const SizedBox(width: 0),
                             itemBuilder: (context, index) {
                               final ratio = freePikAspectRatio[index];
                               return RatioSelectionCard(
@@ -139,42 +138,6 @@ class ImageControlsWidget extends ConsumerWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-              ),
-              // Right edge fade effect
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: Container(
-                  width: 20,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                      colors: [
-                        Colors.white.withOpacity(0.1),
-                        Colors.white.withOpacity(0.9),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // Scroll indicator
-              Positioned(
-                right: 8,
-                bottom: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Icon(
-                    Icons.chevron_right,
-                    size: 16,
-                    color: Colors.white,
                   ),
                 ),
               ),
@@ -225,7 +188,7 @@ class ImageControlsWidget extends ConsumerWidget {
                   children: [
                     ...displayedStyles.take(3).map((style) {
                       return Padding(
-                        padding: const EdgeInsets.only(right: 20),
+                        padding: const EdgeInsets.only(right: 13),
                         child: StyleSelectionCard(
                           title: style['title'] ?? '',
                           icon: style['icon'] ?? '',
@@ -235,29 +198,29 @@ class ImageControlsWidget extends ConsumerWidget {
                       );
                     }),
                     // Add "View All" card
-                    if (styles.length > 3)
-                      GestureDetector(
-                        onTap: () => showStylesBottomSheet(context, ref),
-                        child: Container(
-                          width: 120,
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.more_horiz, size: 24),
-                              const SizedBox(height: 8),
-                              Text(
-                                "View All",
-                                style: AppTextstyle.interMedium(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    // if (styles.length > 3)
+                    //   GestureDetector(
+                    //     onTap: () => showStylesBottomSheet(context, ref),
+                    //     child: Container(
+                    //       width: 120,
+                    //       margin: const EdgeInsets.only(right: 8),
+                    //       decoration: BoxDecoration(
+                    //         color: Colors.grey[100],
+                    //         borderRadius: BorderRadius.circular(8),
+                    //       ),
+                    //       child: Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           const Icon(Icons.more_horiz, size: 24),
+                    //           const SizedBox(height: 8),
+                    //           Text(
+                    //             "View All",
+                    //             style: AppTextstyle.interMedium(fontSize: 12),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
                   ],
                 ),
               ),

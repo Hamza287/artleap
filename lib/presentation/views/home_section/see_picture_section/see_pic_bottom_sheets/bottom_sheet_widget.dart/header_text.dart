@@ -15,7 +15,7 @@ class HeaderText extends ConsumerWidget {
         Text(
           "Report",
           style: AppTextstyle.interMedium(
-            color: AppColors.white,
+            color: AppColors.darkBlue,
             fontSize: 18,
           ),
         ),
@@ -23,7 +23,7 @@ class HeaderText extends ConsumerWidget {
         Text(
           "Why are you reporting this post?",
           style: AppTextstyle.interMedium(
-            color: AppColors.white,
+            color: AppColors.darkBlue,
             fontSize: 18,
           ),
         ),
@@ -32,7 +32,7 @@ class HeaderText extends ConsumerWidget {
           "Help us maintain a safe and positive community by \n reporting images that violate our guidelines.",
           textAlign: TextAlign.center,
           style: AppTextstyle.interRegular(
-            color: AppColors.white,
+            color: AppColors.darkBlue,
             fontSize: 13,
           ),
         ),

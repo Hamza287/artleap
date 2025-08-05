@@ -15,6 +15,7 @@ import '../../presentation/views/Notifications/notification_details_screen.dart'
 import '../../presentation/views/Notifications/notification_screen.dart';
 import '../../presentation/views/about/about_artleap_screen.dart';
 import '../../presentation/views/common/privacy_policy_accept.dart';
+import '../../presentation/views/home_section/favourites_screen/favourites_screen.dart';
 import '../../presentation/views/home_section/new_prompt_section/result/result_prompt_screen.dart';
 import '../../presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
 import '../../presentation/views/home_section/profile_screen/policies_screens/privacy_policy_screen.dart';
@@ -50,6 +51,8 @@ class RouteGenerator {
         return route(const SignUpScreen());
       case CurrentPlanScreen.routeName:
         return route(const CurrentPlanScreen());
+      case FavouritesScreen.routeName:
+        return route(const FavouritesScreen());
     // In your route_generator.dart
       case PaymentScreen.routeName:
         final args = settings.arguments as SubscriptionPlanModel;

@@ -32,17 +32,17 @@ class AboutArtleapContactSection extends StatelessWidget {
           _buildContactMethod(
             icon: Icons.email,
             title: 'Email Us',
-            value: 'support@artleap.ai',
+            value: 'info@x-r.digital',
           ),
           _buildContactMethod(
             icon: Icons.language,
             title: 'Website',
-            value: 'www.artleap.ai',
+            value: 'https://mim.archi/',
           ),
           _buildContactMethod(
             icon: Icons.phone,
             title: 'Support',
-            value: '+1 (555) 123-4567',
+            value: '+92 51 8745047',
           ),
           const SizedBox(height: 5),
         ],

@@ -45,7 +45,8 @@ class TrendingStyles extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    styles[index],
+                    // styles[index],
+                    'Coming Soon',
                     style: AppTextstyle.interMedium(
                       color: Colors.black54
                     ),

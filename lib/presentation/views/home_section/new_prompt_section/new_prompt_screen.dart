@@ -11,38 +11,44 @@ class PromptScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentNav = ref.watch(promptNavProvider);
+    final isExpanded = ref.watch(isDropdownExpandedProvider);
 
     return Scaffold(
-      body: Column(
-        children: [
-          const PromptTopBar(),
-          Expanded(
-            child: Stack(
-              children: [
-                _buildCurrentScreen(currentNav),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    height: 4, // Shadow height
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          offset: const Offset(0, 3),
-                          blurRadius: 6,
-                          spreadRadius: 0,
-                          blurStyle: BlurStyle.normal,
-                        )
-                      ],
+      body: GestureDetector(
+        onTap: (){
+          if (isExpanded) {
+            ref.read(isDropdownExpandedProvider.notifier).state = false;
+          }
+        },
+        child: Column(
+          children: [
+            const PromptTopBar(),
+            Expanded(
+              child: Stack(
+                children: [
+                  _buildCurrentScreen(currentNav),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      height: 4, // Shadow height
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 0,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -55,6 +61,7 @@ class PromptScreen extends ConsumerWidget {
         // return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
         return const PromptEditScreen();
       case PromptNavItem.animate:
+      return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
         return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
       case PromptNavItem.enhance:
         return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
