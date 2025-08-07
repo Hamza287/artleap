@@ -10,12 +10,12 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart'
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-
 import '../../../domain/api_services/api_response.dart';
 
 final paymentLoadingProvider = StateProvider<bool>((ref) => false);
 final termsAcceptedProvider = StateProvider<bool>((ref) => false);
 final selectedPaymentMethodProvider = StateProvider<String>((ref) => 'google_play');
+final inAppPurchaseInitializedProvider = StateProvider<bool>((ref) => false);
 
 class PaymentScreen extends ConsumerStatefulWidget {
   static const String routeName = "payment_screen";
@@ -28,7 +28,6 @@ class PaymentScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentScreenState extends ConsumerState<PaymentScreen> {
-  bool _isInitialized = false;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
 
   @override
@@ -53,7 +52,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         }
         return;
       }
-      setState(() => _isInitialized = true);
+      ref.read(inAppPurchaseInitializedProvider.notifier).state = true;
     } catch (e) {
       if (mounted) {
         appSnackBar('Error', 'Failed to initialize payment service: $e', Colors.red);
@@ -91,14 +90,19 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           ref.read(paymentLoadingProvider.notifier).state = false;
           if (mounted) {
             appSnackBar(
-                'Error',
-                'Purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
-                Colors.red);
+              'Error',
+              'Purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
+              Colors.red,
+            );
           }
           break;
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-        // Success case - handled by your main purchase stream
+          ref.read(paymentLoadingProvider.notifier).state = false;
+          if (mounted) {
+            appSnackBar('Success', 'Purchase completed', Colors.green);
+          }
+          Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
           break;
       }
     }
@@ -107,21 +111,20 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   Future<void> _handleSubscription() async {
     final paymentMethod = ref.read(selectedPaymentMethodProvider);
     final userId = UserData.ins.userId;
+
     if (userId == null) {
       appSnackBar('Error', 'User not authenticated', Colors.red);
-      ref.read(paymentLoadingProvider.notifier).state = false;
       return;
     }
 
-    if (!_isInitialized && paymentMethod == 'google_play') {
+    if (paymentMethod == 'google_play' &&
+        !ref.read(inAppPurchaseInitializedProvider)) {
       appSnackBar('Error', 'Payment service not initialized', Colors.red);
-      ref.read(paymentLoadingProvider.notifier).state = false;
       return;
     }
 
     if (!ref.read(termsAcceptedProvider)) {
       appSnackBar('Error', 'Please accept the terms and conditions', Colors.red);
-      ref.read(paymentLoadingProvider.notifier).state = false;
       return;
     }
 
@@ -130,24 +133,32 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
     try {
       final paymentService = ref.read(paymentServiceProvider(userId));
+
       if (paymentMethod == 'google_play') {
         final productId = widget.plan.googleProductId;
-        final response = await paymentService.purchaseSubscription(
-          widget.plan.id,
-          productId,
-          paymentMethod,
-        );
+        final ProductDetailsResponse response =
+        await InAppPurchase.instance.queryProductDetails({productId});
 
-        if (response.status != Status.processing && mounted) {
-          appSnackBar('Error', response.message ?? 'Failed to initiate purchase', Colors.red);
-          ref.read(paymentLoadingProvider.notifier).state = false;
+        if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
+          appSnackBar('Error', 'Plan not available', Colors.red);
+          return;
+        }
+
+        final ProductDetails productDetails = response.productDetails.first;
+        final PurchaseParam purchaseParam =
+        PurchaseParam(productDetails: productDetails);
+        final bool purchaseInitiated = await InAppPurchase.instance
+            .buyNonConsumable(purchaseParam: purchaseParam);
+
+        if (!purchaseInitiated && mounted) {
+          appSnackBar('Error', 'Failed to initiate purchase', Colors.red);
         }
       } else if (paymentMethod == 'stripe') {
         final amount = (widget.plan.price * 100).toInt(); // Convert to cents
         final response = await paymentService.purchaseStripeSubscription(
           planId: widget.plan.id,
           amount: amount,
-          currency: 'usd', // Adjust based on your app's currency
+          currency: 'usd',
           context: context,
           ref: ref,
         );
@@ -155,17 +166,23 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         if (response.status == Status.completed && mounted) {
           appSnackBar('Success', 'Subscription created successfully', Colors.green);
           ref.refresh(currentSubscriptionProvider(userId));
+          ref.read(paymentLoadingProvider.notifier).state = false;
           Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
         } else if (mounted) {
-          appSnackBar('Error', response.message ?? 'Stripe purchase failed', Colors.red);
           ref.read(paymentLoadingProvider.notifier).state = false;
+          appSnackBar('Error', response.message ?? 'Stripe purchase failed', Colors.red);
         }
       }
     } catch (e) {
       if (mounted) {
+        ref.read(paymentLoadingProvider.notifier).state = false;
         appSnackBar('Error', 'Purchase error: $e', Colors.red);
       }
-      ref.read(paymentLoadingProvider.notifier).state = false;
+    } finally {
+      if (paymentMethod == 'stripe') {
+        ref.read(paymentLoadingProvider.notifier).state = false;
+      }
+      // For Google Play, loading state is handled in purchase stream
     }
   }
 
@@ -188,6 +205,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(paymentLoadingProvider);
     final selectedPaymentMethod = ref.watch(selectedPaymentMethodProvider);
+    final isInitialized = ref.watch(inAppPurchaseInitializedProvider);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -279,116 +297,122 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Google Pay tile
-              GestureDetector(
-                onTap: () {
-                  ref.read(selectedPaymentMethodProvider.notifier).state = 'google_play';
-                },
-                child: Card(
-                  elevation: selectedPaymentMethod == 'google_play' ? 8 : 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: selectedPaymentMethod == 'google_play'
-                          ? AppColors.purple
-                          : AppColors.darkBlue,
-                      width: 2,
-                    ),
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: selectedPaymentMethod == 'google_play'
-                          ? AppColors.purple.withOpacity(0.1)
-                          : AppColors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.android,
-                          size: 28,
-                          color: selectedPaymentMethod == 'google_play'
-                              ? AppColors.purple
-                              : AppColors.darkBlue,
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          'Google Pay',
-                          style: AppTextstyle.interMedium(
-                            fontSize: 18,
+              // Payment method options
+              Column(
+                children: [
+                  // Google Pay option
+                  if (isInitialized) // Only show Google Pay if initialized
+                    GestureDetector(
+                      onTap: () {
+                        ref.read(selectedPaymentMethodProvider.notifier).state = 'google_play';
+                      },
+                      child: Card(
+                        elevation: selectedPaymentMethod == 'google_play' ? 8 : 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
                             color: selectedPaymentMethod == 'google_play'
                                 ? AppColors.purple
                                 : AppColors.darkBlue,
+                            width: 2,
                           ),
                         ),
-                        const Spacer(),
-                        if (selectedPaymentMethod == 'google_play')
-                          const Icon(
-                            Icons.check_circle,
-                            color: AppColors.purple,
-                            size: 24,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: selectedPaymentMethod == 'google_play'
+                                ? AppColors.purple.withOpacity(0.1)
+                                : AppColors.white,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                      ],
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.android,
+                                size: 28,
+                                color: selectedPaymentMethod == 'google_play'
+                                    ? AppColors.purple
+                                    : AppColors.darkBlue,
+                              ),
+                              const SizedBox(width: 16),
+                              Text(
+                                'Google Pay',
+                                style: AppTextstyle.interMedium(
+                                  fontSize: 18,
+                                  color: selectedPaymentMethod == 'google_play'
+                                      ? AppColors.purple
+                                      : AppColors.darkBlue,
+                                ),
+                              ),
+                              const Spacer(),
+                              if (selectedPaymentMethod == 'google_play')
+                                const Icon(
+                                  Icons.check_circle,
+                                  color: AppColors.purple,
+                                  size: 24,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Stripe tile
-              GestureDetector(
-                onTap: () {
-                  ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
-                },
-                child: Card(
-                  elevation: selectedPaymentMethod == 'stripe' ? 8 : 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: selectedPaymentMethod == 'stripe'
-                          ? AppColors.purple
-                          : AppColors.darkBlue,
-                      width: 2,
-                    ),
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: selectedPaymentMethod == 'stripe'
-                          ? AppColors.purple.withOpacity(0.1)
-                          : AppColors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.credit_card,
-                          size: 28,
+                  if (isInitialized) const SizedBox(height: 12),
+                  // Stripe option
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
+                    },
+                    child: Card(
+                      elevation: selectedPaymentMethod == 'stripe' ? 8 : 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
                           color: selectedPaymentMethod == 'stripe'
                               ? AppColors.purple
                               : AppColors.darkBlue,
+                          width: 2,
                         ),
-                        const SizedBox(width: 16),
-                        Text(
-                          'Credit/Debit Card',
-                          style: AppTextstyle.interMedium(
-                            fontSize: 18,
-                            color: selectedPaymentMethod == 'stripe'
-                                ? AppColors.purple
-                                : AppColors.darkBlue,
-                          ),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: selectedPaymentMethod == 'stripe'
+                              ? AppColors.purple.withOpacity(0.1)
+                              : AppColors.white,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const Spacer(),
-                        if (selectedPaymentMethod == 'stripe')
-                          const Icon(
-                            Icons.check_circle,
-                            color: AppColors.purple,
-                            size: 24,
-                          ),
-                      ],
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.credit_card,
+                              size: 28,
+                              color: selectedPaymentMethod == 'stripe'
+                                  ? AppColors.purple
+                                  : AppColors.darkBlue,
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              'Credit/Debit Card',
+                              style: AppTextstyle.interMedium(
+                                fontSize: 18,
+                                color: selectedPaymentMethod == 'stripe'
+                                    ? AppColors.purple
+                                    : AppColors.darkBlue,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (selectedPaymentMethod == 'stripe')
+                              const Icon(
+                                Icons.check_circle,
+                                color: AppColors.purple,
+                                size: 24,
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(height: 24),
               // Terms and conditions
@@ -442,9 +466,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 child: ElevatedButton(
                   onPressed: (isLoading || !ref.read(termsAcceptedProvider))
                       ? null
-                      : () async {
-                    await _handleSubscription();
-                  },
+                      : _handleSubscription,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.purple,
                     disabledBackgroundColor: AppColors.purple.withOpacity(0.5),

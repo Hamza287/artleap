@@ -39,9 +39,14 @@ void main() {
     await AppLocal.ins.initStorage();
     await DI.initDI();
 
-    // await dotenv.load(fileName: ".env");
-    // Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
-    // await Stripe.instance.applySettings();
+    await dotenv.load(fileName: ".env");
+    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+    try {
+      await Stripe.instance.applySettings();
+      print("Stripe initialized successfully");
+    } catch (e) {
+      print("Stripe initialization failed: $e");
+    }
 
     // Set up error handling
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

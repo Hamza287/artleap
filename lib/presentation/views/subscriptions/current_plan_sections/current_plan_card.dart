@@ -9,6 +9,7 @@ class CurrentPlanCard extends StatelessWidget {
   final bool isActive;
   final UserSubscriptionModel? subscription;
   final User? userPersonalData;
+
   const CurrentPlanCard({
     super.key,
     required this.planName,
@@ -62,7 +63,7 @@ class CurrentPlanCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  isActive ? 'Active' : 'Inactive',
+                  isActive && subscription!.autoRenew ? 'Active' : 'Inactive',
                   style: AppTextstyle.interMedium(
                     fontSize: 14,
                     color: isActive ? AppColors.green : AppColors.redColor,

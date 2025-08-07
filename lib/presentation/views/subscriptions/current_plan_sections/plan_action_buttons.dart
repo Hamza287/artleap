@@ -48,7 +48,7 @@ class ActionButtons extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (isActive && subscription!.planSnapshot?.name != 'Free')
+            if (isActive && subscription!.planSnapshot?.name != 'Free' && subscription!.autoRenew == true)
               SizedBox(
                 width: double.infinity,
                 height: 50,

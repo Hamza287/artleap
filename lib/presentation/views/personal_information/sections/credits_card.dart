@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
-import 'coming_soon_button.dart';
-
 
 class CreditsCard extends StatelessWidget {
   final int dailyCredits;
@@ -51,7 +49,7 @@ class CreditsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _CreditProgress(
-              label: "Daily Credits",
+              label: "Total Credits",
               used: dailyCredits,
               total: totalCredits,
               icon: Icons.calendar_today_outlined,
@@ -59,7 +57,7 @@ class CreditsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _CreditProgress(
-              label: "Image Generation",
+              label: "Image-to-Image Generation",
               used: usedImageCredits,
               total: imageGenerationCredits,
               icon: Icons.image_outlined,
@@ -67,7 +65,7 @@ class CreditsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _CreditProgress(
-              label: "Prompt Generation",
+              label: "Prompt-to-Image Generation",
               used: usedPromptCredits,
               total: promptGenerationCredits,
               icon: Icons.text_fields_outlined,

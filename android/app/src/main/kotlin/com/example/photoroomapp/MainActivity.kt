@@ -8,8 +8,9 @@ import android.util.Log
 import androidx.core.view.WindowCompat
 import io.flutter.embedding.android.FlutterActivity
 import java.security.MessageDigest
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity() {
+class MainActivity :  FlutterFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

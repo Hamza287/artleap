@@ -1,22 +1,23 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:Artleap.ai/domain/payment/stripe_service.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
-import 'stripe_service.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import '../base_repo/base.dart';
 
 class PaymentService {
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   final SubscriptionService _subscriptionService;
+  final Base _base; // Add Base instance for StripeService
   final String userId;
-  final Dio dio;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
 
-  PaymentService(this._subscriptionService, this.userId, this.dio);
+  PaymentService(this._subscriptionService, this._base, this.userId);
 
   // Initialize the plugin
   Future<bool> initialize() async {
@@ -47,16 +48,19 @@ class PaymentService {
       // 1. Query the product
       final products = await getProducts([productId]);
       if (products.isEmpty) {
+        appSnackBar('Error', 'Product not found', Colors.red);
         return ApiResponse.error('Product not found');
       }
 
       // 2. Set up purchase stream listener
+      _purchaseSubscription?.cancel(); // Cancel any existing subscription
       _purchaseSubscription = _inAppPurchase.purchaseStream.listen(
             (List<PurchaseDetails> purchaseDetailsList) {
           _handlePurchaseUpdates(purchaseDetailsList, planId, paymentMethod);
         },
         onError: (error) {
           print('Purchase stream error: $error');
+          appSnackBar('Error', 'Purchase stream error: $error', Colors.red);
         },
       );
 
@@ -79,6 +83,7 @@ class PaymentService {
       return ApiResponse.processing('Purchase initiated');
     } catch (e) {
       _purchaseSubscription?.cancel();
+      appSnackBar('Error', 'Purchase error: $e', Colors.red);
       return ApiResponse.error(e.toString());
     }
   }
@@ -91,7 +96,9 @@ class PaymentService {
     required BuildContext context,
     required WidgetRef ref,
   }) async {
-    return await StripeService.purchaseSubscription(
+    // Create an instance of StripeService with Base
+    final stripeService = StripeService(_base);
+    return await stripeService.purchaseSubscription(
       planId: planId,
       amount: amount,
       currency: currency,
@@ -99,7 +106,7 @@ class PaymentService {
       subscriptionService: _subscriptionService,
       context: context,
       ref: ref,
-      dio: dio,
+      enableLocalPersistence: false,
     );
   }
 
@@ -112,6 +119,7 @@ class PaymentService {
       switch (purchaseDetails.status) {
         case PurchaseStatus.pending:
           print('Purchase pending');
+          appSnackBar('Info', 'Purchase is pending', Colors.blue);
           break;
 
         case PurchaseStatus.purchased:
@@ -140,35 +148,45 @@ class PaymentService {
             };
 
             // Verify with backend and create subscription
-            await _subscriptionService.subscribe(
+            final response = await _subscriptionService.subscribe(
               userId,
               planId,
               paymentMethod,
               verificationData: verificationData,
             );
 
+            if (response.status == Status.completed) {
+              appSnackBar('Success', 'Subscription purchased successfully', Colors.green);
+            } else {
+              appSnackBar('Error', response.message ?? 'Failed to create subscription', Colors.red);
+            }
           } catch (e) {
             print('Error handling purchased status: $e');
+            appSnackBar('Error', 'Error processing purchase: $e', Colors.red);
           }
           break;
 
         case PurchaseStatus.error:
           print('Purchase error: ${purchaseDetails.error}');
+          appSnackBar('Error', 'Purchase error: ${purchaseDetails.error}', Colors.red);
           break;
 
         case PurchaseStatus.canceled:
           print('Purchase canceled');
+          appSnackBar('Info', 'Purchase canceled', Colors.yellow);
           break;
       }
     }
   }
 
   // Restore purchases
-  Future<ApiResponse> restorePurchases() async {
+  Future<ApiResponse> restorePurchases(BuildContext context) async {
     try {
       await _inAppPurchase.restorePurchases();
+      appSnackBar('Success', 'Purchases restored successfully', Colors.green);
       return ApiResponse.completed('Purchases restored successfully');
     } catch (e) {
+      appSnackBar('Error', 'Failed to restore purchases: $e', Colors.red);
       return ApiResponse.error('Failed to restore purchases: $e');
     }
   }

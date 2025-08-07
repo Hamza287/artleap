@@ -6,14 +6,33 @@ import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:Artleap.ai/shared/utilities/safe_network_image.dart';
+import '../../../../../providers/user_profile_provider.dart';
 import '../../../global_widgets/artleap_top_bar.dart';
+import '../../../login_and_signup_section/login_section/login_screen.dart';
 
-class ResultScreenRedesign extends ConsumerWidget {
+class ResultScreenRedesign extends ConsumerStatefulWidget {
   const ResultScreenRedesign({super.key});
   static const String routeName = "result_screen";
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ResultScreenRedesign> createState() => _ResultScreenRedesignState();
+}
+
+class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userId = UserData.ins.userId;
+      if (userId != null && userId.isNotEmpty) {
+        ref.read(userProfileProvider).getUserProfileData(userId);
+        ref.read(userProfileProvider).updateUserCredits();
+      } else {
+        Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
     final generatedTextToImageData =
         ref.watch(generateImageProvider).generatedTextToImageData;

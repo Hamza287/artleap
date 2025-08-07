@@ -7,38 +7,44 @@ import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_api_paths.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_services/handling_response.dart';
+import '../base_repo/base.dart'; // Import Base class
 
 class StripeService {
-  static Future<String?> createPaymentIntent({
+  final Base _base;
+
+  StripeService(this._base);
+
+  Future<ApiResponse<String?>> createPaymentIntent({
     required int amount,
     required String currency,
     required String userId,
     required String planId,
-    required Dio dio,
+    bool enableLocalPersistence = false,
   }) async {
     try {
-      final response = await dio.post(
+      final response = await _base.artleapApiService.postJson(
         AppApiPaths.createPaymentIntent,
-        data: {
+        {
           'amount': amount,
           'currency': currency,
           'userId': userId,
           'planId': planId,
         },
+        enableLocalPersistence: enableLocalPersistence,
       );
 
-      return HandlingResponse.returnResponse<Map<String, dynamic>>(
+      return HandlingResponse.returnResponse<String?>(
         response,
-        fromJson: (json) => json as Map<String, dynamic>,
-      ).data?['clientSecret'];
+        fromJson: (json) => (json as Map<String, dynamic>)['clientSecret'] as String?,
+      );
     } on DioException catch (e) {
-      print('Error creating Payment Intent: ${e.message}');
-      return null;
+      print('Error creating Payment Intent: $e');
+      print('Failed URL: ${e.requestOptions.uri}');
+      return HandlingResponse.returnException<String?>(e);
     }
   }
 
-  // Process a Stripe payment
-  static Future<ApiResponse> purchaseSubscription({
+  Future<ApiResponse> purchaseSubscription({
     required String planId,
     required int amount, // Amount in cents
     required String currency,
@@ -46,22 +52,24 @@ class StripeService {
     required SubscriptionService subscriptionService,
     required BuildContext context,
     required WidgetRef ref,
-    required Dio dio,
+    bool enableLocalPersistence = false,
   }) async {
     try {
       // Create Payment Intent
-      final clientSecret = await createPaymentIntent(
+      final clientSecretResponse = await createPaymentIntent(
         amount: amount,
         currency: currency,
         userId: userId,
         planId: planId,
-        dio: dio,
+        enableLocalPersistence: enableLocalPersistence,
       );
 
-      if (clientSecret == null) {
-        appSnackBar('Error', 'Failed to initialize payment', Colors.red);
-        return ApiResponse.error('Failed to initialize payment');
+      if (clientSecretResponse.status != Status.completed || clientSecretResponse.data == null) {
+        appSnackBar('Error', clientSecretResponse.message ?? 'Failed to initialize payment', Colors.red);
+        return ApiResponse.error(clientSecretResponse.message ?? 'Failed to initialize payment');
       }
+
+      final clientSecret = clientSecretResponse.data;
 
       // Initialize Payment Sheet
       await Stripe.instance.initPaymentSheet(
@@ -80,7 +88,7 @@ class StripeService {
       await Stripe.instance.presentPaymentSheet();
 
       // Extract paymentIntentId from clientSecret
-      final paymentIntentId = clientSecret.split('_secret_')[0];
+      final paymentIntentId = clientSecret!.split('_secret_')[0];
 
       // Prepare verification data for backend
       final verificationData = {
@@ -97,6 +105,12 @@ class StripeService {
         'stripe',
         verificationData: verificationData,
       );
+
+      if (response.status == Status.completed) {
+        appSnackBar('Success', 'Subscription purchased successfully', Colors.green, );
+      } else {
+        appSnackBar('Error', response.message ?? 'Failed to create subscription', Colors.red,);
+      }
 
       return response;
     } catch (e) {

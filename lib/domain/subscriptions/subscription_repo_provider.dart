@@ -3,34 +3,40 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_impl.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
-import 'package:dio/dio.dart';
 import '../../providers/watermark_provider.dart';
+import '../base_repo/base.dart';
 import '../payment/payment_service.dart';
 
+// Provider for Base class (to access artleapApiService)
+final baseProvider = Provider<Base>((ref) => Base());
+
+// Provider for SubscriptionRepoImpl
 final subscriptionRepoProvider = Provider<SubscriptionRepoImpl>((ref) => SubscriptionRepoImpl());
 
-final dioProvider = Provider<Dio>((ref) => Dio());
-
+// Provider for SubscriptionService
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
   final repo = ref.read(subscriptionRepoProvider);
   return SubscriptionService(repo);
 });
 
+// Provider for PaymentService
 final paymentServiceProvider = Provider.family<PaymentService, String>((ref, userId) {
   final subscriptionService = ref.read(subscriptionServiceProvider);
-  final dio = ref.read(dioProvider);
-  return PaymentService(subscriptionService, userId, dio);
+  final base = ref.read(baseProvider);
+  return PaymentService(subscriptionService, base, userId);
 });
 
+// Provider for fetching subscription plans
 final subscriptionPlansProvider = FutureProvider<List<SubscriptionPlanModel>>((ref) async {
   final service = ref.read(subscriptionServiceProvider);
   final response = await service.getSubscriptionPlans();
-  if (response.status == Status.completed) {
+  if (response.status == Status.completed && response.data != null) {
     return response.data as List<SubscriptionPlanModel>;
   }
-  throw Exception(response.message);
+  throw Exception(response.message ?? 'Failed to fetch subscription plans');
 });
 
+// Provider for fetching the current subscription
 final currentSubscriptionProvider = FutureProvider.family<UserSubscriptionModel?, String>((ref, userId) async {
   final service = ref.read(subscriptionServiceProvider);
   final response = await service.getCurrentSubscription(userId);
@@ -41,12 +47,13 @@ final currentSubscriptionProvider = FutureProvider.family<UserSubscriptionModel?
   return null;
 });
 
+// Provider for fetching generation limits
 final generationLimitsProvider = FutureProvider.family<GenerationLimitsModel, Map<String, String>>((ref, params) async {
-  ref.read(watermarkProvider.notifier).initializeWatermarkState();
   final service = ref.read(subscriptionServiceProvider);
   final response = await service.checkGenerationLimits(params['userId']!, params['generationType']!);
-  if (response.status == Status.completed) {
+  if (response.status == Status.completed && response.data != null) {
+    ref.read(watermarkProvider.notifier).initializeWatermarkState();
     return response.data as GenerationLimitsModel;
   }
-  throw Exception(response.message);
+  throw Exception(response.message ?? 'Failed to fetch generation limits');
 });

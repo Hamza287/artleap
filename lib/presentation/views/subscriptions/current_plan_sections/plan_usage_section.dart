@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
 import '../../../../domain/api_models/user_profile_model.dart';
 import '../../../../domain/subscriptions/subscription_model.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +14,19 @@ class UsageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Show loading indicator if userPersonalData is null
+    String getSubscriptionEndDate(DateTime? endDate, String planName) {
+      if (endDate != null && planName != 'Free') {
+        final currentDate = DateTime.now();
+        final difference = endDate.difference(currentDate).inDays;
+
+        // Return the number of days remaining
+        return difference >= 0
+            ? '$difference Days'
+            : 'Expired';
+      } else {
+        return '1 Day';
+      }
+    }
     if (userPersonalData == null) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -62,9 +72,7 @@ class UsageSection extends StatelessWidget {
         const SizedBox(height: 10),
         _buildResetCard(
           title: 'Reset In',
-          value: subscription?.endDate != null && userPersonalData?.planType != 'free'
-              ? DateFormat('MMM dd, yyyy').format(subscription!.endDate)
-              : '1 Day',
+          value: getSubscriptionEndDate(subscription?.endDate, userPersonalData?.planName ?? ''),
           color: Colors.amber,
           width: MediaQuery.of(context).size.width,
           isResetCard: true,
