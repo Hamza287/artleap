@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/theme_provider.dart';
+import '../../../providers/user_profile_provider.dart';
+import '../../../shared/constants/user_data.dart';
 import '../home_section/favourites_screen/favourites_screen.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
@@ -10,7 +12,7 @@ import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_wid
 import '../global_widgets/upgrade_plan_widget.dart';
 import '../login_and_signup_section/login_section/login_screen.dart';
 
-class ProfileDrawer extends ConsumerWidget {
+class ProfileDrawer extends ConsumerStatefulWidget {
   final String profileImage;
   final String userName;
   final String userEmail;
@@ -23,7 +25,22 @@ class ProfileDrawer extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _ProfileDrawerState createState() => _ProfileDrawerState();
+}
+
+class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final iconSize = screenWidth * 0.06;
@@ -31,6 +48,9 @@ class ProfileDrawer extends ConsumerWidget {
       horizontal: screenWidth * 0.05,
       vertical: 1,
     );
+
+    final profileProvider = ref.watch(userProfileProvider);
+    final user = profileProvider.userProfileData?.user;
 
     return Drawer(
       width: screenWidth * 0.9,
@@ -69,7 +89,7 @@ class ProfileDrawer extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 16,right: 16),
+                  padding: EdgeInsets.only(top: 16, right: 16),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: _GlassCircleButton(
@@ -80,7 +100,7 @@ class ProfileDrawer extends ConsumerWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16,right: 16),
+                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
                   child: Row(
                     children: [
                       Container(
@@ -93,9 +113,9 @@ class ProfileDrawer extends ConsumerWidget {
                             width: 1.5,
                           ),
                           image: DecorationImage(
-                            image: profileImage.isEmpty
+                            image: widget.profileImage.isEmpty
                                 ? const AssetImage(AppAssets.profilepic) as ImageProvider
-                                : NetworkImage(profileImage),
+                                : NetworkImage(widget.profileImage),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -105,7 +125,7 @@ class ProfileDrawer extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            userName,
+                            widget.userName,
                             style: AppTextstyle.interMedium(
                               color: AppColors.white,
                               fontSize: screenWidth * 0.04,
@@ -113,7 +133,7 @@ class ProfileDrawer extends ConsumerWidget {
                           ),
                           SizedBox(height: screenHeight * 0.01),
                           Text(
-                            userEmail,
+                            widget.userEmail,
                             style: AppTextstyle.interMedium(
                               color: AppColors.white.withOpacity(0.8),
                               fontSize: screenWidth * 0.035,
@@ -124,13 +144,14 @@ class ProfileDrawer extends ConsumerWidget {
                     ],
                   ),
                 ),
+                user?.planName.toLowerCase() == 'free' ?
                 Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16,right: 16),
+                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
                   child: UpgradeToProBanner(),
-                ),
+                ) : Container(),
                 10.spaceY,
                 Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16),
+                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
                   child: _buildSection(
                     context,
                     title: "General",
@@ -150,11 +171,11 @@ class ProfileDrawer extends ConsumerWidget {
                         title: "Privacy Policy",
                         onTap: () => _navigateTo(context, '/privacy-policy'),
                       ),
-                      // _ProfileMenuItem(
-                      //   icon: AppAssets.payment,
-                      //   title: "Payment Method",
-                      //   onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
-                      // ),
+                      _ProfileMenuItem(
+                        icon: AppAssets.payment,
+                        title: "Subscription Plans",
+                        onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
+                      ),
                       _ProfileMenuItem(
                         icon: AppAssets.saveicon,
                         title: "Favourites",
@@ -171,7 +192,7 @@ class ProfileDrawer extends ConsumerWidget {
                 ),
                 10.spaceY,
                 Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05,top: 16),
+                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
                   child: _buildSection(
                     context,
                     title: "About",
@@ -191,16 +212,15 @@ class ProfileDrawer extends ConsumerWidget {
                         title: "About Artleap",
                         onTap: () => _navigateTo(context, '/about-artleap'),
                       ),
-                              
                     ],
                   ),
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      color: Color(0x991D0751)
+                    color: Color(0x991D0751),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.05,top: 10,bottom: 20),
+                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
                     child: Column(
                       children: [
                         _ProfileMenuItem(
