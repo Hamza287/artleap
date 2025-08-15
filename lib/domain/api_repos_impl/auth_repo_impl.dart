@@ -15,7 +15,6 @@ class AuthRepoImpl extends AuthRepo {
       ApiResponse result = HandlingResponse.returnResponse(res);
       print('Login Api Response : $res');
       if (result.status == Status.completed) {
-        // Set user data immediately after successful login
         final userData = res.data['user'];
         UserData.ins.setUserData(
           id: userData['userId'] ?? '',

@@ -32,13 +32,16 @@ class AuthExceptionHandler {
       case "invalid-credential":
         status = AuthResultStatus.wrongPassword;
         break;
+      case "unknown":
+        status = AuthResultStatus.undefined;
+        break;
       default:
         status = AuthResultStatus.undefined;
     }
     return status;
   }
 
-  static generateExceptionMessage(AuthResultStatus exceptionCode) {
+  static String generateExceptionMessage(AuthResultStatus exceptionCode) {
     String errorMessage;
     switch (exceptionCode) {
       case AuthResultStatus.invalidEmail:
@@ -65,8 +68,11 @@ class AuthExceptionHandler {
       case AuthResultStatus.weakPassword:
         errorMessage = "Password should be at least 6 characters";
         break;
+      case AuthResultStatus.undefined:
+        errorMessage = "An undefined error occurred. Please try again.";
+        break;
       default:
-        errorMessage = "An undefined Error happened.";
+        errorMessage = "An unexpected authentication error occurred.";
     }
     return errorMessage;
   }

@@ -24,4 +24,5 @@ class AppColors {
   static const greyBlue = Color(0xff252452);
   static const daisyBrush = Color(0xff4A2D97);
   static const topBar = Color(0xffffffff);
+  static const red = Color(0xffff0000);
 }

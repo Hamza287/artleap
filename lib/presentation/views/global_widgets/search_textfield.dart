@@ -27,34 +27,34 @@ class SearchTextfield extends ConsumerWidget {
           ),
         ],
       ),
-      child: TextField(
-        style: AppTextstyle.interRegular(
-          fontSize: 16,
-          color: Colors.black,
-        ),
-        decoration: InputDecoration(
-          enabledBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          hintText: "Search AI Creations",
-          hintStyle: AppTextstyle.interRegular(
+      child: Center(
+        child: TextField(
+          style: AppTextstyle.interRegular(
             fontSize: 16,
-            color: Colors.grey.shade600,
+            color: Colors.black,
           ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 12, right: 8),
-            child: Image.asset(
-              AppAssets.searchicon,
-              width: 5,
-              height: 5,
-              color: Colors.grey.shade700,
+          decoration: InputDecoration(
+            enabledBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            hintText: "Search AI Creations",
+            hintStyle: AppTextstyle.interRegular(
+              fontSize: 16,
+              color: Colors.grey.shade600,
+            ),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 12, right: 8),
+              child: Image.asset(
+                AppAssets.searchicon,
+                color: Colors.black,
+              ),
             ),
           ),
+          onChanged: (value) {
+            FirebaseCrashlytics.instance.log('User typing in search textfield');
+            ref.read(homeScreenProvider).filteredListFtn(value);
+          },
         ),
-        onChanged: (value) {
-          FirebaseCrashlytics.instance.log('User typing in search textfield');
-          ref.read(homeScreenProvider).filteredListFtn(value);
-        },
       ),
     );
   }

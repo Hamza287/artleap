@@ -21,6 +21,7 @@ import 'di/di.dart';
 import 'domain/api_services/api_response.dart';
 import 'domain/subscriptions/plan_provider.dart';
 import 'domain/subscriptions/subscription_repo_provider.dart';
+import 'presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'providers/notification_provider.dart';
 import 'domain/notification_services/notification_service.dart'
     hide notificationServiceProvider;
@@ -101,14 +102,24 @@ class _MyAppState extends ConsumerState<MyApp> {
     });
 
     Future.microtask(() async {
-      await ref.read(authprovider).ensureValidFirebaseToken();
-      // Refresh token every hour
+      final token = await ref.read(authprovider).ensureValidFirebaseToken();
+      if (token == null) {
+        debugPrint('No valid token. Redirecting to login...');
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            LoginScreen.routeName, (Route<dynamic> route) => false,
+        );
+        return;
+      }
+
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
-        await ref.read(authprovider).ensureValidFirebaseToken();
-        debugPrint('✅ Firebase token refreshed.');
+        final refreshedToken = await ref.read(authprovider).ensureValidFirebaseToken();
+        if (refreshedToken != null) {
+          debugPrint('✅ Firebase token refreshed.');
+        } else {
+          debugPrint('Token refresh skipped: No user signed in.');
+        }
       });
 
-      // Initialize notifications
       await ref.read(firebaseNotificationServiceProvider).initialize();
       final userId = UserData.ins.userId;
       if (userId != null) {
@@ -167,12 +178,10 @@ class _MyAppState extends ConsumerState<MyApp> {
 
           if (response.status == Status.completed) {
             debugPrint('Subscription created: ${response.data}');
-            appSnackBar(
-                'Success', 'Subscription created successfully', Colors.green);
+            appSnackBar('Success', 'Subscription created successfully', Colors.green);
             await InAppPurchase.instance.completePurchase(purchaseDetails);
             ref.refresh(currentSubscriptionProvider(userId));
             ref.read(paymentLoadingProvider.notifier).state = false;
-            navigatorKey.currentState ?.pushReplacementNamed(BottomNavBar.routeName);
           } else {
             debugPrint('Subscription creation failed: ${response.message}');
             appSnackBar(

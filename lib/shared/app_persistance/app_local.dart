@@ -26,6 +26,13 @@ class AppLocal {
   setUserData(String key, var value) => userBox.put(key, value);
   getUSerData(String key) => userBox.get(key);
   clearUSerData(String key) => userBox.delete(key);
+
+  Future<void> clearUserData() async {
+    await setUserData(Hivekey.userId, null);
+    await setUserData(Hivekey.userName, null);
+    await setUserData(Hivekey.userEmail, null);
+    await setUserData(Hivekey.userProfielPic, null);
+  }
 }
 
 class Hivekey {

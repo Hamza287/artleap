@@ -150,11 +150,11 @@ class ProfileDrawer extends ConsumerWidget {
                         title: "Privacy Policy",
                         onTap: () => _navigateTo(context, '/privacy-policy'),
                       ),
-                      _ProfileMenuItem(
-                        icon: AppAssets.payment,
-                        title: "Payment Method",
-                        onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
-                      ),
+                      // _ProfileMenuItem(
+                      //   icon: AppAssets.payment,
+                      //   title: "Payment Method",
+                      //   onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
+                      // ),
                       _ProfileMenuItem(
                         icon: AppAssets.saveicon,
                         title: "Favourites",

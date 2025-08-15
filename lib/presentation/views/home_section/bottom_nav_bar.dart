@@ -22,6 +22,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userId = UserData.ins.userId;
+      ref.read(userProfileProvider).updateUserCredits();
       if (userId != null && userId.isNotEmpty) {
         ref.read(userProfileProvider).getUserProfileData(userId);
         ref.read(userProfileProvider).updateUserCredits();

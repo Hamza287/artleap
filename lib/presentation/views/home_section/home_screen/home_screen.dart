@@ -3,16 +3,11 @@ import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_scre
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import '../../../../providers/bottom_nav_bar_provider.dart';
 import '../../../../providers/refresh_provider.dart';
 import '../../../../providers/user_profile_provider.dart';
 import '../../../../shared/constants/user_data.dart';
 import '../../common/profile_drawer.dart';
-import 'home_screen_sections/ai_filters_grid.dart';
-import 'home_screen_sections/filter_of_day_widget.dart';
-import 'home_screen_sections/potrait_options.dart';
-import 'home_screen_sections/promo_banner.dart';
 import 'home_screen_sections/prompt_templates.dart';
 import 'home_screen_sections/trending_styles.dart';
 
@@ -29,7 +24,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.refresh(userProfileProvider).updateUserCredits();
+      ref.read(userProfileProvider).updateUserCredits();
     });
   }
 

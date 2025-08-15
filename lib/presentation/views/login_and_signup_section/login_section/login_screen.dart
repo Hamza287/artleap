@@ -35,9 +35,8 @@ class LoginScreen extends ConsumerWidget {
           CustomErrorWidget(
               isShow: true,
               message: ref.watch(authprovider).authError?.message,
-              authResultState:
-                  ref.watch(authprovider).authError?.authResultState),
-          ref.watch(authprovider).isLoading(LoginMethod.email)
+              authResultState: ref.watch(authprovider).authError?.authResultState),
+               ref.watch(authprovider).isLoading(LoginMethod.email)
               ? const CircularProgressIndicator(
                   color: AppColors.indigo,
                 )

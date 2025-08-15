@@ -88,7 +88,6 @@ class AuthServices {
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
-          
         ],
       );
 

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
@@ -16,11 +17,9 @@ import '../shared/general_methods.dart';
 import '../shared/navigation/navigation.dart';
 
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
-
 enum LoginMethod { email, signup, google, facebook, apple, forgotPassword }
 
-final authprovider =
-    ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref));
+final authprovider = ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref));
 
 class AuthProvider extends ChangeNotifier with BaseRepo {
   final AuthServices _authServices = AuthServices();
@@ -30,10 +29,8 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   TextEditingController get emailController => _emailController;
   final TextEditingController _passwordController = TextEditingController();
   TextEditingController get passwordController => _passwordController;
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  TextEditingController get confirmPasswordController =>
-      _confirmPasswordController;
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  TextEditingController get confirmPasswordController => _confirmPasswordController;
 
   bool _loginPasswordHideShow = true;
   bool get loginPasswordHideShow => _loginPasswordHideShow;
@@ -43,156 +40,399 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   bool get confirmPasswordHideShow => _confirmPasswordHideShow;
   final Ref reference;
   AuthProvider(this.reference);
-  // A map to hold the loader state for each login method
+
   final Map<LoginMethod, bool> _loaders = {
     LoginMethod.email: false,
     LoginMethod.google: false,
     LoginMethod.facebook: false,
     LoginMethod.apple: false,
+    LoginMethod.signup: false,
+    LoginMethod.forgotPassword: false,
   };
-  bool isLoading(LoginMethod loginMethod) {
-    return _loaders[loginMethod] ?? false;
-  }
+  bool isLoading(LoginMethod loginMethod) => _loaders[loginMethod] ?? false;
 
   void startLoading(LoginMethod loginMethod) {
     _loaders[loginMethod] = true;
     notifyListeners();
   }
 
-  // Method to stop loading for a specific login method
   void stopLoading(LoginMethod loginMethod) {
     _loaders[loginMethod] = false;
     notifyListeners();
   }
 
   UserAuthResult? authError;
-  clearError() {
+  void clearError() {
     authError = null;
     notifyListeners();
   }
 
   Future<void> storeFirebaseAuthToken({bool forceRefresh = false}) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        debugPrint('No user signed in. Skipping token storage.');
+        return;
+      }
       final idToken = await user.getIdToken(forceRefresh);
-      AppData.instance.setToken(idToken!);
+      if (idToken != null) {
+        AppData.instance.setToken(idToken);
+      } else {
+        debugPrint('Failed to obtain ID token.');
+      }
+    } catch (e) {
+      debugPrint('Error storing Firebase token: $e');
+      if (e is FirebaseAuthException) {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: AuthExceptionHandler.generateExceptionMessage(
+              AuthExceptionHandler.handleException(e)),
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
     }
   }
 
-  Future<void> ensureValidFirebaseToken() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final idToken = await user.getIdToken(true); // true = force refresh
-      AppData.instance.setToken(idToken!);
+  Future<String?> ensureValidFirebaseToken() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        debugPrint('No user signed in. Skipping token refresh.');
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigation.pushNamed(LoginScreen.routeName);
+        });
+        return null;
+      }
+      final idToken = await user.getIdToken(true);
+      if (idToken != null) {
+        AppData.instance.setToken(idToken);
+        debugPrint('✅ Firebase token refreshed: $idToken');
+        return idToken;
+      } else {
+        debugPrint('Failed to obtain ID token.');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Error fetching Firebase token: $e (Code: ${e is FirebaseAuthException ? e.code : 'unknown'})');
+      if (e is FirebaseAuthException) {
+        final status = AuthExceptionHandler.handleException(e);
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: AuthExceptionHandler.generateExceptionMessage(status),
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+        if (status == AuthResultStatus.userNotFound ||
+            status == AuthResultStatus.undefined ||
+            e.code == 'invalid-user-token') {
+          await FirebaseAuth.instance.signOut();
+          AppData.instance.clearToken();
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+          });
+        }
+      } else {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: 'Failed to refresh token. Please try again.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+      notifyListeners();
+      return null;
     }
   }
 
-
-
-  signUpWithEmail() async {
-    if (userNameController.text.isEmpty || emailController.text.isEmpty) {
-      authError = UserAuthResult(
+  Future<void> signUpWithEmail() async {
+    try {
+      if (userNameController.text.isEmpty || emailController.text.isEmpty) {
+        authError = UserAuthResult(
           authResultState: AuthResultStatus.error,
-          message: "Please fill all the fields");
-      return;
-    } else if (_passwordController.text != _confirmPasswordController.text) {
-      authError = UserAuthResult(
+          message: "Please fill all the fields",
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+        notifyListeners();
+        return;
+      } else if (_passwordController.text != _confirmPasswordController.text) {
+        authError = UserAuthResult(
           authResultState: AuthResultStatus.error,
-          message: "Passwords are not matching");
-    } else {
+          message: "Passwords are not matching",
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+        notifyListeners();
+        return;
+      }
+
       startLoading(LoginMethod.signup);
       UserAuthResult? user = await _authServices.signUpWithEmail(
-          _emailController.text, _passwordController.text);
+        _emailController.text,
+        _passwordController.text,
+      );
 
       if (user.authResultState == AuthResultStatus.error) {
         authError = user;
-        stopLoading(LoginMethod.signup);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
       } else if (isNotNull(user)) {
         clearError();
-        userSignup(userNameController.text, emailController.text,
-            passwordController.text);
+        await userSignup(
+          userNameController.text,
+          emailController.text,
+          passwordController.text,
+        );
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
-        appSnackBar("Success", "Sign up successful", AppColors.green);
-
-        Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-        stopLoading(LoginMethod.signup);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar("Success", "Sign up successful", AppColors.green);
+          Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+        });
       }
+    } catch (e) {
+      debugPrint('Sign-up error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: e is FirebaseAuthException
+            ? AuthExceptionHandler.generateExceptionMessage(
+            AuthExceptionHandler.handleException(e))
+            : 'An unexpected error occurred during sign-up.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    } finally {
+      stopLoading(LoginMethod.signup);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  signInWithEmail() async {
-    startLoading(LoginMethod.email);
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+  Future<void> signInWithEmail() async {
+    try {
+      startLoading(LoginMethod.email);
+      if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: "Please fill all the fields",
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+        stopLoading(LoginMethod.email);
+        notifyListeners();
+        return;
+      }
+
+      UserAuthResult user = await _authServices.signInWithEmail(
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (user.authResultState == AuthResultStatus.error) {
+        authError = user;
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      } else if (isNotNull(user)) {
+        await userLogin(emailController.text, passwordController.text);
+        await storeFirebaseAuthToken();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar("Success", "Sign in successful", AppColors.green);
+        });
+        clearControllers();
+      }
+    } catch (e) {
+      debugPrint('Sign-in error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: e is FirebaseAuthException
+            ? AuthExceptionHandler.generateExceptionMessage(
+            AuthExceptionHandler.handleException(e))
+            : 'An unexpected error occurred during sign-in.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    } finally {
       stopLoading(LoginMethod.email);
-      authError = UserAuthResult(authResultState: AuthResultStatus.error, message: "Please fill all the fields");
-      return;
-    }
-    UserAuthResult user = await _authServices.signInWithEmail(_emailController.text, _passwordController.text);
-    stopLoading(LoginMethod.email);
-    if (user.authResultState == AuthResultStatus.error) {
-      authError = user;
-    } else if (isNotNull(user)) {
-      userLogin(emailController.text, passwordController.text);
-      await storeFirebaseAuthToken();
-      appSnackBar("Success", "Sign in successful", AppColors.green);
-      clearControllers();
+      notifyListeners();
     }
   }
 
-  forgotPassword() async {
-    startLoading(LoginMethod.forgotPassword);
-    await _authServices.forgotPassword(emailController.text);
-    stopLoading(LoginMethod.forgotPassword);
-    notifyListeners();
+  Future<void> forgotPassword() async {
+    try {
+      startLoading(LoginMethod.forgotPassword);
+      if (emailController.text.isEmpty) {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: "Please enter your email address",
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+        notifyListeners();
+        return;
+      }
+
+      await _authServices.forgotPassword(emailController.text);
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar(
+          'Success',
+          'Password reset email sent. Check your inbox.',
+          AppColors.green,
+        );
+      });
+    } catch (e) {
+      debugPrint('Forgot password error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: e is FirebaseAuthException
+            ? AuthExceptionHandler.generateExceptionMessage(
+            AuthExceptionHandler.handleException(e))
+            : 'Failed to send password reset email.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    } finally {
+      stopLoading(LoginMethod.forgotPassword);
+      notifyListeners();
+    }
   }
 
-  signInWithGoogle() async {
-    startLoading(LoginMethod.google);
-    AuthResult? userCred = await _authServices.signInWithGoogle();
-    if (userCred != null && userCred.userCredential != null && userCred.userCredential!.user != null) {
-      final user = userCred.userCredential!.user!;
-      await storeFirebaseAuthToken();
-      appSnackBar("Success", "SignIn successfully!",
-          const Color.fromARGB(255, 113, 235, 117));
-
-      await googleLogin(
+  Future<void> signInWithGoogle() async {
+    try {
+      startLoading(LoginMethod.google);
+      AuthResult? userCred = await _authServices.signInWithGoogle();
+      if (userCred != null && userCred.userCredential != null && userCred.userCredential!.user != null) {
+        final user = userCred.userCredential!.user!;
+        await storeFirebaseAuthToken();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar(
+            "Success",
+            "Sign in successful!",
+            const Color.fromARGB(255, 113, 235, 117),
+          );
+        });
+        await googleLogin(
           user.displayName ?? 'User',
           user.email ?? '',
           user.uid,
-          user.photoURL ?? '');
+          user.photoURL ?? '',
+        );
+      } else {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: 'Google sign-in failed. Please try again.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+    } catch (e) {
+      debugPrint('Google sign-in error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: e is FirebaseAuthException
+            ? AuthExceptionHandler.generateExceptionMessage(
+            AuthExceptionHandler.handleException(e))
+            : 'An unexpected error occurred during Google sign-in.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    } finally {
+      stopLoading(LoginMethod.google);
+      notifyListeners();
     }
-    stopLoading(LoginMethod.google);
-    notifyListeners();
   }
 
-  signInWithApple() async {
-    startLoading(LoginMethod.apple);
-    UserCredential? userCred = await _authServices.signInWithApple();
-    if (isNotNull(userCred)) {
-      await storeFirebaseAuthToken();
-      appSnackBar("Success", "SignIn successfully!",
-          const Color.fromARGB(255, 113, 235, 117));
-
-      print(userCred!.user!.uid);
-      print(userCred.user!);
-      appleLogin(userCred.user!.displayName!, userCred.user!.email!,
-          userCred.user!.uid, userCred.user!.photoURL!);
+  Future<void> signInWithApple() async {
+    try {
+      startLoading(LoginMethod.apple);
+      UserCredential? userCred = await _authServices.signInWithApple();
+      if (isNotNull(userCred)) {
+        final user = userCred!.user!;
+        await storeFirebaseAuthToken();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar(
+            "Success",
+            "Sign in successful!",
+            const Color.fromARGB(255, 113, 235, 117),
+          );
+        });
+        await appleLogin(
+          user.displayName ?? 'User',
+          user.email ?? '',
+          user.uid,
+          user.photoURL ?? '',
+        );
+      } else {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: 'Apple sign-in failed. Please try again.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+    } catch (e) {
+      debugPrint('Apple sign-in error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: e is FirebaseAuthException
+            ? AuthExceptionHandler.generateExceptionMessage(
+            AuthExceptionHandler.handleException(e))
+            : 'An unexpected error occurred during Apple sign-in.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    } finally {
+      stopLoading(LoginMethod.apple);
+      notifyListeners();
     }
-    stopLoading(LoginMethod.apple);
-    notifyListeners();
   }
 
-
+  Future<void> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      AppData.instance.clearToken();
+      await AppLocal.ins.clearUserData();
+      clearControllers();
+      clearError();
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+      });
+    } catch (e) {
+      debugPrint('Sign-out error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: 'Failed to sign out. Please try again.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    }
+    notifyListeners();
+  }
 
   void clearControllers() {
     emailController.clear();
     passwordController.clear();
     confirmPasswordController.clear();
+    notifyListeners();
   }
 
-  obsecureTextFtn(ObsecureText field) {
+  void obsecureTextFtn(ObsecureText field) {
     switch (field) {
       case ObsecureText.loginPassword:
         _loginPasswordHideShow = !_loginPasswordHideShow;
@@ -207,78 +447,155 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  userLogin(String email, String password) async {
-    Map<String, String> body = {
-      "email": email,
-      "password": password,
-    };
-    ApiResponse userRes = await authRepo.login(body: body);
-    if (userRes.status == Status.completed) {
-      reference.read(userProfileProvider).getUserProfileData(userRes.data["user"]['userId']);
-      AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-      AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
-      Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+  Future<void> userLogin(String email, String password) async {
+    try {
+      Map<String, String> body = {
+        "email": email,
+        "password": password,
+      };
+      ApiResponse userRes = await authRepo.login(body: body);
+      if (userRes.status == Status.completed) {
+        reference.read(userProfileProvider).getUserProfileData(userRes.data["user"]['userId']);
+        AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
+        AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+        });
+      } else {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: userRes.message ?? 'Failed to log in to backend.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+    } catch (e) {
+      debugPrint('Backend login error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: 'Failed to connect to backend. Please try again.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
     }
+    notifyListeners();
   }
 
-  userSignup(String userName, String email, String password) async {
-    Map<String, String> body = {
-      "username": userName,
-      "email": email,
-      "password": password,
-    };
-    await authRepo.signup(body: body);
+  Future<void> userSignup(String userName, String email, String password) async {
+    try {
+      Map<String, String> body = {
+        "username": userName,
+        "email": email,
+        "password": password,
+      };
+      ApiResponse userRes = await authRepo.signup(body: body);
+      if (userRes.status != Status.completed) {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: userRes.message ?? 'Failed to sign up to backend.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+    } catch (e) {
+      debugPrint('Backend signup error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: 'Failed to connect to backend. Please try again.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
+    }
+    notifyListeners();
   }
 
-  googleLogin(
+  Future<void> googleLogin(
       String userName, String email, String googleId, String profilePic) async {
-    Map<String, String> body = {
-      "username": userName,
-      "email": email,
-      "googleId": googleId,
-      "profilePic": profilePic
-    };
-    ApiResponse userRes = await authRepo.googleLogin(body: body);
-    if (userRes.status == Status.completed) {
-      reference
-          .read(userProfileProvider)
-          .getUserProfileData(userRes.data["user"]['userId']);
-      AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-      AppLocal.ins
-          .setUserData(Hivekey.userName, userRes.data["user"]['username']);
-      AppLocal.ins
-          .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
-      AppLocal.ins.setUserData(
-          Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+    try {
+      Map<String, String> body = {
+        "username": userName,
+        "email": email,
+        "googleId": googleId,
+        "profilePic": profilePic,
+      };
+      ApiResponse userRes = await authRepo.googleLogin(body: body);
+      if (userRes.status == Status.completed) {
+        reference
+            .read(userProfileProvider)
+            .getUserProfileData(userRes.data["user"]['userId']);
+        AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
+        AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
+        AppLocal.ins.setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
+        AppLocal.ins.setUserData(Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+        });
+      } else {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: userRes.message ?? 'Failed to log in with Google.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+    } catch (e) {
+      debugPrint('Google backend login error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: 'Failed to connect to backend. Please try again.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
     }
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-    });
+    notifyListeners();
   }
 
-  appleLogin(
+  Future<void> appleLogin(
       String userName, String email, String appleId, String profilePic) async {
-    Map<String, String> body = {
-      "username": userName,
-      "email": email,
-      "appleId": appleId,
-      "profilePic": profilePic
-    };
-    ApiResponse userRes = await authRepo.appleLogin(body: body);
-    if (userRes.status == Status.completed) {
-      reference
-          .read(userProfileProvider)
-          .getUserProfileData(userRes.data["user"]['userId']);
-      AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-      AppLocal.ins
-          .setUserData(Hivekey.userName, userRes.data["user"]['username']);
-      AppLocal.ins
-          .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
-      AppLocal.ins.setUserData(
-          Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+    try {
+      Map<String, String> body = {
+        "username": userName,
+        "email": email,
+        "appleId": appleId,
+        "profilePic": profilePic,
+      };
+      ApiResponse userRes = await authRepo.appleLogin(body: body);
+      if (userRes.status == Status.completed) {
+        reference
+            .read(userProfileProvider)
+            .getUserProfileData(userRes.data["user"]['userId']);
+        AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
+        AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
+        AppLocal.ins.setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
+        AppLocal.ins.setUserData(Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+        });
+      } else {
+        authError = UserAuthResult(
+          authResultState: AuthResultStatus.error,
+          message: userRes.message ?? 'Failed to log in with Apple.',
+        );
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar('Error', authError!.message!, AppColors.red);
+        });
+      }
+    } catch (e) {
+      debugPrint('Apple backend login error: $e');
+      authError = UserAuthResult(
+        authResultState: AuthResultStatus.error,
+        message: 'Failed to connect to backend. Please try again.',
+      );
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        appSnackBar('Error', authError!.message!, AppColors.red);
+      });
     }
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-    });
+    notifyListeners();
   }
 }

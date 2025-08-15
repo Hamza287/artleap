@@ -19,81 +19,80 @@ class SignUpScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return RegistrationBackgroundWidget(
         widget: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              height: 650,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30), topRight: Radius.circular(30))),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 25, right: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          height: 650,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 25, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                30.spaceY,
+                Row(
                   children: [
-                    30.spaceY,
-                    Row(
-                      children: [
-                        GestureDetector(
-                            onTap: () {
-                              Navigation.pop();
-                            },
-                            child: GoBackWidget()),
-                      ],
-                    ),
-                    30.spaceY,
-                    SignupTextfieldSection(),
-                    20.spaceY,
-                    CustomErrorWidget(
-                        isShow: true,
-                        message: ref.watch(authprovider).authError?.message,
-                        authResultState:
-                        ref.watch(authprovider).authError?.authResultState),
-                    ref.watch(authprovider).isLoading(LoginMethod.signup)
-                        ? const CircularProgressIndicator(
-                      color: AppColors.indigo,
-                    )
-                        : CommonButton(
-                      title: "Sign Up",
-                      color: AppColors.indigo,
-                      onpress: () {
-                        print("dddddddddd");
-                        ref.read(authprovider).signUpWithEmail();
-                      },
-                    ),
-                    20.spaceY,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const AlreadyHaveAccountText(),
-                      ],
-                    ),
+                    GestureDetector(
+                        onTap: () {
+                          Navigation.pop();
+                        },
+                        child: GoBackWidget()),
                   ],
                 ),
-              ),
+                30.spaceY,
+                SignupTextfieldSection(),
+                20.spaceY,
+                CustomErrorWidget(
+                    isShow: true,
+                    message: ref.watch(authprovider).authError?.message,
+                    authResultState:
+                        ref.watch(authprovider).authError?.authResultState),
+                ref.watch(authprovider).isLoading(LoginMethod.signup)
+                    ? const CircularProgressIndicator(
+                        color: AppColors.indigo,
+                      )
+                    : CommonButton(
+                        title: "Sign Up",
+                        color: AppColors.indigo,
+                        onpress: () {
+                          ref.read(authprovider).signUpWithEmail();
+                        },
+                      ),
+                20.spaceY,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const AlreadyHaveAccountText(),
+                  ],
+                ),
+              ],
             ),
-            // const SignupScreenText(),
-            // 20.spaceY,
-            // const SignupTextfieldSection(),
-            // 20.spaceY,
-            // ref.watch(authprovider).isLoading
-            //     ? const CircularProgressIndicator(
-            //         color: AppColors.indigo,
-            //       )
-            //     : CommonButton(
-            //         title: "Create Account",
-            //         color: AppColors.indigo,
-            //         onpress: () {
-            //           print("dddddddddd");
-            //           ref.read(authprovider).signUpWithEmail();
-            //         },
-            //       ),
-            // 20.spaceY,
-            // const AlreadyHaveAccountText(),
-            // 60.spaceY
-          ],
-        ));
+          ),
+        ),
+        // const SignupScreenText(),
+        // 20.spaceY,
+        // const SignupTextfieldSection(),
+        // 20.spaceY,
+        // ref.watch(authprovider).isLoading
+        //     ? const CircularProgressIndicator(
+        //         color: AppColors.indigo,
+        //       )
+        //     : CommonButton(
+        //         title: "Create Account",
+        //         color: AppColors.indigo,
+        //         onpress: () {
+        //           print("dddddddddd");
+        //           ref.read(authprovider).signUpWithEmail();
+        //         },
+        //       ),
+        // 20.spaceY,
+        // const AlreadyHaveAccountText(),
+        // 60.spaceY
+      ],
+    ));
   }
 }
