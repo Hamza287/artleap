@@ -39,8 +39,8 @@ android {
         applicationId "com.XrDIgital.ImaginaryVerse"
         minSdk 23
         targetSdk 35
-        versionCode 31
-        versionName "1.1.29"
+        versionCode 32
+        versionName "1.1.30"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }

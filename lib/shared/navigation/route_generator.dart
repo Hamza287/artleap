@@ -23,6 +23,7 @@ import '../../presentation/views/interest_onboarding_screens/interest_onboarding
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
+import '../../presentation/views/subscriptions/apple_payment_screen.dart';
 import '../../presentation/views/subscriptions/choose_plan_screen.dart';
 import '../../presentation/views/subscriptions/current_plan_screen.dart';
 import '../../presentation/views/subscriptions/payment_screen.dart';
@@ -60,6 +61,11 @@ class RouteGenerator {
           builder: (_) => PaymentScreen(plan: args),
           settings: settings,
         );
+
+      case ApplePaymentScreen.routeName:
+        final args = settings.arguments as SubscriptionPlanModel;
+        return MaterialPageRoute(builder: (_) => ApplePaymentScreen(plan: args));
+
       case OnboardingScreen.routeName:
         return route(const OnboardingScreen());
       case BottomNavBar.routeName:

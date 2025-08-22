@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
+import 'package:Artleap.ai/presentation/views/subscriptions/apple_payment_screen.dart';
 import '../../../../domain/subscriptions/plan_provider.dart';
 import '../../../../domain/subscriptions/subscription_repo_provider.dart';
 import '../../../../shared/constants/app_colors.dart';
@@ -21,7 +23,7 @@ class PlanSelectionContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final plansAsync = ref.watch(subscriptionPlansProvider);
     final selectedPlan = ref.watch(selectedPlanProvider);
-    final pageController = PageController(); // Moved here to sync with tabs
+    final pageController = PageController();
 
     return plansAsync.when(
       loading: () => const LoadingState(),
@@ -31,18 +33,38 @@ class PlanSelectionContent extends ConsumerWidget {
           return const EmptyState(
             icon: Icons.error,
             title: 'Error Occur',
-            subtitle: 'No Active Plans Founded',
+            subtitle: 'No Active Plans Found',
           );
         }
+
+        // ✅ Filter plans based on platform
+        final filteredPlans = plans.where((plan) {
+          if (Platform.isIOS) {
+            return plan.appleProductId.isNotEmpty;
+          } else if (Platform.isAndroid) {
+            return plan.googleProductId.isNotEmpty;
+          }
+          return false; // if another platform, show nothing
+        }).toList();
+
+        if (filteredPlans.isEmpty) {
+          return const EmptyState(
+            icon: Icons.error,
+            title: 'No Plans Available',
+            subtitle: 'No valid subscription plans for this platform',
+          );
+        }
+
         return PlanListContent(
-          plans: plans,
+          plans: filteredPlans,
           selectedPlan: selectedPlan,
-          pageController: pageController, // Pass controller to sync
+          pageController: pageController,
         );
       },
     );
   }
 }
+
 
 class PlanListContent extends ConsumerWidget {
   final List<SubscriptionPlanModel> plans;
@@ -226,17 +248,14 @@ class PlanListContent extends ConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: Color(0xFF6E3DE6),
-            // gradient: const LinearGradient(
-            //   colors: [Color(0xFFFF61E6), Color(0xFF7D33F9)],
-            //   begin: Alignment.centerLeft,
-            //   end: Alignment.centerRight,
-            // ),
           ),
           child: ElevatedButton(
             onPressed: () {
+              // Navigate to ApplePaymentScreen on iOS, PaymentScreen on Android
+              final route = Platform.isIOS ? ApplePaymentScreen.routeName : PaymentScreen.routeName;
               Navigator.pushNamed(
                 context,
-                PaymentScreen.routeName,
+                route,
                 arguments: plan,
               );
             },

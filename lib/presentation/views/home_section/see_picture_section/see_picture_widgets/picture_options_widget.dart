@@ -209,7 +209,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                           Image.asset(
                             AppAssets.trashicon,
                             scale: 2.3,
-                            color:AppColors.redColor,
+                            color: AppColors.redColor,
                           ),
                           2.spaceY,
                           Text(

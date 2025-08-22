@@ -44,7 +44,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
           child: Container(
             width: double.infinity,
             height: double.infinity,
-            margin: const EdgeInsets.only(top: 70),
+            margin: const EdgeInsets.only(top: 30),
             decoration: const BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.only(
@@ -52,7 +52,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  20.spaceY,
                   Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Row(

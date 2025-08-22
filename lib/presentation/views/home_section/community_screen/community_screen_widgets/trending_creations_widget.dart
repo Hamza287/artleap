@@ -46,19 +46,12 @@ class _TrendingCreationsWidgetState
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ShaderMask( 
-            shaderCallback: (bounds) => const LinearGradient(
-              colors: [Color(0xffAD90FF), Color(0xffEA6BFF), Color(0xffFFA869)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ).createShader(bounds),
-            child: const Text(
-              'Community Creations',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+          const Text(
+            'Community Creations',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
           Padding(

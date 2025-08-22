@@ -1,6 +1,9 @@
+import 'dart:io';
+
 class SubscriptionPlanModel {
   final String id;
   final String googleProductId;
+  final String appleProductId;
   final String basePlanId;
   final String name;
   final String type;
@@ -18,6 +21,7 @@ class SubscriptionPlanModel {
   SubscriptionPlanModel({
     required this.id,
     required this.googleProductId,
+    required this.appleProductId,
     required this.basePlanId,
     required this.name,
     required this.type,
@@ -33,10 +37,21 @@ class SubscriptionPlanModel {
     this.updatedAt,
   });
 
+  /// Platform-specific product ID
+  String get platformProductId {
+    if (Platform.isIOS) {
+      return appleProductId;
+    } else if (Platform.isAndroid) {
+      return googleProductId;
+    }
+    return ''; // or throw an error if needed
+  }
+
   factory SubscriptionPlanModel.fromJson(Map<String, dynamic> json) {
     return SubscriptionPlanModel(
       id: json['_id'] ?? '',
       googleProductId: json['googleProductId'] ?? '',
+      appleProductId: json['appleProductId'] ?? '',
       basePlanId: json['basePlanId'] ?? '',
       name: json['name'] ?? '',
       type: json['type'] ?? '',
@@ -57,6 +72,7 @@ class SubscriptionPlanModel {
     return {
       '_id': id,
       'googleProductId': googleProductId,
+      'appleProductId': appleProductId,
       'basePlanId': basePlanId,
       'name': name,
       'type': type,
@@ -73,6 +89,7 @@ class SubscriptionPlanModel {
     };
   }
 }
+
 
 class UserSubscriptionModel {
   final String id;

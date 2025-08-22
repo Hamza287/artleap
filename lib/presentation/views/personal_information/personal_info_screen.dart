@@ -76,8 +76,8 @@ class _PersonalInformationScreenState
                   SubscriptionCard(
                     status: user.subscriptionStatus,
                     planName: user.planName,
-                    planType: user.planType,
-                    currentSubscription: user.planType,
+                    planType: user.planName,
+                    currentSubscription: user.planName,
                     isSubscribed: user.isSubscribed,
                   ),
                   const SizedBox(height: 20),

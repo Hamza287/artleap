@@ -19,7 +19,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'di/di.dart';
 import 'domain/api_services/api_response.dart';
-import 'domain/subscriptions/plan_provider.dart';
+import 'domain/subscriptions/plan_provider.dart' hide selectedPaymentMethodProvider;
 import 'domain/subscriptions/subscription_repo_provider.dart';
 import 'presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'providers/notification_provider.dart';
@@ -106,13 +106,13 @@ class _MyAppState extends ConsumerState<MyApp> {
       if (token == null) {
         debugPrint('No valid token. Redirecting to login...');
         navigatorKey.currentState?.pushNamedAndRemoveUntil(
-            LoginScreen.routeName, (Route<dynamic> route) => false,
-        );
+            LoginScreen.routeName, (Route<dynamic> route) => false);
         return;
       }
 
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
-        final refreshedToken = await ref.read(authprovider).ensureValidFirebaseToken();
+        final refreshedToken =
+        await ref.read(authprovider).ensureValidFirebaseToken();
         if (refreshedToken != null) {
           debugPrint('✅ Firebase token refreshed.');
         } else {
@@ -132,6 +132,18 @@ class _MyAppState extends ConsumerState<MyApp> {
       List<PurchaseDetails> purchaseDetailsList) async {
     final selectedPlan = ref.read(selectedPlanProvider);
     final basePlanId = selectedPlan?.basePlanId;
+    final paymentMethod = ref.read(selectedPaymentMethodProvider);
+    final userId = UserData.ins.userId;
+
+    if (userId == null) {
+      debugPrint('User ID not found');
+      appSnackBar('Error', 'User not authenticated', Colors.red);
+      for (final purchaseDetails in purchaseDetailsList) {
+        await InAppPurchase.instance.completePurchase(purchaseDetails);
+      }
+      return;
+    }
+
     for (final purchaseDetails in purchaseDetailsList) {
       if (purchaseDetails.status == PurchaseStatus.pending) {
         debugPrint('Purchase pending: ${purchaseDetails.productID}');
@@ -141,37 +153,39 @@ class _MyAppState extends ConsumerState<MyApp> {
 
       if (purchaseDetails.status == PurchaseStatus.purchased ||
           purchaseDetails.status == PurchaseStatus.restored) {
-        final userId = UserData.ins.userId;
-        if (userId == null) {
-          debugPrint('User ID not found');
-          appSnackBar('Error', 'User not authenticated', Colors.red);
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
-          return;
-        }
-
         final subscriptionService = ref.read(subscriptionServiceProvider);
         try {
+          final verificationData = paymentMethod == 'apple'
+              ? {
+            'productId': purchaseDetails.productID,
+            'receiptData': purchaseDetails.verificationData.serverVerificationData,
+            'transactionId': purchaseDetails.purchaseID ?? '',
+            'platform': 'ios',
+            'amount': selectedPlan?.price.toString() ?? '0',
+          }
+              : {
+            'productId': purchaseDetails.productID,
+            'basePlanId': basePlanId,
+            'purchaseToken':
+            purchaseDetails.verificationData.serverVerificationData,
+            'transactionId': purchaseDetails.purchaseID ?? '',
+            'platform': 'android',
+            'amount': purchaseDetails.verificationData.localVerificationData
+                .contains('price_amount_micros')
+                ? (int.parse(purchaseDetails
+                .verificationData.localVerificationData
+                .split('"price_amount_micros":')[1]
+                .split(',')[0]) /
+                1000000)
+                .toString()
+                : '0',
+          };
+
           final response = await subscriptionService.subscribe(
             userId,
-            selectedPlan?.id ?? '', // Maps to googleProductId
-            'google_play',
-            verificationData: {
-              'productId': purchaseDetails.productID,
-              'basePlanId': basePlanId,
-              'purchaseToken':
-                  purchaseDetails.verificationData.serverVerificationData,
-              'transactionId': purchaseDetails.purchaseID ?? '',
-              'platform': 'android',
-              'amount': purchaseDetails.verificationData.localVerificationData
-                      .contains('price_amount_micros')
-                  ? (int.parse(purchaseDetails
-                              .verificationData.localVerificationData
-                              .split('"price_amount_micros":')[1]
-                              .split(',')[0]) /
-                          1000000)
-                      .toString()
-                  : '0',
-            },
+            selectedPlan?.id ?? '',
+            paymentMethod,
+            verificationData: verificationData,
           );
 
           if (!mounted) return;
@@ -179,20 +193,23 @@ class _MyAppState extends ConsumerState<MyApp> {
           if (response.status == Status.completed) {
             debugPrint('Subscription created: ${response.data}');
             appSnackBar('Success', 'Subscription created successfully', Colors.green);
-            await InAppPurchase.instance.completePurchase(purchaseDetails);
+            try {
+                await InAppPurchase.instance.completePurchase(purchaseDetails);
+            } catch (e, st) {
+              debugPrint("Error completing purchase: $e\n$st");
+            }
             ref.refresh(currentSubscriptionProvider(userId));
             ref.read(paymentLoadingProvider.notifier).state = false;
-          } else {
+            navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
+          }
+          else {
             debugPrint('Subscription creation failed: ${response.message}');
-            appSnackBar(
-                'Error', response.message ?? 'Subscription failed', Colors.red);
-            await InAppPurchase.instance.completePurchase(purchaseDetails);
+            appSnackBar('Error', response.message ?? 'Subscription failed', Colors.red);
             ref.read(paymentLoadingProvider.notifier).state = false;
           }
         } catch (e) {
           debugPrint('Error processing purchase: $e');
           appSnackBar('Error', 'Purchase error: $e', Colors.red);
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
           ref.read(paymentLoadingProvider.notifier).state = false;
         }
       } else if (purchaseDetails.status == PurchaseStatus.error) {
@@ -206,7 +223,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       } else if (purchaseDetails.status == PurchaseStatus.canceled) {
         debugPrint('Purchase canceled by user');
         appSnackBar('Info', 'Purchase canceled', Colors.yellow);
-        await InAppPurchase.instance.completePurchase(purchaseDetails);
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
     }

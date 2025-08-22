@@ -11,6 +11,7 @@ import '../home_section/profile_screen/edit_profile_screen_widgets/separator_wid
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
 import '../login_and_signup_section/login_section/login_screen.dart';
+import 'social_media_bottom_sheet.dart';
 
 class ProfileDrawer extends ConsumerStatefulWidget {
   final String profileImage;
@@ -161,11 +162,17 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                         title: "Personal Information",
                         onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
                       ),
+                      user?.planName.toLowerCase() == 'free' ?
                       _ProfileMenuItem(
+                        icon: AppAssets.currentPlan,
+                        title: "You don't have an active subscription",
+                        onTap: ()=>Navigator.of(context).pushNamed("choose_plan_screen"),
+                        color: Colors.red,
+                      ) : _ProfileMenuItem(
                         icon: AppAssets.currentPlan,
                         title: "Current Plan",
                         onTap: () => _navigateTo(context, '/subscription-status'),
-                      ),
+                      ) ,
                       _ProfileMenuItem(
                         icon: AppAssets.privacyicon,
                         title: "Privacy Policy",
@@ -200,7 +207,16 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                       _ProfileMenuItem(
                         icon: AppAssets.follow,
                         title: "Follow us on Social Media",
-                        onTap: () {},
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                            ),
+                            isScrollControlled: true,
+                            builder: (context) => const SocialMediaBottomSheet(),
+                          );
+                        },
                       ),
                       _ProfileMenuItem(
                         icon: AppAssets.helpCenter,
