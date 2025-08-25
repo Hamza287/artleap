@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
@@ -95,7 +96,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
         Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
       } else if (mounted) {
         ref.read(paymentLoadingProvider.notifier).state = false;
-        appSnackBar('Error', response.message ?? 'Stripe purchase failed', Colors.red);
+        appSnackBar('Error', 'Stripe purchase failed', Colors.red);
       }
     }else {
       ref.read(paymentLoadingProvider.notifier).state = false;
@@ -358,6 +359,9 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                               fontSize: 16,
                               color: AppColors.blue,
                             ),
+                            recognizer: TapGestureRecognizer()..onTap = () {
+                              Navigator.pushNamed(context, '/privacy-policy');
+                            },
                           ),
                           const TextSpan(text: ' and '),
                           TextSpan(
@@ -366,6 +370,9 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                               fontSize: 16,
                               color: AppColors.blue,
                             ),
+                            recognizer: TapGestureRecognizer()..onTap = () {
+                              Navigator.pushNamed(context, '/privacy-policy');
+                            },
                           ),
                         ],
                       ),

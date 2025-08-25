@@ -41,6 +41,7 @@ class _PersonalInformationScreenState
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
+                foregroundColor: Colors.white,
                 expandedHeight: 280,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(

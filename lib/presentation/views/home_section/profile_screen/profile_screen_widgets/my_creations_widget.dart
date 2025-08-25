@@ -38,26 +38,14 @@ class MyCreationsWidget extends StatelessWidget {
                 height: 100,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.purple.withOpacity(0.9), AppColors.blue.withOpacity(0.9)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+                  color: Colors.transparent,
                 ),
                 child: Center(
                   child: Text(
                     'No Creations Yet',
                     style: AppTextstyle.interBold(
                       fontSize: 20,
-                      color: Colors.white,
+                      color: AppColors.darkBlue,
                     ),
                     textAlign: TextAlign.center,
                   ),

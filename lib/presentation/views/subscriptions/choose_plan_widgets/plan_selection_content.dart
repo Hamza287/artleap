@@ -136,6 +136,29 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
       ref.read(selectedPlanProvider.notifier).state = plans.first;
     }
   }
+  List<SubscriptionPlanModel> _filterPlansByCurrent({
+    required List<SubscriptionPlanModel> widgetPlans,
+    required String? currentPlan,
+  }) {
+    if (currentPlan == null || currentPlan.isEmpty) {
+      return widgetPlans; // show all if no current plan
+    }
+
+    // Define plan hierarchy
+    final order = ["basic", "standard", "premium"];
+    final currentIndex = order.indexOf(currentPlan.toLowerCase());
+
+    if (currentIndex == -1) {
+      return widgetPlans; // fallback, show all
+    }
+
+    // Only allow current or higher plans
+    return widgetPlans.where((plan) {
+      final planIndex = order.indexOf(plan.type.toLowerCase());
+      return planIndex >= currentIndex;
+    }).toList();
+  }
+
 
   List<SubscriptionPlanModel> _getPlansForTab(int tabIndex) {
     switch (tabIndex) {
