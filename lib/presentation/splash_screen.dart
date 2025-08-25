@@ -26,7 +26,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
-    // Delay initialization to avoid conflicts
+    // Delay initialization
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeApp();
     });
@@ -48,7 +48,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     final state = ref.watch(splashStateProvider);
 
-    // Safe state listening using ref.listen inside build
+    // Safe state listening
     ref.listen<SplashState>(splashStateProvider, (previous, current) {
       if (current == SplashState.readyToNavigate && !_hasNavigated) {
         _hasNavigated = true;
@@ -79,7 +79,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               fit: BoxFit.cover,
             ),
           ),
-          if (state == SplashState.noInternet || state == SplashState.firebaseError)
+          if (state == SplashState.noInternet ||
+              state == SplashState.firebaseError)
             Positioned(
               bottom: 50,
               left: 0,
@@ -90,7 +91,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     state == SplashState.noInternet
                         ? 'No internet connection'
                         : 'Service unavailable. Please try again',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                     ),
@@ -99,13 +100,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      ref.read(splashStateProvider.notifier).retryInitialization();
+                      ref
+                          .read(splashStateProvider.notifier)
+                          .retryInitialization();
                     },
-                    child: const Text('Retry'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkBlue,
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 12),
                     ),
+                    child: const Text('Retry'),
                   ),
                 ],
               ),
@@ -115,14 +119,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     );
   }
 
-  void _navigateToNextScreen() {
+  Future<void> _navigateToNextScreen() async {
     final userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     final userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     final userProfilePicture =
-        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
+        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ??
+            AppAssets.artstyle1;
     final userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
 
     if (userid.isNotEmpty) {
+      // Set local user data
       UserData.ins.setUserData(
         id: userid,
         name: userName,
@@ -130,15 +136,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         email: userEmail,
       );
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(userProfileProvider).getUserProfileData(userid);
-      });
+      // Fetch from DB
+      await ref.read(userProfileProvider).getUserProfileData(userid);
 
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        BottomNavBar.routeName,
-            (route) => false,
-      );
+      // Read updated provider state
+      final userProfile = ref.read(userProfileProvider).userProfileData;
+
+      if (userProfile != null && userProfile.user.id.isNotEmpty) {
+        // ✅ User exists in DB and locally → Navigate to BottomNav
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          BottomNavBar.routeName,
+              (route) => false,
+        );
+      } else {
+        // ❌ User not found in DB → Go to Privacy Policy
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          AcceptPrivacyPolicyScreen.routeName,
+              (route) => false,
+        );
+      }
     } else {
+      // ❌ No local user → Go to Privacy Policy
       Navigator.of(context).pushNamedAndRemoveUntil(
         AcceptPrivacyPolicyScreen.routeName,
             (route) => false,

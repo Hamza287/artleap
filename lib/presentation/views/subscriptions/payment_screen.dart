@@ -351,62 +351,61 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                         ),
                       ),
                     ),
-                  // if (isInitialized) const SizedBox(height: 12),
-                  // Stripe option
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
-                  //   },
-                  //   child: Card(
-                  //     elevation: selectedPaymentMethod == 'stripe' ? 8 : 2,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       side: BorderSide(
-                  //         color: selectedPaymentMethod == 'stripe'
-                  //             ? AppColors.darkBlue
-                  //             : Colors.grey,
-                  //         width: 2,
-                  //       ),
-                  //     ),
-                  //     child: Container(
-                  //       padding: const EdgeInsets.all(16),
-                  //       decoration: BoxDecoration(
-                  //         color: selectedPaymentMethod == 'stripe'
-                  //             ? AppColors.purple.withOpacity(0.1)
-                  //             : AppColors.white,
-                  //         borderRadius: BorderRadius.circular(12),
-                  //       ),
-                  //       child: Row(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.credit_card,
-                  //             size: 28,
-                  //             color: selectedPaymentMethod == 'stripe'
-                  //                 ? AppColors.purple
-                  //                 : AppColors.darkBlue,
-                  //           ),
-                  //           const SizedBox(width: 16),
-                  //           Text(
-                  //             'Credit/Debit Card',
-                  //             style: AppTextstyle.interMedium(
-                  //               fontSize: 18,
-                  //               color: selectedPaymentMethod == 'stripe'
-                  //                   ? AppColors.purple
-                  //                   : AppColors.darkBlue,
-                  //             ),
-                  //           ),
-                  //           const Spacer(),
-                  //           if (selectedPaymentMethod == 'stripe')
-                  //             const Icon(
-                  //               Icons.check_circle,
-                  //               color: AppColors.purple,
-                  //               size: 24,
-                  //             ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+                  if (isInitialized) const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
+                    },
+                    child: Card(
+                      elevation: selectedPaymentMethod == 'stripe' ? 8 : 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
+                          color: selectedPaymentMethod == 'stripe'
+                              ? AppColors.darkBlue
+                              : Colors.grey,
+                          width: 2,
+                        ),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: selectedPaymentMethod == 'stripe'
+                              ? AppColors.purple.withOpacity(0.1)
+                              : AppColors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.credit_card,
+                              size: 28,
+                              color: selectedPaymentMethod == 'stripe'
+                                  ? AppColors.purple
+                                  : AppColors.darkBlue,
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              'Credit/Debit Card',
+                              style: AppTextstyle.interMedium(
+                                fontSize: 18,
+                                color: selectedPaymentMethod == 'stripe'
+                                    ? AppColors.purple
+                                    : AppColors.darkBlue,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (selectedPaymentMethod == 'stripe')
+                              const Icon(
+                                Icons.check_circle,
+                                color: AppColors.purple,
+                                size: 24,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),

@@ -26,7 +26,10 @@ class InterestOnboardingScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        // 👇 Hide back button if step == 0
+        leading: step == 0
+            ? null
+            : IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             final currentStep = ref.read(interestOnboardingStepProvider);

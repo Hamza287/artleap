@@ -37,8 +37,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ref.read(onboardingProvider).setOnboardingPageIndex(index);
               },
               itemBuilder: (context, index) {
-                int actualIndex =
-                    index % onboardingImagesList.length; // Handle looping
+                int actualIndex = index % onboardingImagesList.length; // Handle looping
                 double pageOffset = 0;
                 double scale = (1 - (pageOffset.abs() * 0.2)).clamp(0.9, 1.0);
                 return Container(
@@ -80,19 +79,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       width: 12,
                       margin: const EdgeInsets.only(right: 20),
                       decoration: BoxDecoration(
-                          color: ref
-                                      .watch(onboardingProvider)
-                                      .onboardingPageIndex ==
-                                  entry.key
+                          color: ref.watch(onboardingProvider).onboardingPageIndex == entry.key
                               ? AppColors.white
                               : AppColors.white.withOpacity(0.6),
                           shape: BoxShape.circle,
                           border: Border.all(
                               width: 2,
-                              color: ref
-                                          .watch(onboardingProvider)
-                                          .onboardingPageIndex ==
-                                      entry.key
+                              color: ref.watch(onboardingProvider).onboardingPageIndex == entry.key
                                   ? AppColors.indigo
                                   : AppColors.white.withOpacity(0.6))),
                     ),
@@ -106,7 +99,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   alignment: Alignment.bottomCenter,
                   child: ContinueButton(
                     onpress: () {
-                      Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreen.routeName);
+                      Navigation.pushNamedAndRemoveUntil(
+                          InterestOnboardingScreen.routeName);
                       ref.read(onboardingProvider).stopAutoPageView();
                     },
                   )),

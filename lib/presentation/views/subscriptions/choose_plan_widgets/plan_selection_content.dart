@@ -5,8 +5,10 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:Artleap.ai/presentation/views/subscriptions/apple_payment_screen.dart';
 import '../../../../domain/subscriptions/plan_provider.dart';
 import '../../../../domain/subscriptions/subscription_repo_provider.dart';
+import '../../../../providers/user_profile_provider.dart';
 import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
+import '../../../../shared/constants/user_data.dart';
 import '../../../../shared/notification_utils/empty_state.dart';
 import '../payment_screen.dart';
 import 'loading_state.dart';
@@ -16,14 +18,37 @@ import 'plan_card.dart';
 // Create a provider for tab index state
 final currentTabIndexProvider = StateProvider<int>((ref) => 0);
 
-class PlanSelectionContent extends ConsumerWidget {
+class PlanSelectionContent extends ConsumerStatefulWidget {
   const PlanSelectionContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PlanSelectionContent> createState() => _PlanSelectionContentState();
+}
+
+class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
+  late PageController pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+    });
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final plansAsync = ref.watch(subscriptionPlansProvider);
     final selectedPlan = ref.watch(selectedPlanProvider);
-    final pageController = PageController();
+    final profileProvider = ref.watch(userProfileProvider);
+    final userPersonalData = profileProvider.userProfileData?.user;
 
     return plansAsync.when(
       loading: () => const LoadingState(),
@@ -59,22 +84,26 @@ class PlanSelectionContent extends ConsumerWidget {
           plans: filteredPlans,
           selectedPlan: selectedPlan,
           pageController: pageController,
+          currentPlan: userPersonalData?.planName,
         );
       },
     );
   }
 }
 
+
 class PlanListContent extends ConsumerStatefulWidget {
   final List<SubscriptionPlanModel> plans;
   final SubscriptionPlanModel? selectedPlan;
   final PageController pageController;
+  final String? currentPlan;
 
   const PlanListContent({
     super.key,
     required this.plans,
     required this.selectedPlan,
     required this.pageController,
+    this.currentPlan,
   });
 
   @override
@@ -178,9 +207,9 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildPlanTab(ref, 'Basic', 0, widget.pageController),
-                _buildPlanTab(ref, 'Standard', 1, widget.pageController),
-                _buildPlanTab(ref, 'Premium', 2, widget.pageController),
+                _buildPlanTab(ref, widget.currentPlan == 'Basic' ? 'Current' :'Basic', 0, widget.pageController),
+                _buildPlanTab(ref, widget.currentPlan == 'Standard' ? 'Current' :'Standard', 1, widget.pageController),
+                _buildPlanTab(ref, widget.currentPlan == 'Premium' ? 'Current' :'Premium', 2, widget.pageController),
               ],
             ),
           ),

@@ -108,7 +108,7 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()..onTap = () {
-                          // Handle terms tap
+                          Navigator.pushNamed(context, '/privacy-policy');
                         },
                       ),
                       const TextSpan(text: ' and acknowledged I have read the '),
@@ -118,7 +118,7 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()..onTap = () {
-                          // Handle privacy policy tap
+                          Navigator.pushNamed(context, '/privacy-policy');
                         },
                       ),
                     ],

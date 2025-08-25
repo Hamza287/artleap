@@ -12,6 +12,8 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart'
 import 'package:Artleap.ai/presentation/views/subscriptions/payment_screen.dart'
     show paymentLoadingProvider, inAppPurchaseInitializedProvider;
 
+import '../../../domain/api_services/api_response.dart';
+
 class ApplePaymentScreen extends ConsumerStatefulWidget {
   static const String routeName = "apple_payment_screen";
   final SubscriptionPlanModel plan;
@@ -66,7 +68,8 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
     }
 
     ref.read(paymentLoadingProvider.notifier).state = true;
-
+    final paymentService = ref.read(paymentServiceProvider(userId));
+    
     if (paymentMethod == 'apple') {
       final applePaymentService = ref.read(applePaymentServiceProvider(userId));
       final success = await applePaymentService.purchaseSubscription(widget.plan, context);
@@ -75,10 +78,31 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
       if (!success) {
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
-    } else {
+    } else if (paymentMethod == 'stripe') {
+      final amount = (widget.plan.price * 100).toInt(); // Convert to cents
+      final response = await paymentService.purchaseStripeSubscription(
+        planId: widget.plan.id,
+        amount: amount,
+        currency: 'usd',
+        context: context,
+        ref: ref,
+      );
+
+      if (response.status == Status.completed && mounted) {
+        appSnackBar('Success', 'Subscription created successfully', Colors.green);
+        ref.refresh(currentSubscriptionProvider(userId));
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
+      } else if (mounted) {
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        appSnackBar('Error', response.message ?? 'Stripe purchase failed', Colors.red);
+      }
+    }else {
       ref.read(paymentLoadingProvider.notifier).state = false;
       appSnackBar('Error', 'Select Payment Method First', Colors.red);
     }
+
+
   }
 
   String _getPlanPeriod(String type) {
@@ -247,6 +271,62 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                         ),
                       ),
                     ),
+
+                  if (isInitialized) const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
+                    },
+                    child: Card(
+                      elevation: selectedPaymentMethod == 'stripe' ? 8 : 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
+                          color: selectedPaymentMethod == 'stripe'
+                              ? AppColors.darkBlue
+                              : Colors.grey,
+                          width: 2,
+                        ),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: selectedPaymentMethod == 'stripe'
+                              ? AppColors.purple.withOpacity(0.1)
+                              : AppColors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.credit_card,
+                              size: 28,
+                              color: selectedPaymentMethod == 'stripe'
+                                  ? AppColors.purple
+                                  : AppColors.darkBlue,
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              'Credit/Debit Card',
+                              style: AppTextstyle.interMedium(
+                                fontSize: 18,
+                                color: selectedPaymentMethod == 'stripe'
+                                    ? AppColors.purple
+                                    : AppColors.darkBlue,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (selectedPaymentMethod == 'stripe')
+                              const Icon(
+                                Icons.check_circle,
+                                color: AppColors.purple,
+                                size: 24,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),

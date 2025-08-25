@@ -21,7 +21,7 @@ class Step1 extends ConsumerWidget {
       final screenWidth = mediaQuery.size.width;
       final isSmallScreen = screenWidth < 600;
       final safePadding = mediaQuery.padding;
-      final selectedIndex = ref.watch(selectedRoleIndexProvider);
+      final selectedIndex = ref.watch(step1SelectedIndexProvider);
 
       return Padding(
         padding: EdgeInsets.symmetric(
@@ -56,7 +56,7 @@ class Step1 extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(vertical: 6.0),
                     child: GestureDetector(
                       onTap: () => ref
-                          .read(selectedRoleIndexProvider.notifier)
+                          .read(step1SelectedIndexProvider.notifier)
                           .state = index,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -161,7 +161,7 @@ class Step1 extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => ref.refresh(selectedRoleIndexProvider),
+                onPressed: () => ref.refresh(step1SelectedIndexProvider),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF875EFF),
                 ),

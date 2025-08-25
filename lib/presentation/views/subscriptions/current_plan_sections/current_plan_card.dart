@@ -21,7 +21,7 @@ class CurrentPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate remaining credits safely
-    final totalCredits = subscription?.planSnapshot?.totalCredits ?? 0;
+    final totalCredits = userPersonalData?.totalCredits ?? 0;
     final usedCredits = (userPersonalData?.usedImageCredits ?? 0) + (userPersonalData?.usedPromptCredits ?? 0);
     final remainingCredits = totalCredits - usedCredits;
     final progressValue = totalCredits > 0 ? remainingCredits / totalCredits : 0;
@@ -104,15 +104,6 @@ class CurrentPlanCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 10),
-            if (subscription!.planSnapshot!.googleProductId != null)
-              Text(
-                'Product ID: ${subscription!.planSnapshot!.googleProductId}',
-                style: AppTextstyle.interRegular(
-                  fontSize: 12,
-                  color: AppColors.darkBlue.withOpacity(0.5),
-                ),
-              ),
           ] else ...[
             const SizedBox(height: 10),
             Text(

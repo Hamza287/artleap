@@ -50,7 +50,7 @@ class CreditsCard extends StatelessWidget {
             const SizedBox(height: 16),
             _CreditProgress(
               label: "Total Credits",
-              used: dailyCredits,
+              used: usedImageCredits + usedPromptCredits,
               total: totalCredits,
               icon: Icons.calendar_today_outlined,
               color: AppColors.purple,
