@@ -149,7 +149,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     final currentIndex = order.indexOf(currentPlan.toLowerCase());
 
     if (currentIndex == -1) {
-      return widgetPlans; // fallback, show all
+      return widgetPlans;
     }
 
     // Only allow current or higher plans
@@ -161,28 +161,58 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
 
 
   List<SubscriptionPlanModel> _getPlansForTab(int tabIndex) {
+    List<SubscriptionPlanModel> tabPlans;
     switch (tabIndex) {
       case 0:
-        return widget.plans
+        tabPlans = widget.plans
             .where((plan) => plan.type.toLowerCase().contains('basic'))
             .toList();
+        break;
       case 1:
-        return widget.plans
+        tabPlans = widget.plans
             .where((plan) => plan.type.toLowerCase().contains('standard'))
             .toList();
+        break;
       case 2:
-        return widget.plans
+        tabPlans = widget.plans
             .where((plan) => plan.type.toLowerCase().contains('premium'))
             .toList();
+        break;
       default:
-        return [];
+        tabPlans = [];
     }
+
+    // ✅ Apply filter here
+    return _filterPlansByCurrent(
+      widgetPlans: tabPlans,
+      currentPlan: widget.currentPlan,
+    );
   }
 
+
+  @override
   @override
   Widget build(BuildContext context) {
     final currentTabIndex = ref.watch(currentTabIndexProvider);
     final screenSize = MediaQuery.of(context).size;
+
+    // ✅ Build filtered tab/page list
+    final tabsAndPages = <Map<String, dynamic>>[];
+
+    final basicPlans = _getPlansForTab(0);
+    if (basicPlans.isNotEmpty) {
+      tabsAndPages.add({"title": widget.currentPlan == 'Basic' ? "Current" : "Basic", "plans": basicPlans});
+    }
+
+    final standardPlans = _getPlansForTab(1);
+    if (standardPlans.isNotEmpty) {
+      tabsAndPages.add({"title": widget.currentPlan == 'Standard' ? "Current" : "Standard", "plans": standardPlans});
+    }
+
+    final premiumPlans = _getPlansForTab(2);
+    if (premiumPlans.isNotEmpty) {
+      tabsAndPages.add({"title": widget.currentPlan == 'Premium' ? "Current" : "Premium", "plans": premiumPlans});
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -229,11 +259,14 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildPlanTab(ref, widget.currentPlan == 'Basic' ? 'Current' :'Basic', 0, widget.pageController),
-                _buildPlanTab(ref, widget.currentPlan == 'Standard' ? 'Current' :'Standard', 1, widget.pageController),
-                _buildPlanTab(ref, widget.currentPlan == 'Premium' ? 'Current' :'Premium', 2, widget.pageController),
-              ],
+              children: List.generate(tabsAndPages.length, (index) {
+                return _buildPlanTab(
+                  ref,
+                  tabsAndPages[index]["title"],
+                  index,
+                  widget.pageController,
+                );
+              }),
             ),
           ),
           Expanded(
@@ -243,11 +276,10 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
                 ref.read(currentTabIndexProvider.notifier).state = index;
                 _autoSelectFirstPlanInTab(index);
               },
-              children: [
-                _buildPlanPage(context, ref, _getPlansForTab(0)),
-                _buildPlanPage(context, ref, _getPlansForTab(1)),
-                _buildPlanPage(context, ref, _getPlansForTab(2)),
-              ],
+              children: List.generate(
+                tabsAndPages.length,
+                    (index) => _buildPlanPage(context, ref, tabsAndPages[index]["plans"]),
+              ),
             ),
           ),
         ],
