@@ -41,7 +41,7 @@ class AboutArtleapFooter extends StatelessWidget {
           // ),
           // const SizedBox(height: 24),
           Text(
-            '© ${DateTime.now().year} Mimar Technologies Inc. All rights reserved.',
+            '© ${DateTime.now().year} Xr Digital. All rights reserved.',
             style: AppTextstyle.interRegular(
               fontSize: 12,
               color: Colors.white.withOpacity(0.6),

@@ -33,7 +33,7 @@ class AboutArtleapTechnologySection extends StatelessWidget {
           _buildTechItem(
             icon: Icons.security,
             title: 'Privacy Focused',
-            description: 'Your data and creations remain private and secure',
+            description: 'Your data remain private and anyone can view your creations',
           ),
         ],
       ),

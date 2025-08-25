@@ -152,7 +152,7 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
         backgroundColor:  const Color(0xFFFFFFFF),
         appBar: AppBar(
           backgroundColor:  const Color(0xFFFFFFFF),
-          iconTheme: const IconThemeData(color: AppColors.white),
+          iconTheme: const IconThemeData(color: AppColors.darkBlue),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

@@ -37,12 +37,12 @@ class AboutArtleapContactSection extends StatelessWidget {
           _buildContactMethod(
             icon: Icons.language,
             title: 'Website',
-            value: 'https://mim.archi/',
+            value: 'https://x-r.digital/',
           ),
           _buildContactMethod(
             icon: Icons.phone,
             title: 'Support',
-            value: '+92 51 8745047',
+            value: '+44 (20) 3807 5235',
           ),
           const SizedBox(height: 5),
         ],

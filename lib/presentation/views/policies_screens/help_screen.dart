@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-
 import '../../../../../providers/help_screen_provider.dart';
 
 class HelpScreen extends ConsumerWidget {
@@ -114,8 +113,8 @@ class HelpScreen extends ConsumerWidget {
 
     try {
       const email = 'info@x-r.digital';
-      const subject = 'Artleap App Support Request';
-      const body = 'Hello Mimar Studios team,\n\nI need help with...';
+      const subject = 'Xr Digital App Support Request';
+      const body = 'Hello Xr Digital team,\n\nI need help with...';
 
       final Uri emailLaunchUri = Uri(
         scheme: 'mailto',
@@ -262,7 +261,7 @@ class HelpScreen extends ConsumerWidget {
       child: Column(
         children: [
           Text(
-            'Mimar Studios Team',
+            'X r Digital Team',
             style: AppTextstyle.interMedium(
               color: AppColors.darkBlue.withOpacity(0.9),
             ),

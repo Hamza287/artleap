@@ -68,7 +68,7 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                   'Take the leap,\nand we\'ll turn\nit into art!',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: isSmallScreen ? 48 : 52,
+                    fontSize: isSmallScreen ? 38 : 45,
                     fontWeight: FontWeight.bold,
                     color: Colors.white, // Required for ShaderMask
                     height: 1.1,
@@ -82,7 +82,7 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                 'With AI at your fingertips, every\nidea transforms into a stunning\nmasterpiece',
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontSize: isSmallScreen ? 16 : 22,
+                  fontSize: isSmallScreen ? 12 : 15,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87,
                   height: 1.5,
@@ -98,7 +98,7 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
                   TextSpan(
                     text: 'I agree to the ',
                     style: TextStyle(
-                      fontSize: isSmallScreen ? 12 : 13,
+                      fontSize: isSmallScreen ? 10 : 13,
                       color: Colors.black87,
                     ),
                     children: [

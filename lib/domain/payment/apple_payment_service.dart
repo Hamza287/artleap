@@ -51,10 +51,29 @@ class ApplePaymentService {
       final ProductDetailsResponse response =
       await InAppPurchase.instance.queryProductDetails({plan.appleProductId});
 
+// Debugging logs
+      debugPrint("🔍 IAP Debugging:");
+      debugPrint("  Requested ID: ${plan.appleProductId}");
+      debugPrint("  Not found IDs: ${response.notFoundIDs}");
+      debugPrint("  Product details count: ${response.productDetails.length}");
+      for (final product in response.productDetails) {
+        debugPrint("  ✅ Found product: "
+            "id=${product.id}, "
+            "title=${product.title}, "
+            "price=${product.price}, "
+            "currency=${product.currencyCode}");
+      }
+
+      if (response.error != null) {
+        debugPrint("  ❌ StoreKit error: ${response.error!.message} "
+            "(code: ${response.error!.code})");
+      }
+
       if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
         appSnackBar('Error', 'Plan not available on App Store', Colors.red);
         return false;
       }
+
 
       final ProductDetails productDetails = response.productDetails.first;
       final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);

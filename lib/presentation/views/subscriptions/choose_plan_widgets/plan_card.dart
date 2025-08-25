@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
@@ -21,13 +22,13 @@ class PlanCard extends StatelessWidget {
     String billingPeriod;
     switch (plan.type.toLowerCase()) {
       case 'basic':
-        billingPeriod = 'week';
+        billingPeriod = 'per editor/week \n billed weekly';
         break;
       case 'standard':
-        billingPeriod = 'month';
+        billingPeriod = 'per editor/month \n billed monthly';
         break;
       case 'premium':
-        billingPeriod = 'year';
+        billingPeriod = 'per editor/year \n billed yearly';
         break;
       default:
         billingPeriod = 'per editor/month\nbilled monthly';
@@ -38,49 +39,62 @@ class PlanCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
         decoration: BoxDecoration(
-          color: const Color(0xFF000000),
-          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+            Color(0xFF8863F5),
+            Color(0xFF000000),
+          ],
+          ),
+          borderRadius: BorderRadius.circular(32),
           border: Border.all(
-            color: isSelected ? const Color(0xFFAD6CFF) : Colors.transparent,
-            width: 4,
+            color: isSelected ? const Color(0x80AD6CFF) : Colors.transparent,
+            width: 12,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Plan title
-            Center(
-              child: Text(
-                plan.name,
-                style: AppTextstyle.interBold(
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
+            Text(
+              plan.name,
+              style: AppTextstyle.interBold(
+                fontSize: 18,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 16),
 
             // Price and period
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    '\$${plan.price.toStringAsFixed(0)}/${billingPeriod}',
-                    style: AppTextstyle.interBold(
-                      fontSize: 36,
-                      color: Colors.white,
-                    ),
+            Row(
+              children: [
+                Text(
+                  '\$${plan.price.toStringAsFixed(0)}',
+                  style: AppTextstyle.interBold(
+                    fontSize: 36,
+                    color: Colors.white,
                   ),
-                ],
-              ),
+                ),
+                10.spaceX,
+                Text(
+                  '${billingPeriod}',
+                  style: AppTextstyle.interBold(
+                    fontSize: 12,
+                    color: Color(0xFF868C92),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
 
             // Features
             ...plan.features.map((feature) => _featureRow(feature)).toList(),
             const SizedBox(height: 16),
-            _featureRow('Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
-            _featureRow('Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
+            _featureRow(
+                'Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
+            _featureRow(
+                'Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
             _featureRow('Total Credits: ${plan.totalCredits.toInt()}'),
 
             const SizedBox(height: 24),

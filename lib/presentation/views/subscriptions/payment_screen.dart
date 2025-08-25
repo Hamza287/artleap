@@ -257,13 +257,9 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      'Product ID: ${widget.plan.googleProductId}',
-                      style: AppTextstyle.interRegular(
-                        fontSize: 14,
-                        color: AppColors.darkBlue.withOpacity(0.5),
-                      ),
-                    ),
+                    _featureRow('Up to ${(widget.plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
+                    _featureRow('Up to ${(widget.plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
+                    _featureRow('Total Credits: ${widget.plan.totalCredits.toInt()}'),
                     const SizedBox(height: 10),
                     ...widget.plan.features.take(3).map((feature) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -311,8 +307,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                           borderRadius: BorderRadius.circular(12),
                           side: BorderSide(
                             color: selectedPaymentMethod == 'google_play'
-                                ? AppColors.purple
-                                : AppColors.darkBlue,
+                                ? AppColors.darkBlue
+                                : Colors.grey,
                             width: 2,
                           ),
                         ),
@@ -367,8 +363,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                   //       borderRadius: BorderRadius.circular(12),
                   //       side: BorderSide(
                   //         color: selectedPaymentMethod == 'stripe'
-                  //             ? AppColors.purple
-                  //             : AppColors.darkBlue,
+                  //             ? AppColors.darkBlue
+                  //             : Colors.grey,
                   //         width: 2,
                   //       ),
                   //     ),
@@ -489,6 +485,32 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _featureRow(String title, [bool check = true]) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            check ? Icons.check_circle : Icons.cancel,
+            size: 18,
+            color: AppColors.darkBlue,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.darkBlue,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

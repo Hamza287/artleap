@@ -49,16 +49,19 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
 
     if (userId == null) {
       appSnackBar('Error', 'User not authenticated', Colors.red);
+      ref.read(paymentLoadingProvider.notifier).state = false;
       return;
     }
 
     if (paymentMethod == 'apple' && !ref.read(inAppPurchaseInitializedProvider)) {
       appSnackBar('Error', 'App Store payment service not initialized', Colors.red);
+      ref.read(paymentLoadingProvider.notifier).state = false;
       return;
     }
 
     if (!ref.read(termsAcceptedProvider)) {
       appSnackBar('Error', 'Please accept the terms and conditions', Colors.red);
+      ref.read(paymentLoadingProvider.notifier).state = false;
       return;
     }
 
@@ -66,11 +69,15 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
 
     if (paymentMethod == 'apple') {
       final applePaymentService = ref.read(applePaymentServiceProvider(userId));
-      await applePaymentService.purchaseSubscription(widget.plan, context);
+      final success = await applePaymentService.purchaseSubscription(widget.plan, context);
+
+      // Stop loader if purchase initiation fails
+      if (!success) {
+        ref.read(paymentLoadingProvider.notifier).state = false;
+      }
     } else {
-      // Fallback to original PaymentScreen logic for google_play and stripe
       ref.read(paymentLoadingProvider.notifier).state = false;
-      appSnackBar('Error', 'Invalid payment method for this screen', Colors.red);
+      appSnackBar('Error', 'Select Payment Method First', Colors.red);
     }
   }
 
@@ -146,13 +153,9 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      'Product ID: ${widget.plan.appleProductId ?? widget.plan.googleProductId}',
-                      style: AppTextstyle.interRegular(
-                        fontSize: 14,
-                        color: AppColors.darkBlue.withOpacity(0.5),
-                      ),
-                    ),
+                    _featureRow('Up to ${(widget.plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
+                    _featureRow('Up to ${(widget.plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
+                    _featureRow('Total Credits: ${widget.plan.totalCredits.toInt()}'),
                     const SizedBox(height: 10),
                     ...widget.plan.features.take(3).map((feature) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -200,8 +203,8 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                           borderRadius: BorderRadius.circular(12),
                           side: BorderSide(
                             color: selectedPaymentMethod == 'apple'
-                                ? AppColors.purple
-                                : AppColors.darkBlue,
+                                ? AppColors.darkBlue
+                                : Colors.grey,
                             width: 2,
                           ),
                         ),
@@ -322,6 +325,32 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _featureRow(String title, [bool check = true]) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            check ? Icons.check_circle : Icons.cancel,
+            size: 18,
+            color: AppColors.darkBlue,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.darkBlue,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

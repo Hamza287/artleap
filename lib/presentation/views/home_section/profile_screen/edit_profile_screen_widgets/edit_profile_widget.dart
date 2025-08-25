@@ -3,10 +3,10 @@ import 'package:Artleap.ai/presentation/views/global_widgets/upgrade_plan_widget
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/help_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/policies_screens/privacy_policy_screen.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/shared/shared.dart';
+import '../../../policies_screens/help_screen.dart';
+import '../../../policies_screens/privacy_policy_screen.dart';
 import 'separator_widget.dart';
 
 class EditProfileWidget extends ConsumerWidget {

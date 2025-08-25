@@ -19,7 +19,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'di/di.dart';
 import 'domain/api_services/api_response.dart';
-import 'domain/subscriptions/plan_provider.dart' hide selectedPaymentMethodProvider;
+import 'domain/subscriptions/plan_provider.dart'
+    hide selectedPaymentMethodProvider;
 import 'domain/subscriptions/subscription_repo_provider.dart';
 import 'presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'providers/notification_provider.dart';
@@ -112,7 +113,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
         final refreshedToken =
-        await ref.read(authprovider).ensureValidFirebaseToken();
+            await ref.read(authprovider).ensureValidFirebaseToken();
         if (refreshedToken != null) {
           debugPrint('✅ Firebase token refreshed.');
         } else {
@@ -157,29 +158,30 @@ class _MyAppState extends ConsumerState<MyApp> {
         try {
           final verificationData = paymentMethod == 'apple'
               ? {
-            'productId': purchaseDetails.productID,
-            'receiptData': purchaseDetails.verificationData.serverVerificationData,
-            'transactionId': purchaseDetails.purchaseID ?? '',
-            'platform': 'ios',
-            'amount': selectedPlan?.price.toString() ?? '0',
-          }
+                  'productId': purchaseDetails.productID,
+                  'receiptData': purchaseDetails.verificationData.serverVerificationData,
+                  'transactionId': purchaseDetails.purchaseID ?? '',
+                  'platform': 'ios',
+                  'amount': selectedPlan?.price.toString() ?? '0',
+                }
               : {
-            'productId': purchaseDetails.productID,
-            'basePlanId': basePlanId,
-            'purchaseToken':
-            purchaseDetails.verificationData.serverVerificationData,
-            'transactionId': purchaseDetails.purchaseID ?? '',
-            'platform': 'android',
-            'amount': purchaseDetails.verificationData.localVerificationData
-                .contains('price_amount_micros')
-                ? (int.parse(purchaseDetails
-                .verificationData.localVerificationData
-                .split('"price_amount_micros":')[1]
-                .split(',')[0]) /
-                1000000)
-                .toString()
-                : '0',
-          };
+                  'productId': purchaseDetails.productID,
+                  'basePlanId': basePlanId,
+                  'purchaseToken':
+                      purchaseDetails.verificationData.serverVerificationData,
+                  'transactionId': purchaseDetails.purchaseID ?? '',
+                  'platform': 'android',
+                  'amount': purchaseDetails
+                          .verificationData.localVerificationData
+                          .contains('price_amount_micros')
+                      ? (int.parse(purchaseDetails
+                                  .verificationData.localVerificationData
+                                  .split('"price_amount_micros":')[1]
+                                  .split(',')[0]) /
+                              1000000)
+                          .toString()
+                      : '0',
+                };
 
           final response = await subscriptionService.subscribe(
             userId,
@@ -192,19 +194,22 @@ class _MyAppState extends ConsumerState<MyApp> {
 
           if (response.status == Status.completed) {
             debugPrint('Subscription created: ${response.data}');
-            appSnackBar('Success', 'Subscription created successfully', Colors.green);
+            appSnackBar(
+                'Success', 'Subscription created successfully', Colors.green);
             try {
-                await InAppPurchase.instance.completePurchase(purchaseDetails);
+              await InAppPurchase.instance.completePurchase(purchaseDetails);
             } catch (e, st) {
               debugPrint("Error completing purchase: $e\n$st");
+              ref.read(paymentLoadingProvider.notifier).state = false;
             }
             ref.refresh(currentSubscriptionProvider(userId));
             ref.read(paymentLoadingProvider.notifier).state = false;
-            navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
-          }
-          else {
+            navigatorKey.currentState
+                ?.pushReplacementNamed(BottomNavBar.routeName);
+          } else {
             debugPrint('Subscription creation failed: ${response.message}');
-            appSnackBar('Error', response.message ?? 'Subscription failed', Colors.red);
+            appSnackBar(
+                'Error', response.message ?? 'Subscription failed', Colors.red);
             ref.read(paymentLoadingProvider.notifier).state = false;
           }
         } catch (e) {
@@ -218,7 +223,6 @@ class _MyAppState extends ConsumerState<MyApp> {
             'Error',
             'Purchase failed: ${purchaseDetails.error?.message ?? 'Unknown error'}',
             Colors.red);
-        await InAppPurchase.instance.completePurchase(purchaseDetails);
         ref.read(paymentLoadingProvider.notifier).state = false;
       } else if (purchaseDetails.status == PurchaseStatus.canceled) {
         debugPrint('Purchase canceled by user');
