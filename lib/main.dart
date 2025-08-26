@@ -61,9 +61,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _purchaseHandler.handlePurchaseUpdates(purchaseDetailsList);
     }, onError: (error) {
-      debugPrint('Purchase stream error: $error');
       appSnackBar(
-          'Error', 'Failed to process purchase stream: $error', Colors.red);
+          'Error', 'Failed to process purchase stream', Colors.red);
     });
 
     _initializeApp();
@@ -84,7 +83,6 @@ class _MyAppState extends ConsumerState<MyApp> {
         final refreshedToken =
         await ref.read(authprovider).ensureValidFirebaseToken();
         if (refreshedToken != null) {
-          debugPrint('✅ Firebase token refreshed.');
         } else {
           debugPrint('Token refresh skipped: No user signed in.');
         }

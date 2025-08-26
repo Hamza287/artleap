@@ -55,10 +55,10 @@ class PurchaseHandler {
         break;
 
       case PurchaseStatus.error:
-        debugPrint('Purchase error: ${purchaseDetails.error}');
+        debugPrint('Purchase error');
         appSnackBar(
           'Error',
-          'Purchase failed: ${purchaseDetails.error?.message ?? 'Unknown error'}',
+          'Purchase failed: ${'Unknown error'}',
           Colors.red,
         );
         ref.read(paymentLoadingProvider.notifier).state = false;
@@ -102,14 +102,13 @@ class PurchaseHandler {
         navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
       } else {
         appSnackBar(
-            'Error',
-            response.message ?? 'Subscription failed',
+            'Error','Subscription failed',
             Colors.red
         );
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
     } catch (e) {
-      appSnackBar('Error', 'Purchase error: $e', Colors.red);
+      appSnackBar('Error', 'Purchase error', Colors.red);
       ref.read(paymentLoadingProvider.notifier).state = false;
     }
   }
@@ -159,7 +158,7 @@ class PurchaseHandler {
     try {
       await InAppPurchase.instance.completePurchase(purchaseDetails);
     } catch (e, st) {
-      debugPrint("Error completing purchase: $e\n$st");
+      debugPrint("Error completing purchase");
       ref.read(paymentLoadingProvider.notifier).state = false;
     }
   }

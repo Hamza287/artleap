@@ -169,13 +169,13 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
         } else if (mounted) {
           ref.read(paymentLoadingProvider.notifier).state = false;
-          appSnackBar('Error', response.message ?? 'Stripe purchase failed', Colors.red);
+          appSnackBar('Error', 'Stripe purchase failed', Colors.red);
         }
       }
     } catch (e) {
       if (mounted) {
         ref.read(paymentLoadingProvider.notifier).state = false;
-        appSnackBar('Error', 'Purchase error: $e', Colors.red);
+        appSnackBar('Error', 'Purchase error', Colors.red);
       }
     } finally {
       if (paymentMethod == 'stripe') {
@@ -211,7 +211,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       appBar: AppBar(
         title: Text(
           'Confirm Your Subscription',
-          style: AppTextstyle.interBold(fontSize: 22, color: AppColors.darkBlue),
+          style: AppTextstyle.interBold(fontSize: 15, color: AppColors.darkBlue),
         ),
         centerTitle: true,
         elevation: 0,

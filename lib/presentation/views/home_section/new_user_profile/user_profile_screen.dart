@@ -69,7 +69,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
             slivers: [
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: screenHeight * 0.2, // Reduced height to prevent overflow
+                  height: screenHeight * 0.2,
                   child: Align(
                     alignment: Alignment.topRight,
                     child: Padding(

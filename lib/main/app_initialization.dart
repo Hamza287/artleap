@@ -33,7 +33,6 @@ class AppInitialization {
     Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
     try {
       await Stripe.instance.applySettings();
-      print("Stripe initialized successfully");
     } catch (e) {
       print("Stripe initialization failed: $e");
     }

@@ -130,7 +130,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
       appBar: AppBar(
         title: Text(
           'Confirm Your Subscription',
-          style: AppTextstyle.interBold(fontSize: 22, color: AppColors.darkBlue),
+          style: AppTextstyle.interBold(fontSize: 15, color: AppColors.darkBlue),
         ),
         centerTitle: true,
         elevation: 0,
