@@ -123,7 +123,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                                 'picking image from gallery button event');
                           },
                         ),
-                        90.spaceY,
+                        70.spaceY,
                       ],
                     ),
                   ),
@@ -151,11 +151,14 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                     ],
                   ),
                 ),
-                padding: const EdgeInsets.only(
+                // Fixed: Maintain consistent bottom padding regardless of keyboard
+                padding: EdgeInsets.only(
                   left: 15,
                   right: 15,
                   top: 20,
-                  bottom: 20,
+                  bottom: MediaQuery.of(context).viewInsets.bottom > 0
+                      ? MediaQuery.of(context).viewInsets.bottom + 10 // Add extra padding when keyboard is visible
+                      : 20, // Normal padding when no keyboard
                 ),
                 child: PromptScreenButton(
                   height: 55,

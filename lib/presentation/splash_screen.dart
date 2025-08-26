@@ -126,16 +126,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final elapsedTime = DateTime.now().difference(_startTime!);
     final remainingTime = Duration(seconds: 4) - elapsedTime;
 
-    // Wait for remaining time if needed to ensure minimum 4 seconds
+    // Wait for remaining time if needed
     if (remainingTime > Duration.zero) {
       await Future.delayed(remainingTime);
     }
 
+    if (!mounted) return; // 🚨 prevent navigation after dispose
+
     final userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     final userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     final userProfilePicture =
-        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ??
-            AppAssets.artstyle1;
+        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     final userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
 
     if (userid.isNotEmpty) {
@@ -150,24 +151,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       // Fetch from DB
       await ref.read(userProfileProvider).getUserProfileData(userid);
 
-      // Read updated provider state
+      if (!mounted) return; // 🚨 check again after async work
+
       final userProfile = ref.read(userProfileProvider).userProfileData;
 
       if (userProfile != null && userProfile.user.id.isNotEmpty) {
-        // ✅ User exists in DB and locally → Navigate to BottomNav
         Navigator.of(context).pushNamedAndRemoveUntil(
           BottomNavBar.routeName,
               (route) => false,
         );
       } else {
-        // ❌ User not found in DB → Go to Privacy Policy
         Navigator.of(context).pushNamedAndRemoveUntil(
           AcceptPrivacyPolicyScreen.routeName,
               (route) => false,
         );
       }
     } else {
-      // ❌ No local user → Go to Privacy Policy
       Navigator.of(context).pushNamedAndRemoveUntil(
         AcceptPrivacyPolicyScreen.routeName,
             (route) => false,
