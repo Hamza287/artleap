@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,9 @@ class SplashStateNotifier extends StateNotifier<SplashState> {
           state = SplashState.initializing;
           await FirebaseMessaging.instance.getToken();
           firebaseInitialized = true;
+
+          // Add a small delay before marking as ready to navigate
+          await Future.delayed(const Duration(milliseconds: 500));
           state = SplashState.readyToNavigate;
         } catch (e) {
           attempts++;

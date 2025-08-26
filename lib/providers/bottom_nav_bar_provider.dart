@@ -14,10 +14,9 @@ class BottomNavBarProvider extends ChangeNotifier {
     PromptScreen(),
     CommunityScreen(),
     UserProfileScreen(),
-    // ProfileScreen()
   ];
 
-  int _pageIndex = 0;
+  int _pageIndex = 2;
   int get pageIndex => _pageIndex;
 
   setPageIndex(int index) {

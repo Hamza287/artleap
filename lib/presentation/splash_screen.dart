@@ -21,12 +21,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late AnimationController _controller;
   bool _hasNavigated = false;
   bool _initialized = false;
+  DateTime? _startTime; // Track when initialization started
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
-    // Delay initialization
+    _startTime = DateTime.now(); // Record start time
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeApp();
     });
@@ -100,6 +101,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
+                      _startTime = DateTime.now(); // Reset start time on retry
                       ref
                           .read(splashStateProvider.notifier)
                           .retryInitialization();
@@ -120,6 +122,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _navigateToNextScreen() async {
+    // Calculate elapsed time
+    final elapsedTime = DateTime.now().difference(_startTime!);
+    final remainingTime = Duration(seconds: 4) - elapsedTime;
+
+    // Wait for remaining time if needed to ensure minimum 4 seconds
+    if (remainingTime > Duration.zero) {
+      await Future.delayed(remainingTime);
+    }
+
     final userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     final userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
     final userProfilePicture =

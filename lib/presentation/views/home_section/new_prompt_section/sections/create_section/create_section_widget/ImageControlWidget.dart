@@ -60,7 +60,7 @@ class ImageControlsWidget extends ConsumerWidget {
             7.spaceX,
           ],
         ),
-        40.spaceY,
+        20.spaceY,
         Card(
           elevation: 4,
           shape: RoundedRectangleBorder(

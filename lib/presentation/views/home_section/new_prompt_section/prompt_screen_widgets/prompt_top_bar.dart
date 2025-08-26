@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../providers/prompt_nav_provider.dart';
 import '../../../global_widgets/artleap_top_bar.dart';
+import '../sections/create_section/create_section_widget/prompt_widget.dart';
 
 // Provider for dropdown expansion state
 final isDropdownExpandedProvider = StateProvider<bool>((ref) => false);
@@ -20,6 +21,7 @@ class PromptTopBar extends ConsumerWidget {
       children: [
         GestureDetector(
           onTap: () {
+             ref.read(keyboardVisibleProvider.notifier).state = false;
             if (isExpanded) {
               ref.read(isDropdownExpandedProvider.notifier).state = false;
             }
@@ -176,8 +178,8 @@ class PromptTopBar extends ConsumerWidget {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(2),
                             ),
                             child: Center(
                               child: Image.asset(

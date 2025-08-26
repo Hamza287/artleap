@@ -12,6 +12,7 @@ import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../prompt_screen_widgets/prompt_screen_button.dart';
 import '../../prompt_screen_widgets/prompt_top_bar.dart';
@@ -50,10 +51,23 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+
+    // Add listener to scroll controller to hide keyboard on scroll
+    _scrollController.addListener(_handleScroll);
+  }
+
+  void _handleScroll() {
+    // Hide keyboard when user starts scrolling
+    if (_scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      FocusScope.of(context).unfocus();
+      ref.read(keyboardVisibleProvider.notifier).state = false;
+    }
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_handleScroll);
     _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
@@ -77,6 +91,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
       onPopInvoked: (bool didPop) async {
         if (!didPop && !isLoading) {
           ref.read(bottomNavBarProvider).setPageIndex(0);
+          ref.read(keyboardVisibleProvider.notifier).state = false;
         }
       },
       child: Scaffold(
@@ -86,17 +101,20 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
               widget: GestureDetector(
                 onTap: () {
                   ref.read(isDropdownExpandedProvider.notifier).state = false;
+                  ref.read(keyboardVisibleProvider.notifier).state = false;
+                  FocusScope.of(context).unfocus(); // Hide keyboard on tap outside
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15),
                   child: SingleChildScrollView(
                     controller: _scrollController,
+                    physics: const ClampingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         20.spaceY,
                         const PromptWidget(),
-                        20.spaceY,
+                        10.spaceY,
                         ImageControlsWidget(
                           onImageSelected: () {
                             ref.read(generateImageProvider).pickImage();
@@ -105,8 +123,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                                 'picking image from gallery button event');
                           },
                         ),
-                        const SizedBox(height: 75),
-                        20.spaceY,
+                        90.spaceY,
                       ],
                     ),
                   ),
@@ -163,6 +180,10 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                         AppColors.redColor);
                   }
                       : () async {
+                    // Hide keyboard before generating
+                    FocusScope.of(context).unfocus();
+                    ref.read(keyboardVisibleProvider.notifier).state = false;
+
                     // Common validation checks
                     if (generateImageProviderState.selectedImageNumber ==
                         null &&

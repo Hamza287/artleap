@@ -41,35 +41,44 @@ class HomeScreenTopBar extends ConsumerWidget {
                    ),
                  ),
                  10.spaceX,
-                 Container(
-                   height: 36,
-                   width: 70,
-                   decoration: BoxDecoration(
-                     borderRadius: BorderRadius.circular(20),
-                     border: Border.all(
-                       color: Colors.black,
-                       width: 1.2,
-                     ),
-                     color: Colors.white,
-                   ),
-                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.center,
-                     children: [
-                       Image.asset(
-                         AppAssets.stackofcoins,
-                         height: 18,
-                         color: Colors.amber[700],
+                 InkWell(
+                   onTap: (){
+                     if(ref.watch(userProfileProvider).userProfileData?.user.planName.toLowerCase() != 'free'){
+                       Navigator.of(context).pushNamed("/subscription-status");
+                     }else{
+                       Navigator.of(context).pushNamed("choose_plan_screen");
+                     }
+                   },
+                   child: Container(
+                     height: 36,
+                     width: 70,
+                     decoration: BoxDecoration(
+                       borderRadius: BorderRadius.circular(20),
+                       border: Border.all(
+                         color: Colors.black,
+                         width: 1.2,
                        ),
-                       3.spaceX,
-                       Text(
-                         "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
-                         style: AppTextstyle.interMedium(
-                           color: Colors.black,
-                           fontSize: 12,
-                           fontWeight: FontWeight.bold,
+                       color: Colors.white,
+                     ),
+                     child: Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Image.asset(
+                           AppAssets.stackofcoins,
+                           height: 18,
+                           color: Colors.amber[700],
                          ),
-                       )
-                     ],
+                         3.spaceX,
+                         Text(
+                           "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
+                           style: AppTextstyle.interMedium(
+                             color: Colors.black,
+                             fontSize: 12,
+                             fontWeight: FontWeight.bold,
+                           ),
+                         )
+                       ],
+                     ),
                    ),
                  ),
                ],

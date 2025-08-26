@@ -41,6 +41,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final safeAreaBottom = MediaQuery.of(context).padding.bottom;
     final userProfile = ref.watch(userProfileProvider);
     final userPersonalData = userProfile.userProfileData;
     final user = userPersonalData?.user;
@@ -62,160 +63,167 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF011E63),
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: screenHeight * 0.25,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16, right: 16),
-                    child: Consumer(
-                      builder: (context, ref, _) {
-                        final userId = UserData.ins.userId;
-                        if (userId == null) return const SizedBox();
+        body: SafeArea(
+          bottom: false, // We'll handle the bottom padding manually
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: screenHeight * 0.2, // Reduced height to prevent overflow
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16, right: 16),
+                      child: Consumer(
+                        builder: (context, ref, _) {
+                          final userId = UserData.ins.userId;
+                          if (userId == null) return const SizedBox();
 
-                        final notifications = ref.watch(notificationProvider(userId));
-                        final unreadCount = notifications.maybeWhen(
-                          data: (notifs) => notifs.where((n) => !n.isRead).length,
-                          orElse: () => 0,
-                        );
-                        return IconButton(
-                          icon: Badge(
-                            label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                            child: const Icon(Icons.notifications, color: AppColors.white, size: 30),
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, NotificationScreen.routeName);
-                          },
-                        );
-                      },
+                          final notifications = ref.watch(notificationProvider(userId));
+                          final unreadCount = notifications.maybeWhen(
+                            data: (notifs) => notifs.where((n) => !n.isRead).length,
+                            orElse: () => 0,
+                          );
+                          return IconButton(
+                            icon: Badge(
+                              label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
+                              child: const Icon(Icons.notifications, color: AppColors.white, size: 30),
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(context, NotificationScreen.routeName);
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            // White content area with profile info
-            SliverFillRemaining(
-              hasScrollBody: true, // Allows scrolling if content exceeds
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Transform.translate(
-                        offset: const Offset(0, -60),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 4),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 8,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
-                                  image: profilePic != null && profilePic.isNotEmpty
-                                      ? DecorationImage(
-                                    image: NetworkImage(profilePic),
-                                    fit: BoxFit.cover,
-                                  )
-                                      : const DecorationImage(
-                                    image: AssetImage(AppAssets.artstyle1),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                userName.toUpperCase(),
-                                style: AppTextstyle.interBold(
-                                  fontSize: 22,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '@${user.id}',
-                                style: AppTextstyle.interMedium(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Creating images just for fun',
-                                style: AppTextstyle.interRegular(
-                                  fontSize: 15,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildStatColumn(
-                                    userPersonalData.user.followers.length.toString(),
-                                    'Followers',
-                                  ),
-                                  const SizedBox(width: 30),
-                                  _buildStatColumn(
-                                    userPersonalData.user.following.length.toString(),
-                                    'Following',
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  const Icon(Icons.auto_awesome, color: Color(0xFF8962EB)),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    '${userPersonalData.user.images.length.toString()} Generations',
-                                    style: AppTextstyle.interMedium(
-                                      fontSize: 18,
-                                      color: Color(0xFF8962EB),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      MyCreationsWidget(
-                        listofCreations: userPersonalData.user.images,
-                        userName: userName,
+              // White content area with profile info
+              SliverToBoxAdapter(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        spreadRadius: 2,
                       ),
                     ],
                   ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 16,
+                      bottom: 16 + safeAreaBottom, // Add bottom padding for safe area
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(0, -60),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.white, width: 4),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 8,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                    image: profilePic != null && profilePic.isNotEmpty
+                                        ? DecorationImage(
+                                      image: NetworkImage(profilePic),
+                                      fit: BoxFit.cover,
+                                    )
+                                        : const DecorationImage(
+                                      image: AssetImage(AppAssets.artstyle1),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  userName.toUpperCase(),
+                                  style: AppTextstyle.interBold(
+                                    fontSize: 22,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '@${user.id}',
+                                  style: AppTextstyle.interMedium(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Creating images just for fun',
+                                  style: AppTextstyle.interRegular(
+                                    fontSize: 15,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildStatColumn(
+                                      userPersonalData.user.followers.length.toString(),
+                                      'Followers',
+                                    ),
+                                    const SizedBox(width: 30),
+                                    _buildStatColumn(
+                                      userPersonalData.user.following.length.toString(),
+                                      'Following',
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.auto_awesome, color: Color(0xFF8962EB)),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '${userPersonalData.user.images.length.toString()} Generations',
+                                      style: AppTextstyle.interMedium(
+                                        fontSize: 18,
+                                        color: Color(0xFF8962EB),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        MyCreationsWidget(
+                          listofCreations: userPersonalData.user.images,
+                          userName: userName,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

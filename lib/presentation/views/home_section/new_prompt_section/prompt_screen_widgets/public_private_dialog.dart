@@ -9,7 +9,6 @@ class PublicPrivateDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final inAppPurchase = ref.watch(inAppPurchaseProvider);
 
     return Container(
       margin: const EdgeInsets.only(left: 50, right: 50, top: 265, bottom: 265),

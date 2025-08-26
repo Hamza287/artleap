@@ -4,6 +4,7 @@ import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/se
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../providers/prompt_nav_provider.dart';
+import 'sections/create_section/create_section_widget/prompt_widget.dart';
 
 class PromptScreen extends ConsumerWidget {
   const PromptScreen({super.key});
@@ -15,7 +16,7 @@ class PromptScreen extends ConsumerWidget {
 
     return Scaffold(
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           if (isExpanded) {
             ref.read(isDropdownExpandedProvider.notifier).state = false;
           }
@@ -58,11 +59,9 @@ class PromptScreen extends ConsumerWidget {
       case PromptNavItem.create:
         return const PromptCreateScreen();
       case PromptNavItem.edit:
-        // return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
         return const PromptEditScreen();
       case PromptNavItem.animate:
       return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
-        return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
       case PromptNavItem.enhance:
         return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
     }
