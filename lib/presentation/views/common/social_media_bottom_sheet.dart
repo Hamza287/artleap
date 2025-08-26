@@ -19,7 +19,7 @@ class SocialMediaBottomSheet extends StatelessWidget {
       'icon': Icons.music_note,
       'url': 'https://www.tiktok.com/@artleap.ai',
       'color': Color(0xFF000000),
-      'gradient': [Color(0xFF000000),Color(0xFF000000)],
+      'gradient': [Color(0xFF000000), Color(0xFF000000)],
     },
     {
       'name': 'YouTube',
@@ -52,41 +52,59 @@ class SocialMediaBottomSheet extends StatelessWidget {
     final fontSize = isSmallScreen ? 12.0 : 14.0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      padding: const EdgeInsets.only(top: 20, left: 24, right: 24, bottom: 32),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 16,
-            offset: Offset(0, -4),
+            color: Colors.black26,
+            blurRadius: 20,
+            offset: Offset(0, -6),
           )
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Handle for dragging
-          Container(
-            width: 48,
-            height: 5,
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(3),
-            ),
+          // Header with title and close button
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              // Title
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Follow Us',
+                  style: AppTextstyle.interRegular(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              // Close button (top right)
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
           ),
-          // Title
-          Text(
-            'Follow Us on Social Media',
-            style: AppTextstyle.interRegular(
-              fontSize: 18,
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           // Subtitle
           Text(
             'Stay updated with our latest creations',
@@ -97,84 +115,67 @@ class SocialMediaBottomSheet extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
           // Social media icons in one row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: socialMedia.map((platform) {
-              return GestureDetector(
-                onTap: () => _launchUrl(platform['url']),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: platform['gradient'],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: platform['color'].withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
+              return Column(
+                children: [
+                  GestureDetector(
+                    onTap: () => _launchUrl(platform['url']),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: platform['gradient'],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: platform['color'].withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
+                        child: Icon(
                           platform['icon'],
                           color: Colors.white,
                           size: iconSize,
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          platform['name'],
-                          style: AppTextstyle.interRegular(
-                            fontSize: fontSize,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    platform['name'],
+                    style: AppTextstyle.interRegular(
+                      fontSize: fontSize,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               );
             }).toList(),
           ),
-          const SizedBox(height: 24),
-          // Close button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.grey.shade100,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                'Close',
-                style: AppTextstyle.interRegular(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+          const SizedBox(height: 32),
+          // Call to action text
+          Text(
+            'Join our creative community!',
+            style: AppTextstyle.interRegular(
+              fontSize: 16,
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 8),
         ],
       ),
     );

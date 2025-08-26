@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/subscriptions/plan_provider.dart';
-import '../presentation/views/subscriptions/payment_screen.dart' hide selectedPaymentMethodProvider;
+import '../presentation/views/subscriptions/payment_screen.dart';
 
 
 class PurchaseHandler {
@@ -25,6 +25,7 @@ class PurchaseHandler {
     if (userId == null) {
       debugPrint('User ID not found');
       appSnackBar('Error', 'User not authenticated', Colors.red);
+      print('selected payment method is $paymentMethod');
       for (final purchaseDetails in purchaseDetailsList) {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
       }

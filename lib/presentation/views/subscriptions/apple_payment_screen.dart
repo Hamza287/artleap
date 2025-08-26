@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/subscriptions/payment_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +11,6 @@ import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/domain/subscriptions/plan_provider.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
-import 'package:Artleap.ai/presentation/views/subscriptions/payment_screen.dart'
-    show paymentLoadingProvider, inAppPurchaseInitializedProvider;
-
 import '../../../domain/api_services/api_response.dart';
 
 class ApplePaymentScreen extends ConsumerStatefulWidget {
