@@ -15,20 +15,19 @@ class MainActivity :  FlutterFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable edge-to-edge experience for Android 11+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
         }
 
         try {
             val info = packageManager.getPackageInfo(
-                "com.XrDIgital.ImaginaryVerse", // Your package name
-                PackageManager.GET_SIGNING_CERTIFICATES  // Use this for better compatibility
+                "com.XrDIgital.ImaginaryVerse",
+                PackageManager.GET_SIGNING_CERTIFICATES
             )
-            info.signingInfo?.apkContentsSigners?.forEach { signature ->  // Safe call on signingInfo
-                val md = MessageDigest.getInstance("SHA-256")  // Use SHA-256 for better security
+            info.signingInfo?.apkContentsSigners?.forEach { signature ->
+                val md = MessageDigest.getInstance("SHA-256")
                 md.update(signature.toByteArray())
-                val keyHash = Base64.encodeToString(md.digest(), Base64.DEFAULT)  // Use encodeToString
+                val keyHash = Base64.encodeToString(md.digest(), Base64.DEFAULT)
                 Log.d("KeyHash:", keyHash)
             }
         } catch (e: Exception) {

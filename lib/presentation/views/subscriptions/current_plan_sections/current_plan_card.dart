@@ -90,7 +90,7 @@ class CurrentPlanCard extends StatelessWidget {
                       ? '$remainingCredits of $totalCredits credits left'
                       : 'No credits available',
                   style: AppTextstyle.interRegular(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: AppColors.darkBlue.withOpacity(0.7),
                   ),
                 ),
@@ -98,7 +98,7 @@ class CurrentPlanCard extends StatelessWidget {
                   Text(
                     '$percentageRemaining% remaining',
                     style: AppTextstyle.interMedium(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: AppColors.darkBlue,
                     ),
                   ),

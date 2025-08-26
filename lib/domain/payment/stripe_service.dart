@@ -7,7 +7,7 @@ import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_api_paths.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_services/handling_response.dart';
-import '../base_repo/base.dart'; // Import Base class
+import '../base_repo/base.dart';
 
 class StripeService {
   final Base _base;
@@ -38,8 +38,6 @@ class StripeService {
         fromJson: (json) => (json as Map<String, dynamic>)['clientSecret'] as String?,
       );
     } on DioException catch (e) {
-      print('Error creating Payment Intent: $e');
-      print('Failed URL: ${e.requestOptions.uri}');
       return HandlingResponse.returnException<String?>(e);
     }
   }
@@ -114,7 +112,6 @@ class StripeService {
 
       return response;
     } catch (e) {
-      print('Stripe purchase error: $e');
       appSnackBar('Error', 'Purchase error: $e', Colors.red);
       return ApiResponse.error('Purchase error: $e');
     }

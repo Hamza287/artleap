@@ -98,7 +98,7 @@ class UsageSection extends StatelessWidget {
             color: color.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: color.withOpacity(0.2),
+              color: Colors.grey.withOpacity(0.7),
               width: 1,
             ),
           ),
@@ -168,7 +168,7 @@ class UsageSection extends StatelessWidget {
             color: color.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: color.withOpacity(0.2),
+              color: Colors.grey.withOpacity(0.7),
               width: 1,
             ),
           ),

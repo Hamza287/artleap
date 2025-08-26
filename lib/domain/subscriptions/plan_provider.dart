@@ -18,7 +18,3 @@ final plansProvider = FutureProvider<List<SubscriptionPlanModel>>((ref) async {
 });
 
 final selectedPlanProvider = StateProvider<SubscriptionPlanModel?>((ref) => null);
-
-// final selectedPaymentMethodProvider = StateProvider<String?>((ref) => null);
-
-// final termsAcceptedProvider = StateProvider<bool>((ref) => false);

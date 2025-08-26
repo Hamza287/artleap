@@ -59,7 +59,6 @@ class PaymentService {
           _handlePurchaseUpdates(purchaseDetailsList, planId, paymentMethod);
         },
         onError: (error) {
-          print('Purchase stream error: $error');
           appSnackBar('Error', 'Purchase stream error: $error', Colors.red);
         },
       );
@@ -83,7 +82,7 @@ class PaymentService {
       return ApiResponse.processing('Purchase initiated');
     } catch (e) {
       _purchaseSubscription?.cancel();
-      appSnackBar('Error', 'Purchase error: $e', Colors.red);
+      appSnackBar('Error', 'Purchase error', Colors.red);
       return ApiResponse.error(e.toString());
     }
   }
@@ -158,21 +157,18 @@ class PaymentService {
             if (response.status == Status.completed) {
               appSnackBar('Success', 'Subscription purchased successfully', Colors.green);
             } else {
-              appSnackBar('Error', response.message ?? 'Failed to create subscription', Colors.red);
+              appSnackBar('Error', 'Failed to create subscription', Colors.red);
             }
           } catch (e) {
-            print('Error handling purchased status: $e');
-            appSnackBar('Error', 'Error processing purchase: $e', Colors.red);
+            appSnackBar('Error', 'Error processing purchase', Colors.red);
           }
           break;
 
         case PurchaseStatus.error:
-          print('Purchase error: ${purchaseDetails.error}');
-          appSnackBar('Error', 'Purchase error: ${purchaseDetails.error}', Colors.red);
+          appSnackBar('Error', 'Purchase error', Colors.red);
           break;
 
         case PurchaseStatus.canceled:
-          print('Purchase canceled');
           appSnackBar('Info', 'Purchase canceled', Colors.yellow);
           break;
       }
@@ -186,7 +182,7 @@ class PaymentService {
       appSnackBar('Success', 'Purchases restored successfully', Colors.green);
       return ApiResponse.completed('Purchases restored successfully');
     } catch (e) {
-      appSnackBar('Error', 'Failed to restore purchases: $e', Colors.red);
+      appSnackBar('Error', 'Failed to restore purchases', Colors.red);
       return ApiResponse.error('Failed to restore purchases: $e');
     }
   }

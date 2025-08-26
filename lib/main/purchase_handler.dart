@@ -95,14 +95,12 @@ class PurchaseHandler {
       );
 
       if (response.status == Status.completed) {
-        debugPrint('Subscription created: ${response.data}');
         appSnackBar('Success', 'Subscription created successfully', Colors.green);
         await _completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
         navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
       } else {
-        debugPrint('Subscription creation failed: ${response.message}');
         appSnackBar(
             'Error',
             response.message ?? 'Subscription failed',
@@ -111,7 +109,6 @@ class PurchaseHandler {
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
     } catch (e) {
-      debugPrint('Error processing purchase: $e');
       appSnackBar('Error', 'Purchase error: $e', Colors.red);
       ref.read(paymentLoadingProvider.notifier).state = false;
     }
