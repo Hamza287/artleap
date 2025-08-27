@@ -28,7 +28,7 @@ class _TrendingCreationsWidgetState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) { 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ref.watch(homeScreenProvider).page == 0) {
         ref.read(homeScreenProvider).getUserCreations();
       }
@@ -36,7 +36,7 @@ class _TrendingCreationsWidgetState
   }
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     final filteredList =
         ref.watch(homeScreenProvider).filteredCreations.isNotEmpty
             ? ref.watch(homeScreenProvider).filteredCreations
@@ -65,7 +65,8 @@ class _TrendingCreationsWidgetState
               },
               child: Image.asset(
                 AppAssets.selecticon,
-                scale: 2.5,color: Colors.black,
+                scale: 2.5,
+                color: Colors.black,
               ),
             ),
           ),
@@ -99,7 +100,7 @@ class _TrendingCreationsWidgetState
                     crossAxisSpacing: 5,
                     repeatPattern: QuiltedGridRepeatPattern.inverted,
                     pattern: [
-                      const QuiltedGridTile(2, 2), 
+                      const QuiltedGridTile(2, 2),
                       const QuiltedGridTile(1, 1),
                       const QuiltedGridTile(1, 1),
                     ],

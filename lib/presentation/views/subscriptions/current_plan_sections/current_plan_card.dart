@@ -63,7 +63,7 @@ class CurrentPlanCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  isActive && subscription!.autoRenew ? 'Active' : 'Inactive',
+                  isActive && subscription!.autoRenew ? 'Active' : 'Active',
                   style: AppTextstyle.interMedium(
                     fontSize: 14,
                     color: isActive ? AppColors.green : AppColors.redColor,

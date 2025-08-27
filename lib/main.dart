@@ -19,7 +19,6 @@ import 'domain/notification_services/notification_service.dart';
 import 'main/app_initialization.dart';
 import 'main/purchase_handler.dart';
 
-
 void main() {
   runZonedGuarded<Future<void>>(() async {
     await AppInitialization.initialize();
@@ -61,8 +60,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _purchaseHandler.handlePurchaseUpdates(purchaseDetailsList);
     }, onError: (error) {
-      appSnackBar(
-          'Error', 'Failed to process purchase stream', Colors.red);
+      appSnackBar('Error', 'Failed to process purchase stream', Colors.red);
     });
 
     _initializeApp();
@@ -81,7 +79,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
         final refreshedToken =
-        await ref.read(authprovider).ensureValidFirebaseToken();
+            await ref.read(authprovider).ensureValidFirebaseToken();
         if (refreshedToken != null) {
         } else {
           debugPrint('Token refresh skipped: No user signed in.');

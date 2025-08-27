@@ -25,7 +25,6 @@ class PurchaseHandler {
     if (userId == null) {
       debugPrint('User ID not found');
       appSnackBar('Error', 'User not authenticated', Colors.red);
-      print('selected payment method is $paymentMethod');
       for (final purchaseDetails in purchaseDetailsList) {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
       }
@@ -55,7 +54,6 @@ class PurchaseHandler {
         break;
 
       case PurchaseStatus.error:
-        debugPrint('Purchase error');
         appSnackBar(
           'Error',
           'Purchase failed: ${'Unknown error'}',
@@ -65,7 +63,6 @@ class PurchaseHandler {
         break;
 
       case PurchaseStatus.canceled:
-        debugPrint('Purchase canceled by user');
         appSnackBar('Info', 'Purchase canceled', Colors.yellow);
         ref.read(paymentLoadingProvider.notifier).state = false;
         break;
