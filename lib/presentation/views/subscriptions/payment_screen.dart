@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
@@ -74,18 +75,17 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     );
   }
 
-  void _handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) {
+  void _handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) async {
     for (var purchaseDetails in purchaseDetailsList) {
       switch (purchaseDetails.status) {
         case PurchaseStatus.pending:
-        // Purchase is pending - no action needed
           break;
+
         case PurchaseStatus.canceled:
           ref.read(paymentLoadingProvider.notifier).state = false;
-          if (mounted) {
-            appSnackBar('Info', 'Purchase was canceled', Colors.orange);
-          }
+          if (mounted) appSnackBar('Info', 'Purchase was canceled', Colors.orange);
           break;
+
         case PurchaseStatus.error:
           ref.read(paymentLoadingProvider.notifier).state = false;
           if (mounted) {
@@ -96,13 +96,30 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
             );
           }
           break;
+
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-          ref.read(paymentLoadingProvider.notifier).state = false;
-          if (mounted) {
-            appSnackBar('Success', 'Purchase completed', Colors.green);
+        // ✅ still show loader until subscription is confirmed
+          ref.read(paymentLoadingProvider.notifier).state = true;
+
+          try {
+            final userId = UserData.ins.userId;
+            if (userId != null) {
+              // Refresh subscription from backend
+              await ref.read(currentSubscriptionProvider(userId).future);
+            }
+
+            if (mounted) {
+              ref.read(paymentLoadingProvider.notifier).state = false;
+              appSnackBar('Success', 'Subscription activated', Colors.green);
+              Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
+            }
+          } catch (e) {
+            if (mounted) {
+              ref.read(paymentLoadingProvider.notifier).state = false;
+              appSnackBar('Error', 'Failed to verify subscription', Colors.red);
+            }
           }
-          Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
           break;
       }
     }
@@ -167,9 +184,14 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           ref.refresh(currentSubscriptionProvider(userId));
           ref.read(paymentLoadingProvider.notifier).state = false;
           Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
+
+        } else if (response.status == Status.canceled && mounted) {
+          ref.read(paymentLoadingProvider.notifier).state = false;
+          appSnackBar('Cancelled', 'Payment was cancelled by the user', Colors.orange);
+
         } else if (mounted) {
           ref.read(paymentLoadingProvider.notifier).state = false;
-          appSnackBar('Error', 'Stripe purchase failed', Colors.red);
+          appSnackBar('Cancelled', 'Payment was cancelled by the user', Colors.orange);
         }
       }
     } catch (e) {
@@ -287,28 +309,26 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
               Text(
                 'Payment Method',
                 style: AppTextstyle.interBold(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: AppColors.darkBlue,
                 ),
               ),
               const SizedBox(height: 16),
-              // Payment method options
               Column(
                 children: [
-                  // Google Pay option
-                  if (isInitialized) // Only show Google Pay if initialized
+                  if (isInitialized)
                     GestureDetector(
                       onTap: () {
                         ref.read(selectedPaymentMethodProvider.notifier).state = 'google_play';
                       },
                       child: Card(
-                        elevation: selectedPaymentMethod == 'google_play' ? 8 : 2,
+                        elevation: selectedPaymentMethod == 'google_play' ? 5 : 2,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                           side: BorderSide(
                             color: selectedPaymentMethod == 'google_play'
                                 ? AppColors.darkBlue
-                                : Colors.grey,
+                                : Colors.grey.withOpacity(0.5),
                             width: 2,
                           ),
                         ),
@@ -411,7 +431,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
               const SizedBox(height: 24),
               // Terms and conditions
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Checkbox(
                     value: ref.watch(termsAcceptedProvider),
@@ -421,32 +441,50 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       }
                     },
                     activeColor: AppColors.purple,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                   ),
                   Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'I agree to the ',
-                        style: AppTextstyle.interRegular(
-                          fontSize: 16,
-                          color: AppColors.darkBlue,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Optionally handle tap on whole text if needed
+                      },
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        text: TextSpan(
+                          style: AppTextstyle.interRegular(
+                            fontSize: 14,
+                            color: AppColors.darkBlue,
+                          ),
+                          children: [
+                            const TextSpan(text: "I have read and agree to the "),
+                            TextSpan(
+                              text: "Terms of Service",
+                              style: AppTextstyle.interMedium(
+                                fontSize: 14,
+                                color: AppColors.blue,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Navigate to Terms of Service page
+                                },
+                            ),
+                            const TextSpan(text: " and "),
+                            TextSpan(
+                              text: "Privacy Policy",
+                              style: AppTextstyle.interMedium(
+                                fontSize: 14,
+                                color: AppColors.blue,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Navigate to Privacy Policy page
+                                },
+                            ),
+                            const TextSpan(text: "."),
+                          ],
                         ),
-                        children: [
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: AppTextstyle.interMedium(
-                              fontSize: 16,
-                              color: AppColors.blue,
-                            ),
-                          ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: AppTextstyle.interMedium(
-                              fontSize: 16,
-                              color: AppColors.blue,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ),
@@ -474,13 +512,12 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       : Text(
                     'Subscribe Now',
                     style: AppTextstyle.interBold(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
             ],
           ),
         ),

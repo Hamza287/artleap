@@ -86,7 +86,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                       : Text(
                     "Following",
                     style: AppTextstyle.interMedium(
-                      color: AppColors.darkBlue,
+                      color: AppColors.white,
                       fontSize: 14,
                     ),
                   ),

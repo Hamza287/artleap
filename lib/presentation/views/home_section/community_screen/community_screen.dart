@@ -34,7 +34,7 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200 &&
+              _scrollController.position.maxScrollExtent - 200 &&
           !ref.watch(homeScreenProvider).isLoadingMore) {
         ref.read(homeScreenProvider).loadMoreImages();
       }
@@ -66,31 +66,30 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
         if (didPop) return;
         bool shouldExit = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            backgroundColor: AppColors.blue,
-            title: const Text('Confirm Exit'),
-            content: const Text('Are you sure you want to leave?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text('No',
-                    style: AppTextstyle.interBold(color: AppColors.white)),
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: AppColors.blue,
+                title: const Text('Confirm Exit'),
+                content: const Text('Are you sure you want to leave?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text('No',
+                        style: AppTextstyle.interBold(color: AppColors.white)),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text('Yes',
+                        style: AppTextstyle.interBold(color: AppColors.white)),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text('Yes',
-                    style: AppTextstyle.interBold(color: AppColors.white)),
-              ),
-            ],
-          ),
-        ) ??
+            ) ??
             false;
         if (shouldExit) SystemNavigator.pop();
       },
@@ -110,7 +109,7 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
         ),
         body: AppBackgroundWidget(
           widget: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6,vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
             child: RefreshIndicator(
               backgroundColor: AppColors.darkBlue,
               onRefresh: () => ref.read(homeScreenProvider).getUserCreations(),

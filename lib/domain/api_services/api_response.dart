@@ -10,6 +10,7 @@ class ApiResponse<T> {
   ApiResponse.noInternet(this.message) : status = Status.noInternet;
   ApiResponse.unAuthorised(this.message) : status = Status.unAuthorised;
   ApiResponse.timeout(this.message) : status = Status.timeout;
+  ApiResponse.canceled({this.message}) : status = Status.canceled; // ✅ Added
 
   @override
   String toString() {
@@ -24,5 +25,6 @@ enum Status {
   error,
   noInternet,
   unAuthorised,
-  timeout
+  timeout,
+  canceled, // ✅ Added
 }

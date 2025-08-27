@@ -40,7 +40,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: AppColors.white,
+          color: AppColors.darkBlue,
           child: Container(
             width: double.infinity,
             height: double.infinity,
@@ -53,7 +53,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    padding: const EdgeInsets.only(left: 20, right: 20,top: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

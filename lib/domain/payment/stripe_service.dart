@@ -63,7 +63,7 @@ class StripeService {
       );
 
       if (clientSecretResponse.status != Status.completed || clientSecretResponse.data == null) {
-        appSnackBar('Error', clientSecretResponse.message ?? 'Failed to initialize payment', Colors.red);
+        appSnackBar('Error','Failed to initialize payment', Colors.red);
         return ApiResponse.error(clientSecretResponse.message ?? 'Failed to initialize payment');
       }
 
@@ -105,15 +105,25 @@ class StripeService {
       );
 
       if (response.status == Status.completed) {
-        appSnackBar('Success', 'Subscription purchased successfully', Colors.green, );
+        appSnackBar('Success', 'Subscription purchased successfully', Colors.green);
       } else {
-        appSnackBar('Error', response.message ?? 'Failed to create subscription', Colors.red,);
+        appSnackBar('Error', 'Failed to create subscription', Colors.red);
       }
 
       return response;
+    } on StripeException catch (e) {
+      // ✅ Handle cancellation separately
+      if (e.error.code == FailureCode.Canceled) {
+        appSnackBar('Info', 'Purchase was canceled', Colors.orange);
+        return ApiResponse.error('User canceled the purchase');
+      } else {
+        appSnackBar('Error', 'Stripe error', Colors.red);
+        return ApiResponse.error('Stripe error');
+      }
     } catch (e) {
-      appSnackBar('Error', 'Purchase error: $e', Colors.red);
-      return ApiResponse.error('Purchase error: $e');
+      appSnackBar('Error', 'Purchase error', Colors.red);
+      return ApiResponse.error('Purchase error');
     }
   }
+
 }
