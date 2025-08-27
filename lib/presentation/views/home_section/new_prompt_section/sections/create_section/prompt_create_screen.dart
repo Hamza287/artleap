@@ -22,6 +22,18 @@ import 'create_section_widget/prompt_widget.dart';
 // Define a provider for managing the loader state
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
+// Screen size category helper function
+ScreenSizeCategory getScreenSizeCategory(BuildContext context) {
+  final width = MediaQuery.of(context).size.width;
+
+  if (width < 375) return ScreenSizeCategory.extraSmall;
+  if (width < 414) return ScreenSizeCategory.small;
+  if (width < 600) return ScreenSizeCategory.medium;
+  return ScreenSizeCategory.large;
+}
+
+enum ScreenSizeCategory { extraSmall, small, medium, large }
+
 class PromptCreateScreen extends ConsumerStatefulWidget {
   const PromptCreateScreen({super.key});
 
@@ -79,12 +91,36 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
     final generateImageProviderState = ref.watch(generateImageProvider);
     final shouldRefresh = ref.watch(refreshProvider);
     final isLoading = ref.watch(isLoadingProvider);
+    final screenSize = getScreenSizeCategory(context);
 
     if (shouldRefresh && UserData.ins.userId != null) {
       Future.microtask(() {
         ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId!);
       });
     }
+
+    // Adjust sizes based on screen category
+    final horizontalPadding = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 10.0 : 15.0;
+    final topPadding = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 10.0 : 20.0;
+    final spaceBetweenWidgets = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 5.0 : 10.0;
+    final bottomSpace = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 50.0 : 70.0;
+    final buttonHeight = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 48.0 : 55.0;
+    final buttonTopPadding = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 15.0 : 20.0;
+    final buttonBottomPadding = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 15.0 : 20.0;
 
     return PopScope(
       canPop: false,
@@ -105,16 +141,16 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                   FocusScope.of(context).unfocus(); // Hide keyboard on tap outside
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     physics: const ClampingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        20.spaceY,
+                        SizedBox(height: topPadding),
                         const PromptWidget(),
-                        10.spaceY,
+                        SizedBox(height: spaceBetweenWidgets),
                         ImageControlsWidget(
                           onImageSelected: () {
                             ref.read(generateImageProvider).pickImage();
@@ -123,7 +159,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                                 'picking image from gallery button event');
                           },
                         ),
-                        70.spaceY,
+                        SizedBox(height: bottomSpace),
                       ],
                     ),
                   ),
@@ -153,15 +189,15 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                 ),
                 // Fixed: Maintain consistent bottom padding regardless of keyboard
                 padding: EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 20,
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                  top: buttonTopPadding,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
                       ? MediaQuery.of(context).viewInsets.bottom + 10 // Add extra padding when keyboard is visible
-                      : 20, // Normal padding when no keyboard
+                      : buttonBottomPadding, // Normal padding when no keyboard
                 ),
                 child: PromptScreenButton(
-                  height: 55,
+                  height: buttonHeight,
                   width: double.infinity,
                   imageIcon: AppAssets.generateicon,
                   title: "Generate",

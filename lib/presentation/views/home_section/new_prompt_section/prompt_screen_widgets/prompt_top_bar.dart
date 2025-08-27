@@ -9,6 +9,18 @@ import '../sections/create_section/create_section_widget/prompt_widget.dart';
 // Provider for dropdown expansion state
 final isDropdownExpandedProvider = StateProvider<bool>((ref) => false);
 
+// Screen size category helper function
+ScreenSizeCategory getScreenSizeCategory(BuildContext context) {
+  final width = MediaQuery.of(context).size.width;
+
+  if (width < 375) return ScreenSizeCategory.extraSmall;
+  if (width < 414) return ScreenSizeCategory.small;
+  if (width < 600) return ScreenSizeCategory.medium;
+  return ScreenSizeCategory.large;
+}
+
+enum ScreenSizeCategory { extraSmall, small, medium, large }
+
 class PromptTopBar extends ConsumerWidget {
   const PromptTopBar({super.key});
 
@@ -17,11 +29,14 @@ class PromptTopBar extends ConsumerWidget {
     final currentNav = ref.watch(promptNavProvider);
     final isExpanded = ref.watch(isDropdownExpandedProvider);
 
+    // Get screen size directly from context without modifying providers
+    final screenSize = getScreenSizeCategory(context);
+
     return Stack(
       children: [
         GestureDetector(
           onTap: () {
-             ref.read(keyboardVisibleProvider.notifier).state = false;
+            ref.read(keyboardVisibleProvider.notifier).state = false;
             if (isExpanded) {
               ref.read(isDropdownExpandedProvider.notifier).state = false;
             }
@@ -31,17 +46,26 @@ class PromptTopBar extends ConsumerWidget {
           ),
         ),
         Container(
-
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenSize == ScreenSizeCategory.small ||
+                      screenSize == ScreenSizeCategory.extraSmall
+                      ? 12 : 16,
+                ),
                 child: ArtLeapTopBar(),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: screenSize == ScreenSizeCategory.small ||
+                  screenSize == ScreenSizeCategory.extraSmall
+                  ? 12 : 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _buildDropdown(context, ref, currentNav),
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenSize == ScreenSizeCategory.small ||
+                      screenSize == ScreenSizeCategory.extraSmall
+                      ? 12 : 16,
+                ),
+                child: _buildDropdown(context, ref, currentNav, screenSize),
               ),
               const SizedBox(height: 10),
             ],
@@ -51,7 +75,7 @@ class PromptTopBar extends ConsumerWidget {
     );
   }
 
-  Widget _buildDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav) {
+  Widget _buildDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav, ScreenSizeCategory screenSize) {
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final animationController = ref.watch(_animationControllerProvider);
 
@@ -78,6 +102,23 @@ class PromptTopBar extends ConsumerWidget {
       ),
     ];
 
+    // Adjust sizes based on screen category
+    final iconSize = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 32.0 : 40.0;
+    final fontSize = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 14.0 : 16.0;
+    final horizontalPadding = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 10.0 : 12.0;
+    final verticalPadding = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 10.0 : 12.0;
+    final spacing = screenSize == ScreenSizeCategory.small ||
+        screenSize == ScreenSizeCategory.extraSmall
+        ? 8.0 : 12.0;
+
     return Column(
       children: [
         GestureDetector(
@@ -90,7 +131,10 @@ class PromptTopBar extends ConsumerWidget {
             }
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: verticalPadding
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -105,13 +149,13 @@ class PromptTopBar extends ConsumerWidget {
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: iconSize,
+                  height: iconSize,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [
-                        const Color(0xFFD59FFF),
-                        const Color(0xFF875EFF),
+                        Color(0xFFD59FFF),
+                        Color(0xFF875EFF),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -119,25 +163,29 @@ class PromptTopBar extends ConsumerWidget {
                   child: Center(
                     child: Image.asset(
                       options.firstWhere((opt) => opt.value == currentNav).icon,
-                      height: 30,
+                      height: iconSize * 0.75,
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  options.firstWhere((opt) => opt.value == currentNav).label,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                SizedBox(width: spacing),
+                Expanded(
+                  child: Text(
+                    options.firstWhere((opt) => opt.value == currentNav).label,
+                    style: TextStyle(
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
+                SizedBox(width: spacing),
                 RotationTransition(
                   turns: Tween(begin: 0.0, end: 0.5).animate(animationController),
-                  child: const Icon(
+                  child: Icon(
                     Icons.arrow_drop_down,
                     color: Colors.black87,
+                    size: iconSize * 0.75,
                   ),
                 ),
               ],
@@ -171,12 +219,15 @@ class PromptTopBar extends ConsumerWidget {
                       animationController.reverse();
                     },
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                          vertical: verticalPadding
+                      ),
                       child: Row(
                         children: [
                           Container(
-                            width: 40,
-                            height: 40,
+                            width: iconSize,
+                            height: iconSize,
                             decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(2),
@@ -184,16 +235,19 @@ class PromptTopBar extends ConsumerWidget {
                             child: Center(
                               child: Image.asset(
                                 option.icon,
-                                height: 50,
+                                height: iconSize * 1.25,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Text(
-                            option.label,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
+                          SizedBox(width: spacing),
+                          Expanded(
+                            child: Text(
+                              option.label,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                                color: Colors.black87,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

@@ -8,8 +8,6 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Artleap.AI needs access to your camera to capture photos for AI-generated artwork</string>
 	<key>CFBundleDisplayName</key>
 	<string>Artleap.ai</string>
 	<key>CFBundleExecutable</key>
@@ -23,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.7</string>
+	<string>1.0.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -40,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>GADApplicationIdentifier</key>
@@ -51,6 +49,8 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app uses Apple Sign-In for authentication.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>To scan cards</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app requires permission to save images to your Photo Library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -65,16 +65,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>NSCameraUsageDescription</key>
-    <string>Scan your card to add it automatically</string>
-    <key>NSCameraUsageDescription</key>
-    <string>To scan cards</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationPortraitUpsideDown</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
 </dict>
 </plist>
