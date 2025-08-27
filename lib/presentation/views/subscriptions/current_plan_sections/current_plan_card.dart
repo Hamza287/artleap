@@ -21,7 +21,7 @@ class CurrentPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate remaining credits safely
-    final totalCredits = userPersonalData?.totalCredits ?? 0;
+    final totalCredits = (userPersonalData?.totalCredits ?? 0) + (userPersonalData?.usedImageCredits ?? 0) + (userPersonalData?.usedPromptCredits ?? 0) ;
     final usedCredits = (userPersonalData?.usedImageCredits ?? 0) + (userPersonalData?.usedPromptCredits ?? 0);
     final remainingCredits = totalCredits - usedCredits;
     final progressValue = totalCredits > 0 ? remainingCredits / totalCredits : 0;

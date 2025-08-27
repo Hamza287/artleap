@@ -65,19 +65,20 @@ class AuthServices {
       final GoogleSignInAccount? googleUser = await GoogleSignIn(
         scopes: ["profile", "email"],
       ).signIn().catchError((error) {
+        print(error);
         return null;
       });
       if (googleUser == null) {
         return null;
       }
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
       return AuthResult(
           userCredential:
               await FirebaseAuth.instance.signInWithCredential(credential));
     } catch (e) {
+      print(e);
       return null;
     }
   }
