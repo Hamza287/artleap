@@ -81,6 +81,7 @@ dependencies:
   flutter_stripe: ^11.5.0
   http: ^1.4.0
   flutter_dotenv: ^5.2.1
+  app_tracking_transparency: ^2.0.6+1
 
 dev_dependencies:
   flutter_test:

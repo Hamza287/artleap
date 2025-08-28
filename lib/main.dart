@@ -10,6 +10,7 @@ import 'package:Artleap.ai/shared/navigation/navigator_key.dart';
 import 'package:Artleap.ai/shared/navigation/route_generator.dart';
 import 'package:Artleap.ai/shared/theme/dark_theme.dart';
 import 'package:Artleap.ai/shared/theme/light_theme.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,6 +68,12 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   Future<void> _initializeApp() async {
+    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+    if (status == TrackingStatus.notDetermined) {
+      final result = await AppTrackingTransparency.requestTrackingAuthorization();
+      debugPrint("ATT result: $result");
+    }
+
     Future.microtask(() async {
       final token = await AppInitialization.initializeAuthAndNotifications(ref);
 

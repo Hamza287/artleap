@@ -32,7 +32,7 @@ class StripeService {
         },
         enableLocalPersistence: enableLocalPersistence,
       );
-
+      print(response);
       return HandlingResponse.returnResponse<String?>(
         response,
         fromJson: (json) => (json as Map<String, dynamic>)['clientSecret'] as String?,
@@ -61,7 +61,7 @@ class StripeService {
         planId: planId,
         enableLocalPersistence: enableLocalPersistence,
       );
-
+      print(clientSecretResponse);
       if (clientSecretResponse.status != Status.completed || clientSecretResponse.data == null) {
         appSnackBar('Error','Failed to initialize payment', Colors.red);
         return ApiResponse.error(clientSecretResponse.message ?? 'Failed to initialize payment');
@@ -76,7 +76,7 @@ class StripeService {
           merchantDisplayName: 'Artleap.ai',
           googlePay: const PaymentSheetGooglePay(
             merchantCountryCode: 'US',
-            testEnv: true, // Set to false in production
+            testEnv: false, // Set to false in production
           ),
           style: ThemeMode.system,
         ),
