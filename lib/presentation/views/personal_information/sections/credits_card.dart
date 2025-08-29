@@ -53,7 +53,7 @@ class CreditsCard extends StatelessWidget {
             _CreditProgress(
               label: "Total Credits",
               used: planName.toLowerCase() == 'free' ? 10 - dailyCredits : totalCredits,
-              total: planName.toLowerCase() == 'free' ? 10 : usedImageCredits + usedPromptCredits + totalCredits,
+              total: planName.toLowerCase() == 'free' ? 10 : totalCredits + usedPromptCredits + usedImageCredits,
               icon: Icons.calendar_today_outlined,
               color: AppColors.purple,
             ),
