@@ -122,4 +122,5 @@ class AppAssets {
    static const proBtn = "${iconsdir}pro_btn.png";
    static const create = "${iconsdir}create.png";
    static const upgrade = "${iconsdir}upgrade_pro.png";
+   static const menu = "${iconsdir}menu.png";
 }

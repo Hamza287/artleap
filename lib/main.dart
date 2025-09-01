@@ -71,14 +71,12 @@ class _MyAppState extends ConsumerState<MyApp> {
     final status = await AppTrackingTransparency.trackingAuthorizationStatus;
     if (status == TrackingStatus.notDetermined) {
       final result = await AppTrackingTransparency.requestTrackingAuthorization();
-      debugPrint("ATT result: $result");
     }
 
     Future.microtask(() async {
       final token = await AppInitialization.initializeAuthAndNotifications(ref);
 
       if (token == null) {
-        debugPrint('No valid token. Redirecting to login...');
         navigatorKey.currentState?.pushNamedAndRemoveUntil(
             LoginScreen.routeName, (Route<dynamic> route) => false);
         return;

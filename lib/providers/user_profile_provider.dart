@@ -50,21 +50,29 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   }
 
   Future<void> getUserProfileData(String uid) async {
+    final id = uid.trim();
+    if (id.isEmpty) {
+      appSnackBar("Error", "User ID is empty", AppColors.redColor);
+      return;
+    }
+
     setLoader(true);
-    final response = await userFollowingRepo.getUserProfileData(uid);
+    debugPrint('➡️ Fetching profile for userId="$id"');
+
+    final response = await userFollowingRepo.getUserProfileData(id);
+
     if (response.status == Status.completed) {
       _userProfileData = response.data;
       _dailyCredits = _userProfileData?.user.totalCredits ?? 0;
-      setLoader(false);
-      print(response);
+      debugPrint('✅ Profile loaded for "$id"');
     } else {
       appSnackBar("Error", response.message ?? "Failed to fetch user profile", AppColors.redColor);
-      setLoader(false);
+      debugPrint('❌ Profile failed for "$id": ${response.message}');
     }
-    if (hasListeners) { // Check before notifying
-      notifyListeners();
-    }
+    setLoader(false);
+    if (hasListeners) notifyListeners();
   }
+
 
   Future<void> getOtherUserProfileData(String uid) async {
     setLoader(true);
@@ -82,14 +90,13 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> updateUserCredits() async {
     setLoader(true);
-    print(UserData);
     final data = {"userId": UserData.ins.userId};
     final response = await userFollowingRepo.updateUserCredits(data);
     if (response.status == Status.completed) {
       await getUserProfileData(UserData.ins.userId ?? "");
       // appSnackBar("Success", "Credits updated successfully", AppColors.green);
     } else {
-      appSnackBar("Error", response.message ?? "Failed to update credits", AppColors.redColor);
+      appSnackBar("Error", "Failed to update credits", AppColors.redColor);
     }
     setLoader(false);
     if (hasListeners) { // Check before notifying

@@ -17,18 +17,23 @@ class BottomNavBar extends ConsumerStatefulWidget {
 }
 
 class _BottomNavBarState extends ConsumerState<BottomNavBar> {
+  bool _initialized = false;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userId = UserData.ins.userId;
-      ref.read(userProfileProvider).updateUserCredits();
-      if (userId != null && userId.isNotEmpty) {
-        ref.read(userProfileProvider).getUserProfileData(userId);
-        ref.read(userProfileProvider).updateUserCredits();
-      } else {
-        Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (_initialized) return;
+      _initialized = true;
+      final userId = (AppData.instance.userId?.trim().isNotEmpty ?? false)
+          ? AppData.instance.userId!.trim()
+          : (UserData.ins.userId ?? '').trim();
+      if (userId.isEmpty) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+        }
+        return;
       }
+      await ref.read(userProfileProvider).getUserProfileData(userId);
     });
   }
 

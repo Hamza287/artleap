@@ -11,6 +11,7 @@ class CreditsCard extends StatelessWidget {
   final int usedPromptCredits;
   final int promptGenerationCredits;
   final String planName;
+  final int remainingCredits;
 
   const CreditsCard({
     super.key,
@@ -21,6 +22,7 @@ class CreditsCard extends StatelessWidget {
     required this.usedPromptCredits,
     required this.promptGenerationCredits,
     required this.planName,
+    required this.remainingCredits,
   });
 
   @override
@@ -52,16 +54,16 @@ class CreditsCard extends StatelessWidget {
             const SizedBox(height: 16),
             _CreditProgress(
               label: "Total Credits",
-              used: planName.toLowerCase() == 'free' ? 10 - dailyCredits : totalCredits,
-              total: planName.toLowerCase() == 'free' ? 10 : totalCredits + usedPromptCredits + usedImageCredits,
+              used: planName.toLowerCase() == 'free' ? 10 - dailyCredits : remainingCredits,
+              total: planName.toLowerCase() == 'free' ? 10 : totalCredits,
               icon: Icons.calendar_today_outlined,
               color: AppColors.purple,
             ),
             const SizedBox(height: 16),
             _CreditProgress(
               label: "Image-to-Image Generation",
-              used: usedImageCredits,
-              total: imageGenerationCredits,
+              used: planName.toLowerCase() == 'free' ? 0 : usedImageCredits,
+              total:  planName.toLowerCase() == 'free' ? 0 : imageGenerationCredits,
               icon: Icons.image_outlined,
               color: Colors.blue,
             ),

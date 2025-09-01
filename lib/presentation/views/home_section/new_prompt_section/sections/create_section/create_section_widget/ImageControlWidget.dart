@@ -6,6 +6,7 @@ import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../../../../../shared/utilities/photo_permission_helper.dart';
 import '../../../prompt_screen_widgets/styles_bottom_sheet.dart';
 import '../image_control_widgets/image_preview_widget.dart';
 import '../image_control_widgets/image_selection_button.dart';
@@ -230,45 +231,84 @@ class ImageControlsWidget extends ConsumerWidget {
       ],
     );
   }
-
+  // In ImageControlsWidget
   Future<void> _handleImagePick(BuildContext context, WidgetRef ref) async {
     try {
-      final status = await Permission.photos.request();
+      final ok = await PhotoPermissionHelper.ensurePhotosPermission();
 
-      if (status.isGranted) {
-        final imagePath = await Pickers.ins.pickImage();
-        if (imagePath != null) {
-          ref.read(generateImageProvider.notifier).pickImage();
-          onImageSelected();
-        }
-      } else if (status.isPermanentlyDenied && context.mounted) {
+      if (!ok) {
         await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Permission Required'),
-            content: const Text('Please enable photos access in settings'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  openAppSettings();
-                },
-                child: const Text('Open Settings'),
-              ),
-            ],
-          ),
-        );
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Permission Required'),
+                    content: const Text('Please enable photos access in settings'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          openAppSettings();
+                        },
+                        child: const Text('Open Settings'),
+                      ),
+                    ],
+                  ),
+                );
       }
+
+      // Permission satisfied (granted or limited). Run a single picker call.
+      await ref.read(generateImageProvider.notifier).pickImage();
+
+      // Optional: analytics or small UI reactions
+      onImageSelected();
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(content: Text('Error: $e')),
         );
       }
     }
   }
+
+
+// Future<void> _handleImagePick(BuildContext context, WidgetRef ref) async {
+  //   try {
+  //     final status = await Permission.photos.request();
+  //
+  //     if (status.isGranted) {
+  //       await ref.read(generateImageProvider.notifier).pickImage();
+  //       onImageSelected();
+  //     } else if (status.isPermanentlyDenied && context.mounted) {
+  //       await showDialog(
+  //         context: context,
+  //         builder: (context) => AlertDialog(
+  //           title: const Text('Permission Required'),
+  //           content: const Text('Please enable photos access in settings'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context),
+  //               child: const Text('Cancel'),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //                 openAppSettings();
+  //               },
+  //               child: const Text('Open Settings'),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     if (context.mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Error: ${e.toString()}')),
+  //       );
+  //     }
+  //   }
+  // }
 }

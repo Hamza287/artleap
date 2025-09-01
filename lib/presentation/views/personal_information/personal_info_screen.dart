@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import '../../../domain/subscriptions/subscription_repo_provider.dart';
 import 'sections/account_actions_card.dart';
 import 'sections/credits_card.dart';
 import 'sections/profile_header.dart';
@@ -33,6 +34,8 @@ class _PersonalInformationScreenState
     final profileProvider = ref.watch(userProfileProvider);
     final user = profileProvider.userProfileData?.user;
     final isLoading = profileProvider.isLoading;
+    final userId = UserData.ins.userId;
+    final subscriptionAsync = userId != null ? ref.watch(currentSubscriptionProvider(userId)) : null;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -82,18 +85,28 @@ class _PersonalInformationScreenState
                     isSubscribed: user.isSubscribed,
                   ),
                   const SizedBox(height: 20),
-                  CreditsCard(
-                    dailyCredits: user.dailyCredits,
-                    totalCredits: user.totalCredits,
-                    usedImageCredits: user.usedImageCredits,
-                    imageGenerationCredits: user.totalCredits,
-                    usedPromptCredits: user.usedPromptCredits,
-                    promptGenerationCredits: user.totalCredits,
-                    planName: user.planName,
-                  ),
-                  const SizedBox(height: 20),
+
+                  if (subscriptionAsync != null)
+                    subscriptionAsync.when(
+                      loading: () => const CircularProgressIndicator(),
+                      error: (error, stack) => Text("Error loading subscription: $error"),
+                      data: (subscription) {
+                        return CreditsCard(
+                          dailyCredits: user.dailyCredits,
+                          totalCredits: subscription?.planSnapshot!.totalCredits ?? 0,
+                          usedImageCredits: user.usedImageCredits,
+                          imageGenerationCredits: subscription?.planSnapshot?.imageGenerationCredits ?? 0,
+                          usedPromptCredits: user.usedPromptCredits,
+                          promptGenerationCredits: subscription?.planSnapshot?.promptGenerationCredits ?? 0,
+                          planName: subscription?.planSnapshot?.name ?? user.planName,
+                          remainingCredits: (subscription?.planSnapshot!.totalCredits ?? 0) - user.totalCredits,
+                        );
+                      },
+                    ),
+                  //
+                  // const SizedBox(height: 20),
                   // const AccountActionsCard(),
-                ],
+                ]
               ],
             ),
           ),

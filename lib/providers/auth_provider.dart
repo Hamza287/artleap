@@ -105,10 +105,13 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         });
         return null;
       }
-      final idToken = await user.getIdToken(true);
+
+      // 👇 Ensure user reloaded, then force a new ID token
+      await user.reload();
+      final idToken = await user.getIdToken(true); // forceRefresh = true
       if (idToken != null) {
         AppData.instance.setToken(idToken);
-        debugPrint('✅ Firebase token refreshed: $idToken');
+        debugPrint('✅ Firebase token refreshed (forced).');
         return idToken;
       } else {
         debugPrint('Failed to obtain ID token.');
@@ -147,6 +150,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       return null;
     }
   }
+
 
   Future<void> signUpWithEmail() async {
     try {
@@ -308,20 +312,27 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     }
   }
 
+  // REPLACE your signInWithGoogle() body where noted
   Future<void> signInWithGoogle() async {
     try {
       startLoading(LoginMethod.google);
+
       AuthResult? userCred = await _authServices.signInWithGoogle();
       if (userCred != null && userCred.userCredential != null && userCred.userCredential!.user != null) {
         final user = userCred.userCredential!.user!;
-        await storeFirebaseAuthToken();
+
+        // 👇 Ensure the user object is up-to-date, then force a fresh token
+        await user.reload();
+        final token = await ensureValidFirebaseToken(); // forces refresh internally (see updated method below)
+        if (token == null || token.isEmpty) {
+          throw FirebaseAuthException(code: 'token-missing', message: 'Unable to fetch ID token after Google sign-in.');
+        }
+
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar(
-            "Success",
-            "Sign in successful!",
-            const Color.fromARGB(255, 113, 235, 117),
-          );
+          appSnackBar("Success", "Sign in successful!", const Color.fromARGB(255, 113, 235, 117));
         });
+
+        // Now call your backend (Authorization header should carry the fresh token)
         await googleLogin(
           user.displayName ?? 'User',
           user.email ?? '',
@@ -342,8 +353,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       authError = UserAuthResult(
         authResultState: AuthResultStatus.error,
         message: e is FirebaseAuthException
-            ? AuthExceptionHandler.generateExceptionMessage(
-            AuthExceptionHandler.handleException(e))
+            ? AuthExceptionHandler.generateExceptionMessage(AuthExceptionHandler.handleException(e))
             : 'An unexpected error occurred during Google sign-in.',
       );
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -354,6 +364,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       notifyListeners();
     }
   }
+
 
   Future<void> signInWithApple() async {
     try {
@@ -513,8 +524,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  Future<void> googleLogin(
-      String userName, String email, String googleId, String profilePic) async {
+  Future<void> googleLogin(String userName, String email, String googleId, String profilePic) async {
     try {
       Map<String, String> body = {
         "username": userName,
@@ -523,17 +533,41 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         "profilePic": profilePic,
       };
       ApiResponse userRes = await authRepo.googleLogin(body: body);
+      debugPrint("🔎 Google login raw response: ${userRes.data}");
       if (userRes.status == Status.completed) {
-        reference
-            .read(userProfileProvider)
-            .getUserProfileData(userRes.data["user"]['userId']);
-        AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-        AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
-        AppLocal.ins.setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
-        AppLocal.ins.setUserData(Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+        // Backend payload: { message: ..., user: {...} }
+        final raw = userRes.data;
+        final Map user = (raw is Map && raw['user'] is Map) ? raw['user'] as Map : (raw as Map);
+
+        // Normalize keys & types
+        final String userId = (user['userId'] ?? user['id'] ?? '').toString().trim();
+        final String username = (user['username'] ?? userName).toString();
+        final String userEmail = (user['email'] ?? email).toString();
+        final String userPic   = (user['profilePic'] ?? profilePic ?? '').toString();
+
+        if (userId.isEmpty) {
+          throw Exception('userId missing in backend response');
+        }
+
+        // Store the backend userId in memory BEFORE any auto-start services fire
+        AppData.instance.setUserId(userId);
+
+        // Kick off profile fetch (now that AppData.userId is set, interceptors/headers will include it)
+        reference.read(userProfileProvider).getUserProfileData(userId);
+
+        // Persist to local storage for cold starts
+        AppLocal.ins.setUserData(Hivekey.userId, userId);
+        AppLocal.ins.setUserData(Hivekey.userName, username);
+        AppLocal.ins.setUserData(Hivekey.userEmail, userEmail);
+        if (userPic.isNotEmpty) {
+          AppLocal.ins.setUserData(Hivekey.userProfielPic, userPic);
+        }
+
+        // Navigate only after IDs are set
         SchedulerBinding.instance.addPostFrameCallback((_) {
           Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
         });
+
       } else {
         authError = UserAuthResult(
           authResultState: AuthResultStatus.error,

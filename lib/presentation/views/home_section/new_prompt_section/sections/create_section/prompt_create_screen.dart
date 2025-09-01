@@ -153,7 +153,6 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                         SizedBox(height: spaceBetweenWidgets),
                         ImageControlsWidget(
                           onImageSelected: () {
-                            ref.read(generateImageProvider).pickImage();
                             AnalyticsService.instance.logButtonClick(
                                 buttonName:
                                 'picking image from gallery button event');
