@@ -15,3 +15,7 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Before Getting Started Keep these in mind
+ - You have latest version of dart and Flutter 
+ - before starting run flutter pub get 
+ - then navigate to  ios directory and run pod install

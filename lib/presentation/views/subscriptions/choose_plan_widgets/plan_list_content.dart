@@ -335,8 +335,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
                   });
                 },
               ),
-            ))
-                .toList(),
+            )).toList(),
           ],
         ),
       ),
