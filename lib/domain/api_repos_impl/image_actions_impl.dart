@@ -8,8 +8,7 @@ class ImageActionsImpl extends ImageActionsRepo {
   @override
   Future<ApiResponse> deleteImage({required String? imageId}) async {
     try {
-      Response res =
-          await artleapApiService.delete(AppApiPaths.deleteImage + imageId!);
+      Response res = await artleapApiService.delete(AppApiPaths.deleteImage + imageId!);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);
@@ -25,11 +24,7 @@ class ImageActionsImpl extends ImageActionsRepo {
   Future<ApiResponse> reportImage(
       {required Map<String, dynamic> body, required String imageId}) async {
     try {
-      Response res = await artleapApiService.postJson(
-          "${AppApiPaths.reportImage}$imageId/report", body);
-      // print(
-      //   "${AppConstants.artleapBaseUrl}${AppApiPaths.reportImage}$imageId/report",
-      // );
+      Response res = await artleapApiService.postJson("${AppApiPaths.reportImage}$imageId/report", body);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);

@@ -10,8 +10,7 @@ class ReqResRepoImpl extends ReqResRepo {
   @override
   Future<ApiResponse> getUserData({bool enableLocalPersistence = false}) async {
     try {
-      Response res = await reqresApi.get(AppApiPaths.getReqResUsers,
-          enableLocalPersistence: enableLocalPersistence);
+      Response res = await reqresApi.get(AppApiPaths.getReqResUsers, enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         ReqResUsersModel data =

@@ -28,14 +28,10 @@ class HomeRepoImpl extends HomeRepo {
   @override
   Future<ApiResponse> getUsersCreations(int pageNo) async {
     try {
-      Response res = await artleapApiService.get(AppConstants.artleapBaseUrl +
-          AppApiPaths.getUsersCreations +
-          pageNo.toString());
+      Response res = await artleapApiService.get(AppConstants.artleapBaseUrl + AppApiPaths.getUsersCreations + pageNo.toString());
       ApiResponse result = HandlingResponse.returnResponse(res);
-      print(res);
       if (result.status == Status.completed) {
-        UsersCreations data =
-            await Isolate.run(() => UsersCreations.fromJson(res.data));
+        UsersCreations data = await Isolate.run(() => UsersCreations.fromJson(res.data));
         return ApiResponse.completed(data);
       } else {
         return result;

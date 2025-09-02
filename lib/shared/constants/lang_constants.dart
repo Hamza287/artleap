@@ -9,11 +9,6 @@ class LangConstants {
         languageName: 'English',
         countryCode: 'US',
         languageCode: 'en'),
-    // LanguageModel(
-    //     imageUrl: '',
-    //     languageName: 'Trukish',
-    //     countryCode: 'TR',
-    //     languageCode: 'tr'),
     LanguageModel(
         imageUrl: '',
         languageName: 'Arabic',

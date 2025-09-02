@@ -59,9 +59,7 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
   }
 
   List<Color> _getAppBarColors(int pageIndex) {
-    return pageIndex == 3
-        ? [AppColors.lightIndigo, AppColors.darkIndigo]
-        : [AppColors.darkBlue, AppColors.darkBlue];
+    return pageIndex == 3 ? [AppColors.lightIndigo, AppColors.darkIndigo] : [AppColors.darkBlue, AppColors.darkBlue];
   }
 
   @override
@@ -79,13 +77,11 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text('No',
-                        style: AppTextstyle.interBold(color: AppColors.white)),
+                    child: Text('No', style: AppTextstyle.interBold(color: AppColors.white)),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: Text('Yes',
-                        style: AppTextstyle.interBold(color: AppColors.white)),
+                    child: Text('Yes', style: AppTextstyle.interBold(color: AppColors.white)),
                   ),
                 ],
               ),

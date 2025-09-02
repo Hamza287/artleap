@@ -11,14 +11,10 @@ class FreepikAiGenImpl extends FreepikAiGenRepo {
   Future<ApiResponse> generateImage(Map<String, dynamic> data,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.postJson(
-          AppApiPaths.generateImage, data,
-          enableLocalPersistence: enableLocalPersistence);
-      print(res.data);
+      Response res = await artleapApiService.postJson(AppApiPaths.generateImage, data, enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
-        TextToImageModel data =
-            await Isolate.run(() => TextToImageModel.fromJson(res.data));
+        TextToImageModel data = await Isolate.run(() => TextToImageModel.fromJson(res.data));
         return ApiResponse.completed(data);
       } else {
         return result;

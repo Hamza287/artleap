@@ -13,7 +13,6 @@ class AuthRepoImpl extends AuthRepo {
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.login, body);
       ApiResponse result = HandlingResponse.returnResponse(res);
-      print('Login Api Response : $res');
       if (result.status == Status.completed) {
         final userData = res.data['user'];
         UserData.ins.setUserData(
@@ -35,7 +34,6 @@ class AuthRepoImpl extends AuthRepo {
   Future<ApiResponse> signup({required Map<String, dynamic> body}) async {
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.signup, body);
-      print('SignUp Api Response : $res');
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);
@@ -51,7 +49,6 @@ class AuthRepoImpl extends AuthRepo {
   Future<ApiResponse> googleLogin({required Map<String, dynamic> body}) async {
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.googleLogin, body);
-      print(AppConstants.artleapBaseUrl + AppApiPaths.googleLogin);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);
@@ -66,9 +63,7 @@ class AuthRepoImpl extends AuthRepo {
   @override
   Future<ApiResponse> appleLogin({required Map<String, dynamic> body}) async {
     try {
-      Response res =
-          await artleapApiService.postJson(AppApiPaths.appleLogin, body);
-      print(AppConstants.artleapBaseUrl + AppApiPaths.appleLogin);
+      Response res = await artleapApiService.postJson(AppApiPaths.appleLogin, body);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);

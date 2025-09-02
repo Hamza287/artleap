@@ -30,42 +30,43 @@ class PlanListContent extends ConsumerStatefulWidget {
 }
 
 class _PlanListContentState extends ConsumerState<PlanListContent> {
-  // Store tab information to prevent rebuilding with different content
   late List<Map<String, dynamic>> _tabsAndPages;
 
   @override
   void initState() {
     super.initState();
-
-    // Pre-calculate tabs and pages to prevent layout shifts
     _tabsAndPages = _buildTabsAndPages();
-
-    // Set up listener for page changes
-    widget.pageController.addListener(() {
-      final currentPage = widget.pageController.page?.round() ?? 0;
-      if (currentPage < _tabsAndPages.length) {
-        final actualTabIndex = _tabsAndPages[currentPage]["tabIndex"] as int;
-        if (actualTabIndex != ref.read(currentTabIndexProvider)) {
-          ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
-          _autoSelectFirstPlanInTab(actualTabIndex);
-        }
+    widget.pageController.addListener(_onPageChanged);
+    Future.microtask(() {
+      if (mounted) {
+        _autoSelectFirstPlanInTab(ref.read(currentTabIndexProvider));
       }
     });
+  }
 
-    // Auto-select first plan in initial tab
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _autoSelectFirstPlanInTab(ref.read(currentTabIndexProvider));
-    });
+  void _onPageChanged() {
+    if (!mounted) return;
+
+    final currentPage = widget.pageController.page?.round() ?? 0;
+    if (currentPage < _tabsAndPages.length) {
+      final actualTabIndex = _tabsAndPages[currentPage]["tabIndex"] as int;
+      if (actualTabIndex != ref.read(currentTabIndexProvider)) {
+        Future.microtask(() {
+          if (mounted) {
+            ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
+            _autoSelectFirstPlanInTab(actualTabIndex);
+          }
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
-    // Reset tab index when this widget is disposed (e.g., when navigating back)
-    ref.read(currentTabIndexProvider.notifier).state = 0;
+    widget.pageController.removeListener(_onPageChanged);
     super.dispose();
   }
 
-  // Pre-calculate tabs to prevent layout shifts
   List<Map<String, dynamic>> _buildTabsAndPages() {
     final tabsAndPages = <Map<String, dynamic>>[];
 
@@ -100,15 +101,23 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
   }
 
   void _autoSelectFirstPlanInTab(int tabIndex) {
-    // Find the actual plans for this tab index
-    final tabData = _tabsAndPages.firstWhere(
-          (tab) => tab["tabIndex"] == tabIndex,
-      orElse: () => _tabsAndPages.first,
-    );
+    if (!mounted) return;
 
-    final plans = tabData["plans"] as List<SubscriptionPlanModel>;
-    if (plans.isNotEmpty) {
-      ref.read(selectedPlanProvider.notifier).state = plans.first;
+    try {
+      final tabData = _tabsAndPages.firstWhere(
+            (tab) => tab["tabIndex"] == tabIndex,
+        orElse: () => _tabsAndPages.first,
+      );
+
+      final plans = tabData["plans"] as List<SubscriptionPlanModel>;
+      if (plans.isNotEmpty) {
+        Future.microtask(() {
+          if (mounted) {
+            ref.read(selectedPlanProvider.notifier).state = plans.first;
+          }
+        });
+      }
+    } catch (e) {
     }
   }
 
@@ -120,7 +129,6 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
       return widgetPlans; // show all if no current plan
     }
 
-    // Define plan hierarchy
     final order = ["basic", "standard", "premium"];
     final currentIndex = order.indexOf(currentPlan.toLowerCase());
 
@@ -128,7 +136,6 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
       return widgetPlans;
     }
 
-    // Only allow current or higher plans
     return widgetPlans.where((plan) {
       final planIndex = order.indexOf(plan.type.toLowerCase());
       return planIndex >= currentIndex;
@@ -139,25 +146,18 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     List<SubscriptionPlanModel> tabPlans;
     switch (tabIndex) {
       case 0:
-        tabPlans = widget.plans
-            .where((plan) => plan.type.toLowerCase().contains('basic'))
-            .toList();
+        tabPlans = widget.plans.where((plan) => plan.type.toLowerCase().contains('basic')).toList();
         break;
       case 1:
-        tabPlans = widget.plans
-            .where((plan) => plan.type.toLowerCase().contains('standard'))
-            .toList();
+        tabPlans = widget.plans.where((plan) => plan.type.toLowerCase().contains('standard')).toList();
         break;
       case 2:
-        tabPlans = widget.plans
-            .where((plan) => plan.type.toLowerCase().contains('premium'))
-            .toList();
+        tabPlans = widget.plans.where((plan) => plan.type.toLowerCase().contains('premium')).toList();
         break;
       default:
         tabPlans = [];
     }
 
-    // ✅ Apply filter here
     return _filterPlansByCurrent(
       widgetPlans: tabPlans,
       currentPlan: widget.currentPlan,
@@ -216,11 +216,9 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(_tabsAndPages.length, (index) {
                 return _buildPlanTab(
-                  ref,
                   _tabsAndPages[index]["title"] as String,
                   _tabsAndPages[index]["tabIndex"] as int,
                   index,
-                  widget.pageController,
                 );
               }),
             ),
@@ -230,15 +228,18 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
               controller: widget.pageController,
               onPageChanged: (index) {
                 if (index < _tabsAndPages.length) {
-                  // Use the actual tab index, not the display index
                   final actualTabIndex = _tabsAndPages[index]["tabIndex"] as int;
-                  ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
-                  _autoSelectFirstPlanInTab(actualTabIndex);
+                  Future.microtask(() {
+                    if (mounted) {
+                      ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
+                      _autoSelectFirstPlanInTab(actualTabIndex);
+                    }
+                  });
                 }
               },
               children: List.generate(
                 _tabsAndPages.length,
-                    (index) => _buildPlanPage(context, ref, _tabsAndPages[index]["plans"] as List<SubscriptionPlanModel>),
+                    (index) => _buildPlanPage(context, _tabsAndPages[index]["plans"] as List<SubscriptionPlanModel>),
               ),
             ),
           ),
@@ -247,34 +248,34 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     );
   }
 
-  Widget _buildPlanTab(WidgetRef ref, String title, int actualTabIndex, int displayIndex, PageController pageController) {
+  Widget _buildPlanTab(String title, int actualTabIndex, int displayIndex) {
     final currentTabIndex = ref.watch(currentTabIndexProvider);
     final screenSize = MediaQuery.of(context).size;
-
-    // Check if this is the currently selected tab
     final isSelected = currentTabIndex == actualTabIndex;
 
     return GestureDetector(
       onTap: () {
-        pageController.animateToPage(
+        widget.pageController.animateToPage(
           displayIndex,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
-        _autoSelectFirstPlanInTab(actualTabIndex);
+        Future.microtask(() {
+          if (mounted) {
+            _autoSelectFirstPlanInTab(actualTabIndex);
+          }
+        });
       },
       child: Container(
         constraints: BoxConstraints(
-          minWidth: screenSize.width * 0.25, // Ensure consistent width
+          minWidth: screenSize.width * 0.25,
         ),
         padding: EdgeInsets.symmetric(
           horizontal: screenSize.width * 0.045,
           vertical: screenSize.height * 0.015,
         ),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Color(0xFFE4C1FF)
-              : Colors.transparent,
+          color: isSelected ? Color(0xFFE4C1FF) : Colors.transparent,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(
@@ -290,7 +291,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
   }
 
   Widget _buildPlanPage(
-      BuildContext context, WidgetRef ref, List<SubscriptionPlanModel> plans) {
+      BuildContext context, List<SubscriptionPlanModel> plans) {
     final screenSize = MediaQuery.of(context).size;
 
     if (plans.isEmpty) {
@@ -325,16 +326,13 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
                 plan: plan,
                 isSelected: ref.watch(selectedPlanProvider)?.id == plan.id,
                 onSelect: () {
-                  ref.read(selectedPlanProvider.notifier).state = plan;
-                  // Navigate directly to payment screen when a plan is selected
-                  final route = Platform.isIOS
-                      ? ApplePaymentScreen.routeName
-                      : PaymentScreen.routeName;
-                  Navigator.pushNamed(
-                    context,
-                    route,
-                    arguments: plan,
-                  );
+                  Future.microtask(() {
+                    if (mounted) {
+                      ref.read(selectedPlanProvider.notifier).state = plan;
+                      final route = Platform.isIOS ? ApplePaymentScreen.routeName : PaymentScreen.routeName;
+                      Navigator.pushNamed(context, route, arguments: plan,);
+                    }
+                  });
                 },
               ),
             ))
@@ -345,4 +343,3 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     );
   }
 }
-

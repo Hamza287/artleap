@@ -13,11 +13,10 @@ import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-final homeScreenProvider =
-    ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
+final homeScreenProvider = ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
 
 class HomeScreenProvider extends ChangeNotifier with BaseRepo {
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   final notificationSettings =
       FirebaseMessaging.instance.requestPermission(provisional: true);
   List<Images?> _filteredCreations = [];
@@ -62,7 +61,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   Future<void> loadMoreImages() async {
     _isLoadingMore = true;
 
-    await getUserCreations(); // your next page function
+    await getUserCreations();
 
     _isLoadingMore = false;
   }
@@ -73,16 +72,12 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     _isRequestingPermission = true;
     try {
       if (await Permission.storage.isGranted) {
-        // Permission already granted
         return;
       }
       var result = await Permission.storage.request();
       if (result.isGranted) {
-        // Permission granted, proceed with your functionality
       } else if (result.isDenied) {
-        // Permission denied, you might want to show a dialog
       } else if (result.isPermanentlyDenied) {
-        // Permission permanently denied, navigate to app settings
         openAppSettings();
       }
     } finally {
@@ -95,28 +90,23 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     _isRequestingPermission = true;
     try {
       if (await Permission.notification.isGranted) {
-        // Permission already granted
         return;
       }
       var result = await Permission.notification.request();
       if (result.isGranted) {
-        // Permission granted, proceed with your functionality
       } else if (result.isDenied) {
-        // Permission denied, you might want to show a dialog
       } else if (result.isPermanentlyDenied) {
-        // Permission permanently denied, navigate to app settings
         openAppSettings();
       }
     } catch (e) {
-      // print(e);
+      print(e);
     }
   }
 
   getUserInfo() {
     var userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
-    var userProfilePicture =
-        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
+    var userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
     UserData.ins.setUserData(
         id: userid,
@@ -135,7 +125,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
     ApiResponse response = await homeRepo.getUsersCreations(_page);
 
-    // Handle null response or null data
     if (response.data == null) {
       notifyListeners();
       return;
@@ -143,7 +132,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
     _usersData = response.data;
 
-    // Safely add images only if they exist
     if (_usersData?.images != null) {
       _communityImagesList.addAll(_usersData!.images);
       _filteredCreations = List.from(_communityImagesList);
@@ -154,24 +142,18 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
   List<Map<String, dynamic>> extractImagesFromData(Map<String, dynamic> data) {
     List<Map<String, dynamic>> images = [];
-
-    // Assuming 'userData' is the key for the array of maps where each map contains image details
     if (data.containsKey('userData') && data['userData'] is List) {
       List<dynamic> userData = data['userData'];
 
-      // Iterate over each map in the userData array
       for (var userEntry in userData) {
         if (userEntry is Map<String, dynamic> &&
             userEntry.containsKey('imageUrl') &&
             userEntry['imageUrl'] is String) {
-          // Add the imageUrl to the images list if it exists and is a string
           String imageUrl = userEntry['imageUrl'].toString();
-          // Optional: Check if imageUrl is not empty
           if (imageUrl.isNotEmpty) {
             images.add({'imageUrl': imageUrl});
           }
         } else {
-          // Log or handle the case where imageUrl is not found or is not a string
           print('Invalid or missing imageUrl in entry: $userEntry');
         }
       }
@@ -184,14 +166,11 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> preloadImages(List<Map<String, dynamic>> images) async {
     List<Future<void>> preloadFutures = images.map((image) {
-      // Assuming a smaller version or a cached version is available
       final String imageUrl = image['imageUrl'];
-      String thumbnailUrl = imageUrl.replaceAll("fullsize",
-          "thumbnail"); // Example: modify the URL for the thumbnail version
+      String thumbnailUrl = imageUrl.replaceAll("fullsize", "thumbnail");
 
       final Completer<void> completer = Completer<void>();
-      final ImageStream stream = CachedNetworkImageProvider(thumbnailUrl)
-          .resolve(const ImageConfiguration());
+      final ImageStream stream = CachedNetworkImageProvider(thumbnailUrl).resolve(const ImageConfiguration());
       final listener = ImageStreamListener((_, __) {
         if (!completer.isCompleted) {
           completer.complete();
@@ -238,9 +217,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-// 🔹 Helper method to match modelName against both Freepik and Leonardo style titles
   bool modelNameMatchAliases(String imageModel, String selectedModel) {
-    // Normalize both for safe comparison
     final lowerImageModel = imageModel.toLowerCase();
 
     final allStyleTitles = [

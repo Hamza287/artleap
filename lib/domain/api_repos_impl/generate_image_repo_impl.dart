@@ -12,7 +12,6 @@ class GenerateImageImpl extends GenerateImageRepo {
     try {
       Response res = await textToHighQualityImageService.postJson("", data,
           enableLocalPersistence: enableLocalPersistence);
-      print(res.data);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.processing) {
         return ApiResponse.processing("ssssssssssssssss");

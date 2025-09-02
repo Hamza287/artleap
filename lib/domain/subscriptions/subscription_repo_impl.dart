@@ -14,7 +14,6 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
         AppApiPaths.getSubscriptionPlans,
         enableLocalPersistence: enableLocalPersistence,
       );
-      print('response of the plans data ${response}' );
       final result = HandlingResponse.returnResponse(response);
       if (result.status == Status.processing) {
         return ApiResponse.processing("Fetching plans...");
@@ -39,7 +38,6 @@ class SubscriptionRepoImpl extends SubscriptionRepo {
         data,
         enableLocalPersistence: enableLocalPersistence,
       );
-      print("subscription response ${response}");
       final result = HandlingResponse.returnResponse(response);
       if (result.status == Status.processing) {
         return ApiResponse.processing("Subscribing...");

@@ -16,7 +16,7 @@ class AddToFavImpl extends AddToFavRepo {
           enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.processing) {
-        return ApiResponse.processing("ssssssssssssssss");
+        return ApiResponse.processing("Image is Adding to Fav");
       } else if (result.status == Status.completed) {
         print(result.data);
         var data = await Isolate.run(() => res.data);
@@ -37,7 +37,7 @@ class AddToFavImpl extends AddToFavRepo {
           enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.processing) {
-        return ApiResponse.processing("ssssssssssssssss");
+        return ApiResponse.processing("Fetching Fav image");
       } else if (result.status == Status.completed) {
         UserFavouritesModel data =
             await Isolate.run(() => UserFavouritesModel.fromJson(res.data));

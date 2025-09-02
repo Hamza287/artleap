@@ -19,11 +19,7 @@ class ApiServices extends DioCore {
     dynamic data, {
     bool enableLocalPersistence = false,
   }) async {
-    return await dio.post(path,
-        data: data,
-        options: _options(
-          enableLocalPersistence,
-        ));
+    return await dio.post(path, data: data, options: _options(enableLocalPersistence));
   }
 
   Future<Response> postFormData(String path,
@@ -34,8 +30,7 @@ class ApiServices extends DioCore {
     FormData formData = FormData.fromMap(data);
     print(images.length);
     for (var image in images) {
-      formData.files.add(MapEntry(
-          isNull(imageFieldKey) ? 'images' : imageFieldKey!,
+      formData.files.add(MapEntry(isNull(imageFieldKey) ? 'images' : imageFieldKey!,
           MultipartFile.fromFileSync(image.path)));
     }
     images = [];

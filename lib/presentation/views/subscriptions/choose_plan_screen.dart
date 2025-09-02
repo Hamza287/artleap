@@ -15,8 +15,10 @@ class ChoosePlanScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      extendBodyBehindAppBar: true, // ✅ lets background go behind AppBar
       appBar: AppBar(
-        backgroundColor: Color(0xDB59007C),
+        backgroundColor: Colors.transparent, // ✅ transparent AppBar
+        elevation: 0,
         title: Text(
           'Choose Your Plan',
           style: AppTextstyle.interBold(
@@ -25,26 +27,23 @@ class ChoosePlanScreen extends ConsumerWidget {
           ),
         ),
         centerTitle: true,
-        elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.white),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              ref.read(selectedPlanProvider.notifier).state = null;
-              ref.invalidate(subscriptionPlansProvider);
-            },
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.refresh),
+          //   onPressed: () {
+          //     ref.read(selectedPlanProvider.notifier).state = null;
+          //     ref.invalidate(subscriptionPlansProvider);
+          //   },
+          // ),
         ],
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/planbg.png'),
-                fit: BoxFit.cover,
-              ),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/planbg.png',
+              fit: BoxFit.cover,
             ),
           ),
           const SafeArea(

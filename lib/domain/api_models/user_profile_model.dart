@@ -104,7 +104,6 @@ class User {
       following: List.from(json['following'] ?? []).map((e) => Following.fromJson(e ?? {})).toList(),
       createdAt: json['createdAt'] ?? "",
       V: json['__v'] ?? 0,
-      // New fields from old model
       lastCreditReset: json['lastCreditReset'] != null ? DateTime.parse(json['lastCreditReset']) : null,
       hiddenNotifications: List.castFrom<dynamic, String>(json['hiddenNotifications'] ?? []),
       currentSubscription: json['currentSubscription']?.toString(),

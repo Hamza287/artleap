@@ -11,9 +11,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse> followUnFollowUser(Map<String, dynamic> data,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.postJson(
-          AppApiPaths.toggleFollow, data,
-          enableLocalPersistence: enableLocalPersistence);
+      Response res = await artleapApiService.postJson(AppApiPaths.toggleFollow, data, enableLocalPersistence: enableLocalPersistence);
       return HandlingResponse.returnResponse(res);
     } on DioException catch (e) {
       return HandlingResponse.returnException(e);
@@ -24,10 +22,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse<UserProfileModel>> getUserProfileData(String uid,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.get(
-          "${AppApiPaths.getUserProData}$uid",
-          enableLocalPersistence: enableLocalPersistence);
-
+      Response res = await artleapApiService.get("${AppApiPaths.getUserProData}$uid", enableLocalPersistence: enableLocalPersistence);
       return HandlingResponse.returnResponse<UserProfileModel>(
         res,
         fromJson: (json) => UserProfileModel.fromJson(json),
@@ -41,10 +36,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse<UserProfileModel>> getOtherUserProfileData(String uid,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.get(
-          "${AppApiPaths.getUserProData}$uid",
-          enableLocalPersistence: enableLocalPersistence);
-
+      Response res = await artleapApiService.get("${AppApiPaths.getUserProData}$uid", enableLocalPersistence: enableLocalPersistence);
       return HandlingResponse.returnResponse<UserProfileModel>(
         res,
         fromJson: (json) => UserProfileModel.fromJson(json),
@@ -58,9 +50,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse> updateUserCredits(Map<String, dynamic> data,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.postJson(
-          AppApiPaths.userCredits, data,
-          enableLocalPersistence: enableLocalPersistence);
+      Response res = await artleapApiService.postJson(AppApiPaths.userCredits, data, enableLocalPersistence: enableLocalPersistence);
       return HandlingResponse.returnResponse(res);
     } on DioException catch (e) {
       return HandlingResponse.returnException(e);
@@ -71,9 +61,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse<Map<String, dynamic>>> deductCredits(Map<String, dynamic> data,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.postJson(
-          AppApiPaths.deductCredits, data,
-          enableLocalPersistence: enableLocalPersistence);
+      Response res = await artleapApiService.postJson(AppApiPaths.deductCredits, data, enableLocalPersistence: enableLocalPersistence);
       return HandlingResponse.returnResponse<Map<String, dynamic>>(
         res,
         fromJson: (json) => json as Map<String, dynamic>,
@@ -87,9 +75,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
   Future<ApiResponse> deleteAccount(String uid,
       {bool enableLocalPersistence = false}) async {
     try {
-      Response res = await artleapApiService.delete(
-          "${AppApiPaths.deleteAccount}$uid",
-          enableLocalPersistence: enableLocalPersistence);
+      Response res = await artleapApiService.delete("${AppApiPaths.deleteAccount}$uid", enableLocalPersistence: enableLocalPersistence);
       return HandlingResponse.returnResponse(res);
     } on DioException catch (e) {
       return HandlingResponse.returnException(e);
@@ -107,9 +93,7 @@ class UserProfileRepoImpl extends UserProfileRepo {
 
       return HandlingResponse.returnResponse<List<SubscriptionPlanModel>>(
         response,
-        fromJson: (json) => (json['data'] as List)
-            .map((e) => SubscriptionPlanModel.fromJson(e))
-            .toList(),
+        fromJson: (json) => (json['data'] as List).map((e) => SubscriptionPlanModel.fromJson(e)).toList(),
       );
     } on DioException catch (e) {
       return HandlingResponse.returnException(e);

@@ -57,14 +57,12 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     }
 
     setLoader(true);
-    debugPrint('➡️ Fetching profile for userId="$id"');
 
     final response = await userFollowingRepo.getUserProfileData(id);
 
     if (response.status == Status.completed) {
       _userProfileData = response.data;
       _dailyCredits = _userProfileData?.user.totalCredits ?? 0;
-      debugPrint('✅ Profile loaded for "$id"');
     } else {
       appSnackBar("Error", response.message ?? "Failed to fetch user profile", AppColors.redColor);
       debugPrint('❌ Profile failed for "$id": ${response.message}');
@@ -83,7 +81,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Error", response.message ?? "Failed to fetch other user profile", AppColors.redColor);
     }
     setLoader(false);
-    if (hasListeners) { // Check before notifying
+    if (hasListeners) {
       notifyListeners();
     }
   }
@@ -94,12 +92,11 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     final response = await userFollowingRepo.updateUserCredits(data);
     if (response.status == Status.completed) {
       await getUserProfileData(UserData.ins.userId ?? "");
-      // appSnackBar("Success", "Credits updated successfully", AppColors.green);
     } else {
       appSnackBar("Error", "Failed to update credits", AppColors.redColor);
     }
     setLoader(false);
-    if (hasListeners) { // Check before notifying
+    if (hasListeners) {
       notifyListeners();
     }
   }
@@ -114,21 +111,20 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     final response = await userFollowingRepo.deductCredits(data);
     if (response.status == Status.completed) {
       await getUserProfileData(UserData.ins.userId ?? "");
-      // Update the remaining credits based on the response
       if (generationType == 'image') {
         _remainingImageCredits = response.data?['remainingCredits'] ?? 0;
       } else {
         _remainingPromptCredits = response.data?['remainingCredits'] ?? 0;
       }
       setLoader(false);
-      if (hasListeners) { // Check before notifying
+      if (hasListeners) {
         notifyListeners();
       }
       return true;
     } else {
       appSnackBar("Error", response.message ?? "Failed to deduct credits", AppColors.redColor);
       setLoader(false);
-      if (hasListeners) { // Check before notifying
+      if (hasListeners) {
         notifyListeners();
       }
       return false;
@@ -146,7 +142,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Error", response.message ?? "Something went wrong, please try again", AppColors.redColor);
     }
     setLoader(false);
-    if (hasListeners) { // Check before notifying
+    if (hasListeners) {
       notifyListeners();
     }
   }
@@ -201,7 +197,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Error", response.message ?? "Failed to start trial", AppColors.redColor);
     }
     setLoader(false);
-    if (hasListeners) { // Check before notifying
+    if (hasListeners) {
       notifyListeners();
     }
   }
