@@ -11,6 +11,7 @@ import '../home_section/profile_screen/edit_profile_screen_widgets/separator_wid
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
 import '../login_and_signup_section/login_section/login_screen.dart';
+import 'logout_confirmation_dialog.dart';
 import 'social_media_bottom_sheet.dart';
 
 class ProfileDrawer extends ConsumerStatefulWidget {
@@ -239,14 +240,15 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                     padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
                     child: Column(
                       children: [
+                        // In the ProfileDrawer class, replace the logout menu item with:
                         _ProfileMenuItem(
                           icon: AppAssets.logouticon,
                           title: "Logout",
                           color: Color(0xFFE53935),
-                          onTap: () {
-                            AppLocal.ins.clearUSerData(Hivekey.userId);
-                            Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-                          },
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => const LogoutConfirmationDialog(),
+                          ),
                         ),
                         _ProfileMenuItem(
                           icon: AppAssets.deleteicon,

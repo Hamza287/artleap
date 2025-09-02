@@ -21,7 +21,7 @@ class _AcceptPrivacyPolicyScreenState extends State<AcceptPrivacyPolicyScreen> {
     final isSmallScreen = screenWidth < 375;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
       body: SafeArea(
         child: Container(
           width: double.infinity,

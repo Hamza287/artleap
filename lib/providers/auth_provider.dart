@@ -535,7 +535,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       ApiResponse userRes = await authRepo.googleLogin(body: body);
       debugPrint("🔎 Google login raw response: ${userRes.data}");
       if (userRes.status == Status.completed) {
-        // Backend payload: { message: ..., user: {...} }
         final raw = userRes.data;
         final Map user = (raw is Map && raw['user'] is Map) ? raw['user'] as Map : (raw as Map);
 
@@ -549,13 +548,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           throw Exception('userId missing in backend response');
         }
 
-        // Store the backend userId in memory BEFORE any auto-start services fire
         AppData.instance.setUserId(userId);
-
-        // Kick off profile fetch (now that AppData.userId is set, interceptors/headers will include it)
         reference.read(userProfileProvider).getUserProfileData(userId);
 
-        // Persist to local storage for cold starts
         AppLocal.ins.setUserData(Hivekey.userId, userId);
         AppLocal.ins.setUserData(Hivekey.userName, username);
         AppLocal.ins.setUserData(Hivekey.userEmail, userEmail);
@@ -601,9 +596,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       };
       ApiResponse userRes = await authRepo.appleLogin(body: body);
       if (userRes.status == Status.completed) {
-        reference
-            .read(userProfileProvider)
-            .getUserProfileData(userRes.data["user"]['userId']);
+        reference.read(userProfileProvider).getUserProfileData(userRes.data["user"]['userId']);
         AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
         AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
         AppLocal.ins.setUserData(Hivekey.userEmail, userRes.data["user"]['email']);

@@ -87,37 +87,13 @@ class PlanCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-
-            // Features
             ...plan.features.map((feature) => _featureRow(feature)).toList(),
-            const SizedBox(height: 16),
-            _featureRow(
-                'Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
-            _featureRow(
-                'Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
+            _featureRow('Images Without Watermark'),
+            _featureRow('Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations'),
+            _featureRow('Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations'),
             _featureRow('Total Credits: ${plan.totalCredits.toInt()}'),
 
             const SizedBox(height: 24),
-
-            // Choose Button
-            // Container(
-            //   width: double.infinity,
-            //   height: 44,
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(12),
-            //     border: Border.all(color: Colors.white),
-            //   ),
-            //   child: const Center(
-            //     child: Text(
-            //       "Choose Plan",
-            //       style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.w500,
-            //       ),
-            //     ),
-            //   ),
-            // )
           ],
         ),
       ),

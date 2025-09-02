@@ -15,9 +15,9 @@ class ChoosePlanScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // ✅ lets background go behind AppBar
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // ✅ transparent AppBar
+        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           'Choose Your Plan',

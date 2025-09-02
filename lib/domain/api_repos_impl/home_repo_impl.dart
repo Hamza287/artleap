@@ -11,24 +11,11 @@ import '../api_services/api_response.dart';
 import '../api_services/handling_response.dart';
 
 class HomeRepoImpl extends HomeRepo {
-  // @override
-  // Future<DocumentSnapshot<Map<String, dynamic>>?> getUsersCreations() async {
-  //   try {
-  //     DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await firestore
-  //         .collection('CommunityCreations')
-  //         .doc("usersCreations")
-  //         .get();
-  //     return documentSnapshot;
-  //   } catch (e) {
-  //     print('Error fetching images: $e');
-  //     return null; // Handle this in the calling function
-  //   }
-  // }
-
   @override
   Future<ApiResponse> getUsersCreations(int pageNo) async {
     try {
-      Response res = await artleapApiService.get(AppConstants.artleapBaseUrl + AppApiPaths.getUsersCreations + pageNo.toString());
+      Response res = await artleapApiService.get(AppConstants.artleapBaseUrl + AppApiPaths.getUsersCreations +
+          pageNo.toString());
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         UsersCreations data = await Isolate.run(() => UsersCreations.fromJson(res.data));
