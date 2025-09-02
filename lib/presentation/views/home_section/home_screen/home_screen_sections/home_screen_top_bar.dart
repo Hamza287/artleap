@@ -24,7 +24,6 @@ class HomeScreenTopBar extends ConsumerWidget {
                  GestureDetector(
                    onTap: onMenuTap,
                    child: SizedBox(
-                     height: 24,
                      width: 24,
                      child: Center(
                        child: Transform.scale(
@@ -36,7 +35,6 @@ class HomeScreenTopBar extends ConsumerWidget {
                            width: 30,
                            fit: BoxFit.contain,
                          ),
-                         // child: Icon(Icons.menu),
                        ),
                      ),
                    ),
