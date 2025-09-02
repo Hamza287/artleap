@@ -16,6 +16,7 @@ class PlanListContent extends ConsumerStatefulWidget {
   final SubscriptionPlanModel? selectedPlan;
   final PageController pageController;
   final String? currentPlan;
+  final VoidCallback? onDispose;
 
   const PlanListContent({
     super.key,
@@ -23,6 +24,7 @@ class PlanListContent extends ConsumerStatefulWidget {
     required this.selectedPlan,
     required this.pageController,
     this.currentPlan,
+    this.onDispose,
   });
 
   @override
@@ -41,16 +43,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     _tabsAndPages = _buildTabsAndPages();
 
     // Set up listener for page changes
-    widget.pageController.addListener(() {
-      final currentPage = widget.pageController.page?.round() ?? 0;
-      if (currentPage < _tabsAndPages.length) {
-        final actualTabIndex = _tabsAndPages[currentPage]["tabIndex"] as int;
-        if (actualTabIndex != ref.read(currentTabIndexProvider)) {
-          ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
-          _autoSelectFirstPlanInTab(actualTabIndex);
-        }
-      }
-    });
+    widget.pageController.addListener(_pageListener);
 
     // Auto-select first plan in initial tab
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,10 +51,26 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     });
   }
 
+  // Page listener callback method
+  void _pageListener() {
+    final currentPage = widget.pageController.page?.round() ?? 0;
+    if (currentPage < _tabsAndPages.length) {
+      final actualTabIndex = _tabsAndPages[currentPage]["tabIndex"] as int;
+      if (actualTabIndex != ref.read(currentTabIndexProvider)) {
+        ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
+        _autoSelectFirstPlanInTab(actualTabIndex);
+      }
+    }
+  }
+
   @override
   void dispose() {
-    // Reset tab index when this widget is disposed (e.g., when navigating back)
-    ref.read(currentTabIndexProvider.notifier).state = 0;
+    // Remove the listener first
+    widget.pageController.removeListener(_pageListener);
+
+    // Call the onDispose callback if provided
+    widget.onDispose?.call();
+
     super.dispose();
   }
 
@@ -345,4 +354,3 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
     );
   }
 }
-
