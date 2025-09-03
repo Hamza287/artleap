@@ -12,10 +12,12 @@ class HomeScreenTopBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final subscription = ref.refresh(currentSubscriptionProvider(UserData.ins.userId!));
-    final isFreePlan = ref.watch(userProfileProvider).userProfileData?.user.planName.toLowerCase() == 'free';
+
+    // Get the actual plan name from user profile
+    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final isFreePlan = planName.toLowerCase() == 'free';
 
     return Column(
       children: [
@@ -77,7 +79,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.03), // Responsive spacing
+                  SizedBox(width: screenWidth * 0.03),
                   // Coin container
                   InkWell(
                     onTap: () {
@@ -105,12 +107,12 @@ class HomeScreenTopBar extends ConsumerWidget {
                             height: 20,
                             color: Colors.amber[700],
                           ),
-                          SizedBox(width: screenWidth * 0.015), // Responsive spacing
+                          SizedBox(width: screenWidth * 0.015),
                           Text(
                             "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
                             style: AppTextstyle.interMedium(
                               color: Colors.amber.shade900,
-                              fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035, // Responsive font
+                              fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
                               fontWeight: FontWeight.w700,
                             ),
                           )
@@ -120,6 +122,8 @@ class HomeScreenTopBar extends ConsumerWidget {
                   ),
                 ],
               ),
+
+              // Show different UI based on plan type
               isFreePlan
                   ? ElevatedButton(
                 onPressed: () {
@@ -156,36 +160,73 @@ class HomeScreenTopBar extends ConsumerWidget {
                   ],
                 ),
               )
-                  : Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Colors.green.shade300,
-                    width: 1.5,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.verified, color: Colors.green.shade700, size: 18),
-                    SizedBox(width: screenWidth * 0.01),
-                    Text(
-                      "Pro",
-                      style: TextStyle(
-                        color: Colors.green.shade800,
-                        fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  : _buildPlanBadge(planName, screenWidth),
             ],
           ),
         ),
         const SizedBox(height: 10),
       ],
+    );
+  }
+
+  // Helper method to build the plan badge with appropriate colors
+  Widget _buildPlanBadge(String planName, double screenWidth) {
+    Color badgeColor;
+    Color textColor;
+    Color borderColor;
+    IconData icon;
+
+    // Set different colors based on plan type
+    switch (planName.toLowerCase()) {
+      case 'basic':
+        badgeColor = Colors.blue.shade50;
+        textColor = Colors.blue.shade800;
+        borderColor = Colors.blue.shade300;
+        icon = Icons.star_outline;
+        break;
+      case 'standard':
+        badgeColor = Colors.purple.shade50;
+        textColor = Colors.purple.shade800;
+        borderColor = Colors.purple.shade300;
+        icon = Icons.star_half;
+        break;
+      case 'premium':
+        badgeColor = Colors.amber.shade50;
+        textColor = Colors.amber.shade900;
+        borderColor = Colors.amber.shade300;
+        icon = Icons.star;
+        break;
+      default:
+        badgeColor = Colors.green.shade50;
+        textColor = Colors.green.shade800;
+        borderColor = Colors.green.shade300;
+        icon = Icons.verified;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: badgeColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: borderColor,
+          width: 1.5,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: textColor, size: 18),
+          SizedBox(width: screenWidth * 0.01),
+          Text(
+            planName,
+            style: TextStyle(
+              color: textColor,
+              fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
