@@ -71,33 +71,30 @@ class ArtLeapTopBar extends ConsumerWidget {
               }
             },
             child: Container(
-              height: creditsContainerHeight,
-              width: creditsContainerWidth,
+              height: 42,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(21),
                 border: Border.all(
-                  color: Colors.black,
-                  width: 1.2,
+                  color: Colors.amber.shade300,
+                  width: 1.5,
                 ),
-                color: Colors.white,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
                     AppAssets.stackofcoins,
-                    height: coinIconSize,
+                    height: 20,
                     color: Colors.amber[700],
                   ),
-                  SizedBox(width: screenSize == ScreenSizeCategory.small ||
-                      screenSize == ScreenSizeCategory.extraSmall
-                      ? 2.0 : 3.0),
+                  6.spaceX,
                   Text(
-                    "$credits",
+                    "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
                     style: AppTextstyle.interMedium(
-                      color: Colors.black,
-                      fontSize: creditsFontSize,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.amber.shade900,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
                     ),
                   )
                 ],

@@ -4,17 +4,42 @@ import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/se
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../providers/prompt_nav_provider.dart';
+import '../../../../providers/user_profile_provider.dart';
+import '../../common/profile_drawer.dart';
+import '../home_screen/home_screen_sections/home_screen_top_bar.dart';
 import 'sections/create_section/create_section_widget/prompt_widget.dart';
 
-class PromptScreen extends ConsumerWidget {
+
+class PromptScreen extends ConsumerStatefulWidget {
   const PromptScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PromptScreen> createState() => _PromptScreenState();
+}
+
+class _PromptScreenState extends ConsumerState<PromptScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userProfileProvider).updateUserCredits();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentNav = ref.watch(promptNavProvider);
     final isExpanded = ref.watch(isDropdownExpandedProvider);
+    final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
 
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: ProfileDrawer(
+        profileImage: userProfile?.profilePic ?? '',
+        userName: userProfile?.username ?? 'Guest',
+        userEmail: userProfile?.email ?? 'guest@example.com',
+      ),
       body: GestureDetector(
         onTap: () {
           if (isExpanded) {
@@ -23,7 +48,9 @@ class PromptScreen extends ConsumerWidget {
         },
         child: Column(
           children: [
-            const PromptTopBar(),
+            HomeScreenTopBar(
+              onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+            ),
             Expanded(
               child: Stack(
                 children: [
