@@ -21,7 +21,7 @@ class ArtLeapTopBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final credits = ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0;
+    ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0;
     final screenSize = getScreenSizeCategory(context);
 
     // Adjust sizes based on screen category
@@ -31,18 +31,6 @@ class ArtLeapTopBar extends ConsumerWidget {
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
         screenSize == ScreenSizeCategory.extraSmall
         ? 2.0 : 5.0;
-    final creditsContainerHeight = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 32.0 : 36.0;
-    final creditsContainerWidth = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 60.0 : 70.0;
-    final coinIconSize = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 16.0 : 18.0;
-    final creditsFontSize = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 10.0 : 12.0;
     final buttonPadding = screenSize == ScreenSizeCategory.small ||
         screenSize == ScreenSizeCategory.extraSmall
         ? const EdgeInsets.symmetric(horizontal: 12, vertical: 6)

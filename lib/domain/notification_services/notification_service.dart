@@ -17,7 +17,6 @@ class NotificationService {
 
   NotificationService(this.ref, {this.navigatorKey})
       : _repository = ref.read(notificationRepositoryProvider) {
-    assert(_repository != null, 'NotificationRepository cannot be null');
   }
 
   Future<List<AppNotification>> getUserNotifications(String userId) async {

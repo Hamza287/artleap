@@ -70,7 +70,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   Future<void> _initializeApp() async {
     final status = await AppTrackingTransparency.trackingAuthorizationStatus;
     if (status == TrackingStatus.notDetermined) {
-      final result = await AppTrackingTransparency.requestTrackingAuthorization();
+      await AppTrackingTransparency.requestTrackingAuthorization();
     }
 
     Future.microtask(() async {

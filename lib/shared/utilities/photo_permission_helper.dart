@@ -6,7 +6,7 @@ class PhotoPermissionHelper {
   static Future<int> _androidSdkInt() async {
     if (!Platform.isAndroid) return -1;
     final info = await DeviceInfoPlugin().androidInfo;
-    return info.version.sdkInt ?? 0;
+    return info.version.sdkInt;
   }
 
   /// Returns:

@@ -52,23 +52,23 @@ class AboutArtleapFooter extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialIcon(IconData icon) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.1),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Icon(
-        icon,
-        size: 20,
-        color: Colors.white,
-      ),
-    );
-  }
+  // Widget _buildSocialIcon(IconData icon) {
+  //   return Container(
+  //     width: 40,
+  //     height: 40,
+  //     decoration: BoxDecoration(
+  //       shape: BoxShape.circle,
+  //       color: Colors.white.withOpacity(0.1),
+  //       border: Border.all(
+  //         color: Colors.white.withOpacity(0.3),
+  //         width: 1,
+  //       ),
+  //     ),
+  //     child: Icon(
+  //       icon,
+  //       size: 20,
+  //       color: Colors.white,
+  //     ),
+  //   );
+  // }
 }

@@ -138,7 +138,7 @@ class DioCore {
       method: req.method,
       headers: {
         // Preserve original headers and override Authorization
-        ...?req.headers,
+        ...req.headers,
         'Authorization': 'Bearer $token',
       },
       responseType: req.responseType,

@@ -3,8 +3,6 @@ import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../../domain/api_models/user_profile_model.dart';
 import '../../../../domain/subscriptions/subscription_model.dart';
-import 'package:intl/intl.dart';
-
 import '../../../../shared/constants/app_assets.dart';
 
 class UsageSection extends StatelessWidget {
@@ -63,7 +61,7 @@ class UsageSection extends StatelessWidget {
               _buildStatCard(
                 imageAsset: AppAssets.stackofcoins,
                 title: 'Prompt Credits',
-                value: '${userPersonalData!.usedPromptCredits ?? 0}',
+                value: '${userPersonalData!.usedPromptCredits}',
                 color: Colors.amber,
               ),
             ],

@@ -10,7 +10,6 @@ import '../home_section/profile_screen/edit_profile_screen_widgets/delete_accoun
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
-import '../login_and_signup_section/login_section/login_screen.dart';
 import 'logout_confirmation_dialog.dart';
 import 'social_media_bottom_sheet.dart';
 
@@ -46,10 +45,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final iconSize = screenWidth * 0.06;
-    final padding = EdgeInsets.symmetric(
-      horizontal: screenWidth * 0.05,
-      vertical: 1,
-    );
 
     final profileProvider = ref.watch(userProfileProvider);
     final user = profileProvider.userProfileData?.user;

@@ -296,86 +296,86 @@ class CancelSubscriptionDialog {
     }
   }
 
-  static Widget _buildCancelOption(
-    BuildContext context,
-    WidgetRef ref, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required bool isImmediate,
-    required bool isLoading,
-  }) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: isLoading
-          ? null
-          : () {
-              ref.read(cancelSubscriptionLoadingProvider.notifier).state = true;
-              Navigator.pop(context, isImmediate);
-            },
-      child: Opacity(
-        opacity: isLoading ? 0.6 : 1.0,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: isImmediate
-                ? AppColors.redColor.withOpacity(0.05)
-                : AppColors.blue.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isImmediate
-                  ? AppColors.redColor.withOpacity(0.2)
-                  : AppColors.blue.withOpacity(0.2),
-              width: 1.5,
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: isImmediate
-                      ? AppColors.redColor.withOpacity(0.1)
-                      : AppColors.blue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: isImmediate ? AppColors.redColor : AppColors.blue,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTextstyle.interBold(
-                        fontSize: 16,
-                        color: AppColors.darkBlue,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: AppTextstyle.interRegular(
-                        fontSize: 14,
-                        color: AppColors.darkBlue.withOpacity(0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                color: AppColors.darkBlue.withOpacity(0.4),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // static Widget _buildCancelOption(
+  //   BuildContext context,
+  //   WidgetRef ref, {
+  //   required IconData icon,
+  //   required String title,
+  //   required String subtitle,
+  //   required bool isImmediate,
+  //   required bool isLoading,
+  // }) {
+  //   return InkWell(
+  //     borderRadius: BorderRadius.circular(12),
+  //     onTap: isLoading
+  //         ? null
+  //         : () {
+  //             ref.read(cancelSubscriptionLoadingProvider.notifier).state = true;
+  //             Navigator.pop(context, isImmediate);
+  //           },
+  //     child: Opacity(
+  //       opacity: isLoading ? 0.6 : 1.0,
+  //       child: Container(
+  //         padding: const EdgeInsets.all(16),
+  //         decoration: BoxDecoration(
+  //           color: isImmediate
+  //               ? AppColors.redColor.withOpacity(0.05)
+  //               : AppColors.blue.withOpacity(0.05),
+  //           borderRadius: BorderRadius.circular(12),
+  //           border: Border.all(
+  //             color: isImmediate
+  //                 ? AppColors.redColor.withOpacity(0.2)
+  //                 : AppColors.blue.withOpacity(0.2),
+  //             width: 1.5,
+  //           ),
+  //         ),
+  //         child: Row(
+  //           children: [
+  //             Container(
+  //               padding: const EdgeInsets.all(8),
+  //               decoration: BoxDecoration(
+  //                 color: isImmediate
+  //                     ? AppColors.redColor.withOpacity(0.1)
+  //                     : AppColors.blue.withOpacity(0.1),
+  //                 borderRadius: BorderRadius.circular(12),
+  //               ),
+  //               child: Icon(
+  //                 icon,
+  //                 color: isImmediate ? AppColors.redColor : AppColors.blue,
+  //                 size: 24,
+  //               ),
+  //             ),
+  //             const SizedBox(width: 12),
+  //             Expanded(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     title,
+  //                     style: AppTextstyle.interBold(
+  //                       fontSize: 16,
+  //                       color: AppColors.darkBlue,
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 4),
+  //                   Text(
+  //                     subtitle,
+  //                     style: AppTextstyle.interRegular(
+  //                       fontSize: 14,
+  //                       color: AppColors.darkBlue.withOpacity(0.6),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Icon(
+  //               Icons.chevron_right,
+  //               color: AppColors.darkBlue.withOpacity(0.4),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

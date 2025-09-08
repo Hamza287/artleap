@@ -154,7 +154,7 @@ class PurchaseHandler {
   Future<void> _completePurchase(PurchaseDetails purchaseDetails) async {
     try {
       await InAppPurchase.instance.completePurchase(purchaseDetails);
-    } catch (e, st) {
+    } catch (e) {
       debugPrint("Error completing purchase");
       ref.read(paymentLoadingProvider.notifier).state = false;
     }

@@ -1,8 +1,6 @@
-import 'package:Artleap.ai/presentation/views/about/sections/about_artleap_team.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-
 import 'sections/about_artleap_contact.dart';
 import 'sections/about_artleap_footer.dart';
 import 'sections/about_artleap_hero.dart';

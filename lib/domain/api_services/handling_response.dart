@@ -79,8 +79,6 @@ class HandlingResponse {
         }
         return ApiResponse<T>.error(serverMsg ?? 'Unexpected server response');
       case DioExceptionType.unknown:
-      default:
-      // Network off / TLS errors often land here; prefer helpful message
         return ApiResponse<T>.error(serverMsg ?? 'Some error occurred');
     }
   }
