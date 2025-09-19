@@ -235,7 +235,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                     padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
                     child: Column(
                       children: [
-                        // In the ProfileDrawer class, replace the logout menu item with:
                         _ProfileMenuItem(
                           icon: AppAssets.logouticon,
                           title: "Logout",

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:intl/intl.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   static const routeName = '/privacy-policy';
