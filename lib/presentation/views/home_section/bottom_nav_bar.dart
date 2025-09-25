@@ -101,10 +101,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   Widget build(BuildContext context) {
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        bottomNavigationBar: Container(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      bottomNavigationBar: SafeArea(
+        child: Container(
           height: 65,
           width: double.infinity,
           decoration: BoxDecoration(
@@ -156,10 +156,10 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
             ),
           ),
         ),
-        body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
-            ? bottomNavBarState.widgets[pageIndex]
-            : const Center(child: CircularProgressIndicator()),
       ),
+      body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
+          ? bottomNavBarState.widgets[pageIndex]
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 

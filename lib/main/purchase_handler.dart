@@ -49,22 +49,28 @@ class PurchaseHandler {
         break;
 
       case PurchaseStatus.purchased:
+      // ✅ New subscription -> send success true
+        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, success: true);
+        break;
+
       case PurchaseStatus.restored:
-        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId);
+      // ✅ Restored -> do NOT create new subscription, just refresh
+        debugPrint('Purchase restored: ${purchaseDetails.productID}');
+        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, success: false);
         break;
 
       case PurchaseStatus.error:
-        appSnackBar(
-          'Error',
-          'Purchase failed: ${'Unknown error'}',
-          Colors.red,
-        );
+        appSnackBar('Error', 'Purchase failed: ${purchaseDetails.error?.message ?? "Unknown error"}', Colors.red);
         ref.read(paymentLoadingProvider.notifier).state = false;
+
+        // ❌ Inform backend if needed with success false
         break;
 
       case PurchaseStatus.canceled:
         appSnackBar('Info', 'Purchase canceled', Colors.yellow);
         ref.read(paymentLoadingProvider.notifier).state = false;
+
+        // ❌ Inform backend if needed with success false
         break;
     }
   }
@@ -74,15 +80,18 @@ class PurchaseHandler {
       String? basePlanId,
       String? paymentMethod,
       String userId,
+      {required bool success}
       ) async {
     final subscriptionService = ref.read(subscriptionServiceProvider);
 
     try {
       final verificationData = _createVerificationData(
-          purchaseDetails,
-          basePlanId,
-          paymentMethod
+        purchaseDetails,
+        basePlanId,
+        paymentMethod,
       );
+
+      verificationData['success'] = success; // ✅ add explicit success flag
 
       final response = await subscriptionService.subscribe(
         userId,
@@ -91,17 +100,20 @@ class PurchaseHandler {
         verificationData: verificationData,
       );
 
-      if (response.status == Status.completed) {
+      if (response.status == Status.completed && success) {
+        // ✅ Only treat as active subscription if success==true
         appSnackBar('Success', 'Subscription created successfully', Colors.green);
         await _completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
         navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
       } else {
-        appSnackBar(
-            'Error','Subscription failed',
-            Colors.red
-        );
+        // Restored or backend rejected
+        if (!success) {
+          appSnackBar('Info', 'Subscription already active (restored)', Colors.blue);
+        } else {
+          appSnackBar('Error', 'Subscription failed', Colors.red);
+        }
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
     } catch (e) {
@@ -109,6 +121,7 @@ class PurchaseHandler {
       ref.read(paymentLoadingProvider.notifier).state = false;
     }
   }
+
 
   Map<String, dynamic> _createVerificationData(
       PurchaseDetails purchaseDetails,
@@ -119,7 +132,6 @@ class PurchaseHandler {
       return {
         'productId': purchaseDetails.productID,
         'receiptData': purchaseDetails.verificationData.serverVerificationData,
-        'transactionId': purchaseDetails.purchaseID ?? '',
         'platform': 'ios',
         'amount': ref.read(selectedPlanProvider)?.price.toString() ?? '0',
       };

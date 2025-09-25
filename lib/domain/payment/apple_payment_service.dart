@@ -19,6 +19,9 @@ class ApplePaymentService {
   final Ref ref;
   final String userId;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSubscription;
+  Completer<bool>? _purchaseCompleter;
+  SubscriptionPlanModel? _currentPlan;
+  BuildContext? _currentContext;
 
   ApplePaymentService(this.ref, this.userId);
 
@@ -48,10 +51,15 @@ class ApplePaymentService {
         return false;
       }
 
+      // Initialize purchase completer
+      _purchaseCompleter = Completer<bool>();
+      _currentPlan = plan;
+      _currentContext = context;
+
       final ProductDetailsResponse response =
       await InAppPurchase.instance.queryProductDetails({plan.appleProductId});
 
-// Debugging logs
+      // Debugging logs
       debugPrint("🔍 IAP Debugging:");
       debugPrint("  Requested ID: ${plan.appleProductId}");
       debugPrint("  Not found IDs: ${response.notFoundIDs}");
@@ -71,77 +79,125 @@ class ApplePaymentService {
 
       if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
         appSnackBar('Error', 'Plan not available on App Store', Colors.red);
+        _purchaseCompleter?.complete(false);
+        _cleanup();
         return false;
       }
-
 
       final ProductDetails productDetails = response.productDetails.first;
       final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
+
+      // Start listening to purchase updates before initiating purchase
+      _listenToPurchaseUpdates();
+
       final bool purchaseInitiated = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
 
       if (!purchaseInitiated) {
-        appSnackBar('Error', 'Failed to initiate App Store purchase', Colors.red);
+        // appSnackBar('Error', 'Failed to initiate App Store purchase', Colors.red);
+        _purchaseCompleter?.complete(false);
+        _cleanup();
         return false;
       }
 
-      return true;
+      // Wait for the purchase to complete (success or failure)
+      final bool success = await _purchaseCompleter!.future;
+      return success;
     } catch (e) {
-      appSnackBar('Error', 'App Store purchase error: $e', Colors.red);
+      // appSnackBar('Error', 'App Store purchase error: $e', Colors.red);
+      _purchaseCompleter?.complete(false);
+      _cleanup();
       return false;
     }
   }
 
-  void listenToPurchaseUpdates(BuildContext context, SubscriptionPlanModel plan) {
+  void _listenToPurchaseUpdates() {
     _purchaseSubscription?.cancel();
     _purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
           (purchaseDetailsList) async {
         for (final purchaseDetails in purchaseDetailsList) {
-          switch (purchaseDetails.status) {
-            case PurchaseStatus.pending:
-              appSnackBar('Info', 'App Store purchase is pending', Colors.yellow);
-              break;
-            case PurchaseStatus.purchased:
-            case PurchaseStatus.restored:
-              await _handlePurchaseSuccess(purchaseDetails, plan, context);
-              break;
-            case PurchaseStatus.error:
-              ref.read(paymentLoadingProvider.notifier).state = false;
-              appSnackBar(
-                'Error',
-                'App Store purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
-                Colors.red,
-              );
-              await InAppPurchase.instance.completePurchase(purchaseDetails);
-              break;
-            case PurchaseStatus.canceled:
-              ref.read(paymentLoadingProvider.notifier).state = false;
-              appSnackBar('Info', 'App Store purchase canceled', Colors.yellow);
-              await InAppPurchase.instance.completePurchase(purchaseDetails);
-              break;
+          // Only process purchases that match our current product ID
+          if (_currentPlan != null && purchaseDetails.productID == _currentPlan!.appleProductId) {
+            await _handlePurchaseUpdate(purchaseDetails);
           }
         }
       },
       onError: (error) {
         ref.read(paymentLoadingProvider.notifier).state = false;
-        appSnackBar('Error', 'App Store purchase stream error: $error', Colors.red);
+        // appSnackBar('Error', 'App Store purchase stream error: $error', Colors.red);
+        _purchaseCompleter?.complete(false);
+        _cleanup();
       },
     );
   }
 
-  Future<void> _handlePurchaseSuccess(
-      PurchaseDetails purchaseDetails, SubscriptionPlanModel plan, BuildContext context) async {
+  Future<void> _handlePurchaseUpdate(PurchaseDetails purchaseDetails) async {
+    switch (purchaseDetails.status) {
+      case PurchaseStatus.pending:
+        appSnackBar('Info', 'App Store purchase is pending', Colors.yellow);
+        break;
+
+      case PurchaseStatus.purchased:
+      case PurchaseStatus.restored:
+        await _handlePurchaseSuccess(purchaseDetails);
+        break;
+
+      case PurchaseStatus.error:
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        // appSnackBar(
+        //   'Error',
+        //   'App Store purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
+        //   Colors.red,
+        // );
+        await InAppPurchase.instance.completePurchase(purchaseDetails);
+        _purchaseCompleter?.complete(false);
+        _cleanup();
+        break;
+
+      case PurchaseStatus.canceled:
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        appSnackBar('Info', 'App Store purchase canceled', Colors.yellow);
+
+        // ❌ Inform backend with success=false
+        final subscriptionService = ref.read(subscriptionServiceProvider);
+        await subscriptionService.subscribe(
+          userId,
+          _currentPlan?.id ?? '',
+          'apple',
+          verificationData: {
+            'platform': 'ios',
+            'success': false,
+          },
+        );
+
+        await InAppPurchase.instance.completePurchase(purchaseDetails);
+        _purchaseCompleter?.complete(false);
+        _cleanup();
+        break;
+    }
+  }
+
+  Future<void> _handlePurchaseSuccess(PurchaseDetails purchaseDetails) async {
     try {
+      if (_currentPlan == null || _currentContext == null) {
+        debugPrint('Error: Current plan or context is null');
+        await InAppPurchase.instance.completePurchase(purchaseDetails);
+        _purchaseCompleter?.complete(false);
+        _cleanup();
+        return;
+      }
+
+      // 🟢 Only if status = purchased/restored, we call backend with success=true
       final subscriptionService = ref.read(subscriptionServiceProvider);
       final response = await subscriptionService.subscribe(
         userId,
-        plan.id,
+        _currentPlan!.id,
         'apple',
         verificationData: {
           'productId': purchaseDetails.productID,
           'receiptData': purchaseDetails.verificationData.serverVerificationData,
-          'transactionId': purchaseDetails.purchaseID ?? '',
           'platform': 'ios',
-          'amount': plan.price.toString(),
+          'amount': _currentPlan!.price.toString(),
+          'success': true,
         },
       );
 
@@ -150,22 +206,42 @@ class ApplePaymentService {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
-        if (context.mounted) {
-          Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
+
+        _purchaseCompleter?.complete(true);
+
+        if (_currentContext!.mounted) {
+          Navigator.pushReplacementNamed(_currentContext!, BottomNavBar.routeName);
         }
       } else {
-        appSnackBar('Error', response.message ?? 'App Store subscription failed', Colors.red);
         await InAppPurchase.instance.completePurchase(purchaseDetails);
         ref.read(paymentLoadingProvider.notifier).state = false;
+        _purchaseCompleter?.complete(false);
       }
     } catch (e) {
       appSnackBar('Error', 'Error processing App Store purchase: $e', Colors.red);
       await InAppPurchase.instance.completePurchase(purchaseDetails);
       ref.read(paymentLoadingProvider.notifier).state = false;
+      _purchaseCompleter?.complete(false);
+    } finally {
+      _cleanup();
     }
   }
 
-  void dispose() {
+
+  void _cleanup() {
     _purchaseSubscription?.cancel();
+    _purchaseCompleter = null;
+    _currentPlan = null;
+    _currentContext = null;
+  }
+
+  void cancelPurchase() {
+    ref.read(paymentLoadingProvider.notifier).state = false;
+    _purchaseCompleter?.complete(false);
+    _cleanup();
+  }
+
+  void dispose() {
+    _cleanup();
   }
 }

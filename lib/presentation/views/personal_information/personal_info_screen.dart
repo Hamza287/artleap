@@ -85,23 +85,23 @@ class _PersonalInformationScreenState
                   ),
                   const SizedBox(height: 20),
 
-                  if (subscriptionAsync != null)
-                    subscriptionAsync.when(
-                      loading: () => const CircularProgressIndicator(),
-                      error: (error, stack) => Text("Error loading subscription: $error"),
-                      data: (subscription) {
-                        return CreditsCard(
-                          dailyCredits: user.dailyCredits,
-                          totalCredits: subscription?.planSnapshot!.totalCredits ?? 0,
-                          usedImageCredits: user.usedImageCredits,
-                          imageGenerationCredits: subscription?.planSnapshot?.imageGenerationCredits ?? 0,
-                          usedPromptCredits: user.usedPromptCredits,
-                          promptGenerationCredits: subscription?.planSnapshot?.promptGenerationCredits ?? 0,
-                          planName: subscription?.planSnapshot?.name ?? user.planName,
-                          remainingCredits: (subscription?.planSnapshot!.totalCredits ?? 0) - user.totalCredits,
-                        );
-                      },
-                    ),
+                  // if (subscriptionAsync != null)
+                  //   subscriptionAsync.when(
+                  //     loading: () => const CircularProgressIndicator(),
+                  //     error: (error, stack) => Text("Error loading subscription: $error"),
+                  //     data: (subscription) {
+                  //       return CreditsCard(
+                  //         dailyCredits: user.dailyCredits,
+                  //         totalCredits: subscription?.planSnapshot!.totalCredits ?? 0,
+                  //         usedImageCredits: user.usedImageCredits,
+                  //         imageGenerationCredits: subscription?.planSnapshot?.imageGenerationCredits ?? 0,
+                  //         usedPromptCredits: user.usedPromptCredits,
+                  //         promptGenerationCredits: subscription?.planSnapshot?.promptGenerationCredits ?? 0,
+                  //         planName: subscription?.planSnapshot?.name ?? user.planName,
+                  //         remainingCredits: (subscription?.planSnapshot!.totalCredits ?? 0) - user.totalCredits,
+                  //       );
+                  //     },
+                  //   ),
                   //
                   // const SizedBox(height: 20),
                   // const AccountActionsCard(),

@@ -13,7 +13,9 @@ class HomeScreenTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final subscription = ref.refresh(currentSubscriptionProvider(UserData.ins.userId!));
+
+    // Use watch instead of refresh to avoid rebuilding during build phase
+    final subscriptionAsync = ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
 
     // Get the actual plan name from user profile
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
@@ -95,7 +97,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(21),
                         border: Border.all(
-                          color: Colors.amber.shade300!,
+                          color: Colors.amber.shade300,
                           width: 1.5,
                         ),
                       ),

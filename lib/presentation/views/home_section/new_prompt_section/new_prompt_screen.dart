@@ -31,49 +31,51 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: ProfileDrawer(
-        profileImage: userProfile?.profilePic ?? '',
-        userName: userProfile?.username ?? 'Guest',
-        userEmail: userProfile?.email ?? 'guest@example.com',
-      ),
-      body: GestureDetector(
-        onTap: () {
-          if (isExpanded) {
-            ref.read(isDropdownExpandedProvider.notifier).state = false;
-          }
-        },
-        child: Column(
-          children: [
-            HomeScreenTopBar(
-              onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  _buildCurrentScreen(currentNav),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      height: 4, // Shadow height
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            blurRadius: 0,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+    return SafeArea(
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: ProfileDrawer(
+          profileImage: userProfile?.profilePic ?? '',
+          userName: userProfile?.username ?? 'Guest',
+          userEmail: userProfile?.email ?? 'guest@example.com',
+        ),
+        body: GestureDetector(
+          onTap: () {
+            if (isExpanded) {
+              ref.read(isDropdownExpandedProvider.notifier).state = false;
+            }
+          },
+          child: Column(
+            children: [
+              HomeScreenTopBar(
+                onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+              ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    _buildCurrentScreen(currentNav),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        height: 4, // Shadow height
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 0,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

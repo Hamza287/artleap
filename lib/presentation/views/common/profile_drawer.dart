@@ -49,218 +49,220 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     final profileProvider = ref.watch(userProfileProvider);
     final user = profileProvider.userProfileData?.user;
 
-    return Drawer(
-      width: screenWidth * 0.9,
-      backgroundColor: Colors.transparent,
-      shadowColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      child: Stack(
-        children: [
-          // Background with blur effect
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0x5F0A0025),
-                  Color(0x5E0A0025),
-                ],
-              ),
-            ),
-          ),
-
-          // Frosted glass effect
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 7.0, sigmaY: 7.0),
-            child: Container(
+    return SafeArea(
+      child: Drawer(
+        width: screenWidth * 0.9,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        child: Stack(
+          children: [
+            // Background with blur effect
+            Container(
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0x5F0A0025),
+                    Color(0x5E0A0025),
+                  ],
+                ),
               ),
             ),
-          ),
-
-          // Content
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 16, right: 16),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: _GlassCircleButton(
-                      icon: Icons.close,
-                      size: iconSize,
-                      onPressed: () => Navigator.pop(context),
+      
+            // Frosted glass effect
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 7.0, sigmaY: 7.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+      
+            // Content
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 16, right: 16),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: _GlassCircleButton(
+                        icon: Icons.close,
+                        size: iconSize,
+                        onPressed: () => Navigator.pop(context),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: screenWidth * 0.18,
-                        height: screenWidth * 0.18,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppColors.white.withOpacity(0.3),
-                            width: 1.5,
-                          ),
-                          image: DecorationImage(
-                            image: widget.profileImage.isEmpty
-                                ? const AssetImage(AppAssets.profilepic) as ImageProvider
-                                : NetworkImage(widget.profileImage),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: screenWidth * 0.04),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.userName,
-                            style: AppTextstyle.interMedium(
-                              color: AppColors.white,
-                              fontSize: screenWidth * 0.04,
-                            ),
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-                          Text(
-                            widget.userEmail,
-                            style: AppTextstyle.interMedium(
-                              color: AppColors.white.withOpacity(0.8),
-                              fontSize: screenWidth * 0.035,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                user?.planName.toLowerCase() == 'free' ?
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
-                  child: UpgradeToProBanner(),
-                ) : Container(),
-                10.spaceY,
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
-                  child: _buildSection(
-                    context,
-                    title: "General",
-                    items: [
-                      _ProfileMenuItem(
-                        icon: AppAssets.userinfoicon,
-                        title: "Personal Information",
-                        onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
-                      ),
-                      user?.planName.toLowerCase() == 'free' ?
-                      _ProfileMenuItem(
-                        icon: AppAssets.currentPlan,
-                        title: "You don't have an active subscription",
-                        onTap: ()=>Navigator.of(context).pushNamed("choose_plan_screen"),
-                        color: Colors.red,
-                      ) : _ProfileMenuItem(
-                        icon: AppAssets.currentPlan,
-                        title: "Current Plan",
-                        onTap: () => _navigateTo(context, '/subscription-status'),
-                      ) ,
-                      _ProfileMenuItem(
-                        icon: AppAssets.privacyicon,
-                        title: "Privacy Policy",
-                        onTap: () => _navigateTo(context, '/privacy-policy'),
-                      ),
-                      _ProfileMenuItem(
-                        icon: AppAssets.payment,
-                        title: "Subscription Plans",
-                        onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
-                      ),
-                      _ProfileMenuItem(
-                        icon: AppAssets.saveicon,
-                        title: "Favourites",
-                        onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
-                      ),
-                      // _ProfileMenuItem(
-                      //   icon: AppAssets.darkMode,
-                      //   title: "Dark Mode",
-                      //   isToggle: true,
-                      //   onTap: () {},
-                      // ),
-                    ],
-                  ),
-                ),
-                10.spaceY,
-                Padding(
-                  padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
-                  child: _buildSection(
-                    context,
-                    title: "About",
-                    items: [
-                      _ProfileMenuItem(
-                        icon: AppAssets.follow,
-                        title: "Follow us on Social Media",
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                            ),
-                            isScrollControlled: true,
-                            builder: (context) => const SocialMediaBottomSheet(),
-                          );
-                        },
-                      ),
-                      _ProfileMenuItem(
-                        icon: AppAssets.helpCenter,
-                        title: "Help Center",
-                        onTap: () => _navigateTo(context, '/help-screen'),
-                      ),
-                      _ProfileMenuItem(
-                        icon: AppAssets.abouticon,
-                        title: "About Artleap",
-                        onTap: () => _navigateTo(context, '/about-artleap'),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0x991D0751),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
-                    child: Column(
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
+                    child: Row(
                       children: [
-                        _ProfileMenuItem(
-                          icon: AppAssets.logouticon,
-                          title: "Logout",
-                          color: Color(0xFFE53935),
-                          onTap: () => showDialog(
-                            context: context,
-                            builder: (context) => const LogoutConfirmationDialog(),
+                        Container(
+                          width: screenWidth * 0.18,
+                          height: screenWidth * 0.18,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.white.withOpacity(0.3),
+                              width: 1.5,
+                            ),
+                            image: DecorationImage(
+                              image: widget.profileImage.isEmpty
+                                  ? const AssetImage(AppAssets.profilepic) as ImageProvider
+                                  : NetworkImage(widget.profileImage),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                        _ProfileMenuItem(
-                          icon: AppAssets.deleteicon,
-                          title: "Delete Account",
-                          color: Color(0xFFFF2A28),
-                          onTap: () => showDialog(
-                            context: context,
-                            builder: (context) => const DeleteAccountDialog(),
-                          ),
+                        SizedBox(width: screenWidth * 0.04),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.userName,
+                              style: AppTextstyle.interMedium(
+                                color: AppColors.white,
+                                fontSize: screenWidth * 0.04,
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * 0.01),
+                            Text(
+                              widget.userEmail,
+                              style: AppTextstyle.interMedium(
+                                color: AppColors.white.withOpacity(0.8),
+                                fontSize: screenWidth * 0.035,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                )
-              ],
+                  user?.planName.toLowerCase() == 'free' ?
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
+                    child: UpgradeToProBanner(),
+                  ) : Container(),
+                  10.spaceY,
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
+                    child: _buildSection(
+                      context,
+                      title: "General",
+                      items: [
+                        _ProfileMenuItem(
+                          icon: AppAssets.userinfoicon,
+                          title: "Personal Information",
+                          onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
+                        ),
+                        user?.planName.toLowerCase() == 'free' ?
+                        _ProfileMenuItem(
+                          icon: AppAssets.currentPlan,
+                          title: "You don't have an active subscription",
+                          onTap: ()=>Navigator.of(context).pushNamed("choose_plan_screen"),
+                          color: Colors.red,
+                        ) : _ProfileMenuItem(
+                          icon: AppAssets.currentPlan,
+                          title: "Current Plan",
+                          onTap: () => _navigateTo(context, '/subscription-status'),
+                        ) ,
+                        _ProfileMenuItem(
+                          icon: AppAssets.privacyicon,
+                          title: "Privacy Policy",
+                          onTap: () => _navigateTo(context, '/privacy-policy'),
+                        ),
+                        _ProfileMenuItem(
+                          icon: AppAssets.payment,
+                          title: "Subscription Plans",
+                          onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
+                        ),
+                        _ProfileMenuItem(
+                          icon: AppAssets.saveicon,
+                          title: "Favourites",
+                          onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
+                        ),
+                        // _ProfileMenuItem(
+                        //   icon: AppAssets.darkMode,
+                        //   title: "Dark Mode",
+                        //   isToggle: true,
+                        //   onTap: () {},
+                        // ),
+                      ],
+                    ),
+                  ),
+                  10.spaceY,
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
+                    child: _buildSection(
+                      context,
+                      title: "About",
+                      items: [
+                        _ProfileMenuItem(
+                          icon: AppAssets.follow,
+                          title: "Follow us on Social Media",
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                              ),
+                              isScrollControlled: true,
+                              builder: (context) => const SocialMediaBottomSheet(),
+                            );
+                          },
+                        ),
+                        _ProfileMenuItem(
+                          icon: AppAssets.helpCenter,
+                          title: "Help Center",
+                          onTap: () => _navigateTo(context, '/help-screen'),
+                        ),
+                        _ProfileMenuItem(
+                          icon: AppAssets.abouticon,
+                          title: "About Artleap",
+                          onTap: () => _navigateTo(context, '/about-artleap'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0x991D0751),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
+                      child: Column(
+                        children: [
+                          _ProfileMenuItem(
+                            icon: AppAssets.logouticon,
+                            title: "Logout",
+                            color: Color(0xFFE53935),
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (context) => const LogoutConfirmationDialog(),
+                            ),
+                          ),
+                          _ProfileMenuItem(
+                            icon: AppAssets.deleteicon,
+                            title: "Delete Account",
+                            color: Color(0xFFFF2A28),
+                            onTap: () => showDialog(
+                              context: context,
+                              builder: (context) => const DeleteAccountDialog(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
