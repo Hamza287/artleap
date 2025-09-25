@@ -2,7 +2,6 @@ import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:flutter/material.dart';
-import '../../../../../shared/constants/app_colors.dart';
 
 class FilterOfTheDay extends StatelessWidget {
   const FilterOfTheDay({super.key});

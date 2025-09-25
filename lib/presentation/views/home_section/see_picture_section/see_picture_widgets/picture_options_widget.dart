@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:like_button/like_button.dart';
@@ -15,6 +16,7 @@ import '../../../../../providers/add_image_to_fav_provider.dart';
 import '../../../../../shared/constants/app_assets.dart';
 import '../../../../../shared/constants/user_data.dart';
 import '../../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import '../../../global_widgets/dialog_box/set_privacy_dialog.dart';
 
 // ignore: must_be_immutable
 class PictureOptionsWidget extends ConsumerWidget {
@@ -67,28 +69,18 @@ class PictureOptionsWidget extends ConsumerWidget {
                   child: LikeButton(
                     isLiked:
                         ref.watch(favouriteProvider).usersFavourites != null
-                            ? ref
-                                    .watch(favouriteProvider)
-                                    .usersFavourites!
-                                    .favorites
-                                    .any((img) => img.id == imageId)
-                                ? true
-                                : false
-                            : false,
+                            ? ref.watch(favouriteProvider).usersFavourites!.favorites.any((img) => img.id == imageId)
+                                ? true : false : false,
                     bubblesColor: const BubblesColor(
                         dotPrimaryColor: AppColors.redColor,
                         dotSecondaryColor: AppColors.redColor),
                     onTap: (isLiked) async {
-                      AnalyticsService.instance
-                          .logButtonClick(buttonName: 'Generate button event');
+                      AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
                       try {
-                        await ref
-                            .read(favouriteProvider)
-                            .addToFavourite(currentUserId!, imageId!);
-                        // Return the opposite of current state since the action toggles the favorite status
+                        await ref.read(favouriteProvider).addToFavourite(currentUserId!, imageId!);
                         return !isLiked;
                       } catch (e) {
-                        return isLiked; // Return current state if error occurs
+                        return isLiked;
                       }
                     },
                   ),
@@ -96,18 +88,14 @@ class PictureOptionsWidget extends ConsumerWidget {
                 2.spaceY,
                 Text(
                   "Save",
-                  style: AppTextstyle.interRegular(
-                      color: AppColors.darkBlue, fontSize: 6.5),
-                )
+                  style: AppTextstyle.interRegular(color: AppColors.darkBlue, fontSize: 6.5),)
               ],
             ),
           ),
           GestureDetector(
             onTap: () {
               uint8ListImage != null
-                  ? ref
-                      .read(favProvider)
-                      .downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
+                  ? ref.read(favProvider).downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
                   : ref.read(favProvider).downloadImage(imageUrl!);
               AnalyticsService.instance
                   .logButtonClick(buttonName: 'download button event');
@@ -221,7 +209,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                       ),
               ),
             ),
-          GestureDetector(
+            GestureDetector(
             onTap: () {
               showModalBottomSheet(
                 context: context,
@@ -252,6 +240,36 @@ class PictureOptionsWidget extends ConsumerWidget {
                     "Report",
                     style: AppTextstyle.interRegular(
                         color: AppColors.redColor, fontSize: 6.5),
+                  )
+                ],
+              ),
+            ),
+          ),
+            GestureDetector(
+            onTap: () async {
+              await showDialog<ImagePrivacy>(
+                context: context,
+                builder: (context) => SetPrivacyDialog(
+                  imageId: imageId!,
+                  userId: currentUserId!,
+                ),
+              );
+            },
+            child: Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.darkBlue.withOpacity(0.4)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.lock, size: 22, color: AppColors.darkBlue),
+                  2.spaceY,
+                  Text(
+                    "Privacy",
+                    style: AppTextstyle.interRegular(color: AppColors.darkBlue, fontSize: 6.5),
                   )
                 ],
               ),

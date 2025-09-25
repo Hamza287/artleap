@@ -9,7 +9,6 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/domain/subscriptions/plan_provider.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
 import '../../../domain/api_services/api_response.dart';
 
@@ -89,7 +88,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
 
       if (response.status == Status.completed && mounted) {
         appSnackBar('Success', 'Subscription created successfully', Colors.green);
-        ref.refresh(currentSubscriptionProvider(userId));
+        // ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
         Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
       } else if (mounted) {

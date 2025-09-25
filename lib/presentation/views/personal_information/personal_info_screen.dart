@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import '../../../domain/subscriptions/subscription_repo_provider.dart';
-import 'sections/account_actions_card.dart';
 import 'sections/credits_card.dart';
 import 'sections/profile_header.dart';
 import 'sections/stats_card.dart';

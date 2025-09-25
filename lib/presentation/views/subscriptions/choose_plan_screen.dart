@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../domain/subscriptions/subscription_model.dart';
-import '../../../domain/subscriptions/subscription_repo_provider.dart';
 import 'choose_plan_widgets/plan_selection_content.dart';
 
 final selectedPlanProvider = StateProvider<SubscriptionPlanModel?>((ref) => null);

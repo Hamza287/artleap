@@ -38,8 +38,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               },
               itemBuilder: (context, index) {
                 int actualIndex = index % onboardingImagesList.length; // Handle looping
-                double pageOffset = 0;
-                double scale = (1 - (pageOffset.abs() * 0.2)).clamp(0.9, 1.0);
+                // double pageOffset = 0;
+                // double scale = (1 - (pageOffset.abs() * 0.2)).clamp(0.9, 1.0);
                 return Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(

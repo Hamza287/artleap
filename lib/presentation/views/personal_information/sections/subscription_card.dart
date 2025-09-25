@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-
-import 'coming_soon_button.dart';
 import 'info_row.dart';
 
 

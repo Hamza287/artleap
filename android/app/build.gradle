@@ -23,22 +23,24 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.XrDIgital.ImaginaryVerse"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     defaultConfig {
         applicationId "com.XrDIgital.ImaginaryVerse"
-        minSdk 23
-        targetSdk 35
+        minSdkVersion flutter.minSdkVersion
+        targetSdk 36
         versionCode 34
         versionName "1.1.32"
         ndk {
@@ -58,11 +60,9 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false // Code shrinking disabled
-            shrinkResources false // Resource shrinking disabled
-            ndk {
-                debugSymbolLevel "FULL" // Correct placement for debug symbols
-            }
+            minifyEnabled false
+            shrinkResources false
+            ndk { debugSymbolLevel "FULL" }
         }
         debug {
             signingConfig signingConfigs.debug
@@ -75,6 +75,6 @@ flutter {
 }
 
 dependencies {
-    // Add Stripe SDK
-    implementation 'com.stripe:stripe-android:20.8.0'  // Use the latest version
+    implementation 'com.stripe:stripe-android:20.8.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }

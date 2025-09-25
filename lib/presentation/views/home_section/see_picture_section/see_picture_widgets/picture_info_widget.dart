@@ -52,29 +52,29 @@ class PictureInfoWidget extends ConsumerWidget {
       ),
     );
   }
-  Widget _primaryActionButton(
-      {required IconData icon,
-        required String label,
-        required VoidCallback onPressed}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        width: double.infinity,
-        height: 56,
-        child: ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: Icon(icon),
-          label: Text(label),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF9B59FF),
-            foregroundColor: Colors.white,
-            shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _primaryActionButton(
+  //     {required IconData icon,
+  //       required String label,
+  //       required VoidCallback onPressed}) {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: SizedBox(
+  //       width: double.infinity,
+  //       height: 56,
+  //       child: ElevatedButton.icon(
+  //         onPressed: onPressed,
+  //         icon: Icon(icon),
+  //         label: Text(label),
+  //         style: ElevatedButton.styleFrom(
+  //           backgroundColor: const Color(0xFF9B59FF),
+  //           foregroundColor: Colors.white,
+  //           shape:
+  //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 class InfoText extends ConsumerWidget {
