@@ -7,8 +7,6 @@ import '../../../../providers/prompt_nav_provider.dart';
 import '../../../../providers/user_profile_provider.dart';
 import '../../common/profile_drawer.dart';
 import '../home_screen/home_screen_sections/home_screen_top_bar.dart';
-import 'sections/create_section/create_section_widget/prompt_widget.dart';
-
 
 class PromptScreen extends ConsumerStatefulWidget {
   const PromptScreen({super.key});
