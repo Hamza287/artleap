@@ -9,7 +9,6 @@ import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

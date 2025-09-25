@@ -46,6 +46,7 @@ class Images {
     required this.userEmail,
     required this.prompt,
     required this.V,
+    required this.privacy,
   });
   late final String id;
   late final String userId;
@@ -56,6 +57,7 @@ class Images {
   late final String userEmail;
   late final String prompt;
   late final int V;
+  late final String privacy; // new field
 
   Images.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -67,6 +69,7 @@ class Images {
     userEmail = json["creatorEmail"] ?? "";
     prompt = json['prompt'];
     V = json['__v'];
+    privacy = json['privacy'] ?? "public"; // default if missing
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +82,7 @@ class Images {
     data['modelName'] = modelName;
     data['prompt'] = prompt;
     data['__v'] = V;
+    data['privacy'] = privacy;
     return data;
   }
 }

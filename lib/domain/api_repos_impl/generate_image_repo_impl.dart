@@ -14,7 +14,7 @@ class GenerateImageImpl extends GenerateImageRepo {
           enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.processing) {
-        return ApiResponse.processing("ssssssssssssssss");
+        return ApiResponse.processing("Processing........");
       } else if (result.status == Status.completed) {
         print(result.data);
         GenerateHighQualityImageModel data = await Isolate.run(

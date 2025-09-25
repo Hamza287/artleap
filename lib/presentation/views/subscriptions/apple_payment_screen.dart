@@ -99,7 +99,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
 
       if (response.status == Status.completed && mounted) {
         appSnackBar('Success', 'Subscription created successfully', Colors.green);
-        ref.refresh(currentSubscriptionProvider(userId));
+        // ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
         Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
       } else if (mounted) {
