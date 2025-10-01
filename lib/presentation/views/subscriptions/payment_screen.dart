@@ -83,7 +83,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
         case PurchaseStatus.canceled:
           ref.read(paymentLoadingProvider.notifier).state = false;
-          if (mounted) appSnackBar('Info', 'Purchase was canceled', Colors.orange);
+          if (mounted) print('Purchased Cancelled');
+          // if (mounted) appSnackBar('Info', 'Purchase was canceled', Colors.orange);
           break;
 
         case PurchaseStatus.error:
@@ -99,20 +100,17 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-        // ✅ still show loader until subscription is confirmed
           ref.read(paymentLoadingProvider.notifier).state = true;
-
           try {
             final userId = UserData.ins.userId;
             if (userId != null) {
-              // Refresh subscription from backend
               await ref.read(currentSubscriptionProvider(userId).future);
             }
 
             if (mounted) {
               ref.read(paymentLoadingProvider.notifier).state = false;
               appSnackBar('Success', 'Subscription activated', Colors.green);
-              Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
+              // Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
             }
           } catch (e) {
             if (mounted) {
@@ -187,11 +185,11 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
         } else if (response.status == Status.canceled && mounted) {
           ref.read(paymentLoadingProvider.notifier).state = false;
-          appSnackBar('Cancelled', 'Payment was cancelled by the user', Colors.orange);
+          // appSnackBar('Cancelled', 'Payment was cancelled by the user', Colors.orange);
 
         } else if (mounted) {
           ref.read(paymentLoadingProvider.notifier).state = false;
-          appSnackBar('Cancelled', 'Payment was cancelled by the user', Colors.orange);
+          // appSnackBar('Cancelled', 'Payment was cancelled by the user', Colors.orange);
         }
       }
     } catch (e) {
@@ -203,7 +201,6 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       if (paymentMethod == 'stripe') {
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
-      // For Google Play, loading state is handled in purchase stream
     }
   }
 

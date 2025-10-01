@@ -53,10 +53,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
 
     return Column(
       children: [
-        // Filter Section
         _buildFilterSection(),
-
-        // Feed
         Expanded(
           child: homeProvider.usersData == null
               ? _buildShimmerLoading()

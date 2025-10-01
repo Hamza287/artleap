@@ -114,7 +114,7 @@ class StripeService {
     } on StripeException catch (e) {
       // ✅ Handle cancellation separately
       if (e.error.code == FailureCode.Canceled) {
-        appSnackBar('Info', 'Purchase was canceled', Colors.orange);
+        // appSnackBar('Info', 'Purchase was canceled', Colors.orange);
         return ApiResponse.error('User canceled the purchase');
       } else {
         appSnackBar('Error', 'Stripe error', Colors.red);
