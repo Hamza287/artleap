@@ -28,7 +28,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       if (UserData.ins.userId != null) {
         ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId!);
       } else {
-        // Redirect to login if no user ID
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -221,6 +220,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             MyCreationsWidget(
                               listofCreations: userPersonalData.user.images,
                               userName: userName,
+                              userId: user.id,
                             ),
                           ],
                         ),

@@ -1,3 +1,4 @@
+
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +16,13 @@ import '../image_control_widgets/style_selection_card.dart';
 
 class ImageControlsWidget extends ConsumerWidget {
   final VoidCallback onImageSelected;
+  final bool isPremiumUser;
 
-  const ImageControlsWidget({super.key, required this.onImageSelected});
+  const ImageControlsWidget({
+    super.key,
+    required this.onImageSelected,
+    this.isPremiumUser = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,10 +32,8 @@ class ImageControlsWidget extends ConsumerWidget {
     final selectedImageNumber = provider.selectedImageNumber;
     final selectedStyle = provider.selectedStyle;
 
-    // Get styles list based on image presence
     final styles = images.isEmpty ? freePikStyles : textToImageStyles;
 
-    // Sort to show selected style first and take first 4
     final displayedStyles = List.from(styles)
       ..sort((a, b) => a['title'] == selectedStyle ? -1 : 1)
       ..take(4);
@@ -51,6 +55,7 @@ class ImageControlsWidget extends ConsumerWidget {
               child: ImageSelectionButton(
                 hasImage: images.isNotEmpty,
                 onPressed: () => _handleImagePick(context, ref),
+                showPremiumIcon: !isPremiumUser,
               ),
             ),
             10.spaceX,
@@ -230,38 +235,50 @@ class ImageControlsWidget extends ConsumerWidget {
       ],
     );
   }
+
   // In ImageControlsWidget
   Future<void> _handleImagePick(BuildContext context, WidgetRef ref) async {
     try {
+      if (!isPremiumUser) {
+        await _showPremiumFeatureDialog(context);
+        return;
+      }
+
       final ok = await PhotoPermissionHelper.ensurePhotosPermission();
 
       if (!ok) {
         await showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Permission Required'),
-                    content: const Text('Please enable photos access in settings'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          openAppSettings();
-                        },
-                        child: const Text('Open Settings'),
-                      ),
-                    ],
-                  ),
-                );
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Permission Required'),
+            content: const Text('Please enable photos access in settings'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  openAppSettings();
+                },
+                child: const Text('Open Settings'),
+              ),
+            ],
+          ),
+        );
+        return;
       }
-
-      // Permission satisfied (granted or limited). Run a single picker call.
+      final status = await Permission.photos.status;
+      if (!status.isGranted && !status.isLimited) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Photos permission is required to select images')),
+          );
+        }
+        return;
+      }
       await ref.read(generateImageProvider.notifier).pickImage();
-
-      // Optional: analytics or small UI reactions
       onImageSelected();
     } catch (e) {
       if (context.mounted) {
@@ -272,42 +289,71 @@ class ImageControlsWidget extends ConsumerWidget {
     }
   }
 
+  Future<void> _showPremiumFeatureDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.workspace_premium, color: Colors.amber),
+            SizedBox(width: 8),
+            Text('Premium Feature'),
+          ],
+        ),
+        content: const Text(
+          'Image selection is a premium feature. Upgrade to premium to access this functionality.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Upgrade'),
+          ),
+        ],
+      ),
+    );
+  }
 
 // Future<void> _handleImagePick(BuildContext context, WidgetRef ref) async {
-  //   try {
-  //     final status = await Permission.photos.request();
-  //
-  //     if (status.isGranted) {
-  //       await ref.read(generateImageProvider.notifier).pickImage();
-  //       onImageSelected();
-  //     } else if (status.isPermanentlyDenied && context.mounted) {
-  //       await showDialog(
-  //         context: context,
-  //         builder: (context) => AlertDialog(
-  //           title: const Text('Permission Required'),
-  //           content: const Text('Please enable photos access in settings'),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: const Text('Cancel'),
-  //             ),
-  //             TextButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //                 openAppSettings();
-  //               },
-  //               child: const Text('Open Settings'),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     if (context.mounted) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Error: ${e.toString()}')),
-  //       );
-  //     }
-  //   }
-  // }
+//   try {
+//     final status = await Permission.photos.request();
+//
+//     if (status.isGranted) {
+//       await ref.read(generateImageProvider.notifier).pickImage();
+//       onImageSelected();
+//     } else if (status.isPermanentlyDenied && context.mounted) {
+//       await showDialog(
+//         context: context,
+//         builder: (context) => AlertDialog(
+//           title: const Text('Permission Required'),
+//           content: const Text('Please enable photos access in settings'),
+//           actions: [
+//             TextButton(
+//               onPressed: () => Navigator.pop(context),
+//               child: const Text('Cancel'),
+//             ),
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.pop(context);
+//                 openAppSettings();
+//               },
+//               child: const Text('Open Settings'),
+//             ),
+//           ],
+//         ),
+//       );
+//     }
+//   } catch (e) {
+//     if (context.mounted) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text('Error: ${e.toString()}')),
+//       );
+//     }
+//   }
+// }
 }

@@ -68,12 +68,9 @@ class _OtherUserProfileScreenState
                   50.spaceY,
                   MyCreationsWidget(
                     userName: widget.params!.profileName,
-                    listofCreations: ref
-                        .watch(userProfileProvider)
-                        .otherUserProfileData!
-                        .user
-                        .images,
-                  )
+                    listofCreations: ref.watch(userProfileProvider).otherUserProfileData!.user.images,
+                    userId: '9y37',
+                  ),
                 ],
               ),
             ),

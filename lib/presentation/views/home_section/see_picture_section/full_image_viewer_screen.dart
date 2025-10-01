@@ -52,7 +52,9 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
 
     await ref.read(fullImageProvider.notifier).loadOriginalImage(imageUrl);
 
-    // Apply watermark after image is loaded
+    // Check if widget is still mounted before proceeding
+    if (!mounted) return;
+
     final imageBytes = ref.read(fullImageProvider).originalImageBytes;
     if (imageBytes != null && mounted) {
       ref.read(watermarkProvider.notifier).applyWatermark(imageBytes);

@@ -11,19 +11,17 @@ class RegistrationBackgroundWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColors.darkBlue,
-        body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(bgImage ?? AppAssets.backgroundImage),
-                  fit: BoxFit.cover),
-          ),
-          child: widget,
+    return Scaffold(
+      backgroundColor: AppColors.darkBlue,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(bgImage ?? AppAssets.backgroundImage),
+                fit: BoxFit.cover),
         ),
+        child: widget,
       ),
     );
   }

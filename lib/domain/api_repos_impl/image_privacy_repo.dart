@@ -13,7 +13,7 @@ class ImagePrivacyRepository {
     required String privacy,
   }) async {
     try {
-      Response res = await _base.artleapApiService.postJson(
+      Response res = await _base.artleapApiService.patch(
         "${AppApiPaths.updateImagePrivacy}$imageId/privacy",
         {
           "userId": userId,
@@ -24,11 +24,14 @@ class ImagePrivacyRepository {
       ApiResponse result = HandlingResponse.returnResponse(res);
 
       if (result.status == Status.completed) {
+        print("sucess $result");
         return ApiResponse.completed(res.data);
       } else {
+        print("fail $result");
         return result;
       }
     } on DioException catch (w) {
+      print(w);
       return HandlingResponse.returnException(w);
     }
   }

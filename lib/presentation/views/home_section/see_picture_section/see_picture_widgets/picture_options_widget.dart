@@ -165,6 +165,36 @@ class PictureOptionsWidget extends ConsumerWidget {
           ),
           if (otherUserId == UserData.ins.userId)
             GestureDetector(
+              onTap: () async {
+                await showDialog<ImagePrivacy>(
+                  context: context,
+                  builder: (context) => SetPrivacyDialog(
+                    imageId: imageId!,
+                    userId: currentUserId!,
+                  ),
+                );
+              },
+              child: Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.darkBlue.withOpacity(0.4)),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.lock, size: 22, color: Colors.amber),
+                    2.spaceY,
+                    Text(
+                      "Privacy",
+                      style: AppTextstyle.interRegular(color: Colors.amber, fontSize: 6.5),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
               onTap: () {
                 showDialog(
                   context: context,
@@ -240,36 +270,6 @@ class PictureOptionsWidget extends ConsumerWidget {
                     "Report",
                     style: AppTextstyle.interRegular(
                         color: AppColors.redColor, fontSize: 6.5),
-                  )
-                ],
-              ),
-            ),
-          ),
-            GestureDetector(
-            onTap: () async {
-              await showDialog<ImagePrivacy>(
-                context: context,
-                builder: (context) => SetPrivacyDialog(
-                  imageId: imageId!,
-                  userId: currentUserId!,
-                ),
-              );
-            },
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.darkBlue.withOpacity(0.4)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.lock, size: 22, color: AppColors.darkBlue),
-                  2.spaceY,
-                  Text(
-                    "Privacy",
-                    style: AppTextstyle.interRegular(color: AppColors.darkBlue, fontSize: 6.5),
                   )
                 ],
               ),

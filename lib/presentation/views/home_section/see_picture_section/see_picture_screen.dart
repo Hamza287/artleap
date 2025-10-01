@@ -28,7 +28,6 @@ class SeePictureScreen extends ConsumerStatefulWidget {
 class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
   }

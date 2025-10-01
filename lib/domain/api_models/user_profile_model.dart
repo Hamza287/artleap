@@ -172,6 +172,7 @@ class Images {
   final String createdAt;
   final String modelName;
   final String prompt;
+  final String privacy;
   final int V;
 
   Images({
@@ -184,6 +185,7 @@ class Images {
     required this.modelName,
     required this.prompt,
     required this.V,
+    required this.privacy,
   });
 
   factory Images.fromJson(Map<String, dynamic> json) {
@@ -197,6 +199,7 @@ class Images {
       modelName: json['modelName'] ?? "",
       prompt: json['prompt'] ?? "",
       V: json['__v'] ?? 0,
+      privacy: json['privacy'] ?? "public",
     );
   }
 
@@ -211,6 +214,7 @@ class Images {
     data['modelName'] = modelName;
     data['prompt'] = prompt;
     data['__v'] = V;
+    data['privacy'] = privacy;
     return data;
   }
 }

@@ -101,65 +101,67 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   Widget build(BuildContext context) {
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: 65,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade400,
-                blurRadius: 0,
-                spreadRadius: 2,
-                offset: const Offset(0, -2),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: 10.0,
-                sigmaY: 10.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildNavButton(
-                    icon: Icons.home,
-                    index: 0,
-                    currentIndex: pageIndex,
-                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
-                  ),
-                  _buildNavButton(
-                    icon: Icons.add_circle,
-                    index: 1,
-                    currentIndex: pageIndex,
-                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
-                  ),
-                  _buildNavButton(
-                    icon: Icons.groups,
-                    index: 2,
-                    currentIndex: pageIndex,
-                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
-                  ),
-                  _buildNavButton(
-                    icon: Icons.person,
-                    index: 3,
-                    currentIndex: pageIndex,
-                    onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
-                  ),
-                ],
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        bottomNavigationBar: SafeArea(
+          child: Container(
+            height: 65,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade400,
+                  blurRadius: 0,
+                  spreadRadius: 2,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 10.0,
+                  sigmaY: 10.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildNavButton(
+                      icon: Icons.home,
+                      index: 0,
+                      currentIndex: pageIndex,
+                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
+                    ),
+                    _buildNavButton(
+                      icon: Icons.add_circle,
+                      index: 1,
+                      currentIndex: pageIndex,
+                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
+                    ),
+                    _buildNavButton(
+                      icon: Icons.groups,
+                      index: 2,
+                      currentIndex: pageIndex,
+                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
+                    ),
+                    _buildNavButton(
+                      icon: Icons.person,
+                      index: 3,
+                      currentIndex: pageIndex,
+                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
+        body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
+            ? bottomNavBarState.widgets[pageIndex]
+            : const Center(child: CircularProgressIndicator()),
       ),
-      body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
-          ? bottomNavBarState.widgets[pageIndex]
-          : const Center(child: CircularProgressIndicator()),
     );
   }
 

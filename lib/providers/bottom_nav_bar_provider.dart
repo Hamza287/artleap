@@ -3,7 +3,7 @@ import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/ne
 import 'package:Artleap.ai/presentation/views/home_section/new_user_profile/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../presentation/views/home_section/community_screen/community_screen.dart';
+import '../presentation/views/home_section/new_comunity_screen/community_screen.dart';
 
 final bottomNavBarProvider = ChangeNotifierProvider<BottomNavBarProvider>(
     (ref) => BottomNavBarProvider());

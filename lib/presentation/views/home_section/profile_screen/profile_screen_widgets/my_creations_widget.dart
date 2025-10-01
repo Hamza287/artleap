@@ -8,16 +8,40 @@ import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 
-class MyCreationsWidget extends StatelessWidget {
+class MyCreationsWidget extends StatefulWidget {
   final String? userName;
   final List<Images> listofCreations;
+  final String userId;
 
   const MyCreationsWidget({
     super.key,
     this.userName,
     required this.listofCreations,
+    required this.userId,
   });
 
+  @override
+  State<MyCreationsWidget> createState() => _MyCreationsWidgetState();
+}
+
+class _MyCreationsWidgetState extends State<MyCreationsWidget> {
+  late final filteredCreations;
+  @override
+  void initState() {
+    if(widget.userId == UserData.ins.userId!){
+      filteredCreations = widget.listofCreations
+          .asMap()
+          .entries
+          .toList();
+    } else {
+      filteredCreations = widget.listofCreations
+          .asMap()
+          .entries
+          .where((entry) => entry.value.privacy == 'public')
+          .toList();
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +55,7 @@ class MyCreationsWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            listofCreations.isEmpty
+            filteredCreations.isEmpty
                 ? Center(
               child: Container(
                 width: double.infinity,
@@ -61,10 +85,12 @@ class MyCreationsWidget extends StatelessWidget {
                 mainAxisSpacing: 10.0,
                 childAspectRatio: 1,
               ),
-              itemCount: listofCreations.length,
+              itemCount: filteredCreations.length,
               itemBuilder: (context, index) {
-                var reverseIndex = listofCreations.length - 1 - index;
-                var e = listofCreations[reverseIndex];
+                // Use filteredCreations to maintain original indices
+                var entry = filteredCreations[index];
+                var reverseIndex = filteredCreations.length - 1 - index;
+                var e = entry.value;
                 return GestureDetector(
                   onTap: () {
                     Navigation.pushNamed(

@@ -36,5 +36,5 @@ class AppApiPaths {
   // Other paths (from your example)
   static const passengers = "/api/v1/employees";
   static const getReqResUsers = "/users?page=2";
-  static const updateImagePrivacy ="/image/";
+  static const updateImagePrivacy ="/images/";
 }

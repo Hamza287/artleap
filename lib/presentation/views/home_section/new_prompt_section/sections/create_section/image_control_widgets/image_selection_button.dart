@@ -5,11 +5,13 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 class ImageSelectionButton extends StatelessWidget {
   final bool hasImage;
   final VoidCallback onPressed;
+  final bool showPremiumIcon;
 
   const ImageSelectionButton({
     super.key,
     required this.hasImage,
     required this.onPressed,
+    this.showPremiumIcon = false,
   });
 
   @override
@@ -38,6 +40,10 @@ class ImageSelectionButton extends StatelessWidget {
             hasImage ? "Change Image" : "Add Image",
             style: AppTextstyle.interMedium(fontSize: 14),
           ),
+          if (showPremiumIcon && !hasImage) ...[
+            const SizedBox(width: 4),
+            Image.asset('assets/icons/upgrade_pro.png',width: 20,height: 20,)
+          ],
         ],
       ),
     );
