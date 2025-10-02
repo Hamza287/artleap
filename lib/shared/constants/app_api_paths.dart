@@ -37,4 +37,30 @@ class AppApiPaths {
   static const passengers = "/api/v1/employees";
   static const getReqResUsers = "/users?page=2";
   static const updateImagePrivacy ="/images/";
+
+  // Community Features - Likes
+  static const String likesBasePath = "images/";
+  static const String likeImage = "${likesBasePath}:imageId/like";
+  static const String unlikeImage = "${likesBasePath}:imageId/like";
+  static const String getImageLikes = "${likesBasePath}:imageId/likes";
+  static const String getLikeCount = "${likesBasePath}:imageId/likes/count";
+  static const String checkUserLike = "${likesBasePath}:imageId/likes/check";
+  static const String getUserLikes = "users/likes";
+
+  // Community Features - Comments
+  static const String commentsBasePath = "images/";
+  static const String addComment = "${commentsBasePath}:imageId/comments";
+  static const String getImageComments = "${commentsBasePath}:imageId/comments";
+  static const String updateComment = "comments/:commentId";
+  static const String deleteComment = "comments/:commentId";
+  static const String getCommentCount = "${commentsBasePath}:imageId/comments/count";
+  static const String getUserComments = "users/comments";
+
+  // Community Features - Saved Images
+  static const String savedBasePath = "images/";
+  static const String saveImage = "${savedBasePath}:imageId/save";
+  static const String unsaveImage = "${savedBasePath}:imageId/save";
+  static const String getUserSavedImages = "users/saved";
+  static const String checkUserSave = "${savedBasePath}:imageId/save/check";
+  static const String getSavedCount = "users/saved/count";
 }

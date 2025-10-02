@@ -1,4 +1,3 @@
-import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +8,6 @@ import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-import 'package:Artleap.ai/presentation/views/global_widgets/search_textfield.dart';
 import 'widegts/community_feed_widget.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -76,25 +73,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        // appBar: CommonAppBar(
-        //   title: "Community Feed",
-        //   listOfColors: [AppColors.darkBlue, AppColors.darkBlue],
-        //   bottomWidget: Column(
-        //     children: [
-        //       10.spaceY,
-        //       const Padding(
-        //         padding: EdgeInsets.symmetric(horizontal: 15),
-        //         child: SearchTextfield(),
-        //       ),
-        //     ],
-        //   ),
-        // ),
         body: AppBackgroundWidget(
-          widget: RefreshIndicator(
-            backgroundColor: AppColors.darkBlue,
-            onRefresh: () => ref.read(homeScreenProvider).getUserCreations(),
-            child: const CommunityFeedWidget(),
-          ),
+          widget: const CommunityFeedWidget(),
         ),
       ),
     );

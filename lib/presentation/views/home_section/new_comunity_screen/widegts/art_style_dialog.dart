@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../../../../../providers/home_screen_provider.dart';
 import 'filter_result_chips.dart';
 
-class ArtStyleDilog extends ConsumerWidget {
-  const ArtStyleDilog({super.key});
+class ArtStyleDialog extends ConsumerWidget {
+  const ArtStyleDialog({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,18 +13,18 @@ class ArtStyleDilog extends ConsumerWidget {
       insetPadding: const EdgeInsets.all(20),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,84 +35,29 @@ class ArtStyleDilog extends ConsumerWidget {
                   Text(
                     "Filter by Art Style",
                     style: AppTextstyle.interBold(
-                        color: AppColors.darkBlue, fontSize: 18),
+                        color: AppColors.darkBlue, fontSize: 20),
                   ),
                   GestureDetector(
                     onTap: () {
                       Navigation.pop();
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close,
                         size: 20,
-                        color: Colors.black54,
+                        color: Colors.grey.shade700,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                "Choose an art style to filter the community feed",
-                style: AppTextstyle.interRegular(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               const FilterResultChips(),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        ref.read(homeScreenProvider).clearFilteredList();
-                        Navigation.pop();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        side: BorderSide(color: AppColors.darkBlue),
-                      ),
-                      child: Text(
-                        "Clear Filter",
-                        style: AppTextstyle.interMedium(
-                          color: AppColors.darkBlue,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigation.pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkBlue,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        "Apply",
-                        style: AppTextstyle.interMedium(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

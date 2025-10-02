@@ -25,4 +25,16 @@ class AppColors {
   static const daisyBrush = Color(0xff4A2D97);
   static const topBar = Color(0xffffffff);
   static const red = Color(0xffff0000);
+
+  static const Color primaryColor = Color(0xFF0066FF);
+  static const Color secondaryColor = Color(0xFF00C6FF);
+  static const Color successColor = Color(0xFF00C851);
+  static const Color errorColor = Color(0xFFff4444);
+  static const Color lightBackground = Color(0xFFF8F9FA);
+  static const Color borderColor = Color(0xFFE9ECEF);
+  static const Color shadowColor = Color(0xFF000000);
+  static const Color hintTextColor = Color(0xFF6C757D);
+  static const Color primaryTextColor = Color(0xFF212529);
+  static const Color disabledColor = Color(0xFFCED4DA);
+
 }

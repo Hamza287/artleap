@@ -13,10 +13,10 @@ import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-final homeScreenProvider = ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
+final homeScreenProvider =
+    ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
 
 class HomeScreenProvider extends ChangeNotifier with BaseRepo {
-
   final notificationSettings =
       FirebaseMessaging.instance.requestPermission(provisional: true);
   List<Images?> _filteredCreations = [];
@@ -106,7 +106,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   getUserInfo() {
     var userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
-    var userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
+    var userProfilePicture =
+        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
     UserData.ins.setUserData(
         id: userid,
@@ -170,7 +171,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
       String thumbnailUrl = imageUrl.replaceAll("fullsize", "thumbnail");
 
       final Completer<void> completer = Completer<void>();
-      final ImageStream stream = CachedNetworkImageProvider(thumbnailUrl).resolve(const ImageConfiguration());
+      final ImageStream stream = CachedNetworkImageProvider(thumbnailUrl)
+          .resolve(const ImageConfiguration());
       final listener = ImageStreamListener((_, __) {
         if (!completer.isCompleted) {
           completer.complete();
@@ -210,8 +212,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
 
     _filteredCreations = _communityImagesList.where((img) {
       final model = img.modelName.toLowerCase();
-      return model == lowerCaseModel ||
-          modelNameMatchAliases(model, lowerCaseModel);
+      return model == lowerCaseModel || modelNameMatchAliases(model, lowerCaseModel);
     }).toList();
 
     notifyListeners();
@@ -242,5 +243,4 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
     await getUserCreations();
   }
-
 }

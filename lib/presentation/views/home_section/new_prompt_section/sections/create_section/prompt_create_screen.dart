@@ -165,7 +165,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                                 buttonName:
                                     'picking image from gallery button event');
                           },
-                          isPremiumUser: true,
+                          isPremiumUser: false,
                         ),
                         SizedBox(height: bottomSpace),
                       ],

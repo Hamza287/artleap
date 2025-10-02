@@ -6,27 +6,28 @@ import 'dio_core.dart';
 
 class ApiServices extends DioCore {
   ApiServices({required String baseUrl}) : super(baseUrl);
+
   Future<Response> get(String path,
       {Map<String, dynamic>? queryParameters,
-      bool enableLocalPersistence = false}) async {
+        bool enableLocalPersistence = false}) async {
     return await dio.get(path,
         queryParameters: queryParameters,
         options: _options(enableLocalPersistence));
   }
 
   Future<Response> postJson(
-    String path,
-    dynamic data, {
-    bool enableLocalPersistence = false,
-  }) async {
+      String path,
+      dynamic data, {
+        bool enableLocalPersistence = false,
+      }) async {
     return await dio.post(path, data: data, options: _options(enableLocalPersistence));
   }
 
   Future<Response> postFormData(String path,
       {Map<String, dynamic> data = const {},
-      List<File> images = const [],
-      String? imageFieldKey,
-      bool enableLocalPersistence = false}) async {
+        List<File> images = const [],
+        String? imageFieldKey,
+        bool enableLocalPersistence = false}) async {
     FormData formData = FormData.fromMap(data);
     print(images.length);
     for (var image in images) {
@@ -35,6 +36,30 @@ class ApiServices extends DioCore {
     }
     images = [];
     return await dio.post(path,
+        data: formData, options: _options(enableLocalPersistence));
+  }
+
+  Future<Response> putJson(
+      String path,
+      dynamic data, {
+        bool enableLocalPersistence = false,
+      }) async {
+    return await dio.put(path, data: data, options: _options(enableLocalPersistence));
+  }
+
+  Future<Response> putFormData(String path,
+      {Map<String, dynamic> data = const {},
+        List<File> images = const [],
+        String? imageFieldKey,
+        bool enableLocalPersistence = false}) async {
+    FormData formData = FormData.fromMap(data);
+    print(images.length);
+    for (var image in images) {
+      formData.files.add(MapEntry(isNull(imageFieldKey) ? 'images' : imageFieldKey!,
+          MultipartFile.fromFileSync(image.path)));
+    }
+    images = [];
+    return await dio.put(path,
         data: formData, options: _options(enableLocalPersistence));
   }
 
@@ -54,7 +79,7 @@ class ApiServices extends DioCore {
   }
 
   Options _options(bool enableLocalPersistence,
-          {Map<String, dynamic>? headers}) =>
+      {Map<String, dynamic>? headers}) =>
       Options(
           extra: {localDataStorageEnabled: enableLocalPersistence},
           headers: headers);
