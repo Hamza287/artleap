@@ -14,7 +14,6 @@ class HomeScreenTopBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Use watch instead of refresh to avoid rebuilding during build phase
     final subscriptionAsync = ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
 
     // Get the actual plan name from user profile

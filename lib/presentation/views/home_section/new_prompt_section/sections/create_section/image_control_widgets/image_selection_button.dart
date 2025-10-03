@@ -16,36 +16,105 @@ class ImageSelectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 4,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.grey.shade300),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+              if (showPremiumIcon && !hasImage)
+                BoxShadow(
+                  color: Colors.orange.withOpacity(0.2),
+                  blurRadius: 15,
+                  spreadRadius: 1,
+                ),
+            ],
+            border: Border.all(
+              color: Colors.grey.shade300,
+              width: 1.5,
+            ),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onPressed,
+              borderRadius: BorderRadius.circular(14),
+              splashColor: AppColors.purple.withOpacity(0.2),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.purple.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        hasImage ? Icons.photo_library : Icons.add_photo_alternate,
+                        color: AppColors.purple,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      hasImage ? "Change Image" : "Add Image",
+                      style: AppTextstyle.interMedium(
+                        fontSize: 15,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            hasImage ? Icons.image : Icons.add_photo_alternate,
-            color: AppColors.purple,
+
+        // Premium Badge
+        if (showPremiumIcon && !hasImage)
+          Positioned(
+            top: -8,
+            right: -8,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange.withOpacity(0.4),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
+              ),
+              child: Image.asset(
+                'assets/icons/pro.png',
+                width: 16,
+                height: 16,
+                color: Colors.white,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            hasImage ? "Change Image" : "Add Image",
-            style: AppTextstyle.interMedium(fontSize: 14),
-          ),
-          if (showPremiumIcon && !hasImage) ...[
-            const SizedBox(width: 4),
-            Image.asset('assets/icons/upgrade_pro.png',width: 20,height: 20,)
-          ],
-        ],
-      ),
+      ],
     );
   }
 }

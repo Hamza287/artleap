@@ -13,12 +13,15 @@ import 'widegts/community_feed_widget.dart';
 class CommunityScreen extends ConsumerStatefulWidget {
   static const String routeName = 'community_screen';
   const CommunityScreen({super.key});
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _CommunityScreenState();
 }
 
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   final ScrollController _scrollController = ScrollController();
+  final _throttleDuration = const Duration(milliseconds: 200);
+  DateTime? _lastScrollTime;
 
   @override
   void initState() {
@@ -30,9 +33,16 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     });
 
     _scrollController.addListener(() {
+      final now = DateTime.now();
+      if (_lastScrollTime != null &&
+          now.difference(_lastScrollTime!) < _throttleDuration) {
+        return;
+      }
+      _lastScrollTime = now;
+
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200 &&
-          !ref.watch(homeScreenProvider).isLoadingMore) {
+          _scrollController.position.maxScrollExtent - 300 &&
+          !ref.read(homeScreenProvider).isLoadingMore) {
         ref.read(homeScreenProvider).loadMoreImages();
       }
     });
@@ -67,8 +77,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ],
           ),
-        ) ??
-            false;
+        ) ?? false;
         if (shouldExit) SystemNavigator.pop();
       },
       child: Scaffold(

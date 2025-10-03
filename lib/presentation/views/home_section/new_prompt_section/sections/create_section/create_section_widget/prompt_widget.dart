@@ -26,6 +26,7 @@ class PromptWidget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 10,),
           Text(
             "Enter Prompt",
             style: AppTextstyle.interBold(

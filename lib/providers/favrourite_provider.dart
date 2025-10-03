@@ -58,7 +58,7 @@ class FavouriteProvider extends ChangeNotifier with BaseRepo {
         extension: "jpg",
       );
 
-      appSnackBar("Success", "Image saved Successfully", AppColors.blue);
+      appSnackBar("Success", "Image saved Successfully", AppColors.baseGreenColor);
     } catch (e) {
       appSnackBar("Error", "Error downloading image: $e", AppColors.redColor);
     } finally {

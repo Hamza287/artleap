@@ -1,9 +1,9 @@
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
+import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-
 import 'comment_section.dart';
 
 final likeAnimationProvider = StateProvider.family<bool, String>((ref, imageId) => false);
@@ -89,6 +89,7 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
   final int likeCount;
   final bool isAnimating;
   final BuildContext context;
+
   const _LikeButtonWithAnimation({
     required this.imageId,
     required this.isLiked,
@@ -98,12 +99,18 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
   });
 
   void _toggleLike(WidgetRef ref) async {
+    if (isLiked) {
+      SoundService.playUnlikeSound();
+    } else {
+      SoundService.playLikeSound();
+    }
+
+    // Start animation immediately
     ref.read(likeAnimationProvider(imageId).notifier).state = true;
 
     try {
       await ref.read(likeProvider(imageId).notifier).toggleLike();
       ref.invalidate(likeCountProvider(imageId));
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -113,7 +120,8 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
         ),
       );
     } finally {
-      Future.delayed(const Duration(milliseconds: 600), () {
+      // Fast animation - only 300ms
+      Future.delayed(const Duration(milliseconds: 300), () {
         if (context.mounted) {
           ref.read(likeAnimationProvider(imageId).notifier).state = false;
         }
@@ -129,7 +137,7 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
         alignment: Alignment.center,
         children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 200), // Faster animation
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: isLiked ? Colors.red.withOpacity(0.1) : Colors.grey.shade100,
@@ -143,7 +151,13 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 200), // Faster switching
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    );
+                  },
                   child: Icon(
                     isLiked ? Icons.favorite : Icons.favorite_outline,
                     key: ValueKey(isLiked),
@@ -153,7 +167,7 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 200),
                   child: Text(
                     _formatCount(likeCount),
                     key: ValueKey(likeCount),
@@ -166,27 +180,29 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
               ],
             ),
           ),
+          // Fast burst animation
           if (isAnimating)
-            Positioned(
+            AnimatedOpacity(
+              duration: const Duration(milliseconds: 300),
+              opacity: isAnimating ? 1.0 : 0.0,
               child: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.red.withOpacity(0.2),
+                  color: Colors.red.withOpacity(0.3),
                 ),
               ),
             ),
-          if (isAnimating && !isLiked)
-            Positioned(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.elasticOut,
-                child: const Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                  size: 30,
-                ),
+          // Heart burst effect
+          if (isAnimating)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              child: Icon(
+                Icons.favorite,
+                color: Colors.red,
+                size: isAnimating ? 28 : 0,
               ),
             ),
         ],
@@ -234,7 +250,7 @@ class _CommentButton extends ConsumerWidget {
             ),
             const SizedBox(width: 8),
             AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 200),
               child: Text(
                 _formatCount(commentCount),
                 key: ValueKey(commentCount),
@@ -277,6 +293,7 @@ class _SaveButton extends ConsumerWidget {
           content: Text(isSaved ? 'Removed from saved collection' : 'Saved to your collection'),
           backgroundColor: AppColors.darkBlue,
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
         ),
       );
 
@@ -296,7 +313,7 @@ class _SaveButton extends ConsumerWidget {
     return GestureDetector(
       onTap: () => _toggleSave(ref),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSaved ? AppColors.darkBlue.withOpacity(0.1) : Colors.grey.shade100,
@@ -307,7 +324,13 @@ class _SaveButton extends ConsumerWidget {
           ),
         ),
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) {
+            return ScaleTransition(
+              scale: animation,
+              child: child,
+            );
+          },
           child: Icon(
             isSaved ? Icons.bookmark : Icons.bookmark_outline,
             key: ValueKey(isSaved),
@@ -330,7 +353,7 @@ class _LikeCountText extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 200),
         child: Text(
           '$likeCount ${likeCount == 1 ? 'like' : 'likes'}',
           key: ValueKey(likeCount),

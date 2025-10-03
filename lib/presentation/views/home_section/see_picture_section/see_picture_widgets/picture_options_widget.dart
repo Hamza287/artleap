@@ -46,9 +46,8 @@ class PictureOptionsWidget extends ConsumerWidget {
       this.currentUserId,
       this.otherUserId,
       this.index,
-      this.imageId, required this.privacy
-
-      });
+      this.imageId,
+      required this.privacy});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,8 +71,8 @@ class PictureOptionsWidget extends ConsumerWidget {
                   child: LikeButton(
                     isLiked:
                         ref.watch(favouriteProvider).usersFavourites != null
-                            ? ref.watch(favouriteProvider).usersFavourites!.favorites.any((img) => img.id == imageId)
-                                ? true : false : false,
+                            ? ref.watch(favouriteProvider).usersFavourites!
+                                    .favorites.any((img) => img.id == imageId) ? true : false : false,
                     bubblesColor: const BubblesColor(
                         dotPrimaryColor: AppColors.redColor,
                         dotSecondaryColor: AppColors.redColor),
@@ -90,15 +89,18 @@ class PictureOptionsWidget extends ConsumerWidget {
                 ),
                 2.spaceY,
                 Text(
-                  "Save",
-                  style: AppTextstyle.interRegular(color: AppColors.darkBlue, fontSize: 6.5),)
+                  "Fav",
+                  style: AppTextstyle.interRegular(color: AppColors.darkBlue, fontSize: 10.5),
+                )
               ],
             ),
           ),
           GestureDetector(
             onTap: () {
               uint8ListImage != null
-                  ? ref.read(favProvider).downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
+                  ? ref
+                      .read(favProvider)
+                      .downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
                   : ref.read(favProvider).downloadImage(imageUrl!);
               AnalyticsService.instance
                   .logButtonClick(buttonName: 'download button event');
@@ -146,8 +148,7 @@ class PictureOptionsWidget extends ConsumerWidget {
               width: 50,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border:
-                      Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
+                  border: Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -167,82 +168,84 @@ class PictureOptionsWidget extends ConsumerWidget {
             ),
           ),
           if (otherUserId == UserData.ins.userId)
-            GestureDetector(
-              onTap: () async {
-                await showDialog<ImagePrivacy>(
-                  context: context,
-                  builder: (context) => SetPrivacyDialog(
-                    imageId: imageId!,
-                    userId: currentUserId!,
-                    initialPrivacyString: privacy,
-                  ),
-                );
-              },
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.darkBlue.withOpacity(0.4)),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.lock, size: 22, color: Colors.amber),
-                    2.spaceY,
-                    Text(
-                      "Privacy",
-                      style: AppTextstyle.interRegular(color: Colors.amber, fontSize: 6.5),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return DeleteAlertDialog(
-                      imageId: imageId,
-                    );
-                  },
-                );
-                AnalyticsService.instance
-                    .logButtonClick(buttonName: 'delete button event');
-              },
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
+            ...[
+              GestureDetector(
+                onTap: () async {
+                  await showDialog<ImagePrivacy>(
+                    context: context,
+                    builder: (context) => SetPrivacyDialog(
+                      imageId: imageId!,
+                      userId: currentUserId!,
+                      initialPrivacyString: privacy,
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border:
-                        Border.all(color: AppColors.redColor.withOpacity(0.4))),
-                child: ref.watch(imageActionsProvider).isDeleting
-                    ? Center(
-                        child: LoadingAnimationWidget.threeArchedCircle(
-                          color: AppColors.redColor,
-                          size: 30,
-                        ),
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            AppAssets.trashicon,
-                            scale: 2.3,
-                            color: AppColors.redColor,
-                          ),
-                          2.spaceY,
-                          Text(
-                            "Delete",
-                            style: AppTextstyle.interRegular(
-                                color: AppColors.redColor, fontSize: 6.5),
-                          )
-                        ],
-                      ),
+                    Border.all(color: AppColors.darkBlue.withOpacity(0.4)),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.lock, size: 22, color: Colors.purpleAccent),
+                      2.spaceY,
+                      Text(
+                        "Privacy",
+                        style: AppTextstyle.interRegular(color: Colors.purpleAccent, fontSize: 6.5),)
+                    ],
+                  ),
+                ),
               ),
-            ),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DeleteAlertDialog(
+                        imageId: imageId,
+                      );
+                    },
+                  );
+                  AnalyticsService.instance
+                      .logButtonClick(buttonName: 'delete button event');
+                },
+                child: Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border:
+                      Border.all(color: AppColors.redColor.withOpacity(0.4))),
+                  child: ref.watch(imageActionsProvider).isDeleting
+                      ? Center(
+                    child: LoadingAnimationWidget.threeArchedCircle(
+                      color: AppColors.redColor,
+                      size: 30,
+                    ),
+                  )
+                      : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AppAssets.trashicon,
+                        scale: 2.3,
+                        color: AppColors.redColor,
+                      ),
+                      2.spaceY,
+                      Text(
+                        "Delete",
+                        style: AppTextstyle.interRegular(
+                            color: AppColors.redColor, fontSize: 6.5),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
             GestureDetector(
             onTap: () {
               showModalBottomSheet(

@@ -85,14 +85,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                 data: (notifs) => notifs.where((n) => !n.isRead).length,
                                 orElse: () => 0,
                               );
-                              return IconButton(
-                                icon: Badge(
-                                  label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                                  child: const Icon(Icons.notifications, color: AppColors.white, size: 30),
-                                ),
-                                onPressed: () {
-                                  Navigator.pushNamed(context, NotificationScreen.routeName);
-                                },
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.save, color: Colors.white),
+                                    onPressed: (){
+                                      Navigator.of(context).pushNamed('saved-images-screens');
+                                    },
+                                    tooltip: "Saved Images",
+                                  ),
+                                  IconButton(
+                                    icon: Badge(
+                                      label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
+                                      child: const Icon(Icons.notifications, color: AppColors.white, size: 30),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, NotificationScreen.routeName);
+                                    },
+                                  ),
+                                ],
                               );
                             },
                           ),
