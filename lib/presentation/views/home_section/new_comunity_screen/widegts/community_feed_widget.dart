@@ -17,20 +17,29 @@ class CommunityFeedWidget extends ConsumerStatefulWidget {
 
 class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
   final ScrollController _scrollController = ScrollController();
+  final _throttleDuration = const Duration(milliseconds: 200);
+  DateTime? _lastScrollTime;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (ref.watch(homeScreenProvider).page == 0) {
+      if (ref.read(homeScreenProvider).page == 0) {
         ref.read(homeScreenProvider).getUserCreations();
       }
     });
 
     _scrollController.addListener(() {
+      final now = DateTime.now();
+      if (_lastScrollTime != null &&
+          now.difference(_lastScrollTime!) < _throttleDuration) {
+        return;
+      }
+      _lastScrollTime = now;
+
       if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !ref.watch(homeScreenProvider).isLoadingMore) {
+          _scrollController.position.maxScrollExtent - 300 &&
+          !ref.read(homeScreenProvider).isLoadingMore) {
         ref.read(homeScreenProvider).loadMoreImages();
       }
     });
@@ -43,32 +52,21 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
   }
 
   Widget _buildLoadMoreShimmer() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.darkBlue),
-            ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.darkBlue),
           ),
-          const SizedBox(width: 12),
-          Text(
-            'Loading more...',
-            style: AppTextstyle.interMedium(
-              color: Colors.grey.shade600,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     final homeProvider = ref.watch(homeScreenProvider);
@@ -115,6 +113,8 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                 : ListView.builder(
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
+              // Add cache extent for better performance
+              cacheExtent: 1000,
               itemCount: filteredList.length +
                   (homeProvider.isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
@@ -125,7 +125,9 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                 final image = filteredList[index];
                 if (image == null) return const SizedBox.shrink();
 
+                // Use keys for better widget recycling
                 return PostCard(
+                  key: ValueKey('post_${image.id}_$index'),
                   image: image,
                   index: index,
                   homeProvider: homeProvider,

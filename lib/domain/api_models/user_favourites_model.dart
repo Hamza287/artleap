@@ -30,6 +30,7 @@ class Favorites {
     required this.createdAt,
     required this.modelName,
     required this.prompt,
+    required this.privacy,
     required this.V,
   });
   late final String id;
@@ -41,6 +42,7 @@ class Favorites {
   late final String modelName;
   late final String prompt;
   late final int V;
+  late final String privacy;
 
   Favorites.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -51,6 +53,7 @@ class Favorites {
     createdAt = json['createdAt'];
     modelName = json['modelName'];
     prompt = json['prompt'];
+    privacy = json['privacy'];
     V = json['__v'];
   }
 
@@ -64,6 +67,7 @@ class Favorites {
     data['createdAt'] = createdAt;
     data['modelName'] = modelName;
     data['prompt'] = prompt;
+    data['privacy']= privacy;
     data['__v'] = V;
     return data;
   }

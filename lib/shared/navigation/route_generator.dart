@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/personal_information/personal_info_screen.dart';
+import 'package:Artleap.ai/presentation/views/saved_images_screen/save_image_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
@@ -54,7 +55,8 @@ class RouteGenerator {
         return route(const CurrentPlanScreen());
       case FavouritesScreen.routeName:
         return route(const FavouritesScreen());
-    // In your route_generator.dart
+      case SavedImagesScreen.routeName:
+        return route(const SavedImagesScreen());
       case PaymentScreen.routeName:
         final args = settings.arguments as SubscriptionPlanModel;
         return MaterialPageRoute(
@@ -73,8 +75,7 @@ class RouteGenerator {
       case ResultScreenRedesign.routeName:
         return route(const ResultScreenRedesign());
       case SeePictureScreen.routeName:
-        return route(
-            SeePictureScreen(params: settings.arguments as SeePictureParams?));
+        return route(SeePictureScreen(params: settings.arguments as SeePictureParams?));
       case EditProfileScreen.routeName:
         return route(EditProfileScreen(
           params: settings.arguments as EditProfileSreenParams?,

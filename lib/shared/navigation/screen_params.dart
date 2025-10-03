@@ -15,11 +15,8 @@ class SeePictureParams {
   final String? modelName;
   final String? creatorEmail;
   final String? createdDate;
-
+  final String privacy;
   final Uint8List? uint8ListImage;
-  // final String? othersUserId;
-  // bool isHomeScreenNavigation = false;
-  // bool isRecentGeneration = false;
   final int? index;
 
   SeePictureParams(
@@ -32,9 +29,7 @@ class SeePictureParams {
       this.modelName,
       this.createdDate,
       this.uint8ListImage,
-      // this.othersUserId,
-      // required this.isHomeScreenNavigation,
-      // required this.isRecentGeneration,
+      required this.privacy,
       this.index});
 }
 

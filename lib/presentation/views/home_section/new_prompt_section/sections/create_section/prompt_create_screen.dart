@@ -18,10 +18,8 @@ import '../../prompt_screen_widgets/prompt_top_bar.dart';
 import 'create_section_widget/ImageControlWidget.dart';
 import 'create_section_widget/prompt_widget.dart';
 
-// Define a provider for managing the loader state
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
-// Screen size category helper function
 ScreenSizeCategory getScreenSizeCategory(BuildContext context) {
   final width = MediaQuery.of(context).size.width;
 
@@ -50,11 +48,11 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
     });
 
-    // Initialize animation controller for fade effect
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -62,13 +60,10 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-
-    // Add listener to scroll controller to hide keyboard on scroll
     _scrollController.addListener(_handleScroll);
   }
 
   void _handleScroll() {
-    // Hide keyboard when user starts scrolling
     if (_scrollController.position.userScrollDirection ==
         ScrollDirection.forward) {
       FocusScope.of(context).unfocus();
@@ -91,6 +86,8 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
     final shouldRefresh = ref.watch(refreshProvider);
     final isLoading = ref.watch(isLoadingProvider);
     final screenSize = getScreenSizeCategory(context);
+    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final isFreePlan = planName.toLowerCase() == 'free';
 
     if (shouldRefresh && UserData.ins.userId != null) {
       Future.microtask(() {
@@ -98,7 +95,6 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
       });
     }
 
-    // Adjust sizes based on screen category
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
             screenSize == ScreenSizeCategory.extraSmall
         ? 10.0
@@ -144,8 +140,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                 onTap: () {
                   ref.read(isDropdownExpandedProvider.notifier).state = false;
                   ref.read(keyboardVisibleProvider.notifier).state = false;
-                  FocusScope.of(context)
-                      .unfocus(); // Hide keyboard on tap outside
+                  FocusScope.of(context).unfocus();
                 },
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -162,10 +157,9 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                         ImageControlsWidget(
                           onImageSelected: () {
                             AnalyticsService.instance.logButtonClick(
-                                buttonName:
-                                    'picking image from gallery button event');
+                                buttonName: 'picking image from gallery button event');
                           },
-                          isPremiumUser: false,
+                          isPremiumUser: !isFreePlan,
                         ),
                         SizedBox(height: bottomSpace),
                       ],
@@ -195,15 +189,13 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                     ],
                   ),
                 ),
-                // Fixed: Maintain consistent bottom padding regardless of keyboard
                 padding: EdgeInsets.only(
                   left: horizontalPadding,
                   right: horizontalPadding,
                   top: buttonTopPadding,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom +
-                          10 // Add extra padding when keyboard is visible
-                      : buttonBottomPadding, // Normal padding when no keyboard
+                      ? buttonBottomPadding
+                      : buttonBottomPadding,
                 ),
                 child: PromptScreenButton(
                   height: buttonHeight,

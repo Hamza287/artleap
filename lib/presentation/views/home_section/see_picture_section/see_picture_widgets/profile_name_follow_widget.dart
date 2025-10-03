@@ -20,9 +20,9 @@ class ProfileNameFollowWidget extends ConsumerWidget {
     final userProfile = ref.watch(userProfileProvider);
     final currentUserId = UserData.ins.userId;
 
-    // Check if user is following the profile
     final isFollowing = userProfile.userProfileData?.user.following
-        .any((user) => user.id == userId) ?? false;
+            .any((user) => user.id == userId) ??
+        false;
 
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15),
@@ -30,15 +30,17 @@ class ProfileNameFollowWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: userId != null ? () {
-              Navigation.pushNamed(
-                OtherUserProfileScreen.routeName,
-                arguments: OtherUserProfileParams(
-                  userId: userId,
-                  profileName: profileName,
-                ),
-              );
-            } : null,
+            onTap: userId != null
+                ? () {
+                    Navigation.pushNamed(
+                      OtherUserProfileScreen.routeName,
+                      arguments: OtherUserProfileParams(
+                        userId: userId,
+                        profileName: profileName,
+                      ),
+                    );
+                  }
+                : null,
             child: Container(
               child: Row(
                 children: [
@@ -65,65 +67,60 @@ class ProfileNameFollowWidget extends ConsumerWidget {
           if (userId != null && currentUserId != null)
             isFollowing
                 ? GestureDetector(
-              onTap: () {
-                ref.read(userProfileProvider)
-                    .followUnfollowUser(currentUserId, userId!);
-              },
-              child: Container(
-                height: 30,
-                width: 100,
-                decoration: BoxDecoration(
-                  color: Color(0xff3586f1),
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: AppColors.seaBlue),
-                ),
-                child: Center(
-                  child: userProfile.isLoading
-                      ? LoadingAnimationWidget.threeArchedCircle(
-                    color: AppColors.darkBlue,
-                    size: 20,
-                  )
-                      : Text(
-                    "Following",
-                    style: AppTextstyle.interMedium(
-                      color: AppColors.white,
-                      fontSize: 14,
+                    onTap: () {
+                      ref.read(userProfileProvider).followUnfollowUser(currentUserId, userId!);
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Color(0xff3586f1),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: AppColors.seaBlue),
+                      ),
+                      child: Center(
+                        child: userProfile.isLoading
+                            ? LoadingAnimationWidget.threeArchedCircle(
+                                color: AppColors.darkBlue,
+                                size: 20,
+                              )
+                            : Text("Following",
+                                style: AppTextstyle.interMedium(
+                                  color: AppColors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            )
+                  )
                 : GestureDetector(
-              onTap: () {
-                ref.read(userProfileProvider)
-                    .followUnfollowUser(currentUserId, userId!);
-              },
-              child: Container(
-                height: 30,
-                width: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Color(0xff3586f1)),
-                  color: Color(0xff3586f1),
-                ),
-                child: Center(
-                  child: userProfile.isLoading
-                      ? LoadingAnimationWidget.threeArchedCircle(
-                    color: AppColors.white,
-                    size: 20,
-                  )
-                      : Text(
-                    "Follow",
-                    style: AppTextstyle.interMedium(
-                      color: AppColors.white,
-                      fontSize: 14,
+                    onTap: () {
+                      ref.read(userProfileProvider).followUnfollowUser(currentUserId, userId!);
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: Color(0xff3586f1)),
+                        color: Color(0xff3586f1),
+                      ),
+                      child: Center(
+                        child: userProfile.isLoading
+                            ? LoadingAnimationWidget.threeArchedCircle(
+                                color: AppColors.white,
+                                size: 20,
+                              ) : Text(
+                                "Follow",
+                                style: AppTextstyle.interMedium(
+                                  color: AppColors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            )
-          else
-            const SizedBox(), // Show empty container if userId or currentUserId is null
+                  )
+          else const SizedBox.shrink(),
         ],
       ),
     );

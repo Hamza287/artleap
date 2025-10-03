@@ -1,11 +1,14 @@
 import 'dart:typed_data';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
+import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import '../../profile_screen/other_user_profile_screen.dart';
 import '../../see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
 
 class PostHeader extends ConsumerStatefulWidget {
@@ -55,27 +58,26 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
 
   void _filterImageData() {
     _filteredImage = widget.image;
-    _filteredImageUrl = widget.imageUrl ??
-        widget.image?.imageUrl ??
-        widget.image?.url;
-    _filteredImageId = widget.imageId ??
-        widget.image?.id ??
-        widget.image?.imageId;
-    _filteredOtherUserId = widget.otherUserId ??
-        widget.image?.userId ??
-        widget.image?.creatorId;
+    _filteredImageUrl =
+        widget.imageUrl ?? widget.image?.imageUrl ?? widget.image?.url;
+    _filteredImageId =
+        widget.imageId ?? widget.image?.id ?? widget.image?.imageId;
+    _filteredOtherUserId =
+        widget.otherUserId ?? widget.image?.userId ?? widget.image?.creatorId;
   }
 
   String _getUserInitials(dynamic image) {
     final processedImage = image ?? _filteredImage;
-    if (processedImage.username != null && processedImage.username!.isNotEmpty) {
+    if (processedImage.username != null &&
+        processedImage.username!.isNotEmpty) {
       final names = processedImage.username!.split(' ');
       if (names.length > 1) {
         return '${names[0][0]}${names[1][0]}'.toUpperCase();
       }
       return processedImage.username!.substring(0, 1).toUpperCase();
     }
-    if (processedImage.userEmail != null && processedImage.userEmail!.isNotEmpty) {
+    if (processedImage.userEmail != null &&
+        processedImage.userEmail!.isNotEmpty) {
       return processedImage.userEmail!.substring(0, 1).toUpperCase();
     }
     return 'A';
@@ -83,10 +85,12 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
 
   String _getDisplayName(dynamic image) {
     final processedImage = image ?? _filteredImage;
-    if (processedImage.username != null && processedImage.username!.isNotEmpty) {
+    if (processedImage.username != null &&
+        processedImage.username!.isNotEmpty) {
       return processedImage.username!;
     }
-    if (processedImage.userEmail != null && processedImage.userEmail!.isNotEmpty) {
+    if (processedImage.userEmail != null &&
+        processedImage.userEmail!.isNotEmpty) {
       return processedImage.userEmail!.split('@')[0];
     }
     return 'Anonymous Artist';
@@ -117,11 +121,12 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
     }
   }
 
-
   void _handleDownload(BuildContext context) {
     final downloadUrl = _filteredImageUrl;
     final downloadUint8List = widget.uint8ListImage;
-    ref.read(favProvider).downloadImage(downloadUrl!, uint8ListObject: downloadUint8List);
+    ref
+        .read(favProvider)
+        .downloadImage(downloadUrl!, uint8ListObject: downloadUint8List);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -144,7 +149,8 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
           content: const Text('Unable to share image'),
           backgroundColor: AppColors.errorColor,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -185,30 +191,42 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [AppColors.darkBlue, AppColors.pinkColor],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.darkBlue.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+          InkWell(
+            onTap: _filteredOtherUserId != null
+                ? () {
+              Navigation.pushNamed(
+                OtherUserProfileScreen.routeName,
+                arguments: OtherUserProfileParams(
+                  userId: _filteredOtherUserId!,
+                  profileName: _getDisplayName(_filteredImage),
                 ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                _getUserInitials(_filteredImage),
-                style: AppTextstyle.interBold(
-                  fontSize: 18,
-                  color: Colors.white,
+              );
+            } : null,
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [AppColors.darkBlue, AppColors.pinkColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.darkBlue.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  _getUserInitials(_filteredImage),
+                  style: AppTextstyle.interBold(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -218,11 +236,24 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _getDisplayName(_filteredImage),
-                  style: AppTextstyle.interBold(
-                    fontSize: 16,
-                    color: Colors.black87,
+                InkWell(
+                  onTap: _filteredOtherUserId != null
+                      ? () {
+                          Navigation.pushNamed(
+                            OtherUserProfileScreen.routeName,
+                            arguments: OtherUserProfileParams(
+                              userId: _filteredOtherUserId!,
+                              profileName: _getDisplayName(_filteredImage),
+                            ),
+                          );
+                        }
+                      : null,
+                  child: Text(
+                    _getDisplayName(_filteredImage),
+                    style: AppTextstyle.interBold(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),

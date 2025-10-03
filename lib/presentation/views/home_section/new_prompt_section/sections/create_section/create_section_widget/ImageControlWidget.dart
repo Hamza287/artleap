@@ -310,7 +310,7 @@ class ImageControlsWidget extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pushNamed("choose_plan_screen");
             },
             child: const Text('Upgrade'),
           ),

@@ -8,6 +8,7 @@ import '../home_section/new_comunity_screen/bottom_sheet_components/error_coment
 import '../subscriptions/choose_plan_widgets/loading_state.dart';
 
 class SavedImagesScreen extends ConsumerStatefulWidget {
+  static const String routeName = 'saved-images-screens';
   const SavedImagesScreen({super.key});
 
   @override
@@ -93,7 +94,6 @@ class _SavedImagesScreenState extends ConsumerState<SavedImagesScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     const SizedBox(height: 80),
-                    // Header Content
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Row(

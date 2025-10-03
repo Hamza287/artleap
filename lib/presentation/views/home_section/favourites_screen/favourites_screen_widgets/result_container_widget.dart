@@ -40,15 +40,16 @@ class ResultContainerWidget extends ConsumerWidget {
               onTap: () {
                 Navigation.pushNamed(SeePictureScreen.routeName,
                     arguments: SeePictureParams(
-                        // isHomeScreenNavigation: false,
-                        // isRecentGeneration: false,
                         imageId: e.id,
                         image: e.imageUrl,
                         modelName: e.modelName,
                         profileName: e.username,
                         prompt: e.prompt,
                         userId: e.userId,
-                        creatorEmail: e.creatorEmail));
+                        creatorEmail: e.creatorEmail,
+                        privacy: e.privacy,
+                    )
+                );
               },
               child: Container(
                 height: 155,

@@ -145,6 +145,7 @@ class _TrendingCreationsWidgetState
                               createdDate: image.createdAt,
                               index: index,
                               creatorEmail: image.userEmail,
+                              privacy: image.privacy,
                             ),
                           );
                         },

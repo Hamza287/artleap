@@ -84,6 +84,7 @@ dependencies:
   app_tracking_transparency: ^2.0.6+1
   device_info_plus: ^11.5.0
   timeago: ^3.7.1
+  audioplayers: ^6.5.1
 
 dev_dependencies:
   flutter_test:
@@ -120,6 +121,7 @@ flutter:
     - assets/langs/
     - assets/json/
     - assets/watermark/
+    - assets/sounds/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
