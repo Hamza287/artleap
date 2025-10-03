@@ -18,7 +18,7 @@ import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 class SeePictureScreen extends ConsumerStatefulWidget {
   static const routeName = "see_picture_screen";
   final SeePictureParams? params;
-  const SeePictureScreen({super.key, this.params});
+  const SeePictureScreen({super.key, this.params,});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -114,6 +114,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                     index: widget.params!.index,
                     creatorEmail: widget.params!.creatorEmail,
                     otherUserId: widget.params!.userId,
+                    privacy: widget.params!.privacy,
                   ),
                   20.spaceY,
                   PromptTextWidget(

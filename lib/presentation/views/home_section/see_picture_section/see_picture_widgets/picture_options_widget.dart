@@ -32,6 +32,7 @@ class PictureOptionsWidget extends ConsumerWidget {
   String? otherUserId;
   int? index;
   String? imageId;
+  String privacy;
   PictureOptionsWidget(
       {super.key,
       this.imageUrl,
@@ -45,7 +46,9 @@ class PictureOptionsWidget extends ConsumerWidget {
       this.currentUserId,
       this.otherUserId,
       this.index,
-      this.imageId});
+      this.imageId, required this.privacy
+
+      });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -171,6 +174,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                   builder: (context) => SetPrivacyDialog(
                     imageId: imageId!,
                     userId: currentUserId!,
+                    initialPrivacyString: privacy,
                   ),
                 );
               },

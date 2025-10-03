@@ -2,36 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../providers/image_privacy_provider.dart';
 
+ImagePrivacy _privacyFromString(String privacy) {
+  switch (privacy.toLowerCase()) {
+    case 'public':
+      return ImagePrivacy.public;
+    case 'private':
+      return ImagePrivacy.private;
+    case 'followers':
+      return ImagePrivacy.followers;
+    case 'personal':
+      return ImagePrivacy.personal;
+    default:
+      return ImagePrivacy.public;
+  }
+}
+
 final selectedPrivacyProvider = StateProvider.autoDispose
     .family<ImagePrivacy, ImagePrivacy?>(
       (ref, initial) => initial ?? ImagePrivacy.public,
 );
 
-// Add this provider to track the save operation state
 final saveOperationProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 class SetPrivacyDialog extends ConsumerWidget {
   final String imageId;
   final String userId;
-  final ImagePrivacy? initial;
+  final String initialPrivacyString ;
 
   const SetPrivacyDialog({
     super.key,
     required this.imageId,
     required this.userId,
-    this.initial,
+    required this.initialPrivacyString,
   });
+
+  ImagePrivacy get initialPrivacy {
+    return _privacyFromString(initialPrivacyString!);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(imagePrivacyProvider);
-    final selected = ref.watch(selectedPrivacyProvider(initial));
+    final selected = ref.watch(selectedPrivacyProvider(initialPrivacy));
     final isUpdating = state.isUpdating;
     final isSaving = ref.watch(saveOperationProvider);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // Determine if we should show loading state
     final showLoading = isUpdating || isSaving;
 
     return Dialog(
@@ -57,7 +73,6 @@ class SetPrivacyDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Compact Header
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -91,33 +106,19 @@ class SetPrivacyDialog extends ConsumerWidget {
                 ],
               ),
             ),
-
-            // Loading overlay or content
             Expanded(
               child: Stack(
                 children: [
-                  // Main content
                   Padding(
                     padding: const EdgeInsets.all(17),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildCompactOptionsGrid(
-                          selected: selected,
-                          showLoading: showLoading,
-                          ref: ref,
-                          screenWidth: screenWidth,
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Dynamic Info Box
-                        _buildInfoBox(selected),
-                      ],
+                    child: _buildCompactOptionsGrid(
+                      selected: selected,
+                      currentStatus: initialPrivacy,
+                      showLoading: showLoading,
+                      ref: ref,
+                      screenWidth: screenWidth,
                     ),
                   ),
-
-                  // Loading overlay
                   if (showLoading)
                     Container(
                       color: Colors.black.withOpacity(0.3),
@@ -131,8 +132,6 @@ class SetPrivacyDialog extends ConsumerWidget {
                 ],
               ),
             ),
-
-            // Compact Footer
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -171,14 +170,7 @@ class SetPrivacyDialog extends ConsumerWidget {
                           strokeWidth: 2,
                           color: Colors.white,
                         ),
-                      )
-                          : const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                      ) : _buildSaveButtonText(selected,  initialPrivacy),
                     ),
                   ),
                 ],
@@ -190,8 +182,29 @@ class SetPrivacyDialog extends ConsumerWidget {
     );
   }
 
+  Widget _buildSaveButtonText(ImagePrivacy selected, ImagePrivacy? currentStatus) {
+    if (currentStatus == null || selected == currentStatus) {
+      return const Text(
+        'Save',
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      );
+    }
+
+    return const Text(
+      'Update',
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+    );
+  }
+
   Widget _buildCompactOptionsGrid({
     required ImagePrivacy selected,
+    required ImagePrivacy? currentStatus,
     required bool showLoading,
     required WidgetRef ref,
     required double screenWidth,
@@ -203,18 +216,6 @@ class SetPrivacyDialog extends ConsumerWidget {
         title: 'Public',
         color: Colors.green,
       ),
-      // _PrivacyOption(
-      //   value: ImagePrivacy.followers,
-      //   icon: Icons.people,
-      //   title: 'Followers',
-      //   color: Colors.blue,
-      // ),
-      // _PrivacyOption(
-      //   value: ImagePrivacy.personal,
-      //   icon: Icons.person,
-      //   title: 'Personal',
-      //   color: Colors.orange,
-      // ),
       _PrivacyOption(
         value: ImagePrivacy.private,
         icon: Icons.lock,
@@ -224,27 +225,29 @@ class SetPrivacyDialog extends ConsumerWidget {
     ];
 
     final crossAxisCount = screenWidth < 350 ? 2 : 4;
-    final itemHeight = screenWidth < 350 ? 80.0 : 70.0;
 
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 6,
+        crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        childAspectRatio: crossAxisCount == 2 ? 1.8 : 1.0,
+        childAspectRatio: crossAxisCount == 2 ? 1.4 : 0.7,
       ),
       itemCount: options.length,
       itemBuilder: (context, index) {
         final option = options[index];
+        final isCurrentStatus = currentStatus == option.value;
+
         return _buildOptionItem(
           option: option,
           isSelected: selected == option.value,
+          isCurrentStatus: isCurrentStatus,
           showLoading: showLoading,
           onTap: () {
             if (!showLoading) {
-              ref.read(selectedPrivacyProvider(initial).notifier).state = option.value;
+              ref.read(selectedPrivacyProvider(initialPrivacy).notifier).state = option.value;
             }
           },
         );
@@ -255,17 +258,26 @@ class SetPrivacyDialog extends ConsumerWidget {
   Widget _buildOptionItem({
     required _PrivacyOption option,
     required bool isSelected,
+    required bool isCurrentStatus,
     required bool showLoading,
     required VoidCallback onTap,
   }) {
     return Material(
-      color: isSelected ? option.color.withOpacity(0.1) : Colors.grey.shade50,
+      color: isSelected
+          ? option.color.withOpacity(0.1)
+          : (isCurrentStatus ? option.color.withOpacity(0.05) : Colors.grey.shade50),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: isCurrentStatus
+                ? Border.all(color: option.color.withOpacity(0.3), width: 1.5)
+                : null,
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -291,6 +303,13 @@ class SetPrivacyDialog extends ConsumerWidget {
                   color: option.color,
                   size: 14,
                 ),
+              ] else if (isCurrentStatus) ...[
+                const SizedBox(height: 2),
+                Icon(
+                  Icons.circle,
+                  color: option.color.withOpacity(0.5),
+                  size: 8,
+                ),
               ],
             ],
           ),
@@ -299,62 +318,26 @@ class SetPrivacyDialog extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoBox(ImagePrivacy selected) {
-    final infoMap = {
-      ImagePrivacy.public: 'Visible to everyone',
-      ImagePrivacy.followers: 'Only your followers can see',
-      ImagePrivacy.personal: 'Only visible to you',
-      ImagePrivacy.private: 'Hidden from everyone',
-    };
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.info_outline, size: 16, color: Colors.grey.shade600),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              infoMap[selected] ?? '',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Future<void> _savePrivacy(BuildContext context, WidgetRef ref) async {
-    // Set saving state to true
     ref.read(saveOperationProvider.notifier).state = true;
 
     try {
+      final newPrivacy = ref.read(selectedPrivacyProvider(initialPrivacy));
+
       await ref.read(imagePrivacyProvider.notifier).setPrivacy(
         imageId: imageId,
         userId: userId,
-        privacy: ref.read(selectedPrivacyProvider(initial)),
+        privacy: newPrivacy,
       );
 
       if (context.mounted) {
-        // Reset saving state
         ref.read(saveOperationProvider.notifier).state = false;
-        Navigator.of(context).pop(ref.read(selectedPrivacyProvider(initial)));
+        Navigator.of(context).pop(newPrivacy);
       }
     } catch (error) {
-      // Reset saving state even on error
       if (context.mounted) {
         ref.read(saveOperationProvider.notifier).state = false;
-        // Optionally show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to update privacy: $error'),

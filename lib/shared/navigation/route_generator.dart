@@ -73,8 +73,7 @@ class RouteGenerator {
       case ResultScreenRedesign.routeName:
         return route(const ResultScreenRedesign());
       case SeePictureScreen.routeName:
-        return route(
-            SeePictureScreen(params: settings.arguments as SeePictureParams?));
+        return route(SeePictureScreen(params: settings.arguments as SeePictureParams?));
       case EditProfileScreen.routeName:
         return route(EditProfileScreen(
           params: settings.arguments as EditProfileSreenParams?,

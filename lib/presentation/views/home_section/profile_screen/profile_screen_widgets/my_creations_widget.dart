@@ -104,6 +104,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
                         userId: UserData.ins.userId,
                         index: reverseIndex,
                         creatorEmail: e.creatorEmail,
+                        privacy: e.privacy,
                       ),
                     );
                   },

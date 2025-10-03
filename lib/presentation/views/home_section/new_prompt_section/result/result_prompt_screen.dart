@@ -228,6 +228,7 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
               prompt:
               ref.watch(generateImageProvider).promptTextController.text,
               image: imageData.imageUrl,
+              privacy: imageData.privacy
             ));
       },
       child: Container(
@@ -278,11 +279,9 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
                       userId: UserData.ins.userId,
                       imageId: images[index]!.id,
                       modelName: ref.watch(generateImageProvider).selectedStyle,
-                      prompt: ref
-                          .watch(generateImageProvider)
-                          .promptTextController
-                          .text,
+                      prompt: ref.watch(generateImageProvider).promptTextController.text,
                       image: images[index]!.imageUrl,
+                        privacy: images[index].privacy
                     ));
               },
               child: ClipRRect(
@@ -312,6 +311,7 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
               modelName: image.presetStyle,
               prompt: image.prompt,
               image: image.imageUrl,
+              privacy: image.privacy,
             ));
       },
       child: Container(
@@ -363,6 +363,7 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
                       modelName: images[index]!.presetStyle,
                       prompt: images[index]!.prompt,
                       image: images[index]!.imageUrl,
+                      privacy: images[index]!.privacy
                     ));
               },
               child: ClipRRect(

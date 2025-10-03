@@ -102,6 +102,7 @@ class PostImage extends ConsumerWidget {
               createdDate: image.createdAt,
               index: index,
               creatorEmail: image.userEmail,
+              privacy: image.privacy,
             ),
           );
         },
