@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +13,7 @@ import '../../see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.
 class PostHeader extends ConsumerStatefulWidget {
   final dynamic image;
   final String? imageId;
+  final String? profilePic;
   final String? imageUrl;
   final Uint8List? uint8ListImage;
   final String? currentUserId;
@@ -27,6 +27,7 @@ class PostHeader extends ConsumerStatefulWidget {
     this.uint8ListImage,
     this.currentUserId,
     this.otherUserId,
+    required this.profilePic,
   });
 
   @override
@@ -194,14 +195,15 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
           InkWell(
             onTap: _filteredOtherUserId != null
                 ? () {
-              Navigation.pushNamed(
-                OtherUserProfileScreen.routeName,
-                arguments: OtherUserProfileParams(
-                  userId: _filteredOtherUserId!,
-                  profileName: _getDisplayName(_filteredImage),
-                ),
-              );
-            } : null,
+                    Navigation.pushNamed(
+                      OtherUserProfileScreen.routeName,
+                      arguments: OtherUserProfileParams(
+                        userId: _filteredOtherUserId!,
+                        profileName: _getDisplayName(_filteredImage),
+                      ),
+                    );
+                  }
+                : null,
             child: Container(
               width: 50,
               height: 50,
@@ -220,14 +222,30 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
                   ),
                 ],
               ),
-              child: Center(
-                child: Text(
-                  _getUserInitials(_filteredImage),
-                  style: AppTextstyle.interBold(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
+              child: ClipOval(
+                child: widget.profilePic != null
+                    ? Image.network(
+                        widget.profilePic!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Center(
+                          child: Text(
+                            _getUserInitials(_filteredImage),
+                            style: AppTextstyle.interBold(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          _getUserInitials(_filteredImage),
+                          style: AppTextstyle.interBold(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),

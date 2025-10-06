@@ -113,7 +113,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.shade400,
-                  blurRadius: 0,
+                  blurRadius: 2,
                   spreadRadius: 2,
                   offset: const Offset(0, -2),
                 ),

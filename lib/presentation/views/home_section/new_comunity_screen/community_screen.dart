@@ -80,11 +80,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         ) ?? false;
         if (shouldExit) SystemNavigator.pop();
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: AppBackgroundWidget(
-          widget: const CommunityFeedWidget(),
-        ),
+      child: AppBackgroundWidget(
+        widget: const CommunityFeedWidget(),
       ),
     );
   }

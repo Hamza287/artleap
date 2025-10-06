@@ -56,7 +56,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
       surfaceTintColor: Colors.white,
       child: Stack(
         children: [
-          // Background with blur effect
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -69,8 +68,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
               ),
             ),
           ),
-
-          // Frosted glass effect
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 7.0, sigmaY: 7.0),
             child: Container(
@@ -79,8 +76,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
               ),
             ),
           ),
-
-          // Content
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

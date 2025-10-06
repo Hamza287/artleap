@@ -15,8 +15,6 @@ class HomeScreenTopBar extends ConsumerWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final subscriptionAsync = ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
-
-    // Get the actual plan name from user profile
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
 
