@@ -37,66 +37,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     });
   }
 
-  // Widget _buildProfilePicture() {
-  //   final userProfileState = ref.watch(userProfileProvider);
-
-  //   if (userProfileState.isloading) {
-  //     return const SizedBox(
-  //       height: 35,
-  //       width: 35,
-  //       child: Center(
-  //         child: CircularProgressIndicator(
-  //           color: AppColors.indigo,
-  //           strokeWidth: 2,
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   final profilePic = userProfileState.userProfileData?.user.profilePic;
-
-  //   if (profilePic != null && profilePic.isNotEmpty) {
-  //     return Container(
-  //       height: 35,
-  //       width: 35,
-  //       decoration: BoxDecoration(
-  //         image: DecorationImage(
-  //           image: NetworkImage(profilePic),
-  //           fit: BoxFit.cover,
-  //         ),
-  //         shape: BoxShape.circle,
-  //         color: AppColors.white,
-  //         border: Border.all(
-  //           color: ref.watch(bottomNavBarProvider).pageIndex == 3
-  //               ? const Color(0xFFAB8AFF) // Purple when selected
-  //               : AppColors.darkBlue, // Dark blue when unselected
-  //           width: 2,
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   // Default profile picture
-  //   return Container(
-  //     height: 35,
-  //     width: 35,
-  //     decoration: BoxDecoration(
-  //       image: const DecorationImage(
-  //         image: AssetImage(AppAssets.artstyle1),
-  //         fit: BoxFit.cover,
-  //       ),
-  //       shape: BoxShape.circle,
-  //       color: AppColors.white,
-  //       border: Border.all(
-  //         color: ref.watch(bottomNavBarProvider).pageIndex == 3
-  //             ? const Color(0xFFAB8AFF) // Purple when selected
-  //             : AppColors.darkBlue, // Dark blue when unselected
-  //         width: 2,
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
@@ -104,63 +44,63 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        bottomNavigationBar: SafeArea(
-          child: Container(
-            height: 65,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade400,
-                  blurRadius: 2,
-                  spreadRadius: 2,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 10.0,
-                  sigmaY: 10.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavButton(
-                      icon: Icons.home,
-                      index: 0,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
-                    ),
-                    _buildNavButton(
-                      icon: Icons.add_circle,
-                      index: 1,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
-                    ),
-                    _buildNavButton(
-                      icon: Icons.groups,
-                      index: 2,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
-                    ),
-                    _buildNavButton(
-                      icon: Icons.person,
-                      index: 3,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+        bottomNavigationBar: _buildEnhancedNavBar(pageIndex),
         body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
             ? bottomNavBarState.widgets[pageIndex]
             : const Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
+  Widget _buildEnhancedNavBar(int currentIndex) {
+    return Container(
+      height: 75,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 10.0,
+            sigmaY: 10.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavButton(
+                icon: Icons.home,
+                index: 0,
+                currentIndex: currentIndex,
+                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
+              ),
+              _buildNavButton(
+                icon: Icons.add_circle,
+                index: 1,
+                currentIndex: currentIndex,
+                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
+              ),
+              _buildNavButton(
+                icon: Icons.groups,
+                index: 2,
+                currentIndex: currentIndex,
+                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
+              ),
+              _buildNavButton(
+                icon: Icons.person,
+                index: 3,
+                currentIndex: currentIndex,
+                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -171,18 +111,37 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     required int currentIndex,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: SizedBox(
-        height: 55,
-        width: 40,
-        child: Center(
-          child: Icon(
-            icon,
-            size: 33,
-            color: currentIndex == index
-                ? const Color(0xFFAB8AFF)
-                : AppColors.darkBlue,
+    final isSelected = currentIndex == index;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(100),
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF667EEA).withOpacity(0.1) : Colors.transparent,
+            shape: BoxShape.circle,
+            border: isSelected ? Border.all(
+              color: const Color(0xFF667EEA).withOpacity(0.3),
+              width: 1.5,
+            ) : null,
+          ),
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? const Color(0xFF667EEA) : Colors.transparent,
+              ),
+              child: Icon(
+                icon,
+                size: 32,
+                color: isSelected ? Colors.white : AppColors.darkBlue,
+              ),
+            ),
           ),
         ),
       ),

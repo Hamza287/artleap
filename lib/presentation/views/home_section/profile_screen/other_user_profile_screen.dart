@@ -6,74 +6,91 @@ import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/profile_screen_widgets/my_creations_widget.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
-// ignore: must_be_immutable
 class OtherUserProfileScreen extends ConsumerStatefulWidget {
   static const String routeName = 'other_profile_screen';
-  OtherUserProfileParams? params;
+  final OtherUserProfileParams? params;
 
-  OtherUserProfileScreen({super.key, this.params});
+  const OtherUserProfileScreen({super.key, this.params});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _OtherUserProfileScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _OtherUserProfileScreenState();
 }
 
-class _OtherUserProfileScreenState
-    extends ConsumerState<OtherUserProfileScreen> {
+class _OtherUserProfileScreenState extends ConsumerState<OtherUserProfileScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    ref
-        .read(userProfileProvider)
-        .getOtherUserProfileData(widget.params!.userId!);
-    AnalyticsService.instance
-        .logScreenView(screenName: 'others profile screen');
+    ref.read(userProfileProvider).getOtherUserProfileData(widget.params!.userId!);
+    AnalyticsService.instance.logScreenView(screenName: 'others profile screen');
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppBackgroundWidget(
-      widget: ref.watch(userProfileProvider).otherUserProfileData == null
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: ref.watch(userProfileProvider).otherUserProfileData == null
           ? Center(
-              child: LoadingAnimationWidget.threeArchedCircle(
-                color: AppColors.white,
-                size: 35,
-              ),
-            )
-          : SingleChildScrollView(
+        child: LoadingAnimationWidget.threeArchedCircle(
+          color: AppColors.darkBlue,
+          size: 35,
+        ),
+      )
+          : Column(
+        children: [
+          _buildAppBar(),
+          20.spaceY,
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  25.spaceY,
-                  Row(
-                    children: [
-                      20.spaceX,
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(Icons.arrow_back_ios_new_outlined,
-                            color: AppColors.darkBlue, size: 20),
-                      ),
-                    ],
-                  ),
-                  20.spaceY,
                   ProfileInfoWidget(
                     profileName: widget.params!.profileName,
                     userId: widget.params!.userId,
                   ),
-                  50.spaceY,
+                  24.spaceY,
                   MyCreationsWidget(
                     userName: widget.params!.profileName,
                     listofCreations: ref.watch(userProfileProvider).otherUserProfileData!.user.images,
                     userId: '9y37',
                   ),
+                  20.spaceY,
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 60, 20, 0),
+      child: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.darkBlue, size: 18),
+            ),
+          ),
+          12.spaceX,
+          Text(
+            "Artist Profile",
+            style: AppTextstyle.interMedium(
+              color: AppColors.darkBlue,
+              fontSize: 20,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

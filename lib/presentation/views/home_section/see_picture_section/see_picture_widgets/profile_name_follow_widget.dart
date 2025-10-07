@@ -25,15 +25,19 @@ class ProfileNameFollowWidget extends ConsumerWidget {
         false;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
           ),
         ],
         border: Border.all(color: Colors.grey.withOpacity(0.1)),
@@ -54,137 +58,137 @@ class ProfileNameFollowWidget extends ConsumerWidget {
               );
             }
                 : null,
-            child: Container(
-              child: Row(
-                children: [
-                  // Profile Avatar with Gradient Border
-                  Container(
+            child: Row(
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                   color:  Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Padding(
                     padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
                     child: Container(
-                      height: 44,
-                      width: 44,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.darkBlue,
+                        color: Colors.white,
                       ),
                       child: Icon(
                         Icons.person_rounded,
-                        color: Colors.white.withOpacity(0.8),
-                        size: 20,
+                        color: AppColors.darkBlue.withOpacity(0.7),
+                        size: 22,
                       ),
                     ),
                   ),
-                  12.spaceX,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Created by",
-                        style: AppTextstyle.interRegular(
-                          color: Colors.grey[600]!,
-                          fontSize: 12,
-                        ),
+                ),
+                12.spaceX,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Created by",
+                      style: AppTextstyle.interRegular(
+                        color: Colors.white,
+                        fontSize: 12,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        profileName ?? "Jack Bolt",
-                        style: AppTextstyle.interMedium(
-                          color: AppColors.darkBlue,
-                          fontSize: 16,
-                        ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      profileName ?? "Jack Bolt",
+                      style: AppTextstyle.interMedium(
+                        color: AppColors.white,
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
 
           // Follow Button
           if (userId != null && currentUserId != null)
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: isFollowing
-                    ? [
-                  BoxShadow(
-                    color: const Color(0xff3586f1).withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+            _buildFollowButton(ref,userProfile, isFollowing, currentUserId),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFollowButton(WidgetRef ref,dynamic userProfile, bool isFollowing, String currentUserId) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          if (isFollowing)
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            )
+          else
+            BoxShadow(
+              color: const Color(0xff3586f1).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            ref.read(userProfileProvider).followUnfollowUser(currentUserId, userId!);
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: 40,
+            width: isFollowing ? 100 : 90,
+            decoration: BoxDecoration(
+              gradient: isFollowing
+                  ? const LinearGradient(
+                colors: [Colors.white, Colors.white],
+              )
+                  : const LinearGradient(
+                colors: [Color(0xff3586f1), Color(0xff2b6cdb)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isFollowing ? Colors.grey.shade300 : Colors.transparent,
+                width: 1.5,
+              ),
+            ),
+            child: Center(
+              child: userProfile.isLoading
+                  ? LoadingAnimationWidget.threeArchedCircle(
+                color: isFollowing ? AppColors.darkBlue : Colors.white,
+                size: 20,
+              )
+                  : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isFollowing ? Icons.check_rounded : Icons.add_rounded,
+                    color: isFollowing ? AppColors.darkBlue : Colors.white,
+                    size: 16,
                   ),
-                ]
-                    : [
-                  BoxShadow(
-                    color: const Color(0xff3586f1).withOpacity(0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+                  const SizedBox(width: 4),
+                  Text(
+                    isFollowing ? "Following" : "Follow",
+                    style: AppTextstyle.interMedium(
+                      color: isFollowing ? AppColors.darkBlue : Colors.white,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    ref.read(userProfileProvider).followUnfollowUser(currentUserId, userId!);
-                  },
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    height: 40,
-                    width: 110,
-                    decoration: BoxDecoration(
-                      gradient: isFollowing
-                          ? const LinearGradient(
-                        colors: [Color(0xff3586f1), Color(0xff2b6cdb)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
-                          : const LinearGradient(
-                        colors: [Color(0xff3586f1), Color(0xff2b6cdb)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: userProfile.isLoading
-                          ? LoadingAnimationWidget.threeArchedCircle(
-                        color: Colors.white,
-                        size: 20,
-                      )
-                          : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            isFollowing ? Icons.check_rounded : Icons.add_rounded,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            isFollowing ? "Following" : "Follow",
-                            style: AppTextstyle.interMedium(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            )
-          else
-            const SizedBox.shrink(),
-        ],
+            ),
+          ),
+        ),
       ),
     );
   }

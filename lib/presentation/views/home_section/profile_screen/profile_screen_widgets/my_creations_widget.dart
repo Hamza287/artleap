@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
@@ -26,107 +27,134 @@ class MyCreationsWidget extends StatefulWidget {
 
 class _MyCreationsWidgetState extends State<MyCreationsWidget> {
   late final filteredCreations;
+
   @override
   void initState() {
     if(widget.userId == UserData.ins.userId!){
-      filteredCreations = widget.listofCreations
-          .asMap()
-          .entries
-          .toList();
+      filteredCreations = widget.listofCreations.asMap().entries.toList();
     } else {
-      filteredCreations = widget.listofCreations
-          .asMap()
-          .entries
-          .where((entry) => entry.value.privacy == 'public')
-          .toList();
+      filteredCreations = widget.listofCreations.asMap().entries.where((entry) => entry.value.privacy == 'public').toList();
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10, left: 10, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            filteredCreations.isEmpty
-                ? Center(
-              child: Container(
-                width: double.infinity,
-                height: 100,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                ),
-                child: Center(
-                  child: Text(
-                    'No Creations Yet',
-                    style: AppTextstyle.interBold(
-                      fontSize: 20,
-                      color: AppColors.darkBlue,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 16),
+            child: Text(
+              "Gallery",
+              style: AppTextstyle.interMedium(
+                fontSize: 18,
+                color: AppColors.darkBlue,
               ),
-            )
-                : GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-                childAspectRatio: 1,
-              ),
-              itemCount: filteredCreations.length,
-              itemBuilder: (context, index) {
-                // Use filteredCreations to maintain original indices
-                var entry = filteredCreations[index];
-                var reverseIndex = filteredCreations.length - 1 - index;
-                var e = entry.value;
-                return GestureDetector(
-                  onTap: () {
-                    Navigation.pushNamed(
-                      SeePictureScreen.routeName,
-                      arguments: SeePictureParams(
-                        imageId: e.id,
-                        image: e.imageUrl,
-                        prompt: e.prompt,
-                        modelName: e.modelName,
-                        profileName: e.username,
-                        userId: UserData.ins.userId,
-                        index: reverseIndex,
-                        creatorEmail: e.creatorEmail,
-                        privacy: e.privacy,
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: AppColors.darkBlue,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: e.imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                );
-              },
             ),
-          ],
-        ),
+          ),
+          _buildCreationsGrid(),
+        ],
       ),
+    );
+  }
+
+  Widget _buildCreationsGrid() {
+    if (filteredCreations.isEmpty) {
+      return Container(
+        height: 200,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.photo_library_outlined,
+                size: 48,
+                color: Colors.grey.shade400,
+              ),
+              12.spaceY,
+              Text(
+                'No creations yet',
+                style: AppTextstyle.interMedium(
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              4.spaceY,
+              Text(
+                'Start creating amazing AI art!',
+                style: AppTextstyle.interRegular(
+                  fontSize: 14,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1,
+      ),
+      itemCount: filteredCreations.length,
+      itemBuilder: (context, index) {
+        final entry = filteredCreations[index];
+        final reverseIndex = filteredCreations.length - 1 - index;
+        final e = entry.value;
+
+        return GestureDetector(
+          onTap: () {
+            Navigation.pushNamed(
+              SeePictureScreen.routeName,
+              arguments: SeePictureParams(
+                imageId: e.id,
+                image: e.imageUrl,
+                prompt: e.prompt,
+                modelName: e.modelName,
+                profileName: e.username,
+                userId: UserData.ins.userId,
+                index: reverseIndex,
+                creatorEmail: e.creatorEmail,
+                privacy: e.privacy,
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                imageUrl: e.imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

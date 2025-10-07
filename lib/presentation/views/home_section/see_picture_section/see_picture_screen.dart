@@ -143,8 +143,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                 ),
               ),
             ),
-
-            // Title with Gradient Text
             Expanded(
               child: Center(
                 child: ShaderMask(
