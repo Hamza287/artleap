@@ -10,7 +10,7 @@ import '../notifications_repo/notification_repository.dart';
 
 class FirebaseNotificationService {
   final Ref ref;
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin; // Add this
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   FirebaseNotificationService(this.ref) {
     _initializeLocalNotifications();
@@ -48,6 +48,7 @@ class FirebaseNotificationService {
   }
 
   Future<void> _setupFirebase() async {
+    await UserData.ins.loadUserDataIfNeeded();
     final messaging = FirebaseMessaging.instance;
 
     final settings = await messaging.requestPermission(
@@ -68,15 +69,14 @@ class FirebaseNotificationService {
 
     final token = await messaging.getToken();
     debugPrint('FCM Token: $token');
-
+    debugPrint('User id : ${UserData.ins.userId}');
     if (token != null && UserData.ins.userId != null) {
+      debugPrint('Token sent for registration: ${token}');
       final repo = ref.read(notificationRepositoryProvider);
       await repo.registerDeviceToken(UserData.ins.userId!, token);
     }
 
-
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-
       if (UserData.ins.userId != null) {
         final repo = ref.read(notificationRepositoryProvider);
         await repo.registerDeviceToken(UserData.ins.userId!, newToken);
