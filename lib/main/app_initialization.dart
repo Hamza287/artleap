@@ -34,10 +34,7 @@ class AppInitialization {
       print("Stripe initialization failed: $e");
     }
 
-    // Set up error handling
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-    // Configure system UI
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: AppColors.topBar,

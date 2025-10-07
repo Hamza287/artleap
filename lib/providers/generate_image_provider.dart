@@ -102,7 +102,6 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  // Add this to your GenerateImageProvider class
   void clearGeneratedData() {
     _generatedImage.clear();
     _generatedTextToImageData.clear();
@@ -134,38 +133,28 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       if (generateImageRes.status == Status.completed) {
         var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
         _generatedTextToImageData.addAll(generatedData.images);
-        reference.read(userProfileProvider).deductCredits(
-            creditsToDeduct: 2,
-            generationType: 'prompt'
-        );
         setGenerateImageLoader(false);
         notifyListeners();
-        return true; // Explicit return on success
+        return true;
       } else {
         setGenerateImageLoader(false);
         notifyListeners();
-        return false; // Explicit return on API failure
+        return false;
       }
     } catch (e) {
       debugPrint('Image generation error: $e');
       setGenerateImageLoader(false);
       notifyListeners();
-      return false; // Explicit return on exception
+      return false;
     }
   }
 
   Future<void> pickImage() async {
     String? imagePath = await Pickers.ins.pickImage();
-
-    // 🛑 Exit if no image selected
     if (imagePath == null) return;
 
     File imageData = File(imagePath);
-
-    // 🔁 Clear previous images and add new one
     images = [imageData];
-
-    // ✅ Set default style to ANIME for image-to-image
     _selectedStyle = textToImageStyles.firstWhere(
       (style) => style['title'] == 'ANIME',
       orElse: () => textToImageStyles[0],
@@ -201,11 +190,9 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
         return false;
       }
     } catch (e) {
-      // Handle unexpected errors
       debugPrint('Image generation error: $e');
-      return false; // Failure
+      return false;
     } finally {
-      // Always ensure loader is stopped
       setGenerateImageLoader(false);
       notifyListeners();
     }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import '../api_services/dio_core.dart';
@@ -13,6 +14,21 @@ class NotificationRepository {
   final Ref ref;
 
   NotificationRepository({required this.dioCore, required this.ref});
+
+  Future<void> registerDeviceToken(String userId, String token) async {
+    try {
+      final response = await dioCore.dio.post(
+        '${AppConstants.artleapBaseUrl}${AppConstants.registerToken}',
+        data: {
+          "userId": userId,
+          "fcmToken": token,
+        },
+      );
+      debugPrint("✅ FCM token sent successfully: ${response.data}");
+    } catch (e) {
+      debugPrint("❌ Error sending FCM token: $e");
+    }
+  }
 
   Future<List<AppNotification>> getUserNotifications(String userId) async {
     try {

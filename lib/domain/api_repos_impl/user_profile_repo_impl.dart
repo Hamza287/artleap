@@ -58,20 +58,6 @@ class UserProfileRepoImpl extends UserProfileRepo {
   }
 
   @override
-  Future<ApiResponse<Map<String, dynamic>>> deductCredits(Map<String, dynamic> data,
-      {bool enableLocalPersistence = false}) async {
-    try {
-      Response res = await artleapApiService.postJson(AppApiPaths.deductCredits, data, enableLocalPersistence: enableLocalPersistence);
-      return HandlingResponse.returnResponse<Map<String, dynamic>>(
-        res,
-        fromJson: (json) => json as Map<String, dynamic>,
-      );
-    } on DioException catch (e) {
-      return HandlingResponse.returnException<Map<String, dynamic>>(e);
-    }
-  }
-
-  @override
   Future<ApiResponse> deleteAccount(String uid,
       {bool enableLocalPersistence = false}) async {
     try {

@@ -118,36 +118,6 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     }
   }
 
-  Future<bool> deductCredits({required int creditsToDeduct, required String generationType}) async {
-    setLoader(true);
-    final data = {
-      "userId": UserData.ins.userId,
-      "creditsToDeduct": creditsToDeduct,
-      "generationType": generationType,
-    };
-    final response = await userFollowingRepo.deductCredits(data);
-    if (response.status == Status.completed) {
-      await getUserProfileData(UserData.ins.userId ?? "");
-      if (generationType == 'image') {
-        _remainingImageCredits = response.data?['remainingCredits'] ?? 0;
-      } else {
-        _remainingPromptCredits = response.data?['remainingCredits'] ?? 0;
-      }
-      setLoader(false);
-      if (hasListeners) {
-        notifyListeners();
-      }
-      return true;
-    } else {
-      appSnackBar("Error", response.message ?? "Failed to deduct credits", AppColors.redColor);
-      setLoader(false);
-      if (hasListeners) {
-        notifyListeners();
-      }
-      return false;
-    }
-  }
-
   Future<void> deActivateAccount(String uid) async {
     setLoader(true);
     final response = await userFollowingRepo.deleteAccount(uid);
