@@ -44,7 +44,7 @@ class StripeService {
 
   Future<ApiResponse> purchaseSubscription({
     required String planId,
-    required int amount, // Amount in cents
+    required int amount,
     required String currency,
     required String userId,
     required SubscriptionService subscriptionService,
@@ -53,7 +53,6 @@ class StripeService {
     bool enableLocalPersistence = false,
   }) async {
     try {
-      // Create Payment Intent
       final clientSecretResponse = await createPaymentIntent(
         amount: amount,
         currency: currency,
@@ -68,15 +67,13 @@ class StripeService {
       }
 
       final clientSecret = clientSecretResponse.data;
-
-      // Initialize Payment Sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
           merchantDisplayName: 'Artleap.ai',
           googlePay: const PaymentSheetGooglePay(
             merchantCountryCode: 'US',
-            testEnv: false, // Set to false in production
+            testEnv: false,
           ),
           style: ThemeMode.system,
         ),
@@ -84,11 +81,8 @@ class StripeService {
 
       // Present Payment Sheet
       await Stripe.instance.presentPaymentSheet();
-
-      // Extract paymentIntentId from clientSecret
       final paymentIntentId = clientSecret!.split('_secret_')[0];
 
-      // Prepare verification data for backend
       final verificationData = {
         'paymentIntentId': paymentIntentId,
         'amount': amount / 100,
@@ -96,7 +90,6 @@ class StripeService {
         'planId': planId,
       };
 
-      // Call backend to verify and create subscription
       final response = await subscriptionService.subscribe(
         userId,
         planId,
@@ -112,9 +105,7 @@ class StripeService {
 
       return response;
     } on StripeException catch (e) {
-      // ✅ Handle cancellation separately
       if (e.error.code == FailureCode.Canceled) {
-        // appSnackBar('Info', 'Purchase was canceled', Colors.orange);
         return ApiResponse.error('User canceled the purchase');
       } else {
         appSnackBar('Error', 'Stripe error', Colors.red);

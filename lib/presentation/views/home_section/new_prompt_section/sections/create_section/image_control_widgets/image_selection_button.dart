@@ -49,8 +49,8 @@ class ImageSelectionButton extends StatelessWidget {
               splashColor: AppColors.purple.withOpacity(0.2),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 20,
+                  vertical: 7.5,
+                  horizontal: 25,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

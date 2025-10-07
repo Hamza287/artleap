@@ -1,4 +1,3 @@
-// app_initialization.dart
 import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
@@ -20,12 +19,10 @@ class AppInitialization {
   static Future<void> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    // Initialize other services
     await AppLocal.ins.initStorage();
     await DI.initDI();
 
@@ -37,10 +34,7 @@ class AppInitialization {
       print("Stripe initialization failed: $e");
     }
 
-    // Set up error handling
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-    // Configure system UI
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: AppColors.topBar,

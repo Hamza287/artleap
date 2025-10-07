@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
@@ -70,7 +71,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
   @override
   Widget build(BuildContext context) {
     final homeProvider = ref.watch(homeScreenProvider);
-
+    final userProfileProviderWatch = ref.watch(userProfileProvider);
     final filteredList = homeProvider.selectedStyleTitle != null
         ? homeProvider.filteredCreations
         : homeProvider.communityImagesList;
@@ -113,7 +114,6 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                 : ListView.builder(
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
-              // Add cache extent for better performance
               cacheExtent: 1000,
               itemCount: filteredList.length +
                   (homeProvider.isLoadingMore ? 1 : 0),
@@ -125,18 +125,25 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                 final image = filteredList[index];
                 if (image == null) return const SizedBox.shrink();
 
-                // Use keys for better widget recycling
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  final posts = ref.read(homeScreenProvider).communityImagesList;
+                  final ids = posts.map((p) => p.userId).whereType<String>().toSet().toList();
+                  await ref.read(userProfileProvider).getProfilesForUserIds(ids);});
+                final profile = userProfileProviderWatch.getProfileById(image.userId ?? "");
+                final profileImage = profile?.user.profilePic;
+
                 return PostCard(
                   key: ValueKey('post_${image.id}_$index'),
                   image: image,
                   index: index,
                   homeProvider: homeProvider,
+                  profileImage: profileImage,
                 );
               },
             ),
           ),
         ),
-        const SizedBox(height: 20),
+
       ],
     );
   }

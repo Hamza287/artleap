@@ -115,7 +115,6 @@ class ApplePaymentService {
     _purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
           (purchaseDetailsList) async {
         for (final purchaseDetails in purchaseDetailsList) {
-          // Only process purchases that match our current product ID
           if (_currentPlan != null && purchaseDetails.productID == _currentPlan!.appleProductId) {
             await _handlePurchaseUpdate(purchaseDetails);
           }
@@ -155,9 +154,7 @@ class ApplePaymentService {
 
       case PurchaseStatus.canceled:
         ref.read(paymentLoadingProvider.notifier).state = false;
-        appSnackBar('Info', 'App Store purchase canceled', Colors.yellow);
-
-        // ❌ Inform backend with success=false
+        // appSnackBar('Info', 'App Store purchase canceled', Colors.yellow);
         final subscriptionService = ref.read(subscriptionServiceProvider);
         await subscriptionService.subscribe(
           userId,
@@ -186,7 +183,6 @@ class ApplePaymentService {
         return;
       }
 
-      // 🟢 Only if status = purchased/restored, we call backend with success=true
       final subscriptionService = ref.read(subscriptionServiceProvider);
       final response = await subscriptionService.subscribe(
         userId,

@@ -55,7 +55,6 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     _purchaseHandler = PurchaseHandler(ref);
 
-    // Initialize in-app purchase stream
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         InAppPurchase.instance.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {

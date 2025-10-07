@@ -6,6 +6,7 @@ import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/providers/notification_provider.dart';
 import '../../shared/constants/app_constants.dart';
 import '../../shared/constants/user_data.dart';
+import '../notifications_repo/notification_repository.dart';
 
 class FirebaseNotificationService {
   final Ref ref;
@@ -42,7 +43,6 @@ class FirebaseNotificationService {
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (details) async {
-        // Handle notification tap if needed
       },
     );
   }
@@ -50,7 +50,6 @@ class FirebaseNotificationService {
   Future<void> _setupFirebase() async {
     final messaging = FirebaseMessaging.instance;
 
-    // Request permissions with more detailed options
     final settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -60,36 +59,45 @@ class FirebaseNotificationService {
       provisional: false,
       sound: true,
     );
-
     debugPrint('Notification permission status: ${settings.authorizationStatus}');
-
-    // Configure for Android foreground notifications_repo
     await messaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    // Get token
     final token = await messaging.getToken();
     debugPrint('FCM Token: $token');
 
-    // Handle foreground messages
+    if (token != null && UserData.ins.userId != null) {
+      final repo = ref.read(notificationRepositoryProvider);
+      await repo.registerDeviceToken(UserData.ins.userId!, token);
+    }
+
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+
+      if (UserData.ins.userId != null) {
+        final repo = ref.read(notificationRepositoryProvider);
+        await repo.registerDeviceToken(UserData.ins.userId!, newToken);
+      }
+    });
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _showLocalNotification(message); // Show local notification
+      _showLocalNotification(message);
       _handleMessage(message);
     });
   }
 
   Future<void> _showLocalNotification(RemoteMessage message) async {
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'high_importance_channel', // Same as in AndroidManifest
+      'high_importance_channel',
       'Important Notifications',
       channelDescription: 'This channel is used for important notifications_repo',
       importance: Importance.high,
       priority: Priority.high,
       showWhen: true,
-      visibility: NotificationVisibility.public, // Show on lockscreen
+      visibility: NotificationVisibility.public,
       playSound: true,
       enableVibration: true,
     );
@@ -115,17 +123,14 @@ class FirebaseNotificationService {
   }
 
   Future<void> _setupInteractions() async {
-    // Handle when app is opened from terminated state
     final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
       _handleMessage(initialMessage);
     }
 
-    // Handle when app is in background
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
-  // In FirebaseNotificationService.dart
   void _handleMessage(RemoteMessage message) async {
     try {
       final notification = AppNotification(
@@ -139,9 +144,6 @@ class FirebaseNotificationService {
             : AppConstants.generalNotificationType,
       );
 
-      // Get userId - priority order:
-      // 1. From message data (for user-specific notifications)
-      // 2. From logged-in user (fallback)
       final messageUserId = message.data['userId'];
       final userId = messageUserId ?? UserData.ins.userId;
 
@@ -149,7 +151,6 @@ class FirebaseNotificationService {
         ref.read(notificationProvider(userId).notifier).addNotification(notification);
       }
 
-      // For backend - use message userId if available, otherwise use logged-in user
       final backendUserId = notification.type == AppConstants.generalNotificationType
           ? null
           : (messageUserId ?? userId);

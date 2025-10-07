@@ -51,238 +51,236 @@ class PictureOptionsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10, left: 25, right: 25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 3),
-                  child: LikeButton(
-                    isLiked:
-                        ref.watch(favouriteProvider).usersFavourites != null
-                            ? ref.watch(favouriteProvider).usersFavourites!
-                                    .favorites.any((img) => img.id == imageId) ? true : false : false,
-                    bubblesColor: const BubblesColor(
-                        dotPrimaryColor: AppColors.redColor,
-                        dotSecondaryColor: AppColors.redColor),
-                    onTap: (isLiked) async {
-                      AnalyticsService.instance.logButtonClick(buttonName: 'Generate button event');
-                      try {
-                        await ref.read(favouriteProvider).addToFavourite(currentUserId!, imageId!);
-                        return !isLiked;
-                      } catch (e) {
-                        return isLiked;
-                      }
-                    },
-                  ),
-                ),
-                2.spaceY,
-                Text(
-                  "Fav",
-                  style: AppTextstyle.interRegular(color: AppColors.darkBlue, fontSize: 10.5),
-                )
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              uint8ListImage != null
-                  ? ref
-                      .read(favProvider)
-                      .downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
-                  : ref.read(favProvider).downloadImage(imageUrl!);
-              AnalyticsService.instance
-                  .logButtonClick(buttonName: 'download button event');
-            },
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border:
-                      Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
-              child: ref.watch(favProvider).isDownloading == true
-                  ? Center(
-                      child: LoadingAnimationWidget.threeArchedCircle(
-                        color: AppColors.darkBlue,
-                        size: 30,
-                      ),
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          AppAssets.downloadicon,
-                          scale: 2.3,
-                          color: AppColors.darkBlue,
-                        ),
-                        2.spaceY,
-                        Text(
-                          "Download",
-                          style: AppTextstyle.interRegular(
-                              color: AppColors.darkBlue, fontSize: 6.5),
-                        )
-                      ],
-                    ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              await Share.shareUri(Uri.parse(imageUrl!));
-              AnalyticsService.instance
-                  .logButtonClick(buttonName: 'share button event');
-            },
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.darkBlue.withOpacity(0.4))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppAssets.shareicon,
-                    scale: 2.3,
-                    color: AppColors.darkBlue,
-                  ),
-                  2.spaceY,
-                  Text(
-                    "Share",
-                    style: AppTextstyle.interRegular(
-                        color: AppColors.darkBlue, fontSize: 6.5),
-                  )
-                ],
-              ),
-            ),
-          ),
-          if (otherUserId == UserData.ins.userId)
-            ...[
-              GestureDetector(
-                onTap: () async {
-                  await showDialog<ImagePrivacy>(
-                    context: context,
-                    builder: (context) => SetPrivacyDialog(
-                      imageId: imageId!,
-                      userId: currentUserId!,
-                      initialPrivacyString: privacy,
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border:
-                    Border.all(color: AppColors.darkBlue.withOpacity(0.4)),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.lock, size: 22, color: Colors.purpleAccent),
-                      2.spaceY,
-                      Text(
-                        "Privacy",
-                        style: AppTextstyle.interRegular(color: Colors.purpleAccent, fontSize: 6.5),)
-                    ],
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return DeleteAlertDialog(
-                        imageId: imageId,
-                      );
-                    },
-                  );
-                  AnalyticsService.instance
-                      .logButtonClick(buttonName: 'delete button event');
-                },
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border:
-                      Border.all(color: AppColors.redColor.withOpacity(0.4))),
-                  child: ref.watch(imageActionsProvider).isDeleting
-                      ? Center(
-                    child: LoadingAnimationWidget.threeArchedCircle(
-                      color: AppColors.redColor,
-                      size: 30,
-                    ),
-                  )
-                      : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        AppAssets.trashicon,
-                        scale: 2.3,
-                        color: AppColors.redColor,
-                      ),
-                      2.spaceY,
-                      Text(
-                        "Delete",
-                        style: AppTextstyle.interRegular(
-                            color: AppColors.redColor, fontSize: 6.5),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            GestureDetector(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (context) {
-                  return ReportImageBottomSheet(
-                    imageId: imageId,
-                    creatorId: otherUserId,
-                  );
-                },
-              );
-            },
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.redColor)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppAssets.reporticon,
-                    scale: 2.7,
-                  ),
-                  2.spaceY,
-                  Text(
-                    "Report",
-                    style: AppTextstyle.interRegular(
-                        color: AppColors.redColor, fontSize: 6.5),
-                  )
-                ],
-              ),
-            ),
+    final isCurrentUser = otherUserId == UserData.ins.userId;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            "Image Actions",
+            style: AppTextstyle.interMedium(
+              color: AppColors.darkBlue,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 16),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final buttonWidth = 72.0;
+              final availableWidth = constraints.maxWidth;
+              final buttonsPerRow = (availableWidth / buttonWidth).floor();
+              return Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 12,
+                runSpacing: 16,
+                children: [
+                  _buildActionButton(
+                    icon: Icons.favorite_rounded,
+                    label: "Favorite",
+                    color: Colors.red,
+                    isLiked:
+                        ref.watch(favouriteProvider).usersFavourites != null
+                            ? ref
+                                .watch(favouriteProvider)
+                                .usersFavourites!
+                                .favorites
+                                .any((img) => img.id == imageId)
+                            : false,
+                    onTap: () async {
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'Favorite button event');
+                      try {
+                        await ref
+                            .read(favouriteProvider)
+                            .addToFavourite(currentUserId!, imageId!);
+                      } catch (e) {}
+                    },
+                    isLikeButton: true,
+                  ),
+                  _buildActionButton(
+                    icon: Icons.download_rounded,
+                    label: "Download",
+                    color: Colors.green,
+                    isLoading: ref.watch(favProvider).isDownloading == true,
+                    onTap: () {
+                      uint8ListImage != null
+                          ? ref.read(favProvider).downloadImage(imageUrl!,
+                              uint8ListObject: uint8ListImage)
+                          : ref.read(favProvider).downloadImage(imageUrl!);
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'download button event');
+                    },
+                  ),
+                  _buildActionButton(
+                    icon: Icons.share_rounded,
+                    label: "Share",
+                    color: Colors.blue,
+                    onTap: () async {
+                      await Share.shareUri(Uri.parse(imageUrl!));
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'share button event');
+                    },
+                  ),
+                  if (isCurrentUser)
+                    _buildActionButton(
+                      icon: Icons.lock_rounded,
+                      label: "Privacy",
+                      color: Colors.purple,
+                      onTap: () async {
+                        await showDialog<ImagePrivacy>(
+                          context: context,
+                          builder: (context) => SetPrivacyDialog(
+                            imageId: imageId!,
+                            userId: currentUserId!,
+                            initialPrivacyString: privacy,
+                          ),
+                        );
+                      },
+                    ),
+                  if (isCurrentUser)
+                    _buildActionButton(
+                      icon: Icons.delete_rounded,
+                      label: "Delete",
+                      color: Colors.red,
+                      isLoading: ref.watch(imageActionsProvider).isDeleting,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return DeleteAlertDialog(
+                              imageId: imageId,
+                            );
+                          },
+                        );
+                        AnalyticsService.instance
+                            .logButtonClick(buttonName: 'delete button event');
+                      },
+                    ),
+                  _buildActionButton(
+                    icon: Icons.flag_rounded,
+                    label: "Report",
+                    color: Colors.orange,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) {
+                          return ReportImageBottomSheet(
+                            imageId: imageId,
+                            creatorId: otherUserId,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    bool isLoading = false,
+    bool isLiked = false,
+    bool isLikeButton = false,
+    required VoidCallback onTap,
+  }) {
+    return Tooltip(
+      message: label,
+      child: Container(
+        width: 60,
+        child: Column(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: color.withOpacity(0.3)),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(16),
+                  child: isLoading
+                      ? Center(
+                          child: LoadingAnimationWidget.threeArchedCircle(
+                            color: color,
+                            size: 24,
+                          ),
+                        )
+                      : isLikeButton
+                          ? Center(
+                              child: LikeButton(
+                                size: 28,
+                                isLiked: isLiked,
+                                likeBuilder: (bool isLiked) {
+                                  return Icon(
+                                    isLiked
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
+                                    color: isLiked
+                                        ? color
+                                        : color.withOpacity(0.6),
+                                    size: 28,
+                                  );
+                                },
+                                bubblesColor: BubblesColor(
+                                  dotPrimaryColor: color,
+                                  dotSecondaryColor: color,
+                                ),
+                                onTap: (isLiked) async {
+                                  onTap();
+                                  return !isLiked;
+                                },
+                              ),
+                            )
+                          : Center(
+                              child: Icon(
+                                icon,
+                                color: color,
+                                size: 28,
+                              ),
+                            ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: AppTextstyle.interMedium(
+                color: AppColors.darkBlue,
+                fontSize: 10,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

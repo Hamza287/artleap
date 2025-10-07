@@ -6,13 +6,23 @@ import 'providers_setup.dart';
 class CommentNotifier extends StateNotifier<AsyncValue<List<CommentModel>>> {
   final CommentRepository _commentRepository;
   final String imageId;
+  bool _isDisposed = false;
 
-  CommentNotifier(this._commentRepository, this.imageId) : super(const AsyncValue.loading()) {
+  CommentNotifier(this._commentRepository, this.imageId)
+      : super(const AsyncValue.loading()) {
     loadComments();
   }
 
+  void _safeUpdateState(AsyncValue<List<CommentModel>> newState) {
+    if (!_isDisposed) {
+      state = newState;
+    }
+  }
+
   Future<void> loadComments({int page = 1, int limit = 20, String sort = 'newest'}) async {
-    state = const AsyncValue.loading();
+    if (_isDisposed) return;
+
+    _safeUpdateState(const AsyncValue.loading());
     try {
       final comments = await _commentRepository.getComments(
         imageId,
@@ -20,9 +30,9 @@ class CommentNotifier extends StateNotifier<AsyncValue<List<CommentModel>>> {
         limit: limit,
         sort: sort,
       );
-      state = AsyncValue.data(comments);
+      _safeUpdateState(AsyncValue.data(comments));
     } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
+      _safeUpdateState(AsyncValue.error(error, stackTrace));
     }
   }
 
@@ -34,17 +44,17 @@ class CommentNotifier extends StateNotifier<AsyncValue<List<CommentModel>>> {
         comment: comment,
       );
 
-      if (currentState.hasValue) {
+      if (currentState.hasValue && !_isDisposed) {
         final currentComments = currentState.value ?? [];
-        state = AsyncValue.data([newComment, ...currentComments]);
-      } else {
-        // If no current comments, reload to get fresh list
+        _safeUpdateState(AsyncValue.data([newComment, ...currentComments]));
+      } else if (!_isDisposed) {
         await loadComments();
       }
     } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-      // Reload comments to ensure consistency
-      await loadComments();
+      if (!_isDisposed) {
+        _safeUpdateState(AsyncValue.error(error, stackTrace));
+        await loadComments();
+      }
     }
   }
 
@@ -53,16 +63,18 @@ class CommentNotifier extends StateNotifier<AsyncValue<List<CommentModel>>> {
     try {
       await _commentRepository.deleteComment(commentId);
 
-      if (currentState.hasValue) {
+      if (currentState.hasValue && !_isDisposed) {
         final currentComments = currentState.value ?? [];
-        state = AsyncValue.data(
+        _safeUpdateState(AsyncValue.data(
             currentComments.where((comment) => comment.id != commentId).toList()
-        );
-      } else {
+        ));
+      } else if (!_isDisposed) {
         await loadComments();
       }
     } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
+      if (!_isDisposed) {
+        _safeUpdateState(AsyncValue.error(error, stackTrace));
+      }
     }
   }
 
@@ -74,22 +86,32 @@ class CommentNotifier extends StateNotifier<AsyncValue<List<CommentModel>>> {
         comment: newComment,
       );
 
-      if (currentState.hasValue) {
+      if (currentState.hasValue && !_isDisposed) {
         final currentComments = currentState.value ?? [];
         final updatedComments = currentComments.map((comment) =>
         comment.id == commentId ? updatedComment : comment
         ).toList();
-        state = AsyncValue.data(updatedComments);
-      } else {
+        _safeUpdateState(AsyncValue.data(updatedComments));
+      } else if (!_isDisposed) {
         await loadComments();
       }
     } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
+      if (!_isDisposed) {
+        _safeUpdateState(AsyncValue.error(error, stackTrace));
+      }
     }
   }
 
   Future<void> refreshComments() async {
-    await loadComments();
+    if (!_isDisposed) {
+      await loadComments();
+    }
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 }
 

@@ -11,12 +11,14 @@ class PostCard extends ConsumerStatefulWidget {
   final dynamic image;
   final int index;
   final HomeScreenProvider homeProvider;
+  final String? profileImage;
 
   const PostCard({
     super.key,
     required this.image,
     required this.index,
     required this.homeProvider,
+    this.profileImage,
   });
 
   @override
@@ -42,7 +44,7 @@ class _PostCardState extends ConsumerState<PostCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PostHeader(image: widget.image),
+          PostHeader(image: widget.image,profilePic: widget.profileImage,),
           PostImage(
             image: widget.image,
             homeProvider: widget.homeProvider,

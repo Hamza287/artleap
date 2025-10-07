@@ -45,16 +45,14 @@ class PurchaseHandler {
     switch (purchaseDetails.status) {
       case PurchaseStatus.pending:
         debugPrint('Purchase pending: ${purchaseDetails.productID}');
-        appSnackBar('Info', 'Purchase is pending', Colors.yellow);
+        // appSnackBar('Info', 'Purchase is pending', Colors.yellow);
         break;
 
       case PurchaseStatus.purchased:
-      // ✅ New subscription -> send success true
         await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, success: true);
         break;
 
       case PurchaseStatus.restored:
-      // ✅ Restored -> do NOT create new subscription, just refresh
         debugPrint('Purchase restored: ${purchaseDetails.productID}');
         await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, success: false);
         break;
@@ -62,15 +60,11 @@ class PurchaseHandler {
       case PurchaseStatus.error:
         appSnackBar('Error', 'Purchase failed: ${purchaseDetails.error?.message ?? "Unknown error"}', Colors.red);
         ref.read(paymentLoadingProvider.notifier).state = false;
-
-        // ❌ Inform backend if needed with success false
         break;
 
       case PurchaseStatus.canceled:
-        appSnackBar('Info', 'Purchase canceled', Colors.yellow);
+        // appSnackBar('Info', 'Purchase canceled', Colors.yellow);
         ref.read(paymentLoadingProvider.notifier).state = false;
-
-        // ❌ Inform backend if needed with success false
         break;
     }
   }
@@ -91,7 +85,7 @@ class PurchaseHandler {
         paymentMethod,
       );
 
-      verificationData['success'] = success; // ✅ add explicit success flag
+      verificationData['success'] = success;
 
       final response = await subscriptionService.subscribe(
         userId,
@@ -101,14 +95,12 @@ class PurchaseHandler {
       );
 
       if (response.status == Status.completed && success) {
-        // ✅ Only treat as active subscription if success==true
         appSnackBar('Success', 'Subscription created successfully', Colors.green);
         await _completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
         navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
       } else {
-        // Restored or backend rejected
         if (!success) {
           appSnackBar('Info', 'Subscription already active (restored)', Colors.blue);
         } else {

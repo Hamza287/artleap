@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
 import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,6 @@ class PostActions extends ConsumerWidget {
     final saveStatus = ref.watch(saveProvider);
     final likeCountAsync = ref.watch(likeCountProvider(imageId));
     final commentCountAsync = ref.watch(commentCountProvider(imageId));
-    final isAnimating = ref.watch(likeAnimationProvider(imageId));
 
     final isLiked = likeStatus.when(
       data: (likeStatus) => likeStatus[imageId] ?? false,
@@ -57,7 +58,6 @@ class PostActions extends ConsumerWidget {
                 imageId: imageId,
                 isLiked: isLiked,
                 likeCount: likeCount,
-                isAnimating: isAnimating,
                 context: context,
               ),
               const SizedBox(width: 20),
@@ -83,67 +83,107 @@ class PostActions extends ConsumerWidget {
   }
 }
 
-class _LikeButtonWithAnimation extends ConsumerWidget {
+class _LikeButtonWithAnimation extends ConsumerStatefulWidget {
   final String imageId;
   final bool isLiked;
   final int likeCount;
-  final bool isAnimating;
   final BuildContext context;
 
   const _LikeButtonWithAnimation({
     required this.imageId,
     required this.isLiked,
     required this.likeCount,
-    required this.isAnimating,
     required this.context,
   });
 
-  void _toggleLike(WidgetRef ref) async {
-    if (isLiked) {
+  @override
+  ConsumerState<_LikeButtonWithAnimation> createState() => _LikeButtonWithAnimationState();
+}
+
+class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _pulseAnimation;
+  late Animation<double> _particleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _pulseAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.fastOutSlowIn,
+    ));
+
+    _particleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.2, 1.0, curve: Curves.fastOutSlowIn),
+    ));
+  }
+
+  @override
+  void didUpdateWidget(_LikeButtonWithAnimation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Trigger animation when like status changes to liked
+    if (oldWidget.isLiked != widget.isLiked && widget.isLiked) {
+      _animationController.forward(from: 0.0);
+    }
+  }
+
+  void _toggleLike() async {
+    if (widget.isLiked) {
       SoundService.playUnlikeSound();
     } else {
       SoundService.playLikeSound();
+      _animationController.forward(from: 0.0);
     }
 
-    // Start animation immediately
-    ref.read(likeAnimationProvider(imageId).notifier).state = true;
-
     try {
-      await ref.read(likeProvider(imageId).notifier).toggleLike();
-      ref.invalidate(likeCountProvider(imageId));
+      await ref.read(likeProvider(widget.imageId).notifier).toggleLike();
+      ref.invalidate(likeCountProvider(widget.imageId));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(widget.context).showSnackBar(
         SnackBar(
           content: Text('Failed to update like: $e'),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
         ),
       );
-    } finally {
-      // Fast animation - only 300ms
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (context.mounted) {
-          ref.read(likeAnimationProvider(imageId).notifier).state = false;
-        }
-      });
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _toggleLike(ref),
+      onTap: _toggleLike,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200), // Faster animation
+          Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: isLiked ? Colors.red.withOpacity(0.1) : Colors.grey.shade100,
+              color: widget.isLiked ? Colors.red.withOpacity(0.1) : Colors.grey.shade100,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isLiked ? Colors.red : Colors.transparent,
+                color: widget.isLiked ? Colors.red : Colors.transparent,
                 width: 1.5,
               ),
             ),
@@ -151,63 +191,85 @@ class _LikeButtonWithAnimation extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200), // Faster switching
-                  transitionBuilder: (child, animation) {
-                    return ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    );
-                  },
+                  duration: const Duration(milliseconds: 200),
                   child: Icon(
-                    isLiked ? Icons.favorite : Icons.favorite_outline,
-                    key: ValueKey(isLiked),
-                    color: isLiked ? Colors.red : Colors.grey.shade700,
-                    size: 20,
+                    widget.isLiked ? Icons.favorite : Icons.favorite_outline,
+                    key: ValueKey(widget.isLiked),
+                    color: widget.isLiked ? Colors.red : Colors.grey.shade700,
+                    size: 20, // Fixed size
                   ),
                 ),
                 const SizedBox(width: 8),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: Text(
-                    _formatCount(likeCount),
-                    key: ValueKey(likeCount),
-                    style: AppTextstyle.interMedium(
-                      fontSize: 14,
-                      color: isLiked ? Colors.red : Colors.grey.shade700,
-                    ),
+                Text(
+                  _formatCount(widget.likeCount),
+                  style: AppTextstyle.interMedium(
+                    fontSize: 14,
+                    color: widget.isLiked ? Colors.red : Colors.grey.shade700,
                   ),
                 ),
               ],
             ),
           ),
-          // Fast burst animation
-          if (isAnimating)
-            AnimatedOpacity(
-              duration: const Duration(milliseconds: 300),
-              opacity: isAnimating ? 1.0 : 0.0,
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red.withOpacity(0.3),
-                ),
-              ),
+          if (_animationController.status == AnimationStatus.forward)
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return Container(
+                  width: 56, // Fixed size matching the button
+                  height: 36,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.red.withOpacity(_pulseAnimation.value * 0.5),
+                      width: 2.0 * _pulseAnimation.value,
+                    ),
+                  ),
+                );
+              },
             ),
-          // Heart burst effect
-          if (isAnimating)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-              child: Icon(
-                Icons.favorite,
-                color: Colors.red,
-                size: isAnimating ? 28 : 0,
-              ),
-            ),
+          if (_animationController.status == AnimationStatus.forward)
+            ..._buildParticleEffects(),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildParticleEffects() {
+    return List.generate(6, (index) {
+      return AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          final angle = (index * 60.0) * (3.14159 / 180.0);
+          final distance = _particleAnimation.value * 20.0; // Shorter distance
+          final opacity = 1.0 - _particleAnimation.value;
+          final size = 3.0; // Fixed small size
+
+          return Transform.translate(
+            offset: Offset(
+              cos(angle) * distance,
+              sin(angle) * distance,
+            ),
+            child: Opacity(
+              opacity: opacity.clamp(0.0, 1.0),
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withOpacity(0.6),
+                      blurRadius: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    });
   }
 
   String _formatCount(int count) {
@@ -249,15 +311,11 @@ class _CommentButton extends ConsumerWidget {
               size: 20,
             ),
             const SizedBox(width: 8),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Text(
-                _formatCount(commentCount),
-                key: ValueKey(commentCount),
-                style: AppTextstyle.interMedium(
-                  fontSize: 14,
-                  color: Colors.grey.shade700,
-                ),
+            Text(
+              _formatCount(commentCount),
+              style: AppTextstyle.interMedium(
+                fontSize: 14,
+                color: Colors.grey.shade700,
               ),
             ),
           ],
@@ -312,8 +370,7 @@ class _SaveButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () => _toggleSave(ref),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSaved ? AppColors.darkBlue.withOpacity(0.1) : Colors.grey.shade100,
@@ -323,20 +380,10 @@ class _SaveButton extends ConsumerWidget {
             width: 1.5,
           ),
         ),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (child, animation) {
-            return ScaleTransition(
-              scale: animation,
-              child: child,
-            );
-          },
-          child: Icon(
-            isSaved ? Icons.bookmark : Icons.bookmark_outline,
-            key: ValueKey(isSaved),
-            color: isSaved ? AppColors.darkBlue : Colors.grey.shade700,
-            size: 22,
-          ),
+        child: Icon(
+          isSaved ? Icons.bookmark : Icons.bookmark_outline,
+          color: isSaved ? AppColors.darkBlue : Colors.grey.shade700,
+          size: 22,
         ),
       ),
     );
@@ -352,15 +399,11 @@ class _LikeCountText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: Text(
-          '$likeCount ${likeCount == 1 ? 'like' : 'likes'}',
-          key: ValueKey(likeCount),
-          style: AppTextstyle.interBold(
-            fontSize: 14,
-            color: Colors.black87,
-          ),
+      child: Text(
+        '$likeCount ${likeCount == 1 ? 'like' : 'likes'}',
+        style: AppTextstyle.interBold(
+          fontSize: 14,
+          color: Colors.black87,
         ),
       ),
     );

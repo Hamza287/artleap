@@ -29,6 +29,10 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   int _dailyCredits = 0;
   int get dailyCredits => _dailyCredits;
 
+  final Map<String, UserProfileModel> _profilesCache = {};
+  Map<String, UserProfileModel> get profilesCache => _profilesCache;
+  UserProfileModel? getProfileById(String id) => _profilesCache[id];
+
   void setLoader(bool value) {
     _isLoading = value;
     if (hasListeners) {
@@ -71,6 +75,19 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (hasListeners) notifyListeners();
   }
 
+  Future<void> getProfilesForUserIds(List<String> ids) async {
+    for (final id in ids) {
+      if (_profilesCache.containsKey(id)) continue; // skip if already fetched
+      final response = await userFollowingRepo.getOtherUserProfileData(id);
+      if (response.status == Status.completed) {
+        _profilesCache[id] = response.data!;
+      } else {
+        debugPrint("❌ Failed to load profile for $id: ${response.message}");
+      }
+    }
+    notifyListeners();
+  }
+
 
   Future<void> getOtherUserProfileData(String uid) async {
     setLoader(true);
@@ -98,36 +115,6 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     setLoader(false);
     if (hasListeners) {
       notifyListeners();
-    }
-  }
-
-  Future<bool> deductCredits({required int creditsToDeduct, required String generationType}) async {
-    setLoader(true);
-    final data = {
-      "userId": UserData.ins.userId,
-      "creditsToDeduct": creditsToDeduct,
-      "generationType": generationType,
-    };
-    final response = await userFollowingRepo.deductCredits(data);
-    if (response.status == Status.completed) {
-      await getUserProfileData(UserData.ins.userId ?? "");
-      if (generationType == 'image') {
-        _remainingImageCredits = response.data?['remainingCredits'] ?? 0;
-      } else {
-        _remainingPromptCredits = response.data?['remainingCredits'] ?? 0;
-      }
-      setLoader(false);
-      if (hasListeners) {
-        notifyListeners();
-      }
-      return true;
-    } else {
-      appSnackBar("Error", response.message ?? "Failed to deduct credits", AppColors.redColor);
-      setLoader(false);
-      if (hasListeners) {
-        notifyListeners();
-      }
-      return false;
     }
   }
 

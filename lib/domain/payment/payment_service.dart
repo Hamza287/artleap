@@ -87,7 +87,6 @@ class PaymentService {
     }
   }
 
-  // Purchase a subscription with Stripe
   Future<ApiResponse> purchaseStripeSubscription({
     required String planId,
     required int amount, // Amount in cents
@@ -95,7 +94,6 @@ class PaymentService {
     required BuildContext context,
     required WidgetRef ref,
   }) async {
-    // Create an instance of StripeService with Base
     final stripeService = StripeService(_base);
     return await stripeService.purchaseSubscription(
       planId: planId,
@@ -124,7 +122,6 @@ class PaymentService {
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
           try {
-            // Platform-specific verification
             if (Platform.isAndroid) {
               final InAppPurchaseAndroidPlatformAddition androidAddition =
               _inAppPurchase.getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
@@ -134,8 +131,6 @@ class PaymentService {
                 await _inAppPurchase.completePurchase(purchaseDetails);
               }
             }
-
-            // Prepare verification data
             final verificationData = {
               'userId': userId,
               'planId': planId,
@@ -145,8 +140,6 @@ class PaymentService {
               'platform': Platform.operatingSystem,
               'paymentMethod': paymentMethod,
             };
-
-            // Verify with backend and create subscription
             final response = await _subscriptionService.subscribe(
               userId,
               planId,
@@ -169,7 +162,7 @@ class PaymentService {
           break;
 
         case PurchaseStatus.canceled:
-          appSnackBar('Info', 'Purchase canceled', Colors.yellow);
+          // appSnackBar('Info', 'Purchase canceled', Colors.yellow);
           break;
       }
     }

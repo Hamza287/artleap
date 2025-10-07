@@ -115,7 +115,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           } catch (e) {
             if (mounted) {
               ref.read(paymentLoadingProvider.notifier).state = false;
-              appSnackBar('Error', 'Failed to verify subscription', Colors.red);
+              // appSnackBar('Error', 'Failed to verify subscription', Colors.red);
             }
           }
           break;
@@ -195,7 +195,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     } catch (e) {
       if (mounted) {
         ref.read(paymentLoadingProvider.notifier).state = false;
-        appSnackBar('Error', 'Purchase error', Colors.red);
+        // appSnackBar('Error', 'Purchase error', Colors.red);
       }
     } finally {
       if (paymentMethod == 'stripe') {

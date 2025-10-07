@@ -16,13 +16,9 @@ abstract class UserProfileRepo extends Base {
   Future<ApiResponse> updateUserCredits(Map<String, dynamic> data,
       {bool enableLocalPersistence = false});
 
-  Future<ApiResponse<Map<String, dynamic>>> deductCredits(Map<String, dynamic> data,
-      {bool enableLocalPersistence = false});
-
   Future<ApiResponse> deleteAccount(String uid,
       {bool enableLocalPersistence = false});
 
-  // Subscription-related methods
   Future<ApiResponse<List<SubscriptionPlanModel>>> getSubscriptionPlans(
       {bool enableLocalPersistence = false});
 
@@ -38,20 +34,4 @@ abstract class UserProfileRepo extends Base {
   Future<ApiResponse<UserSubscriptionModel?>> getCurrentSubscription(String userId,
       {bool enableLocalPersistence = false});
 
-  // New profile update method
-  // Future<ApiResponse<UserProfileModel>> updateProfile({
-  //   required String userId,
-  //   String? username,
-  //   String? email,
-  //   String? password,
-  //   XFile? profilePic,
-  //   bool enableLocalPersistence = false,
-  // });
-  //
-  // // Credit check method (optional - if you want to check before deducting)
-  // Future<ApiResponse<Map<String, dynamic>>> checkCreditsAvailability(
-  //     String userId,
-  //     String generationType,
-  //     {bool enableLocalPersistence = false}
-  //     );
 }
