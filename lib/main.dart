@@ -1,4 +1,4 @@
-import a'dart:async';
+import 'dart:async';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/providers/theme_provider.dart';
