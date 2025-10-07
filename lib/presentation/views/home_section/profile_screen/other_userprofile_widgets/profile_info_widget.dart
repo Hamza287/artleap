@@ -15,204 +15,180 @@ class ProfileInfoWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final userProfile = ref.watch(userProfileProvider);
+    final otherUser = userProfile.otherUserProfileData?.user;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
         children: [
-          Column(
+          Row(
             children: [
-              ref
-                      .watch(userProfileProvider)
-                      .otherUserProfileData!
-                      .user
-                      .profilePic
-                      .isNotEmpty
-                  ? Container(
-                      height: 55,
-                      width: 55,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(ref
-                                  .watch(userProfileProvider)
-                                  .otherUserProfileData!
-                                  .user
-                                  .profilePic)),
-                          shape: BoxShape.circle,
-                          color: AppColors.darkBlue),
-                    )
-                  : Container(
-                      height: 55,
-                      width: 55,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: AppColors.darkBlue),
-                      child: Image.asset(AppAssets.profilepic),
-                    ),
-              10.spaceY,
-              Text(
-                profileName ?? "User Name",
-                style: AppTextstyle.interRegular(
-                    color: AppColors.darkBlue, fontSize: 14),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              SizedBox(
-                width: 200,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              _buildProfileAvatar(userProfile),
+              16.spaceX,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      child: Column(
-                        children: [
-                          Text(
-                            "Creations",
-                            style: AppTextstyle.interRegular(
-                                fontSize: 12, color: AppColors.darkBlue),
-                          ),
-                          Text(
-                            ref
-                                .watch(userProfileProvider)
-                                .otherUserProfileData!
-                                .user
-                                .images
-                                .length
-                                .toString(),
-                            style: AppTextstyle.interMedium(
-                                fontSize: 14, color: AppColors.darkBlue),
-                          )
-                        ],
+                    Text(
+                      profileName ?? "User Name",
+                      style: AppTextstyle.interMedium(
+                        color: AppColors.darkBlue,
+                        fontSize: 18,
                       ),
                     ),
-                    Container(
-                      child: Column(
-                        children: [
-                          Text(
-                            "Follower",
-                            style: AppTextstyle.interRegular(
-                                fontSize: 12, color: AppColors.darkBlue),
-                          ),
-                          Text(
-                            ref
-                                    .watch(userProfileProvider)
-                                    .otherUserProfileData!
-                                    .user
-                                    .followers
-                                    .isEmpty
-                                ? "0"
-                                : ref
-                                    .watch(userProfileProvider)
-                                    .otherUserProfileData!
-                                    .user
-                                    .followers
-                                    .length
-                                    .toString(),
-                            style: AppTextstyle.interMedium(
-                                fontSize: 14, color: AppColors.darkBlue),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        children: [
-                          Text(
-                            "Following",
-                            style: AppTextstyle.interRegular(
-                                fontSize: 12, color: AppColors.darkBlue),
-                          ),
-                          Text(
-                            ref
-                                    .watch(userProfileProvider)
-                                    .otherUserProfileData!
-                                    .user
-                                    .following
-                                    .isEmpty
-                                ? "0"
-                                : ref
-                                    .watch(userProfileProvider)
-                                    .otherUserProfileData!
-                                    .user
-                                    .following
-                                    .length
-                                    .toString(),
-                            style: AppTextstyle.interMedium(
-                                fontSize: 14, color: AppColors.darkBlue),
-                          )
-                        ],
+                    6.spaceY,
+                    Text(
+                      "AI Artist",
+                      style: AppTextstyle.interRegular(
+                        color: Colors.grey.shade600,
+                        fontSize: 14,
                       ),
                     ),
                   ],
                 ),
               ),
-              20.spaceY,
-              ref
-                      .watch(userProfileProvider)
-                      .userProfileData!
-                      .user
-                      .following
-                      .any(
-                        (user) => user.id == userId,
-                      )
-                  ? GestureDetector(
-                      onTap: () {
-                        ref
-                            .read(userProfileProvider)
-                            .followUnfollowUser(UserData.ins.userId!, userId!);
-                      },
-                      child: Container(
-                        height: 30,
-                        width: 200,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: AppColors.seaBlue,
-                            border: Border.all(
-                                color: AppColors.seaBlue, width: 0.5)),
-                        child: ref.watch(userProfileProvider).isLoading
-                            ? LoadingAnimationWidget.threeArchedCircle(
-                                color: AppColors.darkBlue,
-                                size: 20,
-                              )
-                            : Center(
-                                child: Text(
-                                  "Following",
-                                  style: AppTextstyle.interMedium(
-                                      color: AppColors.white, fontSize: 12),
-                                ),
-                              ),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () {
-                        ref
-                            .read(userProfileProvider)
-                            .followUnfollowUser(UserData.ins.userId!, userId!);
-                      },
-                      child: Container(
-                        height: 30,
-                        width: 200,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                                color: AppColors.darkBlue, width: 0.5)),
-                        child: ref.watch(userProfileProvider).isLoading
-                            ? LoadingAnimationWidget.threeArchedCircle(
-                                color: AppColors.darkBlue,
-                                size: 20,
-                              )
-                            : Center(
-                                child: Text(
-                                  "Follow",
-                                  style: AppTextstyle.interMedium(
-                                      color: AppColors.darkBlue, fontSize: 12),
-                                ),
-                              ),
-                      ),
-                    )
             ],
-          )
+          ),
+          20.spaceY,
+          _buildStatsRow(otherUser),
+          20.spaceY,
+          _buildFollowButton(userProfile,ref),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProfileAvatar(dynamic userProfile) {
+    final hasProfilePic = userProfile.otherUserProfileData?.user.profilePic.isNotEmpty ?? false;
+
+    return Container(
+      height: 70,
+      width: 70,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.grey.shade300, width: 2),
+      ),
+      child: ClipOval(
+        child: hasProfilePic
+            ? Image.network(
+          userProfile.otherUserProfileData!.user.profilePic,
+          fit: BoxFit.cover,
+        )
+            : Container(
+          color: Colors.grey.shade100,
+          child: Icon(
+            Icons.person_rounded,
+            color: Colors.grey.shade400,
+            size: 32,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatsRow(dynamic otherUser) {
+    final creations = otherUser?.images.length ?? 0;
+    final followers = otherUser?.followers.length ?? 0;
+    final following = otherUser?.following.length ?? 0;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildStatItem("Creations", creations.toString()),
+          Container(height: 30, width: 1, color: Colors.grey.shade300),
+          _buildStatItem("Followers", followers.toString()),
+          Container(height: 30, width: 1, color: Colors.grey.shade300),
+          _buildStatItem("Following", following.toString()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: AppTextstyle.interMedium(
+            fontSize: 16,
+            color: AppColors.darkBlue,
+          ),
+        ),
+        4.spaceY,
+        Text(
+          label,
+          style: AppTextstyle.interRegular(
+            fontSize: 12,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFollowButton(dynamic userProfile,WidgetRef ref) {
+    final isFollowing = userProfile.userProfileData?.user.following.any((user) => user.id == userId) ?? false;
+    final isLoading = userProfile.isLoading;
+
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            ref.read(userProfileProvider).followUnfollowUser(UserData.ins.userId!, userId!);
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: isFollowing ? Colors.white : AppColors.darkBlue,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isFollowing ? Colors.grey.shade400 : AppColors.darkBlue,
+                width: 1.5,
+              ),
+            ),
+            child: Center(
+              child: isLoading
+                  ? LoadingAnimationWidget.threeArchedCircle(
+                color: isFollowing ? AppColors.darkBlue : Colors.white,
+                size: 20,
+              )
+                  : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isFollowing ? Icons.check_rounded : Icons.add_rounded,
+                    color: isFollowing ? AppColors.darkBlue : Colors.white,
+                    size: 18,
+                  ),
+                  8.spaceX,
+                  Text(
+                    isFollowing ? "Following" : "Follow",
+                    style: AppTextstyle.interMedium(
+                      color: isFollowing ? AppColors.darkBlue : Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
