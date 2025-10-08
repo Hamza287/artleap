@@ -31,14 +31,16 @@ class ImageSelectionButton extends StatelessWidget {
               ),
               if (showPremiumIcon && !hasImage)
                 BoxShadow(
-                  color: Colors.orange.withOpacity(0.2),
-                  blurRadius: 15,
-                  spreadRadius: 1,
+                  color: AppColors.purple.withOpacity(0.15),
+                  blurRadius: 20,
+                  spreadRadius: 2,
                 ),
             ],
             border: Border.all(
-              color: Colors.grey.shade300,
-              width: 1.5,
+              color: showPremiumIcon && !hasImage
+                  ? AppColors.purple.withOpacity(0.3)
+                  : Colors.grey.shade300,
+              width: showPremiumIcon && !hasImage ? 2 : 1.5,
             ),
           ),
           child: Material(
@@ -83,34 +85,59 @@ class ImageSelectionButton extends StatelessWidget {
           ),
         ),
 
-        // Premium Badge
+        // Professional Premium Badge
         if (showPremiumIcon && !hasImage)
           Positioned(
-            top: -8,
-            right: -8,
+            top: -6,
+            right: -6,
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.orange,
-                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFFFFD700),
+                    Color(0xFFFFA500),
+                    Color(0xFFFF8C00),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.4),
+                    color: Colors.orange.withOpacity(0.3),
                     blurRadius: 8,
-                    spreadRadius: 2,
+                    offset: const Offset(0, 3),
+                  ),
+                  BoxShadow(
+                    color: Colors.white,
+                    blurRadius: 0,
+                    offset: const Offset(0, 0),
+                    spreadRadius: 1,
                   ),
                 ],
                 border: Border.all(
                   color: Colors.white,
-                  width: 2,
+                  width: 1.5,
                 ),
               ),
-              child: Image.asset(
-                'assets/icons/pro.png',
-                width: 16,
-                height: 16,
-                color: Colors.white,
-                fit: BoxFit.contain,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: Colors.white,
+                    size: 12,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'PRO',
+                    style: AppTextstyle.interMedium(
+                      fontSize: 10,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

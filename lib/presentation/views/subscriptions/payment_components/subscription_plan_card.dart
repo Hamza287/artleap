@@ -1,0 +1,163 @@
+import 'package:flutter/material.dart';
+import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
+import 'package:Artleap.ai/shared/constants/app_colors.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+
+class SubscriptionPlanCard extends StatelessWidget {
+  final SubscriptionPlanModel plan;
+
+  const SubscriptionPlanCard({super.key, required this.plan});
+
+  String _getPlanPeriod(String type) {
+    switch (type.toLowerCase()) {
+      case 'basic':
+        return 'week';
+      case 'standard':
+        return 'month';
+      case 'premium':
+        return 'year';
+      case 'trial':
+        return 'trial';
+      default:
+        return '';
+    }
+  }
+
+  Color _getPlanColor(String type) {
+    switch (type.toLowerCase()) {
+      case 'basic':
+        return  AppColors.primaryGold;
+      case 'standard':
+        return  AppColors.primaryGold;
+      case 'premium':
+        return  AppColors.primaryGold;
+      case 'trial':
+        return  AppColors.primaryGold;
+      default:
+        return AppColors.primaryGold;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final planColor = _getPlanColor(plan.type);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            planColor.withOpacity(0.9),
+            planColor.withOpacity(0.7),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: planColor.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                plan.name,
+                style: AppTextstyle.interBold(
+                  fontSize: 22,
+                  color: AppColors.white,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '\$${plan.price.toStringAsFixed(2)}/${_getPlanPeriod(plan.type)}',
+                  style: AppTextstyle.interBold(
+                    fontSize: 18,
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildFeatureItem(
+            'Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations',
+            planColor,
+          ),
+          _buildFeatureItem(
+            'Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations',
+            planColor,
+          ),
+          _buildFeatureItem(
+            'Total Credits: ${plan.totalCredits.toInt()}',
+            planColor,
+          ),
+          const SizedBox(height: 12),
+          ...plan.features.take(3).map((feature) => _buildFeatureRow(feature, planColor)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(String text, Color planColor) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.check_circle_rounded,
+            size: 16,
+            color: AppColors.white.withOpacity(0.9),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextstyle.interRegular(
+                fontSize: 14,
+                color: AppColors.white.withOpacity(0.9),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureRow(String feature, Color planColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(
+            Icons.star_rounded,
+            size: 14,
+            color: AppColors.white,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              feature,
+              style: AppTextstyle.interMedium(
+                fontSize: 14,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

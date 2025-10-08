@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../domain/subscriptions/subscription_model.dart';
 import '../apple_payment_screen.dart';
-import '../payment_screen.dart';
+import '../google_payment_screen.dart';
 import 'plan_card.dart';
 import '../../../../shared/constants/app_textstyle.dart';
 import '../../../../providers/user_profile_provider.dart';
@@ -139,7 +139,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
       child: ElevatedButton(
         onPressed: () {
           if (selectedPlan == null) return;
-          final route = Platform.isIOS ? ApplePaymentScreen.routeName : PaymentScreen.routeName;
+          final route = Platform.isIOS ? ApplePaymentScreen.routeName : GooglePaymentScreen.routeName;
           Navigator.pushNamed(context, route, arguments: selectedPlan);
         },
         style: ElevatedButton.styleFrom(
@@ -149,7 +149,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
           shadowColor: Colors.black45,
         ),
         child: Text(
-          "TRY 7 DAYS AND SUBSCRIBE",
+          "SUBSCRIBE NOW",
           style: AppTextstyle.interBold(fontSize: 16, color: Colors.white),
         ),
       ),

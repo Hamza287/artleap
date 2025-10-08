@@ -32,6 +32,11 @@ class ChoosePlanScreen extends ConsumerWidget {
               fit: BoxFit.cover,
             ),
           ),
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.45),
+            ),
+          ),
           SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),

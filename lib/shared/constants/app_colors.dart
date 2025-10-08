@@ -37,4 +37,13 @@ class AppColors {
   static const Color primaryTextColor = Color(0xFF212529);
   static const Color disabledColor = Color(0xFFCED4DA);
 
+  static const Color primaryGold = Color(0xFFAF8B47);
+  static const Color secondaryGold = Color(0xFFD4AF37);
+  static const Color background = Color(0xFFFAFAFA);
+  static const Color backgroundLight = Color(0xFFF8F9FA);
+  static const Color greyLight = Color(0xFFE8ECF4);
+  static const Color greyMedium = Color(0xFFA0A4B8);
+  static const Color success = Color(0xFF27AE60);
+  static const Color warning = Color(0xFFF39C12);
+
 }

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-
 import '../../../../../shared/app_snack_bar.dart';
 
 class PromptTextWidget extends ConsumerWidget {
@@ -31,6 +28,7 @@ class PromptTextWidget extends ConsumerWidget {
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
+              
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -85,6 +83,7 @@ class PromptTextWidget extends ConsumerWidget {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
+
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -92,9 +91,10 @@ class PromptTextWidget extends ConsumerWidget {
                   offset: const Offset(0, 8),
                 ),
               ],
-              border: Border.all(color: Colors.grey.withOpacity(0.1)),
+              border: Border.all(color: Colors.black26.withOpacity(0.1)),
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   constraints: const BoxConstraints(minHeight: 150, maxHeight: 250),
@@ -124,110 +124,109 @@ class PromptTextWidget extends ConsumerWidget {
                   ),
                 ),
 
-                // Additional Info Section (commented but preserved)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      // Category Name Container Button
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              )
-                            ],
-                            border: Border.all(color: Colors.grey.shade200),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () {
-                                // Handle category name button press
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 12),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.category_outlined,
-                                        color: AppColors.purple, size: 18),
-                                    const SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        "Category Name",
-                                        style: AppTextstyle.interMedium(fontSize: 12),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Reference Image Container Button
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              )
-                            ],
-                            border: Border.all(color: Colors.grey.shade200),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () {
-                                // Handle reference image button press
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 12),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.image_outlined,
-                                        color: AppColors.purple, size: 18),
-                                    const SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        "Reference Image",
-                                        style: AppTextstyle.interMedium(fontSize: 12),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(16),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //     children: [
+                //       // Category Name Container Button
+                //       Expanded(
+                //         child: Container(
+                //           margin: const EdgeInsets.only(right: 8),
+                //           decoration: BoxDecoration(
+                //             color: Colors.white,
+                //             borderRadius: BorderRadius.circular(16),
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.grey.withOpacity(0.2),
+                //                 spreadRadius: 1,
+                //                 blurRadius: 8,
+                //                 offset: const Offset(0, 3),
+                //               )
+                //             ],
+                //             border: Border.all(color: Colors.grey.shade200),
+                //           ),
+                //           child: Material(
+                //             color: Colors.transparent,
+                //             child: InkWell(
+                //               borderRadius: BorderRadius.circular(16),
+                //               onTap: () {
+                //                 // Handle category name button press
+                //               },
+                //               child: Padding(
+                //                 padding: const EdgeInsets.symmetric(
+                //                     vertical: 16, horizontal: 12),
+                //                 child: Row(
+                //                   mainAxisAlignment: MainAxisAlignment.center,
+                //                   children: [
+                //                     Icon(Icons.category_outlined,
+                //                         color: AppColors.purple, size: 18),
+                //                     const SizedBox(width: 8),
+                //                     Flexible(
+                //                       child: Text(
+                //                         "Category Name",
+                //                         style: AppTextstyle.interMedium(fontSize: 12),
+                //                         overflow: TextOverflow.ellipsis,
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //
+                //       // Reference Image Container Button
+                //       Expanded(
+                //         child: Container(
+                //           margin: const EdgeInsets.only(left: 8),
+                //           decoration: BoxDecoration(
+                //             color: Colors.white,
+                //             borderRadius: BorderRadius.circular(16),
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.grey.withOpacity(0.2),
+                //                 spreadRadius: 1,
+                //                 blurRadius: 8,
+                //                 offset: const Offset(0, 3),
+                //               )
+                //             ],
+                //             border: Border.all(color: Colors.grey.shade200),
+                //           ),
+                //           child: Material(
+                //             color: Colors.transparent,
+                //             child: InkWell(
+                //               borderRadius: BorderRadius.circular(16),
+                //               onTap: () {
+                //                 // Handle reference image button press
+                //               },
+                //               child: Padding(
+                //                 padding: const EdgeInsets.symmetric(
+                //                     vertical: 16, horizontal: 12),
+                //                 child: Row(
+                //                   mainAxisAlignment: MainAxisAlignment.center,
+                //                   children: [
+                //                     Icon(Icons.image_outlined,
+                //                         color: AppColors.purple, size: 18),
+                //                     const SizedBox(width: 8),
+                //                     Flexible(
+                //                       child: Text(
+                //                         "Reference Image",
+                //                         style: AppTextstyle.interMedium(fontSize: 12),
+                //                         overflow: TextOverflow.ellipsis,
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

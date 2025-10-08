@@ -91,9 +91,9 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       prompt: widget.params!.prompt,
                     ),
                     const SizedBox(height: 28),
-                    PictureInfoWidget(
-                      styleName: widget.params!.modelName,
-                    ),
+                    // PictureInfoWidget(
+                    //   styleName: widget.params!.modelName,
+                    // ),
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -162,8 +162,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                 ),
               ),
             ),
-
-            // Close Button
             Container(
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
