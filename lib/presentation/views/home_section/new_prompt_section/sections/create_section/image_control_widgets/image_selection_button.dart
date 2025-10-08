@@ -16,6 +16,34 @@ class ImageSelectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Responsive calculations
+    final bool isSmallScreen = screenWidth < 360;
+    final bool isMediumScreen = screenWidth < 400;
+
+    // Responsive padding
+    final horizontalPadding = isSmallScreen ? 20.0 : (isMediumScreen ? 25.0 : 30.0);
+    final verticalPadding = isSmallScreen ? 6.0 : 7.5;
+
+    // Responsive spacing
+    final iconTextSpacing = isSmallScreen ? 8.0 : 12.0;
+
+    // Responsive font size
+    final fontSize = isSmallScreen ? 13.0 : (isMediumScreen ? 14.0 : 15.0);
+
+    // Responsive icon size
+    final iconSize = isSmallScreen ? 18.0 : 20.0;
+    final iconPadding = isSmallScreen ? 6.0 : 8.0;
+
+    // Responsive premium badge
+    final premiumBadgeTop = isSmallScreen ? -4.0 : -6.0;
+    final premiumBadgeRight = isSmallScreen ? -4.0 : -6.0;
+    final premiumIconSize = isSmallScreen ? 10.0 : 12.0;
+    final premiumFontSize = isSmallScreen ? 8.0 : 10.0;
+    final premiumHorizontalPadding = isSmallScreen ? 6.0 : 8.0;
+    final premiumVerticalPadding = isSmallScreen ? 3.0 : 4.0;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -50,16 +78,16 @@ class ImageSelectionButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
               splashColor: AppColors.purple.withOpacity(0.2),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 7.5,
-                  horizontal: 30,
+                padding: EdgeInsets.symmetric(
+                  vertical: verticalPadding,
+                  horizontal: horizontalPadding,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(iconPadding),
                       decoration: BoxDecoration(
                         color: AppColors.purple.withOpacity(0.1),
                         shape: BoxShape.circle,
@@ -67,15 +95,19 @@ class ImageSelectionButton extends StatelessWidget {
                       child: Icon(
                         hasImage ? Icons.photo_library : Icons.add_photo_alternate,
                         color: AppColors.purple,
-                        size: 20,
+                        size: iconSize,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      hasImage ? "Change Image" : "Add Image",
-                      style: AppTextstyle.interMedium(
-                        fontSize: 15,
-                        color: Colors.black87,
+                    SizedBox(width: iconTextSpacing),
+                    Flexible(
+                      child: Text(
+                        hasImage ? "Change Image" : "Add Image",
+                        style: AppTextstyle.interMedium(
+                          fontSize: fontSize,
+                          color: Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                   ],
@@ -85,13 +117,16 @@ class ImageSelectionButton extends StatelessWidget {
           ),
         ),
 
-        // Professional Premium Badge
+        // Professional Premium Badge - Responsive
         if (showPremiumIcon && !hasImage)
           Positioned(
-            top: -6,
-            right: -6,
+            top: premiumBadgeTop,
+            right: premiumBadgeRight,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: EdgeInsets.symmetric(
+                horizontal: premiumHorizontalPadding,
+                vertical: premiumVerticalPadding,
+              ),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
@@ -127,13 +162,13 @@ class ImageSelectionButton extends StatelessWidget {
                   Icon(
                     Icons.star,
                     color: Colors.white,
-                    size: 12,
+                    size: premiumIconSize,
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: isSmallScreen ? 2.0 : 4.0),
                   Text(
                     'PRO',
                     style: AppTextstyle.interMedium(
-                      fontSize: 10,
+                      fontSize: premiumFontSize,
                       color: Colors.white,
                     ),
                   ),
