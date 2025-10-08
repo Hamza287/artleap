@@ -33,7 +33,6 @@ class HomeScreenTopBar extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  // Hamburger Icon
                   GestureDetector(
                     onTap: onMenuTap,
                     child: Container(
@@ -81,7 +80,6 @@ class HomeScreenTopBar extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(width: screenWidth * 0.03),
-                  // Coin container
                   InkWell(
                     onTap: () {
                       if (!isFreePlan) {
@@ -230,7 +228,6 @@ class HomeScreenTopBar extends ConsumerWidget {
     );
   }
 
-  // Enhanced Plan Badge with professional look
   Widget _buildPlanBadge(String planName, double screenWidth) {
     Color badgeColor;
     Color textColor;

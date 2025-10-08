@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../providers/prompt_nav_provider.dart';
-import '../../../global_widgets/artleap_top_bar.dart';
-import '../sections/create_section/create_section_widget/prompt_widget.dart';
 
-// Provider for dropdown expansion state
 final isDropdownExpandedProvider = StateProvider<bool>((ref) => false);
 
-// Screen size category helper function
 ScreenSizeCategory getScreenSizeCategory(BuildContext context) {
   final width = MediaQuery.of(context).size.width;
 
@@ -27,55 +23,30 @@ class PromptTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentNav = ref.watch(promptNavProvider);
-    final isExpanded = ref.watch(isDropdownExpandedProvider);
-
-    // Get screen size directly from context without modifying providers
     final screenSize = getScreenSizeCategory(context);
 
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () {
-            ref.read(keyboardVisibleProvider.notifier).state = false;
-            if (isExpanded) {
-              ref.read(isDropdownExpandedProvider.notifier).state = false;
-            }
-          },
-          child: Container(
-            color: Colors.transparent,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: screenSize == ScreenSizeCategory.extraSmall ? 16 : 20,
+          vertical: 12,
         ),
-        Container(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenSize == ScreenSizeCategory.small ||
-                      screenSize == ScreenSizeCategory.extraSmall
-                      ? 12 : 16,
-                ),
-                child: ArtLeapTopBar(),
-              ),
-              SizedBox(height: screenSize == ScreenSizeCategory.small ||
-                  screenSize == ScreenSizeCategory.extraSmall
-                  ? 12 : 20),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenSize == ScreenSizeCategory.small ||
-                      screenSize == ScreenSizeCategory.extraSmall
-                      ? 12 : 16,
-                ),
-                child: _buildDropdown(context, ref, currentNav, screenSize),
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-        ),
-      ],
+        child: _buildProfessionalDropdown(context, ref, currentNav, screenSize),
+      ),
     );
   }
 
-  Widget _buildDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav, ScreenSizeCategory screenSize) {
+  Widget _buildProfessionalDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav, ScreenSizeCategory screenSize) {
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final animationController = ref.watch(_animationControllerProvider);
 
@@ -102,165 +73,243 @@ class PromptTopBar extends ConsumerWidget {
       ),
     ];
 
-    // Adjust sizes based on screen category
-    final iconSize = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 32.0 : 40.0;
-    final fontSize = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 14.0 : 16.0;
-    final horizontalPadding = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 10.0 : 12.0;
-    final verticalPadding = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 10.0 : 12.0;
-    final spacing = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
-        ? 8.0 : 12.0;
+    // Responsive sizing - more compact
+    final iconSize = _getIconSize(screenSize);
+    final fontSize = _getFontSize(screenSize);
+    final padding = _getPadding(screenSize);
+
+    final currentOption = options.firstWhere((opt) => opt.value == currentNav);
 
     return Column(
       children: [
-        GestureDetector(
-          onTap: () {
-            ref.read(isDropdownExpandedProvider.notifier).state = !isExpanded;
-            if (isExpanded) {
-              animationController.reverse();
-            } else {
-              animationController.forward();
-            }
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: verticalPadding
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                ref.read(isDropdownExpandedProvider.notifier).state = !isExpanded;
+                if (isExpanded) {
+                  animationController.reverse();
+                } else {
+                  animationController.forward();
+                }
+              },
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: padding, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                    width: 1.5,
+                  ),
                 ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: iconSize,
-                  height: iconSize,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFD59FFF),
-                        Color(0xFF875EFF),
-                      ],
+                child: Row(
+                  children: [
+                    Container(
+                      width: iconSize,
+                      height: iconSize,
+                      decoration: BoxDecoration(
+                        color: AppColors.purple.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          currentOption.icon,
+                          height: iconSize * 0.5,
+                          color: AppColors.purple,
+                        ),
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      options.firstWhere((opt) => opt.value == currentNav).icon,
-                      height: iconSize * 0.75,
+                    SizedBox(width: padding * 0.8),
+                    // Text
+                    Expanded(
+                      child: Text(
+                        currentOption.label,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade900,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(width: spacing),
-                Expanded(
-                  child: Text(
-                    options.firstWhere((opt) => opt.value == currentNav).label,
-                    style: TextStyle(
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                    SizedBox(width: padding * 0.8),
+                    Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        shape: BoxShape.circle,
+                      ),
+                      child: RotationTransition(
+                        turns: Tween(begin: 0.0, end: 0.5).animate(
+                          CurvedAnimation(
+                            parent: animationController,
+                            curve: Curves.easeInOut,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: Colors.grey.shade700,
+                          size: 20,
+                        ),
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ),
-                SizedBox(width: spacing),
-                RotationTransition(
-                  turns: Tween(begin: 0.0, end: 0.5).animate(animationController),
-                  child: Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.black87,
-                    size: iconSize * 0.75,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         SizeTransition(
-          sizeFactor: animationController,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              children: options.where((opt) => opt.value != currentNav).map((option) {
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      ref.read(promptNavProvider.notifier).setNavItem(option.value);
-                      ref.read(isDropdownExpandedProvider.notifier).state = false;
-                      animationController.reverse();
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: horizontalPadding,
-                          vertical: verticalPadding
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: iconSize,
-                            height: iconSize,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                option.icon,
-                                height: iconSize * 1.25,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: spacing),
-                          Expanded(
-                            child: Text(
-                              option.label,
-                              style: TextStyle(
-                                fontSize: fontSize,
-                                color: Colors.black87,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+          sizeFactor: CurvedAnimation(
+            parent: animationController,
+            curve: Curves.easeInOut,
+          ),
+          child: FadeTransition(
+            opacity: animationController,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
-                );
-              }).toList(),
+                ],
+                border: Border.all(
+                  color: Colors.grey.shade200,
+                  width: 1,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: options.where((opt) => opt.value != currentNav).map((option) {
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          ref.read(promptNavProvider.notifier).setNavItem(option.value);
+                          ref.read(isDropdownExpandedProvider.notifier).state = false;
+                          animationController.reverse();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: options.last == option
+                                  ? BorderSide.none
+                                  : BorderSide(
+                                color: Colors.grey.shade100,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              // Option Icon
+                              Container(
+                                width: iconSize,
+                                height: iconSize,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    option.icon,
+                                    height: iconSize * 0.45,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: padding * 0.8),
+                              // Option Text
+                              Expanded(
+                                child: Text(
+                                  option.label,
+                                  style: TextStyle(
+                                    fontSize: fontSize * 0.95,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey.shade800,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              // Chevron Icon
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: Colors.grey.shade400,
+                                size: 18,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  double _getIconSize(ScreenSizeCategory screenSize) {
+    switch (screenSize) {
+      case ScreenSizeCategory.extraSmall:
+        return 28;
+      case ScreenSizeCategory.small:
+        return 32;
+      case ScreenSizeCategory.medium:
+        return 34;
+      case ScreenSizeCategory.large:
+        return 36;
+    }
+  }
+
+  double _getFontSize(ScreenSizeCategory screenSize) {
+    switch (screenSize) {
+      case ScreenSizeCategory.extraSmall:
+        return 14;
+      case ScreenSizeCategory.small:
+        return 15;
+      case ScreenSizeCategory.medium:
+        return 15;
+      case ScreenSizeCategory.large:
+        return 16;
+    }
+  }
+
+  double _getPadding(ScreenSizeCategory screenSize) {
+    switch (screenSize) {
+      case ScreenSizeCategory.extraSmall:
+        return 12;
+      case ScreenSizeCategory.small:
+        return 14;
+      case ScreenSizeCategory.medium:
+        return 16;
+      case ScreenSizeCategory.large:
+        return 16;
+    }
   }
 }
 
@@ -274,7 +323,6 @@ final _animationControllerProvider = Provider<AnimationController>((ref) {
   return controller;
 });
 
-// Ticker provider for AnimationController
 class _TickerProvider extends TickerProvider {
   @override
   Ticker createTicker(TickerCallback onTick) => Ticker(onTick);

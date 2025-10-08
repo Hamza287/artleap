@@ -1,11 +1,10 @@
+import 'package:Artleap.ai/presentation/views/home_section/home_screen/home_screen_sections/home_screen_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../../../providers/user_profile_provider.dart';
-import '../../../global_widgets/artleap_top_bar.dart';
 import '../../../login_and_signup_section/login_section/login_screen.dart';
 import 'components/action_buttons_row.dart';
 import 'components/feature_buttons.dart';
@@ -50,7 +49,7 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
             height: 100,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: ArtLeapTopBar(),
+              child: HomeScreenTopBar(),
             ),
           ),
         ),

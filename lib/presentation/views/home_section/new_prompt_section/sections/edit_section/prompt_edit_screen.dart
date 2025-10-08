@@ -35,8 +35,6 @@ class PromptEditScreen extends ConsumerWidget {
                     SizedBox(height: isSmallScreen ? 7 : 10),
 
                     if (state.showUndoRedo) const UndoRedoButtons(),
-
-                    // Image Upload Container with GestureDetector
                     GestureDetector(
                       onTap: null,
                       // onTap: () => ref.read(promptEditProvider.notifier).pickImage(),

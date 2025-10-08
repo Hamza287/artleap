@@ -50,6 +50,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
               HomeScreenTopBar(
                 onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
               ),
+              PromptTopBar(),
               Expanded(
                 child: Stack(
                   children: [
