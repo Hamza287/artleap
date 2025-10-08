@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/subscriptions/plan_provider.dart';
-import '../presentation/views/subscriptions/payment_screen.dart';
+import '../presentation/views/subscriptions/google_payment_screen.dart';
 
 
 class PurchaseHandler {

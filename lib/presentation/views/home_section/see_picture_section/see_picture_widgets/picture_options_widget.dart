@@ -54,7 +54,7 @@ class PictureOptionsWidget extends ConsumerWidget {
     final isCurrentUser = otherUserId == UserData.ins.userId;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -66,7 +66,7 @@ class PictureOptionsWidget extends ConsumerWidget {
             offset: const Offset(0, 8),
           ),
         ],
-        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: Colors.black26.withOpacity(0.1)),
       ),
       child: Column(
         children: [

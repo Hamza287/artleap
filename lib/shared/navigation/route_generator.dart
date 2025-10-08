@@ -27,7 +27,7 @@ import '../../presentation/views/policies_screens/privacy_policy_screen.dart';
 import '../../presentation/views/subscriptions/apple_payment_screen.dart';
 import '../../presentation/views/subscriptions/choose_plan_screen.dart';
 import '../../presentation/views/subscriptions/current_plan_screen.dart';
-import '../../presentation/views/subscriptions/payment_screen.dart';
+import '../../presentation/views/subscriptions/google_payment_screen.dart';
 
 
 class RouteGenerator {
@@ -57,10 +57,10 @@ class RouteGenerator {
         return route(const FavouritesScreen());
       case SavedImagesScreen.routeName:
         return route(const SavedImagesScreen());
-      case PaymentScreen.routeName:
+      case GooglePaymentScreen.routeName:
         final args = settings.arguments as SubscriptionPlanModel;
         return MaterialPageRoute(
-          builder: (_) => PaymentScreen(plan: args),
+          builder: (_) => GooglePaymentScreen(plan: args),
           settings: settings,
         );
 

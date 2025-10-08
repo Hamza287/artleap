@@ -73,7 +73,7 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  "MENTAL HEALTH DAY'S GIFT",
+                  "Welcome to Artleap Subscribe Now",
                   style: AppTextstyle.interMedium(fontSize: 13, color: Colors.white),
                 ),
               ),
@@ -84,7 +84,7 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "99% OFF",
+                    "09% OFF",
                     style: AppTextstyle.interBold(
                       fontSize: screenSize.width * 0.14,
                       color: Colors.white,
