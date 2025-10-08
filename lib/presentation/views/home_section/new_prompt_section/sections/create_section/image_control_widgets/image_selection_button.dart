@@ -52,7 +52,7 @@ class ImageSelectionButton extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 7.5,
-                  horizontal: 25,
+                  horizontal: 30,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

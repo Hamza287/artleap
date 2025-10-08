@@ -112,7 +112,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       ),
                     ),
                   ),
-                  // White content area with profile info
                   SliverToBoxAdapter(
                     child: Container(
                       constraints: BoxConstraints(
@@ -134,7 +133,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           left: 16,
                           right: 16,
                           top: 16,
-                          bottom: 16 + safeAreaBottom, // Add bottom padding for safe area
+                          bottom: 16 + safeAreaBottom,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

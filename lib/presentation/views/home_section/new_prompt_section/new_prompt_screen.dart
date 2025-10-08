@@ -59,7 +59,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
                       right: 0,
                       top: 0,
                       child: Container(
-                        height: 4, // Shadow height
+                        height: 4,
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(

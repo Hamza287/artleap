@@ -26,15 +26,18 @@ class MyCreationsWidget extends StatefulWidget {
 }
 
 class _MyCreationsWidgetState extends State<MyCreationsWidget> {
-  late final filteredCreations;
+  late final List<Images> filteredCreations;
 
   @override
   void initState() {
-    if(widget.userId == UserData.ins.userId!){
-      filteredCreations = widget.listofCreations.asMap().entries.toList();
-    } else {
-      filteredCreations = widget.listofCreations.asMap().entries.where((entry) => entry.value.privacy == 'public').toList();
-    }
+    // Filter based on privacy
+    final filteredList = widget.userId == UserData.ins.userId!
+        ? widget.listofCreations
+        : widget.listofCreations.where((image) => image.privacy == 'public').toList();
+
+    // Reverse the list to show latest first
+    filteredCreations = filteredList.reversed.toList();
+
     super.initState();
   }
 
@@ -111,9 +114,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
       ),
       itemCount: filteredCreations.length,
       itemBuilder: (context, index) {
-        final entry = filteredCreations[index];
-        final reverseIndex = filteredCreations.length - 1 - index;
-        final e = entry.value;
+        final e = filteredCreations[index];
 
         return GestureDetector(
           onTap: () {
@@ -126,7 +127,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
                 modelName: e.modelName,
                 profileName: e.username,
                 userId: UserData.ins.userId,
-                index: reverseIndex,
+                index: index, // Now index matches the display order
                 creatorEmail: e.creatorEmail,
                 privacy: e.privacy,
               ),

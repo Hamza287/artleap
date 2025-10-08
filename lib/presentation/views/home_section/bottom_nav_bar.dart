@@ -41,10 +41,13 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   Widget build(BuildContext context) {
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        bottomNavigationBar: _buildEnhancedNavBar(pageIndex),
+        bottomNavigationBar: isKeyboardOpen
+            ? const SizedBox.shrink()
+            : _buildEnhancedNavBar(pageIndex),
         body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
             ? bottomNavBarState.widgets[pageIndex]
             : const Center(child: CircularProgressIndicator()),
@@ -112,7 +115,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     required VoidCallback onTap,
   }) {
     final isSelected = currentIndex == index;
-
     return Material(
       color: Colors.transparent,
       child: InkWell(

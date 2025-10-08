@@ -316,7 +316,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                 ),
               ),
             ),
-            // Full-screen loader overlay
+
             if (isLoading)
               AnimatedBuilder(
                 animation: _fadeAnimation,

@@ -36,6 +36,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBlue,
+      extendBodyBehindAppBar: true,
       body: Column(
         children: [
           _buildCustomAppBar(),
