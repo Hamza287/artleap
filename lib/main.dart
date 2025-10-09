@@ -21,6 +21,7 @@ import 'shared/theme/theme_provider.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await AppInitialization.initialize();
 
     runApp(
@@ -87,7 +88,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
         final refreshedToken =
-            await ref.read(authprovider).ensureValidFirebaseToken();
+        await ref.read(authprovider).ensureValidFirebaseToken();
         if (refreshedToken != null) {
         } else {
           debugPrint('Token refresh skipped: No user signed in.');
@@ -105,6 +106,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(systemThemeMonitorProvider);
+    final effectiveThemeMode = ref.watch(effectiveThemeModeProvider);
+
     return MaterialApp(
       title: 'Artleap.ai',
       debugShowCheckedModeBanner: false,
@@ -112,7 +116,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       locale: ref.watch(localizationProvider),
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ref.watch(themeProvider),
+      themeMode: effectiveThemeMode,
       localizationsDelegates: const [
         AppLocalization.delegate,
         GlobalMaterialLocalizations.delegate,

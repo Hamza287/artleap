@@ -1,11 +1,12 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // Add this import
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/providers/notification_provider.dart';
 import '../../shared/constants/app_constants.dart';
 import '../../shared/constants/user_data.dart';
+import '../notifications_repo/notification_repository.dart';
 
 class FirebaseNotificationService {
   final Ref ref;
@@ -47,6 +48,7 @@ class FirebaseNotificationService {
   }
 
   Future<void> _setupFirebase() async {
+    await UserData.ins.loadUserDataIfNeeded();
     final messaging = FirebaseMessaging.instance;
 
     final settings = await messaging.requestPermission(
@@ -64,6 +66,22 @@ class FirebaseNotificationService {
       badge: true,
       sound: true,
     );
+
+    final token = await messaging.getToken();
+    debugPrint('FCM Token: $token');
+    debugPrint('User id : ${UserData.ins.userId}');
+    if (token != null && UserData.ins.userId != null) {
+      debugPrint('Token sent for registration: ${token}');
+      final repo = ref.read(notificationRepositoryProvider);
+      await repo.registerDeviceToken(UserData.ins.userId!, token);
+    }
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      if (UserData.ins.userId != null) {
+        final repo = ref.read(notificationRepositoryProvider);
+        await repo.registerDeviceToken(UserData.ins.userId!, newToken);
+      }
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(message);
