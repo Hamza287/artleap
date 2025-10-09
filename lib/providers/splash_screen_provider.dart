@@ -18,41 +18,50 @@ class SplashStateNotifier extends StateNotifier<SplashState> {
   Future<void> initializeApp() async {
     try {
       state = SplashState.checkingConnection;
-
-      // Check internet connection
       final connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult == ConnectivityResult.none) {
         state = SplashState.noInternet;
         return;
       }
+      state = SplashState.connected;
+      bool firebaseInitialized = await _initializeFirebaseWithRetry();
 
-      // Initialize Firebase with retry logic
-      int attempts = 0;
-      bool firebaseInitialized = false;
-
-      while (attempts < 3 && !firebaseInitialized) {
-        try {
-          state = SplashState.initializing;
-          await FirebaseMessaging.instance.getToken();
-          firebaseInitialized = true;
-
-          // Add a small delay before marking as ready to navigate
-          await Future.delayed(const Duration(milliseconds: 500));
-          state = SplashState.readyToNavigate;
-        } catch (e) {
-          attempts++;
-          if (attempts >= 3) {
-            state = SplashState.firebaseError;
-          }
-          await Future.delayed(Duration(seconds: attempts));
-        }
+      if (firebaseInitialized) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        state = SplashState.readyToNavigate;
+      } else {
+        state = SplashState.firebaseError;
       }
     } catch (e) {
       state = SplashState.firebaseError;
     }
   }
 
+  Future<bool> _initializeFirebaseWithRetry() async {
+    int attempts = 0;
+    const maxAttempts = 3;
+
+    while (attempts < maxAttempts) {
+      try {
+        state = SplashState.initializing;
+        await FirebaseMessaging.instance.getToken().timeout(
+          const Duration(seconds: 10),
+          onTimeout: () => throw TimeoutException('Firebase initialization timeout'),
+        );
+        return true;
+      } catch (e) {
+        attempts++;
+        if (attempts >= maxAttempts) {
+          return false;
+        }
+        await Future.delayed(Duration(seconds: attempts));
+      }
+    }
+    return false;
+  }
+
   void retryInitialization() {
+    state = SplashState.initializing;
     initializeApp();
   }
 }

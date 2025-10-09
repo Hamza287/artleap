@@ -1,4 +1,3 @@
- import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +10,7 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/search_textfield.dart';
+import '../../../base_widgets/common_appbar.dart';
 import 'community_screen_widgets/trending_creations_widget.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -91,7 +91,7 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
       },
       child: Scaffold(
         appBar: CommonAppBar(
-          title: _getAppBarTitle(0), // Using 0 for home page
+          title: _getAppBarTitle(0),
           listOfColors: _getAppBarColors(0),
           bottomWidget: Column(
             children: [

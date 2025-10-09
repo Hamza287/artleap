@@ -21,7 +21,6 @@ import '../../presentation/views/home_section/new_prompt_section/result/result_p
 import '../../presentation/views/interest_onboarding_screens/interest_onboarding_screen.dart';
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
-import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
 import '../../presentation/views/policies_screens/help_screen.dart';
 import '../../presentation/views/policies_screens/privacy_policy_screen.dart';
 import '../../presentation/views/subscriptions/apple_payment_screen.dart';
@@ -47,8 +46,6 @@ class RouteGenerator {
         return route(const AboutArtleapScreen());
       case LoginScreen.routeName:
         return route(const LoginScreen());
-      case LoginORsignUpScreen.routeName:
-        return route(const LoginORsignUpScreen());
       case SignUpScreen.routeName:
         return route(const SignUpScreen());
       case CurrentPlanScreen.routeName:
