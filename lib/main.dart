@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/providers/theme_provider.dart';
 import 'package:Artleap.ai/providers/localization_provider.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/localization/app_localization.dart';
 import 'package:Artleap.ai/shared/navigation/navigator_key.dart';
 import 'package:Artleap.ai/shared/navigation/route_generator.dart';
-import 'package:Artleap.ai/shared/theme/dark_theme.dart';
-import 'package:Artleap.ai/shared/theme/light_theme.dart';
+import 'package:Artleap.ai/shared/theme/app_theme.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +17,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'domain/notification_services/notification_service.dart';
 import 'main/app_initialization.dart';
 import 'main/purchase_handler.dart';
+import 'shared/theme/theme_provider.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
@@ -63,6 +62,11 @@ class _MyAppState extends ConsumerState<MyApp> {
       appSnackBar('Error', 'Failed to process purchase stream', Colors.red);
     });
 
+    // Load saved theme
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(themeProvider.notifier).loadTheme();
+    });
+
     _initializeApp();
   }
 
@@ -103,12 +107,12 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Artleap.ai',
-      themeMode: ref.watch(themeProvider),
       debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
       supportedLocales: AppLocalization.supportedLocales,
       locale: ref.watch(localizationProvider),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ref.watch(themeProvider),
       localizationsDelegates: const [
         AppLocalization.delegate,
         GlobalMaterialLocalizations.delegate,

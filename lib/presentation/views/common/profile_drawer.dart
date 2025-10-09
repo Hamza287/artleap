@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../../../providers/theme_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 import '../home_section/favourites_screen/favourites_screen.dart';
@@ -340,7 +339,6 @@ class _ProfileMenuItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
 
     return GestureDetector(
       onTap: onTap,
@@ -362,15 +360,15 @@ class _ProfileMenuItem extends ConsumerWidget {
                   title: title,
                   titleColor: color ?? Colors.white.withOpacity(0.9),
                 ),
-                if (isToggle)
-                  Switch(
-                    value: theme == AppTheme.dark,
-                    onChanged: (value) {
-                      ref.read(themeProvider.notifier).toggle();
-                    },
-                    activeColor: AppColors.purple,
-                    inactiveThumbColor: Colors.grey,
-                  ),
+                // if (isToggle)
+                //   Switch(
+                //     value: theme == AppTheme.dark,
+                //     onChanged: (value) {
+                //       ref.read(themeProvider.notifier).toggle();
+                //     },
+                //     activeColor: AppColors.purple,
+                //     inactiveThumbColor: Colors.grey,
+                //   ),
               ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
