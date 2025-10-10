@@ -10,7 +10,7 @@ import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_sec
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../global_widgets/error_widget.dart';
-import '../../login_or_signup_screen/login_or_signup_screen_widgets/or_widget.dart';
+import 'login_screen_widgets/or_widget.dart';
 
 class LoginScreen extends ConsumerWidget {
   static const String routeName = "login_screen";

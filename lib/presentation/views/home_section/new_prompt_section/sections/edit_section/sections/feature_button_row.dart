@@ -10,6 +10,7 @@ class FeatureButtonsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final state = ref.watch(promptEditProvider);
     final activeFeature = state.activeFeature;
 
@@ -25,6 +26,7 @@ class FeatureButtonsRow extends ConsumerWidget {
             isSmallScreen: isSmallScreen,
             onTap: () => ref.read(promptEditProvider.notifier)
                 .setActiveFeature(EditFeature.addObject),
+            theme: theme,
           ),
           _FeatureButton(
             label: "Remove Object",
@@ -33,6 +35,7 @@ class FeatureButtonsRow extends ConsumerWidget {
             isSmallScreen: isSmallScreen,
             onTap: () => ref.read(promptEditProvider.notifier)
                 .setActiveFeature(EditFeature.removeObject),
+            theme: theme,
           ),
           _FeatureButton(
             label: "Remove Background",
@@ -41,6 +44,7 @@ class FeatureButtonsRow extends ConsumerWidget {
             isSmallScreen: isSmallScreen,
             onTap: () => ref.read(promptEditProvider.notifier)
                 .setActiveFeature(EditFeature.removeBackground),
+            theme: theme,
           ),
         ],
       ),
@@ -54,6 +58,7 @@ class _FeatureButton extends StatelessWidget {
   final bool isActive;
   final bool isSmallScreen;
   final VoidCallback onTap;
+  final ThemeData theme;
 
   const _FeatureButton({
     required this.label,
@@ -61,6 +66,7 @@ class _FeatureButton extends StatelessWidget {
     required this.isActive,
     required this.isSmallScreen,
     required this.onTap,
+    required this.theme,
   });
 
   @override
@@ -82,7 +88,9 @@ class _FeatureButton extends StatelessWidget {
               height: buttonSize + 12,
               width: buttonSize + 12,
               decoration: BoxDecoration(
-                color: isActive ? Colors.grey[200]! : Colors.transparent,
+                color: isActive
+                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -90,12 +98,16 @@ class _FeatureButton extends StatelessWidget {
                   height: buttonSize - 4,
                   width: buttonSize - 4,
                   decoration: BoxDecoration(
-                    color: isActive ? Colors.grey[200]! : const Color(0xFFDCD5F1),
+                    color: isActive
+                        ? theme.colorScheme.primary.withOpacity(0.2)
+                        : theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Image.asset(
                     icon,
-                    color: Colors.white,
+                    color: isActive
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurfaceVariant,
                     height: buttonSize * 0.5,
                   ),
                 ),
@@ -111,7 +123,9 @@ class _FeatureButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: fontSize,
                     fontWeight: FontWeight.w500,
-                    color: isActive ? const Color(0xFF9A57FF) : Colors.black,
+                    color: isActive
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,

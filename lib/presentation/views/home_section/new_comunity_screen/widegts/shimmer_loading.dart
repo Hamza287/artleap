@@ -6,17 +6,19 @@ class ShimmerLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ListView.builder(
       itemCount: 6,
       itemBuilder: (context, index) {
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: theme.colorScheme.shadow.withOpacity(0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -31,14 +33,14 @@ class ShimmerLoading extends StatelessWidget {
                 child: Row(
                   children: [
                     Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
+                      baseColor: theme.colorScheme.surfaceContainerHighest,
+                      highlightColor: theme.colorScheme.surface,
                       child: Container(
                         width: 48,
                         height: 48,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.grey,
+                          color: theme.colorScheme.surfaceContainerHighest,
                         ),
                       ),
                     ),
@@ -48,26 +50,26 @@ class ShimmerLoading extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
+                            baseColor: theme.colorScheme.surfaceContainerHighest,
+                            highlightColor: theme.colorScheme.surface,
                             child: Container(
                               height: 16,
                               width: 120,
                               decoration: BoxDecoration(
-                                color: Colors.grey,
+                                color: theme.colorScheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                           ),
                           const SizedBox(height: 6),
                           Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
+                            baseColor: theme.colorScheme.surfaceContainerHighest,
+                            highlightColor: theme.colorScheme.surface,
                             child: Container(
                               height: 12,
                               width: 80,
                               decoration: BoxDecoration(
-                                color: Colors.grey,
+                                color: theme.colorScheme.surfaceContainerHighest,
                                 borderRadius: BorderRadius.circular(6),
                               ),
                             ),
@@ -81,12 +83,12 @@ class ShimmerLoading extends StatelessWidget {
 
               // Shimmer image
               Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
+                baseColor: theme.colorScheme.surfaceContainerHighest,
+                highlightColor: theme.colorScheme.surface,
                 child: Container(
                   height: 400,
                   width: double.infinity,
-                  color: Colors.grey,
+                  color: theme.colorScheme.surfaceContainerHighest,
                 ),
               ),
 
@@ -94,15 +96,15 @@ class ShimmerLoading extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
+                  baseColor: theme.colorScheme.surfaceContainerHighest,
+                  highlightColor: theme.colorScheme.surface,
                   child: Row(
                     children: [
                       Container(
                         height: 40,
                         width: 40,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
@@ -111,7 +113,7 @@ class ShimmerLoading extends StatelessWidget {
                         height: 40,
                         width: 40,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),

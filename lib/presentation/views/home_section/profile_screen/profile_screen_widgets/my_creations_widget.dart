@@ -30,12 +30,9 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
 
   @override
   void initState() {
-    // Filter based on privacy
     final filteredList = widget.userId == UserData.ins.userId!
         ? widget.listofCreations
         : widget.listofCreations.where((image) => image.privacy == 'public').toList();
-
-    // Reverse the list to show latest first
     filteredCreations = filteredList.reversed.toList();
 
     super.initState();
@@ -43,6 +40,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -54,22 +52,22 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
               "Gallery",
               style: AppTextstyle.interMedium(
                 fontSize: 18,
-                color: AppColors.darkBlue,
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ),
-          _buildCreationsGrid(),
+          _buildCreationsGrid(theme),
         ],
       ),
     );
   }
 
-  Widget _buildCreationsGrid() {
+  Widget _buildCreationsGrid(ThemeData theme) {
     if (filteredCreations.isEmpty) {
       return Container(
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.grey.shade50,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
@@ -79,14 +77,14 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
               Icon(
                 Icons.photo_library_outlined,
                 size: 48,
-                color: Colors.grey.shade400,
+                color: theme.colorScheme.onSurface.withOpacity(0.4),
               ),
               12.spaceY,
               Text(
                 'No creations yet',
                 style: AppTextstyle.interMedium(
                   fontSize: 16,
-                  color: Colors.grey.shade600,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
               4.spaceY,
@@ -94,7 +92,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
                 'Start creating amazing AI art!',
                 style: AppTextstyle.interRegular(
                   fontSize: 14,
-                  color: Colors.grey.shade500,
+                  color: theme.colorScheme.onSurface.withOpacity(0.5),
                 ),
               ),
             ],
@@ -127,7 +125,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
                 modelName: e.modelName,
                 profileName: e.username,
                 userId: UserData.ins.userId,
-                index: index, // Now index matches the display order
+                index: index,
                 creatorEmail: e.creatorEmail,
                 privacy: e.privacy,
               ),
@@ -138,7 +136,7 @@ class _MyCreationsWidgetState extends State<MyCreationsWidget> {
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: theme.colorScheme.shadow.withOpacity(0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),

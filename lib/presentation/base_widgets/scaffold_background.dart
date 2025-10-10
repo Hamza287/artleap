@@ -17,9 +17,9 @@ class RegistrationBackgroundWidget extends ConsumerWidget {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(bgImage ?? AppAssets.backgroundImage),
-                fit: BoxFit.cover),
+          image: DecorationImage(
+              image: AssetImage(bgImage ?? AppAssets.backgroundImage),
+              fit: BoxFit.cover),
         ),
         child: widget,
       ),

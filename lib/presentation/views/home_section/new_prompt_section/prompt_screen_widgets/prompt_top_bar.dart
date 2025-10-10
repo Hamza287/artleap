@@ -22,15 +22,17 @@ class PromptTopBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final currentNav = ref.watch(promptNavProvider);
     final screenSize = getScreenSizeCategory(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: theme.colorScheme.shadow.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -41,12 +43,12 @@ class PromptTopBar extends ConsumerWidget {
           horizontal: screenSize == ScreenSizeCategory.extraSmall ? 16 : 20,
           vertical: 12,
         ),
-        child: _buildProfessionalDropdown(context, ref, currentNav, screenSize),
+        child: _buildProfessionalDropdown(context, ref, currentNav, screenSize, theme),
       ),
     );
   }
 
-  Widget _buildProfessionalDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav, ScreenSizeCategory screenSize) {
+  Widget _buildProfessionalDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav, ScreenSizeCategory screenSize, ThemeData theme) {
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final animationController = ref.watch(_animationControllerProvider);
 
@@ -73,7 +75,6 @@ class PromptTopBar extends ConsumerWidget {
       ),
     ];
 
-    // Responsive sizing - more compact
     final iconSize = _getIconSize(screenSize);
     final fontSize = _getFontSize(screenSize);
     final padding = _getPadding(screenSize);
@@ -87,7 +88,7 @@ class PromptTopBar extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: theme.colorScheme.shadow.withOpacity(0.08),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -108,10 +109,10 @@ class PromptTopBar extends ConsumerWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: padding, vertical: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.grey.shade300,
+                    color: theme.colorScheme.outline.withOpacity(0.3),
                     width: 1.5,
                   ),
                 ),
@@ -121,14 +122,14 @@ class PromptTopBar extends ConsumerWidget {
                       width: iconSize,
                       height: iconSize,
                       decoration: BoxDecoration(
-                        color: AppColors.purple.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
                         child: Image.asset(
                           currentOption.icon,
                           height: iconSize * 0.5,
-                          color: AppColors.purple,
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                     ),
@@ -140,7 +141,7 @@ class PromptTopBar extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: fontSize,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade900,
+                          color: theme.colorScheme.onSurface,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -150,7 +151,7 @@ class PromptTopBar extends ConsumerWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: theme.colorScheme.surfaceVariant,
                         shape: BoxShape.circle,
                       ),
                       child: RotationTransition(
@@ -162,7 +163,7 @@ class PromptTopBar extends ConsumerWidget {
                         ),
                         child: Icon(
                           Icons.arrow_drop_down_rounded,
-                          color: Colors.grey.shade700,
+                          color: theme.colorScheme.onSurfaceVariant,
                           size: 20,
                         ),
                       ),
@@ -183,17 +184,17 @@ class PromptTopBar extends ConsumerWidget {
             opacity: animationController,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: theme.colorScheme.shadow.withOpacity(0.1),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
                 ],
                 border: Border.all(
-                  color: Colors.grey.shade200,
+                  color: theme.colorScheme.outline.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -216,7 +217,7 @@ class PromptTopBar extends ConsumerWidget {
                               bottom: options.last == option
                                   ? BorderSide.none
                                   : BorderSide(
-                                color: Colors.grey.shade100,
+                                color: theme.colorScheme.outline.withOpacity(0.1),
                                 width: 1,
                               ),
                             ),
@@ -228,14 +229,14 @@ class PromptTopBar extends ConsumerWidget {
                                 width: iconSize,
                                 height: iconSize,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
+                                  color: theme.colorScheme.surfaceVariant,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Center(
                                   child: Image.asset(
                                     option.icon,
                                     height: iconSize * 0.45,
-                                    color: Colors.grey.shade700,
+                                    color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
@@ -247,7 +248,7 @@ class PromptTopBar extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: fontSize * 0.95,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade800,
+                                    color: theme.colorScheme.onSurface,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -255,7 +256,7 @@ class PromptTopBar extends ConsumerWidget {
                               // Chevron Icon
                               Icon(
                                 Icons.chevron_right_rounded,
-                                color: Colors.grey.shade400,
+                                color: theme.colorScheme.onSurface.withOpacity(0.5),
                                 size: 18,
                               ),
                             ],

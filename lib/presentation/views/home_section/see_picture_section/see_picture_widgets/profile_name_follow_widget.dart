@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_user_profile_screen.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
@@ -17,6 +16,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final userProfile = ref.watch(userProfileProvider);
     final currentUserId = UserData.ins.userId;
 
@@ -27,20 +27,20 @@ class ProfileNameFollowWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+        gradient: LinearGradient(
+          colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: theme.colorScheme.shadow.withOpacity(0.06),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
         ],
-        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,19 +64,19 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                   height: 50,
                   width: 50,
                   decoration: BoxDecoration(
-                   color:  Colors.white,
+                    color:  theme.colorScheme.onPrimary,
                     shape: BoxShape.circle,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                       ),
                       child: Icon(
                         Icons.person_rounded,
-                        color: AppColors.darkBlue.withOpacity(0.7),
+                        color: theme.colorScheme.primary,
                         size: 22,
                       ),
                     ),
@@ -89,7 +89,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                     Text(
                       "Created by",
                       style: AppTextstyle.interRegular(
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                         fontSize: 12,
                       ),
                     ),
@@ -97,7 +97,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                     Text(
                       profileName ?? "Jack Bolt",
                       style: AppTextstyle.interMedium(
-                        color: AppColors.white,
+                        color: theme.colorScheme.onPrimary,
                         fontSize: 16,
                       ),
                     ),
@@ -109,13 +109,13 @@ class ProfileNameFollowWidget extends ConsumerWidget {
 
           // Follow Button
           if (userId != null && currentUserId != null)
-            _buildFollowButton(ref,userProfile, isFollowing, currentUserId),
+            _buildFollowButton(ref,userProfile, isFollowing, currentUserId, theme),
         ],
       ),
     );
   }
 
-  Widget _buildFollowButton(WidgetRef ref,dynamic userProfile, bool isFollowing, String currentUserId) {
+  Widget _buildFollowButton(WidgetRef ref,dynamic userProfile, bool isFollowing, String currentUserId, ThemeData theme) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
@@ -123,13 +123,13 @@ class ProfileNameFollowWidget extends ConsumerWidget {
         boxShadow: [
           if (isFollowing)
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
+              color: theme.colorScheme.shadow.withOpacity(0.3),
               blurRadius: 6,
               offset: const Offset(0, 2),
             )
           else
             BoxShadow(
-              color: const Color(0xff3586f1).withOpacity(0.3),
+              color: theme.colorScheme.primary.withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -151,21 +151,21 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                   ? const LinearGradient(
                 colors: [Colors.white, Colors.white],
               )
-                  : const LinearGradient(
-                colors: [Color(0xff3586f1), Color(0xff2b6cdb)],
+                  : LinearGradient(
+                colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isFollowing ? Colors.grey.shade300 : Colors.transparent,
+                color: isFollowing ? theme.colorScheme.outline : Colors.transparent,
                 width: 1.5,
               ),
             ),
             child: Center(
               child: userProfile.isLoading
                   ? LoadingAnimationWidget.threeArchedCircle(
-                color: isFollowing ? AppColors.darkBlue : Colors.white,
+                color: isFollowing ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
                 size: 20,
               )
                   : Row(
@@ -173,14 +173,14 @@ class ProfileNameFollowWidget extends ConsumerWidget {
                 children: [
                   Icon(
                     isFollowing ? Icons.check_rounded : Icons.add_rounded,
-                    color: isFollowing ? AppColors.darkBlue : Colors.white,
+                    color: isFollowing ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
                     size: 16,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     isFollowing ? "Following" : "Follow",
                     style: AppTextstyle.interMedium(
-                      color: isFollowing ? AppColors.darkBlue : Colors.white,
+                      color: isFollowing ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
                       fontSize: 13,
                     ),
                   ),

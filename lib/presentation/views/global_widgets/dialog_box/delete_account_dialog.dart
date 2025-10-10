@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../../../../../shared/navigation/navigation.dart';
+import '../../../../shared/navigation/navigation.dart';
 
 class DeleteAccountDialog extends ConsumerWidget {
   const DeleteAccountDialog({super.key});

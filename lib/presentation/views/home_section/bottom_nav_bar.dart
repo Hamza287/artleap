@@ -39,30 +39,38 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: ColorScheme.of(context).surface,
         resizeToAvoidBottomInset: false,
         bottomNavigationBar: isKeyboardOpen
             ? const SizedBox.shrink()
-            : _buildEnhancedNavBar(pageIndex),
+            : _buildEnhancedNavBar(pageIndex, theme),
         body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
             ? bottomNavBarState.widgets[pageIndex]
-            : const Center(child: CircularProgressIndicator()),
+            : Center(
+          child: CircularProgressIndicator(
+            color: theme.colorScheme.primary,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildEnhancedNavBar(int currentIndex) {
+  Widget _buildEnhancedNavBar(int currentIndex, ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       height: 75,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: theme.colorScheme.shadow.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, -2),
           ),
@@ -82,24 +90,28 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
                 index: 0,
                 currentIndex: currentIndex,
                 onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
+                theme: theme,
               ),
               _buildNavButton(
                 icon: Icons.add_circle,
                 index: 1,
                 currentIndex: currentIndex,
                 onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
+                theme: theme,
               ),
               _buildNavButton(
                 icon: Icons.groups,
                 index: 2,
                 currentIndex: currentIndex,
                 onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
+                theme: theme,
               ),
               _buildNavButton(
                 icon: Icons.person,
                 index: 3,
                 currentIndex: currentIndex,
                 onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
+                theme: theme,
               ),
             ],
           ),
@@ -113,8 +125,11 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     required int index,
     required int currentIndex,
     required VoidCallback onTap,
+    required ThemeData theme,
   }) {
     final isSelected = currentIndex == index;
+    final isDark = theme.brightness == Brightness.dark;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -124,24 +139,30 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
           width: 60,
           height: 60,
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF667EEA).withOpacity(0.1) : Colors.transparent,
+            color: isSelected
+                ? theme.colorScheme.primary.withOpacity(0.1)
+                : Colors.transparent,
             shape: BoxShape.circle,
-            border: isSelected ? Border.all(
-              color: const Color(0xFF667EEA).withOpacity(0.3),
+            border: isSelected
+                ? Border.all(
+              color: theme.colorScheme.primary.withOpacity(0.3),
               width: 1.5,
-            ) : null,
+            )
+                : null,
           ),
           child: Center(
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? const Color(0xFF667EEA) : Colors.transparent,
+                color: isSelected ? theme.colorScheme.primary : Colors.transparent,
               ),
               child: Icon(
                 icon,
                 size: 32,
-                color: isSelected ? Colors.white : AppColors.darkBlue,
+                color: isSelected
+                    ? theme.colorScheme.onPrimary
+                    : theme.colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
           ),

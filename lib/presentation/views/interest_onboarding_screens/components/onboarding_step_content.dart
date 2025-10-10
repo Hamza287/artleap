@@ -24,6 +24,7 @@ class OnboardingStepContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
     final isSmallScreen = mediaQuery.size.width < 600;
     final safePadding = mediaQuery.padding;
@@ -33,13 +34,13 @@ class OnboardingStepContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildStepIndicator(currentStep + 1),
+          _buildStepIndicator(currentStep + 1, theme),
           const SizedBox(height: 20),
           Text(
             stepData.title,
             style: AppTextstyle.interBold(
               fontSize: isSmallScreen ? 24.0 : 28.0,
-              color: Colors.black,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -47,7 +48,7 @@ class OnboardingStepContent extends StatelessWidget {
             stepData.subtitle,
             style: AppTextstyle.interRegular(
               fontSize: isSmallScreen ? 16.0 : 18.0,
-              color: Colors.grey,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 24),
@@ -76,11 +77,11 @@ class OnboardingStepContent extends StatelessWidget {
     );
   }
 
-  Widget _buildStepIndicator(int stepNumber) {
+  Widget _buildStepIndicator(int stepNumber, ThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF875EFF).withOpacity(0.1),
+        color: theme.colorScheme.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -89,8 +90,8 @@ class OnboardingStepContent extends StatelessWidget {
           Container(
             width: 24,
             height: 24,
-            decoration: const BoxDecoration(
-              color: Color(0xFF875EFF),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -98,7 +99,7 @@ class OnboardingStepContent extends StatelessWidget {
                 stepNumber.toString(),
                 style: AppTextstyle.interBold(
                   fontSize: 12,
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -108,7 +109,7 @@ class OnboardingStepContent extends StatelessWidget {
             'Step $stepNumber',
             style: AppTextstyle.interMedium(
               fontSize: 14,
-              color: const Color(0xFF875EFF),
+              color: theme.colorScheme.primary,
             ),
           ),
         ],

@@ -13,13 +13,13 @@ class AppBackgroundWidget extends ConsumerWidget {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: theme.colorScheme.surface,
         body: Container(
           height: double.infinity,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            gradient: _getBackgroundGradient(theme),
+            color: theme.colorScheme.surface,
+            // gradient: _getBackgroundGradient(theme),
           ),
           child: widget,
         ),
@@ -27,27 +27,27 @@ class AppBackgroundWidget extends ConsumerWidget {
     );
   }
 
-  LinearGradient? _getBackgroundGradient(ThemeData theme) {
-    if (theme.brightness == Brightness.dark) {
-      return const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF1A1A2E),
-          Color(0xFF16213E),
-          Color(0xFF0F3460),
-        ],
-      );
-    } else {
-      return const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFFF8F9FA),
-          Color(0xFFE9ECEF),
-          Colors.white,
-        ],
-      );
-    }
-  }
+  // LinearGradient? _getBackgroundGradient(ThemeData theme) {
+  //   if (theme.brightness == Brightness.dark) {
+  //     return const LinearGradient(
+  //       begin: Alignment.topCenter,
+  //       end: Alignment.bottomCenter,
+  //       colors: [
+  //         Color(0xFF1A1A2E),
+  //         Color(0xFF16213E),
+  //         Color(0xFF0F3460),
+  //       ],
+  //     );
+  //   } else {
+  //     return const LinearGradient(
+  //       begin: Alignment.topCenter,
+  //       end: Alignment.bottomCenter,
+  //       colors: [
+  //         Color(0xFFF8F9FA),
+  //         Color(0xFFE9ECEF),
+  //         Colors.white,
+  //       ],
+  //     );
+  //   }
+  // }
 }

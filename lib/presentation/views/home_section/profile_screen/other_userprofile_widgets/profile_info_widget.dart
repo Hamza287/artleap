@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import '../../../../../providers/user_profile_provider.dart';
@@ -15,6 +13,7 @@ class ProfileInfoWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final userProfile = ref.watch(userProfileProvider);
     final otherUser = userProfile.otherUserProfileData?.user;
 
@@ -22,15 +21,15 @@ class ProfileInfoWidget extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              _buildProfileAvatar(userProfile),
+              _buildProfileAvatar(userProfile, theme),
               16.spaceX,
               Expanded(
                 child: Column(
@@ -39,7 +38,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                     Text(
                       profileName ?? "User Name",
                       style: AppTextstyle.interMedium(
-                        color: AppColors.darkBlue,
+                        color: theme.colorScheme.onSurface,
                         fontSize: 18,
                       ),
                     ),
@@ -47,7 +46,7 @@ class ProfileInfoWidget extends ConsumerWidget {
                     Text(
                       "AI Artist",
                       style: AppTextstyle.interRegular(
-                        color: Colors.grey.shade600,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                         fontSize: 14,
                       ),
                     ),
@@ -57,15 +56,15 @@ class ProfileInfoWidget extends ConsumerWidget {
             ],
           ),
           20.spaceY,
-          _buildStatsRow(otherUser),
+          _buildStatsRow(otherUser, theme),
           20.spaceY,
-          _buildFollowButton(userProfile,ref),
+          _buildFollowButton(userProfile,ref, theme),
         ],
       ),
     );
   }
 
-  Widget _buildProfileAvatar(dynamic userProfile) {
+  Widget _buildProfileAvatar(dynamic userProfile, ThemeData theme) {
     final hasProfilePic = userProfile.otherUserProfileData?.user.profilePic.isNotEmpty ?? false;
 
     return Container(
@@ -73,7 +72,7 @@ class ProfileInfoWidget extends ConsumerWidget {
       width: 70,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey.shade300, width: 2),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.3), width: 2),
       ),
       child: ClipOval(
         child: hasProfilePic
@@ -82,10 +81,10 @@ class ProfileInfoWidget extends ConsumerWidget {
           fit: BoxFit.cover,
         )
             : Container(
-          color: Colors.grey.shade100,
+          color: theme.colorScheme.surfaceContainerHighest,
           child: Icon(
             Icons.person_rounded,
-            color: Colors.grey.shade400,
+            color: theme.colorScheme.onSurface.withOpacity(0.4),
             size: 32,
           ),
         ),
@@ -93,7 +92,7 @@ class ProfileInfoWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsRow(dynamic otherUser) {
+  Widget _buildStatsRow(dynamic otherUser, ThemeData theme) {
     final creations = otherUser?.images.length ?? 0;
     final followers = otherUser?.followers.length ?? 0;
     final following = otherUser?.following.length ?? 0;
@@ -101,30 +100,30 @@ class ProfileInfoWidget extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem("Creations", creations.toString()),
-          Container(height: 30, width: 1, color: Colors.grey.shade300),
-          _buildStatItem("Followers", followers.toString()),
-          Container(height: 30, width: 1, color: Colors.grey.shade300),
-          _buildStatItem("Following", following.toString()),
+          _buildStatItem("Creations", creations.toString(), theme),
+          Container(height: 30, width: 1, color: theme.colorScheme.outline.withOpacity(0.3)),
+          _buildStatItem("Followers", followers.toString(), theme),
+          Container(height: 30, width: 1, color: theme.colorScheme.outline.withOpacity(0.3)),
+          _buildStatItem("Following", following.toString(), theme),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildStatItem(String label, String value, ThemeData theme) {
     return Column(
       children: [
         Text(
           value,
           style: AppTextstyle.interMedium(
             fontSize: 16,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         4.spaceY,
@@ -132,14 +131,14 @@ class ProfileInfoWidget extends ConsumerWidget {
           label,
           style: AppTextstyle.interRegular(
             fontSize: 12,
-            color: Colors.grey.shade600,
+            color: theme.colorScheme.onSurface.withOpacity(0.6),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildFollowButton(dynamic userProfile,WidgetRef ref) {
+  Widget _buildFollowButton(dynamic userProfile,WidgetRef ref, ThemeData theme) {
     final isFollowing = userProfile.userProfileData?.user.following.any((user) => user.id == userId) ?? false;
     final isLoading = userProfile.isLoading;
 
@@ -155,17 +154,17 @@ class ProfileInfoWidget extends ConsumerWidget {
           child: Container(
             height: 48,
             decoration: BoxDecoration(
-              color: isFollowing ? Colors.white : AppColors.darkBlue,
+              color: isFollowing ? theme.colorScheme.surface : theme.colorScheme.primary,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isFollowing ? Colors.grey.shade400 : AppColors.darkBlue,
+                color: isFollowing ? theme.colorScheme.outline : theme.colorScheme.primary,
                 width: 1.5,
               ),
             ),
             child: Center(
               child: isLoading
                   ? LoadingAnimationWidget.threeArchedCircle(
-                color: isFollowing ? AppColors.darkBlue : Colors.white,
+                color: isFollowing ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
                 size: 20,
               )
                   : Row(
@@ -173,14 +172,14 @@ class ProfileInfoWidget extends ConsumerWidget {
                 children: [
                   Icon(
                     isFollowing ? Icons.check_rounded : Icons.add_rounded,
-                    color: isFollowing ? AppColors.darkBlue : Colors.white,
+                    color: isFollowing ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
                     size: 18,
                   ),
                   8.spaceX,
                   Text(
                     isFollowing ? "Following" : "Follow",
                     style: AppTextstyle.interMedium(
-                      color: isFollowing ? AppColors.darkBlue : Colors.white,
+                      color: isFollowing ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
                       fontSize: 15,
                     ),
                   ),

@@ -39,7 +39,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
       _lastScrollTime = now;
 
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 300 &&
+              _scrollController.position.maxScrollExtent - 300 &&
           !ref.read(homeScreenProvider).isLoadingMore) {
         ref.read(homeScreenProvider).loadMoreImages();
       }
@@ -53,15 +53,17 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
   }
 
   Widget _buildLoadMoreShimmer() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 16),
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Center(
         child: SizedBox(
           width: 24,
           height: 24,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.darkBlue),
+            valueColor:
+                AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
           ),
         ),
       ),
@@ -70,6 +72,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final homeProvider = ref.watch(homeScreenProvider);
     final userProfileProviderWatch = ref.watch(userProfileProvider);
     final filteredList = homeProvider.selectedStyleTitle != null
@@ -83,67 +86,79 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
           child: homeProvider.usersData == null
               ? const ShimmerLoading()
               : RefreshIndicator(
-            onRefresh: () async {
-              await ref.read(homeScreenProvider).refreshUserCreations();
-            },
-            child: filteredList.isEmpty
-                ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.image_not_supported,
-                      size: 64,
-                      color: Colors.grey.shade400,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "No images available for this filter",
-                      style: AppTextstyle.interMedium(
-                        fontSize: 16,
-                        color: Colors.grey.shade600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                  onRefresh: () async {
+                    await ref.read(homeScreenProvider).refreshUserCreations();
+                  },
+                  child: filteredList.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.image_not_supported,
+                                  size: 64,
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.4),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  "No images available for this filter",
+                                  style: AppTextstyle.interMedium(
+                                    fontSize: 16,
+                                    color: theme.colorScheme.onSurface
+                                        .withOpacity(0.6),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          controller: _scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          cacheExtent: 1000,
+                          itemCount: filteredList.length +
+                              (homeProvider.isLoadingMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index >= filteredList.length) {
+                              return _buildLoadMoreShimmer();
+                            }
+
+                            final image = filteredList[index];
+                            if (image == null) return const SizedBox.shrink();
+
+                            WidgetsBinding.instance
+                                .addPostFrameCallback((_) async {
+                              final posts = ref
+                                  .read(homeScreenProvider)
+                                  .communityImagesList;
+                              final ids = posts
+                                  .map((p) => p.userId)
+                                  .whereType<String>()
+                                  .toSet()
+                                  .toList();
+                              await ref
+                                  .read(userProfileProvider)
+                                  .getProfilesForUserIds(ids);
+                            });
+                            final profile = userProfileProviderWatch
+                                .getProfileById(image.userId ?? "");
+                            final profileImage = profile?.user.profilePic;
+
+                            return PostCard(
+                              key: ValueKey('post_${image.id}_$index'),
+                              image: image,
+                              index: index,
+                              homeProvider: homeProvider,
+                              profileImage: profileImage,
+                            );
+                          },
+                        ),
                 ),
-              ),
-            )
-                : ListView.builder(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              cacheExtent: 1000,
-              itemCount: filteredList.length +
-                  (homeProvider.isLoadingMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= filteredList.length) {
-                  return _buildLoadMoreShimmer();
-                }
-
-                final image = filteredList[index];
-                if (image == null) return const SizedBox.shrink();
-
-                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  final posts = ref.read(homeScreenProvider).communityImagesList;
-                  final ids = posts.map((p) => p.userId).whereType<String>().toSet().toList();
-                  await ref.read(userProfileProvider).getProfilesForUserIds(ids);});
-                final profile = userProfileProviderWatch.getProfileById(image.userId ?? "");
-                final profileImage = profile?.user.profilePic;
-
-                return PostCard(
-                  key: ValueKey('post_${image.id}_$index'),
-                  image: image,
-                  index: index,
-                  homeProvider: homeProvider,
-                  profileImage: profileImage,
-                );
-              },
-            ),
-          ),
         ),
-
       ],
     );
   }

@@ -15,6 +15,7 @@ class CommentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final isCurrentUser = true;
 
     return Container(
@@ -22,20 +23,19 @@ class CommentTile extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Enhanced User Avatar
           Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [AppColors.primaryColor, AppColors.secondaryColor],
+                colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryColor.withOpacity(0.3),
+                  color: theme.colorScheme.primary.withOpacity(0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -46,7 +46,7 @@ class CommentTile extends ConsumerWidget {
                 comment.userName.substring(0, 1).toUpperCase(),
                 style: AppTextstyle.interBold(
                   fontSize: 16,
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -59,15 +59,15 @@ class CommentTile extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.grey.shade200,
+                      color: theme.colorScheme.outline.withOpacity(0.3),
                       width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: theme.colorScheme.shadow.withOpacity(0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -82,7 +82,7 @@ class CommentTile extends ConsumerWidget {
                             comment.userName,
                             style: AppTextstyle.interBold(
                               fontSize: 15,
-                              color: AppColors.primaryTextColor,
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                           const Spacer(),
@@ -91,7 +91,7 @@ class CommentTile extends ConsumerWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: AppColors.errorColor.withOpacity(0.1),
+                                color: theme.colorScheme.error.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: IconButton(
@@ -99,7 +99,7 @@ class CommentTile extends ConsumerWidget {
                                 icon: Icon(
                                   Icons.delete_outline_rounded,
                                   size: 18,
-                                  color: AppColors.errorColor,
+                                  color: theme.colorScheme.error,
                                 ),
                                 padding: EdgeInsets.zero,
                               ),
@@ -111,7 +111,7 @@ class CommentTile extends ConsumerWidget {
                         comment.comment,
                         style: AppTextstyle.interRegular(
                           fontSize: 15,
-                          color: AppColors.primaryTextColor,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -124,7 +124,7 @@ class CommentTile extends ConsumerWidget {
                     _formatTime(comment.createdAt),
                     style: AppTextstyle.interRegular(
                       fontSize: 12,
-                      color: AppColors.hintTextColor,
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
                     ),
                   ),
                 ),

@@ -27,12 +27,14 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final currentNav = ref.watch(promptNavProvider);
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
         key: _scaffoldKey,
         drawer: ProfileDrawer(
           profileImage: userProfile?.profilePic ?? '',
@@ -64,7 +66,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
+                              color: theme.colorScheme.shadow.withOpacity(0.1),
                               blurRadius: 0,
                               offset: const Offset(0, 4),
                             ),
@@ -89,10 +91,27 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
       case PromptNavItem.edit:
         return const PromptEditScreen();
       case PromptNavItem.animate:
-      return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
+        return Center(
+          child: Text(
+            'Coming soon',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+        );
       case PromptNavItem.enhance:
-        return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
+        return Center(
+          child: Text(
+            'Coming soon',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+        );
     }
   }
 }
-

@@ -6,13 +6,14 @@ class PromptTemplates extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final styles = [
       "Coming Soon",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Coming Soon",
+      "Coming Soon",
+      "Coming Soon",
+      "Coming Soon",
+      "Coming Soon"
     ];
 
     return Column(
@@ -24,7 +25,7 @@ class PromptTemplates extends StatelessWidget {
             "Prompt Templates",
             style: AppTextstyle.interMedium(
                 fontSize: 18,
-                color: Colors.black
+                color: theme.colorScheme.onBackground
             ),
           ),
         ),
@@ -40,15 +41,15 @@ class PromptTemplates extends StatelessWidget {
                 width: 120, // Adjust width as needed
                 margin: const EdgeInsets.only(right: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE9EBF5),
+                  color: Colors.grey.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
-                    'Coming Soon',
-                    // styles[index],
-                    style: const TextStyle(
+                    styles[index],
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),

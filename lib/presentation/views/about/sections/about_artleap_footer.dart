@@ -7,10 +7,11 @@ class AboutArtleapFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       width: double.infinity,
-      color: AppColors.darkBlue,
+      color: theme.colorScheme.primary,
       child: Column(
         children: [
           Image.asset(
@@ -22,7 +23,7 @@ class AboutArtleapFooter extends StatelessWidget {
             'Artleap - Where Creativity Meets AI',
             style: AppTextstyle.interRegular(
               fontSize: 16,
-              color: Colors.white.withOpacity(0.8),
+              color: theme.colorScheme.onPrimary.withOpacity(0.8),
             ),
             textAlign: TextAlign.center,
           ),
@@ -44,7 +45,7 @@ class AboutArtleapFooter extends StatelessWidget {
             '© ${DateTime.now().year} Xr Digital. All rights reserved.',
             style: AppTextstyle.interRegular(
               fontSize: 12,
-              color: Colors.white.withOpacity(0.6),
+              color: theme.colorScheme.onPrimary.withOpacity(0.6),
             ),
           ),
         ],
@@ -52,23 +53,23 @@ class AboutArtleapFooter extends StatelessWidget {
     );
   }
 
-  // Widget _buildSocialIcon(IconData icon) {
-  //   return Container(
-  //     width: 40,
-  //     height: 40,
-  //     decoration: BoxDecoration(
-  //       shape: BoxShape.circle,
-  //       color: Colors.white.withOpacity(0.1),
-  //       border: Border.all(
-  //         color: Colors.white.withOpacity(0.3),
-  //         width: 1,
-  //       ),
-  //     ),
-  //     child: Icon(
-  //       icon,
-  //       size: 20,
-  //       color: Colors.white,
-  //     ),
-  //   );
-  // }
+// Widget _buildSocialIcon(IconData icon) {
+//   return Container(
+//     width: 40,
+//     height: 40,
+//     decoration: BoxDecoration(
+//       shape: BoxShape.circle,
+//       color: Colors.white.withOpacity(0.1),
+//       border: Border.all(
+//         color: Colors.white.withOpacity(0.3),
+//         width: 1,
+//       ),
+//     ),
+//     child: Icon(
+//       icon,
+//       size: 20,
+//       color: Colors.white,
+//     ),
+//   );
+// }
 }

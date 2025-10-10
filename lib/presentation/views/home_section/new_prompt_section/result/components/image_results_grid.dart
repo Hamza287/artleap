@@ -14,23 +14,24 @@ class ImageResultsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
     final generatedTextToImageData =
         ref.watch(generateImageProvider).generatedTextToImageData;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
     if (isLoading) {
-      return _buildLoadingGrid();
+      return _buildLoadingGrid(theme);
     }
 
     final images =
     _getImagesToDisplay(generatedImages, generatedTextToImageData);
 
     if (images.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(theme);
     }
 
-    return _buildImagesGrid(context, ref, images);
+    return _buildImagesGrid(context, ref, images, theme);
   }
 
   List<dynamic> _getImagesToDisplay(
@@ -43,17 +44,17 @@ class ImageResultsGrid extends ConsumerWidget {
     return [];
   }
 
-  Widget _buildLoadingGrid() {
+  Widget _buildLoadingGrid(ThemeData theme) {
     return Column(
       children: [
         Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: theme.colorScheme.surfaceContainerHighest,
+          highlightColor: theme.colorScheme.surface,
           child: Container(
             height: 280,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
             ),
           ),
@@ -66,13 +67,13 @@ class ImageResultsGrid extends ConsumerWidget {
                 (index) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
+                baseColor: theme.colorScheme.surfaceContainerHighest,
+                highlightColor: theme.colorScheme.surface,
                 child: Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -84,14 +85,16 @@ class ImageResultsGrid extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(ThemeData theme) {
     return Container(
       height: 280,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.3),
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -99,14 +102,14 @@ class ImageResultsGrid extends ConsumerWidget {
           Icon(
             Icons.image_outlined,
             size: 64,
-            color: Colors.grey[400],
+            color: theme.colorScheme.onSurface.withOpacity(0.4),
           ),
           const SizedBox(height: 16),
           Text(
             'No images generated',
             style: AppTextstyle.interMedium(
               fontSize: 16,
-              color: Colors.grey[600]!,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 8),
@@ -114,7 +117,7 @@ class ImageResultsGrid extends ConsumerWidget {
             'Try generating some amazing AI art!',
             style: AppTextstyle.interRegular(
               fontSize: 14,
-              color: Colors.grey[500]!,
+              color: theme.colorScheme.onSurface.withOpacity(0.5),
             ),
           ),
         ],
@@ -123,18 +126,18 @@ class ImageResultsGrid extends ConsumerWidget {
   }
 
   Widget _buildImagesGrid(
-      BuildContext context, WidgetRef ref, List<dynamic> images) {
+      BuildContext context, WidgetRef ref, List<dynamic> images, ThemeData theme) {
     final isSingleImage = images.length == 1;
 
     if (isSingleImage) {
-      return _buildSingleImage(context, ref, images[0]!);
+      return _buildSingleImage(context, ref, images[0]!, theme);
     } else {
-      return _buildMultipleImages(context, ref, images);
+      return _buildMultipleImages(context, ref, images, theme);
     }
   }
 
   Widget _buildSingleImage(
-      BuildContext context, WidgetRef ref, dynamic imageData) {
+      BuildContext context, WidgetRef ref, dynamic imageData, ThemeData theme) {
     return GestureDetector(
       onTap: () => _navigateToSeePicture(context, ref, imageData),
       child: Container(
@@ -142,7 +145,7 @@ class ImageResultsGrid extends ConsumerWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: theme.colorScheme.shadow.withOpacity(0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -152,8 +155,7 @@ class ImageResultsGrid extends ConsumerWidget {
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              _buildImageWidget(imageData.imageUrl, 280),
-              // Removed the eye icon button from here
+              _buildImageWidget(imageData.imageUrl, 280, theme),
             ],
           ),
         ),
@@ -162,14 +164,14 @@ class ImageResultsGrid extends ConsumerWidget {
   }
 
   Widget _buildMultipleImages(
-      BuildContext context, WidgetRef ref, List<dynamic> images) {
+      BuildContext context, WidgetRef ref, List<dynamic> images, ThemeData theme) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: theme.colorScheme.shadow.withOpacity(0.1),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -188,7 +190,7 @@ class ImageResultsGrid extends ConsumerWidget {
           ),
           itemCount: images.length,
           itemBuilder: (context, index) {
-            return _buildGridImageItem(context, ref, images[index]!, index);
+            return _buildGridImageItem(context, ref, images[index]!, index, theme);
           },
         ),
       ),
@@ -203,7 +205,7 @@ class ImageResultsGrid extends ConsumerWidget {
   }
 
   Widget _buildGridImageItem(
-      BuildContext context, WidgetRef ref, dynamic imageData, int index) {
+      BuildContext context, WidgetRef ref, dynamic imageData, int index, ThemeData theme) {
     return GestureDetector(
       onTap: () => _navigateToSeePicture(context, ref, imageData),
       child: Container(
@@ -211,7 +213,7 @@ class ImageResultsGrid extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: theme.colorScheme.shadow.withOpacity(0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -221,20 +223,20 @@ class ImageResultsGrid extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
-              _buildImageWidget(imageData.imageUrl, 150),
+              _buildImageWidget(imageData.imageUrl, 150, theme),
               Positioned(
                 top: 8,
                 right: 8,
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: theme.colorScheme.onSurface.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     '${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: theme.colorScheme.surface,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -250,7 +252,7 @@ class ImageResultsGrid extends ConsumerWidget {
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: [
-                        Colors.black.withOpacity(0.3),
+                        theme.colorScheme.onSurface.withOpacity(0.3),
                         Colors.transparent,
                         Colors.transparent,
                       ],
@@ -265,14 +267,17 @@ class ImageResultsGrid extends ConsumerWidget {
     );
   }
 
-  Widget _buildImageWidget(String imageUrl, double height) {
+  Widget _buildImageWidget(String imageUrl, double height, ThemeData theme) {
     return SafeNetworkImage(
       imageUrl: imageUrl,
       placeholder: (_, __) => Container(
         height: height,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.grey[300]!, Colors.grey[200]!],
+            colors: [
+              theme.colorScheme.surfaceContainerHighest,
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.8),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -280,15 +285,21 @@ class ImageResultsGrid extends ConsumerWidget {
       ),
       errorWidget: (_, __, error) => Container(
         height: height,
-        color: Colors.grey[200],
+        color: theme.colorScheme.surfaceContainerHighest,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 32),
+            Icon(
+              Icons.error_outline,
+              color: theme.colorScheme.error,
+              size: 32,
+            ),
             const SizedBox(height: 8),
             Text(
               'Failed to load',
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
             ),
           ],
         ),

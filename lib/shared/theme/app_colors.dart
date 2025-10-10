@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Light Theme Colors
   static const lightPrimary = Color(0xff7752FE);
   static const lightPrimaryVariant = Color(0xff4922A7);
   static const lightSecondary = Color(0xff21dcba);
@@ -9,15 +8,25 @@ class AppColors {
   static const lightSurface = Color(0xFFFFFFFF);
   static const lightError = Color(0xFFff4444);
 
-  // Dark Theme Colors
-  static const darkPrimary = Color(0xff9C67F7);
-  static const darkPrimaryVariant = Color(0xff6D64AC);
-  static const darkSecondary = Color(0xff21dcba);
+  // Improved Dark Theme Colors
+  static const darkPrimary = Color(0xFF9C67F7);
+  static const darkPrimaryVariant = Color(0xFF7B4AE0);
+  static const darkSecondary = Color(0xFF21DCBA);
   static const darkBackground = Color(0xFF121212);
   static const darkSurface = Color(0xFF1E1E1E);
+  static const darkSurfaceVariant = Color(0xFF2D2D2D);
+  static const darkSurfaceHigh = Color(0xFF383838);
   static const darkError = Color(0xFFCF6679);
 
-  // Common Colors
+  static const darkTextPrimary = Color(0xFFFFFFFF);
+  static const darkTextSecondary = Color(0xFFB3B3B3);
+  static const darkTextDisabled = Color(0xFF666666);
+
+  // Improved Dark Theme Border Colors
+  static const darkBorder = Color(0xFF404040);
+  static const darkBorderFocused = Color(0xFF9C67F7);
+
+  // Common Colors (unchanged)
   static const black = Colors.black;
   static const white = Colors.white;
   static const pinkColor = Color(0xffFF00E5);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../../../shared/app_snack_bar.dart';
 
@@ -11,6 +10,7 @@ class PromptTextWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -19,8 +19,8 @@ class PromptTextWidget extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+              gradient: LinearGradient(
+                colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
@@ -28,10 +28,10 @@ class PromptTextWidget extends ConsumerWidget {
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
-              
+
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: theme.colorScheme.shadow.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -42,12 +42,12 @@ class PromptTextWidget extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.text_fields_rounded, color: Colors.white, size: 20),
+                    Icon(Icons.text_fields_rounded, color: theme.colorScheme.onPrimary, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       "AI Prompt Details",
                       style: AppTextstyle.interMedium(
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                         fontSize: 16,
                       ),
                     ),
@@ -55,18 +55,18 @@ class PromptTextWidget extends ConsumerWidget {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: theme.colorScheme.onPrimary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: prompt!)).whenComplete(
                             () {
-                          appSnackBar("Copied", "Prompt copied to clipboard", AppColors.green);
+                          appSnackBar("Copied", "Prompt copied to clipboard", theme.colorScheme.primary);
                         },
                       );
                     },
-                    icon: Icon(Icons.copy_rounded, color: Colors.white, size: 20),
+                    icon: Icon(Icons.copy_rounded, color: theme.colorScheme.onPrimary, size: 20),
                     style: IconButton.styleFrom(
                       padding: EdgeInsets.zero,
                       visualDensity: VisualDensity.compact,
@@ -78,7 +78,7 @@ class PromptTextWidget extends ConsumerWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.colorScheme.surface,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -86,12 +86,12 @@ class PromptTextWidget extends ConsumerWidget {
 
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: theme.colorScheme.shadow.withOpacity(0.05),
                   blurRadius: 15,
                   offset: const Offset(0, 8),
                 ),
               ],
-              border: Border.all(color: Colors.black26.withOpacity(0.1)),
+              border: Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class PromptTextWidget extends ConsumerWidget {
                     child: Text(
                       prompt!,
                       style: AppTextstyle.interRegular(
-                        color: AppColors.darkBlue,
+                        color: theme.colorScheme.onSurface,
                         fontSize: 14,
                       ),
                     ),
@@ -117,7 +117,7 @@ class PromptTextWidget extends ConsumerWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Colors.grey.withOpacity(0.3),
+                        theme.colorScheme.outline.withOpacity(0.3),
                         Colors.transparent,
                       ],
                     ),
@@ -134,17 +134,17 @@ class PromptTextWidget extends ConsumerWidget {
                 //         child: Container(
                 //           margin: const EdgeInsets.only(right: 8),
                 //           decoration: BoxDecoration(
-                //             color: Colors.white,
+                //             color: theme.colorScheme.surface,
                 //             borderRadius: BorderRadius.circular(16),
                 //             boxShadow: [
                 //               BoxShadow(
-                //                 color: Colors.grey.withOpacity(0.2),
+                //                 color: theme.colorScheme.shadow.withOpacity(0.2),
                 //                 spreadRadius: 1,
                 //                 blurRadius: 8,
                 //                 offset: const Offset(0, 3),
                 //               )
                 //             ],
-                //             border: Border.all(color: Colors.grey.shade200),
+                //             border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
                 //           ),
                 //           child: Material(
                 //             color: Colors.transparent,
@@ -160,7 +160,7 @@ class PromptTextWidget extends ConsumerWidget {
                 //                   mainAxisAlignment: MainAxisAlignment.center,
                 //                   children: [
                 //                     Icon(Icons.category_outlined,
-                //                         color: AppColors.purple, size: 18),
+                //                         color: theme.colorScheme.primary, size: 18),
                 //                     const SizedBox(width: 8),
                 //                     Flexible(
                 //                       child: Text(
@@ -182,17 +182,17 @@ class PromptTextWidget extends ConsumerWidget {
                 //         child: Container(
                 //           margin: const EdgeInsets.only(left: 8),
                 //           decoration: BoxDecoration(
-                //             color: Colors.white,
+                //             color: theme.colorScheme.surface,
                 //             borderRadius: BorderRadius.circular(16),
                 //             boxShadow: [
                 //               BoxShadow(
-                //                 color: Colors.grey.withOpacity(0.2),
+                //                 color: theme.colorScheme.shadow.withOpacity(0.2),
                 //                 spreadRadius: 1,
                 //                 blurRadius: 8,
                 //                 offset: const Offset(0, 3),
                 //               )
                 //             ],
-                //             border: Border.all(color: Colors.grey.shade200),
+                //             border: Border.all(color: theme.colorScheme.outline.withOpacity(0.2)),
                 //           ),
                 //           child: Material(
                 //             color: Colors.transparent,
@@ -208,7 +208,7 @@ class PromptTextWidget extends ConsumerWidget {
                 //                   mainAxisAlignment: MainAxisAlignment.center,
                 //                   children: [
                 //                     Icon(Icons.image_outlined,
-                //                         color: AppColors.purple, size: 18),
+                //                         color: theme.colorScheme.primary, size: 18),
                 //                     const SizedBox(width: 8),
                 //                     Flexible(
                 //                       child: Text(

@@ -12,13 +12,14 @@ class PromptEditScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.width < 375;
     final isLargeScreen = size.width > 600;
     final state = ref.watch(promptEditProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -58,7 +59,7 @@ class PromptEditScreen extends ConsumerWidget {
                         "Draw on the image above to select it and add a prompt to add or replace an object",
                         style: AppTextstyle.interBold(
                             fontSize: isSmallScreen ? 12 : 13,
-                            color: Colors.grey[200]!),
+                            color: theme.colorScheme.onSurface.withOpacity(0.6)),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -70,10 +71,13 @@ class PromptEditScreen extends ConsumerWidget {
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Prompt",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[200])),
+                            child: Text(
+                              "Prompt",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Container(
@@ -81,15 +85,22 @@ class PromptEditScreen extends ConsumerWidget {
                             height: 200,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey[200]!),
+                              border: Border.all(
+                                color: theme.colorScheme.outline.withOpacity(0.3),
+                              ),
                             ),
-                            child: const Stack(
+                            child: Stack(
                               children: [
                                 SingleChildScrollView(
-                                  child: Text("No prompt available",
-                                      style: TextStyle(fontSize: 16)),
+                                  child: Text(
+                                    "No prompt available",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -111,7 +122,7 @@ class PromptEditScreen extends ConsumerWidget {
                             ),
                             padding: EdgeInsets.symmetric(
                                 horizontal: isSmallScreen ? 12 : 20),
-                            backgroundColor: Colors.grey[200]!,
+                            backgroundColor: theme.colorScheme.surfaceContainerHighest,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -120,17 +131,25 @@ class PromptEditScreen extends ConsumerWidget {
                                 "Generate now",
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 14 : 16,
-                                  color: Colors.white,
+                                  color: theme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
                               10.spaceX,
-                              Icon(Icons.auto_awesome,color: Colors.white,size: 20,),
+                              Icon(
+                                Icons.auto_awesome,
+                                color: theme.colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
                               SizedBox(width: isSmallScreen ? 20 : 24),
-                              Image.asset(AppAssets.stackofcoins,width: 30,height: 30,),
+                              Image.asset(
+                                AppAssets.stackofcoins,
+                                width: 30,
+                                height: 30,
+                              ),
                               Text(
                                 "20",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: theme.colorScheme.onSurfaceVariant,
                                   fontSize: isSmallScreen ? 14 : 16,
                                 ),
                               ),

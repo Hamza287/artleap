@@ -16,6 +16,8 @@ class FeatureButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Tooltip(
       message: "Coming soon",
       child: Container(
@@ -26,7 +28,7 @@ class FeatureButton extends StatelessWidget {
           boxShadow: isPrimary
               ? [
             BoxShadow(
-              color: Colors.blue.withOpacity(0.3),
+              color: theme.colorScheme.primary.withOpacity(0.3),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -38,21 +40,27 @@ class FeatureButton extends StatelessWidget {
           icon: Icon(
             icon,
             size: 20,
-            color: isPrimary ? Colors.white : Colors.grey[600],
+            color: isPrimary
+                ? theme.colorScheme.onPrimary
+                : theme.colorScheme.onSurface.withOpacity(0.7),
           ),
           label: Text(
             label,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: isPrimary ? Colors.white : Colors.grey[600],
+              color: isPrimary
+                  ? theme.colorScheme.onPrimary
+                  : theme.colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: isPrimary
-                ? const Color(0xFF667EEA)
-                : Colors.grey[100],
-            foregroundColor: isPrimary ? Colors.white : Colors.grey[600],
+                ? theme.colorScheme.primary
+                : theme.colorScheme.surfaceContainerHighest,
+            foregroundColor: isPrimary
+                ? theme.colorScheme.onPrimary
+                : theme.colorScheme.onSurfaceVariant,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),

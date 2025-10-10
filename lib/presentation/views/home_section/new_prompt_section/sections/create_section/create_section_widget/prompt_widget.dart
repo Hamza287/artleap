@@ -5,7 +5,6 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import '../../../prompt_screen_widgets/prompt_top_bar.dart';
 
-// Create a provider to track keyboard visibility state
 final keyboardVisibleProvider = StateProvider<bool>((ref) => false);
 
 class PromptWidget extends ConsumerWidget {
@@ -13,6 +12,7 @@ class PromptWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final isKeyboardVisible = ref.watch(keyboardVisibleProvider);
     final screenSize = MediaQuery.of(context).size;
 
@@ -26,21 +26,19 @@ class PromptWidget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10,),
+          const SizedBox(height: 10),
           Text(
             "Enter Prompt",
             style: AppTextstyle.interBold(
-                color: Colors.black,
-                fontSize: 14),
+                color: theme.colorScheme.onSurface, fontSize: 14),
           ),
-          12.spaceY,
+          14.spaceY,
           Stack(
             children: [
-              // Outer container with gradient border
               Container(
                 constraints: BoxConstraints(
                   minHeight: minHeight,
-                  maxHeight: maxHeight, // Responsive maximum height
+                  maxHeight: maxHeight,
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -49,10 +47,10 @@ class PromptWidget extends ConsumerWidget {
                     style: BorderStyle.solid,
                     color: Colors.transparent,
                   ),
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     colors: [
-                      Color(0xFF875EFF),
-                      Color(0xFFFC24F5)
+                      theme.colorScheme.primary,
+                      theme.colorScheme.secondary
                     ],
                     stops: [0.0, 1.0],
                     begin: Alignment.topLeft,
@@ -63,27 +61,27 @@ class PromptWidget extends ConsumerWidget {
                   margin: const EdgeInsets.all(1.5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.5),
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                   ),
                   child: Scrollbar(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(bottom: 60), // Space for the "Fix It" button
+                      padding: const EdgeInsets.only(bottom: 60),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          minHeight: minHeight - 3, // Adjusted for border
+                          minHeight: minHeight - 3,
                         ),
                         child: IntrinsicHeight(
                           child: GestureDetector(
                             onDoubleTap: () {
-                              // Hide keyboard on double tap
                               FocusScope.of(context).unfocus();
-                              ref.read(keyboardVisibleProvider.notifier).state = false;
+                              ref.read(keyboardVisibleProvider.notifier).state =
+                                  false;
                             },
                             child: TextField(
                               controller: ref.watch(generateImageProvider).promptTextController,
-                              maxLines: null, // Allows infinite lines
+                              maxLines: null,
                               minLines: null,
-                              expands: true, // Expands to fill available space
+                              expands: true,
                               onChanged: (value) {
                                 ref.watch(generateImageProvider).checkSexualWords(value);
                               },
@@ -91,7 +89,7 @@ class PromptWidget extends ConsumerWidget {
                                 ref.read(keyboardVisibleProvider.notifier).state = true;
                               },
                               style: AppTextstyle.interMedium(
-                                color: Colors.black,
+                                color: theme.colorScheme.onSurface,
                                 fontSize: 14,
                               ),
                               decoration: InputDecoration(
@@ -100,9 +98,10 @@ class PromptWidget extends ConsumerWidget {
                                 enabledBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
+                                fillColor: theme.colorScheme.surface,
                                 hintText: "Describe the image you want to generate...",
                                 hintStyle: AppTextstyle.interMedium(
-                                    color: Colors.grey.shade500,
+                                    color: theme.colorScheme.onSurface.withOpacity(0.5),
                                     fontSize: 14),
                               ),
                             ),
@@ -127,8 +126,8 @@ class PromptWidget extends ConsumerWidget {
               //       decoration: BoxDecoration(
               //         gradient: RadialGradient(
               //           colors: [
-              //             Colors.grey.shade400,
-              //             Color(0xD8923CFF),
+              //             theme.colorScheme.surfaceVariant!,
+              //             theme.colorScheme.primary,
               //           ],
               //           radius: 0.9,
               //           center: Alignment.center,
@@ -138,13 +137,13 @@ class PromptWidget extends ConsumerWidget {
               //       child: Row(
               //         mainAxisSize: MainAxisSize.min,
               //         children: [
-              //           const Icon(Icons.auto_fix_high,
-              //               size: 18, color: Colors.white),
+              //           Icon(Icons.auto_fix_high,
+              //               size: 18, color: theme.colorScheme.onPrimary),
               //           6.spaceX,
               //           Text(
               //             "Fix It",
               //             style: AppTextstyle.interMedium(
-              //                 color: Colors.white,
+              //                 color: theme.colorScheme.onPrimary,
               //                 fontSize: 14),
               //           ),
               //         ],

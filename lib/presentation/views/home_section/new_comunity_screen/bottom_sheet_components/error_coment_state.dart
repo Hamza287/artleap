@@ -1,4 +1,3 @@
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +12,8 @@ class ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -23,13 +24,13 @@ class ErrorState extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppColors.errorColor.withOpacity(0.1),
+                color: theme.colorScheme.error.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.error_outline_rounded,
                 size: 40,
-                color: AppColors.errorColor,
+                color: theme.colorScheme.error,
               ),
             ),
             const SizedBox(height: 24),
@@ -37,7 +38,7 @@ class ErrorState extends StatelessWidget {
               'Failed to Load Comments',
               style: AppTextstyle.interBold(
                 fontSize: 18,
-                color: AppColors.primaryTextColor,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 12),
@@ -48,7 +49,7 @@ class ErrorState extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppTextstyle.interRegular(
                   fontSize: 14,
-                  color: AppColors.hintTextColor,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -58,7 +59,7 @@ class ErrorState extends StatelessWidget {
             ElevatedButton(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
+                backgroundColor: theme.colorScheme.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -69,7 +70,7 @@ class ErrorState extends StatelessWidget {
                 'Try Again',
                 style: AppTextstyle.interMedium(
                   fontSize: 16,
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
             ),

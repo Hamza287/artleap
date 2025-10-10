@@ -6,6 +6,7 @@ class TrendingStyles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final styles = [
       "Anime",
       "Cyberpunk",
@@ -24,31 +25,30 @@ class TrendingStyles extends StatelessWidget {
             "Trending styles",
             style: AppTextstyle.interMedium(
                 fontSize: 18,
-                color: Colors.black
+                color: theme.colorScheme.onSurface
             ),
           ),
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 120, // Adjust height as needed
+          height: 120,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: styles.length,
             itemBuilder: (context, index) {
               return Container(
-                width: 120, // Adjust width as needed
+                width: 120,
                 margin: const EdgeInsets.only(right: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE9EBF5),
+                  color: Colors.grey.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
-                    // styles[index],
                     'Coming Soon',
                     style: AppTextstyle.interMedium(
-                      color: Colors.black54
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),

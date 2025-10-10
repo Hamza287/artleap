@@ -1,5 +1,8 @@
 import 'dart:typed_data';
+import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/image_privacy_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:like_button/like_button.dart';
@@ -8,14 +11,8 @@ import 'package:Artleap.ai/presentation/views/global_widgets/dialog_box/delete_a
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../../../../providers/add_image_to_fav_provider.dart';
-import '../../../../../shared/constants/app_assets.dart';
-import '../../../../../shared/constants/user_data.dart';
-import '../../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 import '../../../global_widgets/dialog_box/set_privacy_dialog.dart';
 
 // ignore: must_be_immutable
@@ -35,45 +32,46 @@ class PictureOptionsWidget extends ConsumerWidget {
   String privacy;
   PictureOptionsWidget(
       {super.key,
-      this.imageUrl,
-      this.prompt,
-      this.modelName,
-      this.creatorName,
-      this.creatorEmail,
-      this.isGeneratedScreenNavigation,
-      this.isRecentGeneration,
-      this.uint8ListImage,
-      this.currentUserId,
-      this.otherUserId,
-      this.index,
-      this.imageId,
-      required this.privacy});
+        this.imageUrl,
+        this.prompt,
+        this.modelName,
+        this.creatorName,
+        this.creatorEmail,
+        this.isGeneratedScreenNavigation,
+        this.isRecentGeneration,
+        this.uint8ListImage,
+        this.currentUserId,
+        this.otherUserId,
+        this.index,
+        this.imageId,
+        required this.privacy});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isCurrentUser = otherUserId == UserData.ins.userId;
+    final theme = Theme.of(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 6),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: theme.colorScheme.shadow.withOpacity(0.08),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
-        border: Border.all(color: Colors.black26.withOpacity(0.1)),
+        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
       ),
       child: Column(
         children: [
           Text(
             "Image Actions",
             style: AppTextstyle.interMedium(
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
               fontSize: 16,
             ),
           ),
@@ -92,14 +90,15 @@ class PictureOptionsWidget extends ConsumerWidget {
                     icon: Icons.favorite_rounded,
                     label: "Favorite",
                     color: Colors.red,
+                    context: context,
                     isLiked:
-                        ref.watch(favouriteProvider).usersFavourites != null
-                            ? ref
-                                .watch(favouriteProvider)
-                                .usersFavourites!
-                                .favorites
-                                .any((img) => img.id == imageId)
-                            : false,
+                    ref.watch(favouriteProvider).usersFavourites != null
+                        ? ref
+                        .watch(favouriteProvider)
+                        .usersFavourites!
+                        .favorites
+                        .any((img) => img.id == imageId)
+                        : false,
                     onTap: () async {
                       AnalyticsService.instance
                           .logButtonClick(buttonName: 'Favorite button event');
@@ -115,11 +114,12 @@ class PictureOptionsWidget extends ConsumerWidget {
                     icon: Icons.download_rounded,
                     label: "Download",
                     color: Colors.green,
+                    context: context,
                     isLoading: ref.watch(favProvider).isDownloading == true,
                     onTap: () {
                       uint8ListImage != null
                           ? ref.read(favProvider).downloadImage(imageUrl!,
-                              uint8ListObject: uint8ListImage)
+                          uint8ListObject: uint8ListImage)
                           : ref.read(favProvider).downloadImage(imageUrl!);
                       AnalyticsService.instance
                           .logButtonClick(buttonName: 'download button event');
@@ -129,6 +129,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                     icon: Icons.share_rounded,
                     label: "Share",
                     color: Colors.blue,
+                    context: context,
                     onTap: () async {
                       await Share.shareUri(Uri.parse(imageUrl!));
                       AnalyticsService.instance
@@ -140,6 +141,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                       icon: Icons.lock_rounded,
                       label: "Privacy",
                       color: Colors.purple,
+                      context: context,
                       onTap: () async {
                         await showDialog<ImagePrivacy>(
                           context: context,
@@ -157,6 +159,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                       label: "Delete",
                       color: Colors.red,
                       isLoading: ref.watch(imageActionsProvider).isDeleting,
+                      context: context,
                       onTap: () {
                         showDialog(
                           context: context,
@@ -172,6 +175,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                     ),
                   _buildActionButton(
                     icon: Icons.flag_rounded,
+                    context: context,
                     label: "Report",
                     color: Colors.orange,
                     onTap: () {
@@ -205,7 +209,9 @@ class PictureOptionsWidget extends ConsumerWidget {
     bool isLiked = false,
     bool isLikeButton = false,
     required VoidCallback onTap,
+    required BuildContext context,
   }) {
+    final theme = Theme.of(context);
     return Tooltip(
       message: label,
       child: Container(
@@ -227,44 +233,44 @@ class PictureOptionsWidget extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                   child: isLoading
                       ? Center(
-                          child: LoadingAnimationWidget.threeArchedCircle(
-                            color: color,
-                            size: 24,
-                          ),
-                        )
+                    child: LoadingAnimationWidget.threeArchedCircle(
+                      color: color,
+                      size: 24,
+                    ),
+                  )
                       : isLikeButton
-                          ? Center(
-                              child: LikeButton(
-                                size: 28,
-                                isLiked: isLiked,
-                                likeBuilder: (bool isLiked) {
-                                  return Icon(
-                                    isLiked
-                                        ? Icons.favorite_rounded
-                                        : Icons.favorite_border_rounded,
-                                    color: isLiked
-                                        ? color
-                                        : color.withOpacity(0.6),
-                                    size: 28,
-                                  );
-                                },
-                                bubblesColor: BubblesColor(
-                                  dotPrimaryColor: color,
-                                  dotSecondaryColor: color,
-                                ),
-                                onTap: (isLiked) async {
-                                  onTap();
-                                  return !isLiked;
-                                },
-                              ),
-                            )
-                          : Center(
-                              child: Icon(
-                                icon,
-                                color: color,
-                                size: 28,
-                              ),
-                            ),
+                      ? Center(
+                    child: LikeButton(
+                      size: 28,
+                      isLiked: isLiked,
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          isLiked
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: isLiked
+                              ? color
+                              : color.withOpacity(0.6),
+                          size: 28,
+                        );
+                      },
+                      bubblesColor: BubblesColor(
+                        dotPrimaryColor: color,
+                        dotSecondaryColor: color,
+                      ),
+                      onTap: (isLiked) async {
+                        onTap();
+                        return !isLiked;
+                      },
+                    ),
+                  )
+                      : Center(
+                    child: Icon(
+                      icon,
+                      color: color,
+                      size: 28,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -272,7 +278,7 @@ class PictureOptionsWidget extends ConsumerWidget {
             Text(
               label,
               style: AppTextstyle.interMedium(
-                color: AppColors.darkBlue,
+                color: theme.colorScheme.onSurface,
                 fontSize: 10,
               ),
               textAlign: TextAlign.center,

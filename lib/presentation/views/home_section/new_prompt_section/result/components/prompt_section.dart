@@ -10,11 +10,12 @@ class PromptSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
     if (isLoading) {
-      return _buildLoadingPrompt();
+      return _buildLoadingPrompt(theme);
     }
 
     return Column(
@@ -27,10 +28,10 @@ class PromptSection extends ConsumerWidget {
               'Prompt',
               style: AppTextstyle.interMedium(
                 fontSize: 18,
-                color: Colors.black87,
+                color: theme.colorScheme.onSurface,
               ),
             ),
-            _buildEditButton(),
+            _buildEditButton(theme),
           ],
         ),
         const SizedBox(height: 12),
@@ -40,12 +41,17 @@ class PromptSection extends ConsumerWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.grey[50]!, Colors.grey[100]!],
+              colors: [
+                theme.colorScheme.surfaceContainerHighest,
+                theme.colorScheme.surfaceContainerHighest.withOpacity(0.8),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.3),
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,11 +60,11 @@ class PromptSection extends ConsumerWidget {
                 _getPromptText(ref, generatedImages),
                 style: AppTextstyle.interRegular(
                   fontSize: 15,
-                  color: Colors.black87,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 16),
-              _buildPromptStats(),
+              _buildPromptStats(theme),
             ],
           ),
         ),
@@ -66,7 +72,7 @@ class PromptSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingPrompt() {
+  Widget _buildLoadingPrompt(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -74,7 +80,7 @@ class PromptSection extends ConsumerWidget {
           width: 100,
           height: 20,
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: theme.colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -83,7 +89,7 @@ class PromptSection extends ConsumerWidget {
           width: double.infinity,
           height: 120,
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color: theme.colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(16),
           ),
         ),
@@ -103,25 +109,29 @@ class PromptSection extends ConsumerWidget {
     }
   }
 
-  Widget _buildEditButton() {
+  Widget _buildEditButton(ThemeData theme) {
     return Tooltip(
       message: "Coming soon",
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.1),
+          color: theme.colorScheme.primary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.edit_outlined, size: 16, color: Colors.blue[600]),
+            Icon(
+              Icons.edit_outlined,
+              size: 16,
+              color: theme.colorScheme.primary,
+            ),
             const SizedBox(width: 4),
             Text(
               'Edit Prompt',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.blue[600],
+                color: theme.colorScheme.primary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -131,36 +141,42 @@ class PromptSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildPromptStats() {
+  Widget _buildPromptStats(ThemeData theme) {
     return Wrap(
       spacing: 12,
       runSpacing: 8,
       children: [
-        _buildStatChip(Icons.style, 'Artistic'),
-        _buildStatChip(Icons.aspect_ratio, '1024x1024'),
-        _buildStatChip(Icons.photo_camera, 'Vibrant'),
+        _buildStatChip(Icons.style, 'Artistic', theme),
+        _buildStatChip(Icons.aspect_ratio, '1024x1024', theme),
+        _buildStatChip(Icons.photo_camera, 'Vibrant', theme),
       ],
     );
   }
 
-  Widget _buildStatChip(IconData icon, String text) {
+  Widget _buildStatChip(IconData icon, String text, ThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.3),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.grey[600]),
+          Icon(
+            icon,
+            size: 14,
+            color: theme.colorScheme.onSurface.withOpacity(0.6),
+          ),
           const SizedBox(width: 4),
           Text(
             text,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey[600],
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
         ],

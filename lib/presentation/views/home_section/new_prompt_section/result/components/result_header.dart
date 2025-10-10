@@ -8,15 +8,17 @@ class ResultHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Row(
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: theme.colorScheme.shadow.withOpacity(0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -27,9 +29,12 @@ class ResultHeader extends ConsumerWidget {
               ref.read(generateImageProvider).clearGeneratedData();
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: theme.colorScheme.onSurface,
+            ),
             style: IconButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: theme.colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -45,14 +50,14 @@ class ResultHeader extends ConsumerWidget {
                 'Your Creation',
                 style: AppTextstyle.interMedium(
                   fontSize: 24,
-                  color: Colors.black87,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               Text(
                 'AI Generated Art',
                 style: AppTextstyle.interRegular(
                   fontSize: 14,
-                  color: Colors.grey[600]!,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ],
@@ -61,10 +66,11 @@ class ResultHeader extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+            gradient: LinearGradient(
+              colors: [
+                theme.colorScheme.primary,
+                theme.colorScheme.primaryContainer,
+              ],
             ),
             borderRadius: BorderRadius.circular(20),
           ),
@@ -72,7 +78,7 @@ class ResultHeader extends ConsumerWidget {
             'New',
             style: AppTextstyle.interMedium(
               fontSize: 12,
-              color: Colors.white,
+              color: theme.colorScheme.onPrimary,
             ),
           ),
         ),

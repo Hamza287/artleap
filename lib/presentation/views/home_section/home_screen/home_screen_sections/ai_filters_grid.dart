@@ -6,6 +6,7 @@ class AiFiltersGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final filters = [
       "Fantasy Portraits",
       "Hunkify",
@@ -27,15 +28,13 @@ class AiFiltersGrid extends StatelessWidget {
               Text(
                 "Ai Filters",
                 style: AppTextstyle.interMedium(
-                    fontSize: 18,
-                    color: Colors.black
-                ),
+                    fontSize: 18, color: theme.colorScheme.onSurface),
               ),
-             Text(
+              Text(
                 "Transform your images with a single click",
                 style: AppTextstyle.interMedium(
-                    fontSize: 16,
-                    color: Colors.black,
+                  fontSize: 16,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -43,7 +42,7 @@ class AiFiltersGrid extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Padding(
-          padding: EdgeInsets.only(left: 20, bottom: 8,right: 20),
+          padding: EdgeInsets.only(left: 20, bottom: 8, right: 20),
           child: GridView.builder(
             itemCount: filters.length,
             shrinkWrap: true,
@@ -57,7 +56,7 @@ class AiFiltersGrid extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE9EBF5),
+                  color: Colors.grey.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Stack(
@@ -67,17 +66,26 @@ class AiFiltersGrid extends StatelessWidget {
                       left: 8,
                       child: index < 2
                           ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text("New", style: AppTextstyle.interMedium(color: Colors.white, fontSize: 10)),
-                      )
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text("New",
+                                  style: AppTextstyle.interMedium(
+                                      color: theme.colorScheme.onPrimary,
+                                      fontSize: 10)),
+                            )
                           : const SizedBox(),
                     ),
                     Center(
-                      child: Text(filters[index], textAlign: TextAlign.center),
+                      child: Text(
+                        filters[index],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant),
+                      ),
                     ),
                   ],
                 ),

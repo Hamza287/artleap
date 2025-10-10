@@ -5,7 +5,7 @@ import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 import '../home_section/favourites_screen/favourites_screen.dart';
-import '../home_section/profile_screen/edit_profile_screen_widgets/delete_account_dialog.dart';
+import '../global_widgets/dialog_box/delete_account_dialog.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
 import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
@@ -65,7 +65,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                 colors: isDark
                     ? [
                   theme.colorScheme.surface.withOpacity(0.9),
-                  theme.colorScheme.background.withOpacity(0.8),
+                  theme.colorScheme.surface.withOpacity(0.8),
                 ]
                     : [
                   Color(0x5F0A0025),
@@ -196,13 +196,13 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                         onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
                         theme: theme,
                       ),
-                      // _ProfileMenuItem(
-                      //   icon: AppAssets.darkMode,
-                      //   title: "Dark Mode",
-                      //   isToggle: true,
-                      //   onTap: () {},
-                      //   theme: theme,
-                      // ),
+                      _ProfileMenuItem(
+                        icon: AppAssets.darkMode,
+                        title: "Dark Mode",
+                        isToggle: true,
+                        onTap: () {},
+                        theme: theme,
+                      ),
                     ],
                   ),
                 ),
@@ -309,7 +309,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
   }
 
   void _navigateTo(BuildContext context, String routeName) {
-    Navigator.pop(context); // Close drawer first
+    Navigator.pop(context);
     Navigator.pushNamed(context, routeName);
   }
 }
@@ -405,13 +405,14 @@ class _ProfileMenuItem extends ConsumerWidget {
                 if (isToggle)
                   Switch(
                     value: ref.watch(themeProvider) == ThemeMode.dark,
-                    onChanged: (value) {
+                    onChanged: (_) {
                       ref.read(themeProvider.notifier).toggleTheme();
                     },
-                    activeColor: theme.colorScheme.primary,
+                    activeThumbColor: theme.colorScheme.primary,
                     inactiveThumbColor: theme.colorScheme.outline,
-                    trackColor: MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.selected)) {
+                    inactiveTrackColor: theme.colorScheme.outline.withOpacity(0.5),
+                    trackColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
                         return theme.colorScheme.primary.withOpacity(0.5);
                       }
                       return theme.colorScheme.outline.withOpacity(0.5);

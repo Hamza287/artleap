@@ -1,7 +1,6 @@
 import 'package:Artleap.ai/domain/community/providers/comment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../global_widgets/dialog_box/delete_coment_dialog.dart';
 import '../bottom_sheet_components/comment_tile.dart';
@@ -49,7 +48,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Comment posted successfully'),
-          backgroundColor: AppColors.successColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           duration: const Duration(seconds: 2),
@@ -59,7 +58,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to post comment: $e'),
-          backgroundColor: AppColors.errorColor,
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
@@ -74,7 +73,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Comment deleted successfully'),
-          backgroundColor: AppColors.successColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           duration: const Duration(seconds: 2),
@@ -84,7 +83,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to delete comment: $e'),
-          backgroundColor: AppColors.errorColor,
+          backgroundColor: Theme.of(context).colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
@@ -112,6 +111,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final commentsAsync = ref.watch(commentProvider(widget.imageId));
     final hasText = _commentController.text.trim().isNotEmpty;
 
@@ -119,14 +119,14 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.85,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(28),
             topRight: Radius.circular(28),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: theme.colorScheme.shadow.withOpacity(0.2),
               blurRadius: 32,
               spreadRadius: -8,
               offset: const Offset(0, -8),
@@ -139,14 +139,14 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
             Container(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.colorScheme.surface,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(28),
                   topRight: Radius.circular(28),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: theme.colorScheme.shadow.withOpacity(0.05),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -159,21 +159,21 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: theme.colorScheme.surfaceVariant,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(
                         Icons.close_rounded,
-                        color: Colors.grey.shade700,
+                        color: theme.colorScheme.onSurfaceVariant,
                         size: 20,
                       ),
                       padding: EdgeInsets.zero,
                     ),
                   ),
                   const SizedBox(width: 16),
-      
+
                   // Title with Count
                   Expanded(
                     child: Column(
@@ -183,7 +183,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                           'Comments',
                           style: AppTextstyle.interBold(
                             fontSize: 20,
-                            color: AppColors.primaryTextColor,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -192,41 +192,41 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                             '${comments.length} ${comments.length == 1 ? 'comment' : 'comments'}',
                             style: AppTextstyle.interRegular(
                               fontSize: 14,
-                              color: AppColors.hintTextColor,
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                           loading: () => Text(
                             'Loading comments...',
                             style: AppTextstyle.interRegular(
                               fontSize: 14,
-                              color: AppColors.hintTextColor,
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                           error: (error, stack) => Text(
                             'Comments',
                             style: AppTextstyle.interRegular(
                               fontSize: 14,
-                              color: AppColors.hintTextColor,
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-      
+
                   // Refresh Button
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withOpacity(0.1),
+                      color: theme.colorScheme.primary.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
                       onPressed: () => ref.read(commentProvider(widget.imageId).notifier).refreshComments(),
                       icon: Icon(
                         Icons.refresh_rounded,
-                        color: AppColors.primaryColor,
+                        color: theme.colorScheme.primary,
                         size: 20,
                       ),
                       padding: EdgeInsets.zero,
@@ -235,7 +235,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                 ],
               ),
             ),
-      
+
             // Comments List
             Expanded(
               child: commentsAsync.when(
@@ -243,10 +243,10 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                   if (comments.isEmpty) {
                     return const EmptyCommentsState();
                   }
-      
+
                   return RefreshIndicator(
-                    backgroundColor: Colors.white,
-                    color: AppColors.primaryColor,
+                    backgroundColor: theme.colorScheme.surface,
+                    color: theme.colorScheme.primary,
                     onRefresh: () async {
                       await ref.read(commentProvider(widget.imageId).notifier).refreshComments();
                     },
@@ -272,21 +272,21 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                 ),
               ),
             ),
-      
+
             // Enhanced Comment Input
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.colorScheme.surface,
                 border: Border(
                   top: BorderSide(
-                    color: Colors.grey.shade200,
+                    color: theme.colorScheme.outline.withOpacity(0.3),
                     width: 1,
                   ),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: theme.colorScheme.shadow.withOpacity(0.1),
                     blurRadius: 16,
                     offset: const Offset(0, -4),
                   ),
@@ -297,15 +297,15 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: theme.colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
-                          color: _commentFocusNode.hasFocus ? AppColors.primaryColor : Colors.grey.shade300,
+                          color: _commentFocusNode.hasFocus ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.3),
                           width: _commentFocusNode.hasFocus ? 2 : 1,
                         ),
                         boxShadow: _commentFocusNode.hasFocus ? [
                           BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.1),
+                            color: theme.colorScheme.primary.withOpacity(0.1),
                             blurRadius: 12,
                             offset: const Offset(0, 2),
                           ),
@@ -321,13 +321,13 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                             border: InputBorder.none,
                             hintStyle: AppTextstyle.interRegular(
                               fontSize: 16,
-                              color: AppColors.hintTextColor,
+                              color: theme.colorScheme.onSurface.withOpacity(0.5),
                             ),
                             contentPadding: const EdgeInsets.symmetric(vertical: 16),
                           ),
                           style: AppTextstyle.interRegular(
                             fontSize: 16,
-                            color: AppColors.primaryTextColor,
+                            color: theme.colorScheme.onSurface,
                           ),
                           maxLines: null,
                           textInputAction: TextInputAction.send,
@@ -338,7 +338,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     ),
                   ),
                   const SizedBox(width: 12),
-      
+
                   // Enhanced Send Button
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
@@ -347,17 +347,17 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     decoration: BoxDecoration(
                       gradient: hasText
                           ? LinearGradient(
-                        colors: [AppColors.primaryColor, AppColors.secondaryColor],
+                        colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       )
                           : LinearGradient(
-                        colors: [Colors.grey.shade400, Colors.grey.shade500],
+                        colors: [theme.colorScheme.outline, theme.colorScheme.outline.withOpacity(0.7)],
                       ),
                       shape: BoxShape.circle,
                       boxShadow: hasText ? [
                         BoxShadow(
-                          color: AppColors.primaryColor.withOpacity(0.3),
+                          color: theme.colorScheme.primary.withOpacity(0.3),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                           spreadRadius: 1,
@@ -371,7 +371,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                         onTap: hasText ? _postComment : null,
                         child: Icon(
                           Icons.send_rounded,
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                           size: 22,
                         ),
                       ),

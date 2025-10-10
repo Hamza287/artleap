@@ -17,6 +17,9 @@ class RatioSelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     if (isSmall) {
       return InkWell(
         borderRadius: BorderRadius.circular(10),
@@ -24,8 +27,15 @@ class RatioSelectionCard extends StatelessWidget {
         child: Container(
           width: 73,
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0x98923CFF) : Colors.white,
+            color: isSelected
+                ? theme.colorScheme.primary.withOpacity(0.8)
+                : theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(5),
+            border: Border.all(
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.2),
+            ),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
           child: Center(
@@ -33,7 +43,9 @@ class RatioSelectionCard extends StatelessWidget {
               text,
               style: AppTextstyle.interMedium(
                 fontSize: 12,
-                color: isSelected ? Colors.white : Colors.black,
+                color: isSelected
+                    ? theme.colorScheme.onPrimary
+                    : theme.colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -47,14 +59,22 @@ class RatioSelectionCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
+      color: theme.cardColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: onTap,
         child: Container(
           width: 60,
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xD8923CFF) : Colors.white,
+            color: isSelected
+                ? theme.colorScheme.primary.withOpacity(0.85)
+                : theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.2),
+            ),
           ),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           child: Center(
@@ -62,7 +82,9 @@ class RatioSelectionCard extends StatelessWidget {
               text,
               style: AppTextstyle.interMedium(
                 fontSize: 16,
-                color: isSelected ? Colors.white : Colors.black,
+                color: isSelected
+                    ? theme.colorScheme.onPrimary
+                    : theme.colorScheme.onSurface,
               ),
             ),
           ),

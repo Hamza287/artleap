@@ -14,6 +14,8 @@ class ImagePreviewWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Stack(
       alignment: Alignment.topRight,
       children: [
@@ -22,14 +24,17 @@ class ImagePreviewWidget extends ConsumerWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: Colors.grey.shade100,
+            color: theme.colorScheme.surfaceVariant,
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.file(
               imageFile,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.error,
+                color: theme.colorScheme.error,
+              ),
             ),
           ),
         ),
@@ -41,12 +46,12 @@ class ImagePreviewWidget extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
+                color: theme.colorScheme.error.withOpacity(0.8),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.close,
-                color: Colors.white,
+                color: theme.colorScheme.onError,
                 size: 20,
               ),
             ),

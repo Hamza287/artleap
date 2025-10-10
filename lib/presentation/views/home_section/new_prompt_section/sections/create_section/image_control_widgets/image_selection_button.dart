@@ -16,27 +16,22 @@ class ImageSelectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Responsive calculations
     final bool isSmallScreen = screenWidth < 360;
     final bool isMediumScreen = screenWidth < 400;
 
-    // Responsive padding
     final horizontalPadding = isSmallScreen ? 20.0 : (isMediumScreen ? 25.0 : 30.0);
     final verticalPadding = isSmallScreen ? 6.0 : 7.5;
 
-    // Responsive spacing
     final iconTextSpacing = isSmallScreen ? 8.0 : 12.0;
 
-    // Responsive font size
     final fontSize = isSmallScreen ? 13.0 : (isMediumScreen ? 14.0 : 15.0);
 
-    // Responsive icon size
     final iconSize = isSmallScreen ? 18.0 : 20.0;
     final iconPadding = isSmallScreen ? 6.0 : 8.0;
 
-    // Responsive premium badge
     final premiumBadgeTop = isSmallScreen ? -4.0 : -6.0;
     final premiumBadgeRight = isSmallScreen ? -4.0 : -6.0;
     final premiumIconSize = isSmallScreen ? 10.0 : 12.0;
@@ -50,24 +45,24 @@ class ImageSelectionButton extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: Colors.white,
+            color: theme.colorScheme.surface,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: theme.colorScheme.shadow.withOpacity(0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
               if (showPremiumIcon && !hasImage)
                 BoxShadow(
-                  color: AppColors.purple.withOpacity(0.15),
+                  color: theme.colorScheme.primary.withOpacity(0.15),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
             ],
             border: Border.all(
               color: showPremiumIcon && !hasImage
-                  ? AppColors.purple.withOpacity(0.3)
-                  : Colors.grey.shade300,
+                  ? theme.colorScheme.primary.withOpacity(0.3)
+                  : theme.colorScheme.outline.withOpacity(0.3),
               width: showPremiumIcon && !hasImage ? 2 : 1.5,
             ),
           ),
@@ -76,7 +71,7 @@ class ImageSelectionButton extends StatelessWidget {
             child: InkWell(
               onTap: onPressed,
               borderRadius: BorderRadius.circular(14),
-              splashColor: AppColors.purple.withOpacity(0.2),
+              splashColor: theme.colorScheme.primary.withOpacity(0.2),
               child: Container(
                 padding: EdgeInsets.symmetric(
                   vertical: verticalPadding,
@@ -89,12 +84,12 @@ class ImageSelectionButton extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(iconPadding),
                       decoration: BoxDecoration(
-                        color: AppColors.purple.withOpacity(0.1),
+                        color: theme.colorScheme.primary.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         hasImage ? Icons.photo_library : Icons.add_photo_alternate,
-                        color: AppColors.purple,
+                        color: theme.colorScheme.primary,
                         size: iconSize,
                       ),
                     ),
@@ -104,7 +99,7 @@ class ImageSelectionButton extends StatelessWidget {
                         hasImage ? "Change Image" : "Add Image",
                         style: AppTextstyle.interMedium(
                           fontSize: fontSize,
-                          color: Colors.black87,
+                          color: theme.colorScheme.onSurface,
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -117,7 +112,6 @@ class ImageSelectionButton extends StatelessWidget {
           ),
         ),
 
-        // Professional Premium Badge - Responsive
         if (showPremiumIcon && !hasImage)
           Positioned(
             top: premiumBadgeTop,
@@ -145,14 +139,14 @@ class ImageSelectionButton extends StatelessWidget {
                     offset: const Offset(0, 3),
                   ),
                   BoxShadow(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     blurRadius: 0,
                     offset: const Offset(0, 0),
                     spreadRadius: 1,
                   ),
                 ],
                 border: Border.all(
-                  color: Colors.white,
+                  color: theme.colorScheme.surface,
                   width: 1.5,
                 ),
               ),

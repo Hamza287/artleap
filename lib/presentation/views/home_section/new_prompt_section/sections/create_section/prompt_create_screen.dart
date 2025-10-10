@@ -81,6 +81,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final userProfile = ref.watch(userProfileProvider).userProfileData;
     final generateImageProviderState = ref.watch(generateImageProvider);
     final shouldRefresh = ref.watch(refreshProvider);
@@ -96,31 +97,31 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
     }
 
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 10.0
         : 15.0;
     final topPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 10.0
         : 20.0;
     final spaceBetweenWidgets = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 5.0
         : 10.0;
     final bottomSpace = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 50.0
         : 70.0;
     final buttonHeight = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 48.0
         : 55.0;
     final buttonTopPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 15.0
         : 20.0;
     final buttonBottomPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 15.0
         : 20.0;
 
@@ -143,8 +144,7 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                   FocusScope.of(context).unfocus();
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      left: horizontalPadding, right: horizontalPadding),
+                  padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     physics: const ClampingScrollPhysics(),
@@ -168,7 +168,6 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                 ),
               ),
             ),
-            // White background container for the button area
             Positioned(
               bottom: 0,
               left: 0,
@@ -180,12 +179,12 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.white.withOpacity(0.5),
-                      Colors.white.withOpacity(0.6),
-                      Colors.white.withOpacity(0.7),
-                      Colors.white.withOpacity(0.8),
-                      Colors.white.withOpacity(0.9),
-                      Colors.white,
+                      theme.colorScheme.surface.withOpacity(0.5),
+                      theme.colorScheme.surface.withOpacity(0.6),
+                      theme.colorScheme.surface.withOpacity(0.7),
+                      theme.colorScheme.surface.withOpacity(0.8),
+                      theme.colorScheme.surface.withOpacity(0.9),
+                      theme.colorScheme.surface,
                     ],
                   ),
                 ),
@@ -204,115 +203,115 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                   title: "Generate",
                   suffixRow: true,
                   credits:
-                      generateImageProviderState.images.isNotEmpty ? '24' : '2',
+                  generateImageProviderState.images.isNotEmpty ? '24' : '2',
                   onpress: (userProfile == null ||
-                          userProfile.user.totalCredits <= 0)
+                      userProfile.user.totalCredits <= 0)
                       ? () {
-                          appSnackBar(
-                              "Oops!",
-                              "You have reached your daily limit. Thank you!",
-                              AppColors.indigo);
-                        }
+                    appSnackBar(
+                        "Oops!",
+                        "You have reached your daily limit. Thank you!",
+                        theme.colorScheme.primary);
+                  }
                       : generateImageProviderState.containsSexualWords
-                          ? () {
-                              appSnackBar(
-                                  "Warning!",
-                                  "Your prompt contains sexual words.",
-                                  AppColors.redColor);
-                            }
-                          : () async {
-                              // Hide keyboard before generating
-                              FocusScope.of(context).unfocus();
-                              ref.read(keyboardVisibleProvider.notifier).state =
-                                  false;
+                      ? () {
+                    appSnackBar(
+                        "Warning!",
+                        "Your prompt contains sexual words.",
+                        theme.colorScheme.error);
+                  }
+                      : () async {
+                    // Hide keyboard before generating
+                    FocusScope.of(context).unfocus();
+                    ref.read(keyboardVisibleProvider.notifier).state =
+                    false;
 
-                              // Common validation checks
-                              if (generateImageProviderState
-                                          .selectedImageNumber ==
-                                      null &&
-                                  generateImageProviderState.images.isEmpty) {
-                                appSnackBar(
-                                    "Error",
-                                    "Please select number of images",
-                                    AppColors.redColor);
-                              } else if (generateImageProviderState
-                                  .promptTextController.text.isEmpty) {
-                                appSnackBar("Error", "Please write your prompt",
-                                    AppColors.redColor);
-                              }
-                              // Credit validation for text-to-image
-                              else if (generateImageProviderState
-                                  .images.isEmpty) {
-                                final requiredCredits =
-                                    generateImageProviderState
-                                            .selectedImageNumber! *
-                                        2;
-                                if (userProfile.user.totalCredits <
-                                    requiredCredits) {
-                                  appSnackBar(
-                                      "Insufficient Credits",
-                                      "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
-                                      AppColors.redColor);
-                                } else {
-                                  AnalyticsService.instance.logButtonClick(
-                                      buttonName: 'Generate button event');
-                                  ref.read(isLoadingProvider.notifier).state =
-                                      true;
-                                  _animationController.forward();
-                                  final success = await ref
-                                      .read(generateImageProvider.notifier)
-                                      .generateTextToImage();
-                                  ref.read(isLoadingProvider.notifier).state =
-                                      false;
-                                  _animationController.reverse();
-                                  if (success && mounted) {
-                                    Navigation.pushNamed(
-                                        ResultScreenRedesign.routeName);
-                                  } else if (mounted) {
-                                    appSnackBar(
-                                        "Error",
-                                        "Failed to Generate Image",
-                                        AppColors.redColor);
-                                  }
-                                }
-                              }
-                              // Credit validation for image-to-image
-                              else {
-                                final requiredCredits =
-                                    generateImageProviderState
-                                            .selectedImageNumber! *
-                                        24;
-                                if (userProfile.user.totalCredits <
-                                    requiredCredits) {
-                                  appSnackBar(
-                                      "Insufficient Credits",
-                                      "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
-                                      AppColors.redColor);
-                                } else {
-                                  AnalyticsService.instance.logButtonClick(
-                                      buttonName: 'Generate button event');
-                                  ref.read(isLoadingProvider.notifier).state =
-                                      true;
-                                  _animationController.forward();
-                                  final success = await ref
-                                      .read(generateImageProvider.notifier)
-                                      .generateImgToImg();
-                                  ref.read(isLoadingProvider.notifier).state =
-                                      false;
-                                  _animationController.reverse();
-                                  if (success && mounted) {
-                                    Navigation.pushNamed(
-                                        ResultScreenRedesign.routeName);
-                                  } else if (mounted) {
-                                    appSnackBar(
-                                        "Error",
-                                        "Failed to Generate Image",
-                                        AppColors.redColor);
-                                  }
-                                }
-                              }
-                            },
-                  isLoading: false, // Remove button-specific loading
+                    // Common validation checks
+                    if (generateImageProviderState
+                        .selectedImageNumber ==
+                        null &&
+                        generateImageProviderState.images.isEmpty) {
+                      appSnackBar(
+                          "Error",
+                          "Please select number of images",
+                          theme.colorScheme.error);
+                    } else if (generateImageProviderState
+                        .promptTextController.text.isEmpty) {
+                      appSnackBar("Error", "Please write your prompt",
+                          theme.colorScheme.error);
+                    }
+                    // Credit validation for text-to-image
+                    else if (generateImageProviderState
+                        .images.isEmpty) {
+                      final requiredCredits =
+                          generateImageProviderState
+                              .selectedImageNumber! *
+                              2;
+                      if (userProfile.user.totalCredits <
+                          requiredCredits) {
+                        appSnackBar(
+                            "Insufficient Credits",
+                            "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} images",
+                            theme.colorScheme.error);
+                      } else {
+                        AnalyticsService.instance.logButtonClick(
+                            buttonName: 'Generate button event');
+                        ref.read(isLoadingProvider.notifier).state =
+                        true;
+                        _animationController.forward();
+                        final success = await ref
+                            .read(generateImageProvider.notifier)
+                            .generateTextToImage();
+                        ref.read(isLoadingProvider.notifier).state =
+                        false;
+                        _animationController.reverse();
+                        if (success && mounted) {
+                          Navigation.pushNamed(
+                              ResultScreenRedesign.routeName);
+                        } else if (mounted) {
+                          appSnackBar(
+                              "Error",
+                              "Failed to Generate Image",
+                              theme.colorScheme.error);
+                        }
+                      }
+                    }
+                    // Credit validation for image-to-image
+                    else {
+                      final requiredCredits =
+                          generateImageProviderState
+                              .selectedImageNumber! *
+                              24;
+                      if (userProfile.user.totalCredits <
+                          requiredCredits) {
+                        appSnackBar(
+                            "Insufficient Credits",
+                            "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} variations",
+                            theme.colorScheme.error);
+                      } else {
+                        AnalyticsService.instance.logButtonClick(
+                            buttonName: 'Generate button event');
+                        ref.read(isLoadingProvider.notifier).state =
+                        true;
+                        _animationController.forward();
+                        final success = await ref
+                            .read(generateImageProvider.notifier)
+                            .generateImgToImg();
+                        ref.read(isLoadingProvider.notifier).state =
+                        false;
+                        _animationController.reverse();
+                        if (success && mounted) {
+                          Navigation.pushNamed(
+                              ResultScreenRedesign.routeName);
+                        } else if (mounted) {
+                          appSnackBar(
+                              "Error",
+                              "Failed to Generate Image",
+                              theme.colorScheme.error);
+                        }
+                      }
+                    }
+                  },
+                  isLoading: false,
                 ),
               ),
             ),
@@ -325,20 +324,20 @@ class _PromptOrReferenceScreenState extends ConsumerState<PromptCreateScreen>
                     opacity: _fadeAnimation.value,
                     child: Container(
                       color: Colors.black.withOpacity(0.7),
-                      child: const Center(
+                      child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.indigo),
+                                  theme.colorScheme.primary),
                               strokeWidth: 5,
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             Text(
                               "Generating Your Art...",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: theme.colorScheme.onBackground,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),

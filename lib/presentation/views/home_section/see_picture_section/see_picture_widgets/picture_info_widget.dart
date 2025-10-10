@@ -9,24 +9,25 @@ class PictureInfoWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFf8f9ff), Color(0xFFf0f2ff)],
+        gradient: LinearGradient(
+          colors: [theme.colorScheme.surfaceContainerHighest, theme.colorScheme.surface],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: theme.colorScheme.shadow.withOpacity(0.05),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
         ],
-        border: Border.all(color: Colors.blue.withOpacity(0.1)),
+        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.1)),
       ),
       child: Column(
         children: [
@@ -35,21 +36,18 @@ class PictureInfoWidget extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.info_outline_rounded,
-                  color: AppColors.darkBlue, size: 20),
+                  color: theme.colorScheme.onSurface, size: 20),
               const SizedBox(width: 8),
               Text(
                 "Artwork Information",
                 style: AppTextstyle.interMedium(
-                  color: AppColors.darkBlue,
+                  color: theme.colorScheme.onSurface,
                   fontSize: 16,
                 ),
               ),
             ],
           ),
-
           const SizedBox(height: 20),
-
-          // Information Cards
           Row(
             children: [
               Expanded(
@@ -58,6 +56,7 @@ class PictureInfoWidget extends ConsumerWidget {
                   title: "Art Style",
                   info: styleName ?? "Unknown",
                   color: Colors.purple,
+                  theme: theme,
                 ),
               ),
               const SizedBox(width: 16),
@@ -67,30 +66,32 @@ class PictureInfoWidget extends ConsumerWidget {
                   title: "Created On",
                   info: createdAt ?? "Unknown",
                   color: Colors.blue,
+                  theme: theme,
                 ),
               ),
             ],
           ),
 
           const SizedBox(height: 20),
-
-          // Additional Action Buttons (commented but preserved)
           _primaryActionButton(
             icon: Icons.auto_awesome_rounded,
             label: "Generate Prompt",
             onPressed: () {},
+            theme: theme,
           ),
           const SizedBox(height: 12),
           _primaryActionButton(
             icon: Icons.open_in_full_rounded,
             label: "Upscale",
             onPressed: () {},
+            theme: theme,
           ),
           const SizedBox(height: 12),
           _primaryActionButton(
             icon: Icons.brush_rounded,
             label: "Add/Remove Object",
             onPressed: () {},
+            theme: theme,
           ),
         ],
       ),
@@ -102,11 +103,12 @@ class PictureInfoWidget extends ConsumerWidget {
     required String title,
     required String info,
     required Color color,
+    required ThemeData theme,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -133,7 +135,7 @@ class PictureInfoWidget extends ConsumerWidget {
             title,
             style: AppTextstyle.interMedium(
               fontSize: 12,
-              color: Colors.grey[600]!,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
             textAlign: TextAlign.center,
           ),
@@ -142,7 +144,7 @@ class PictureInfoWidget extends ConsumerWidget {
             info,
             style: AppTextstyle.interMedium(
               fontSize: 14,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
             ),
             textAlign: TextAlign.center,
             maxLines: 2,
@@ -157,13 +159,14 @@ class PictureInfoWidget extends ConsumerWidget {
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
+    required ThemeData theme,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF9B59FF).withOpacity(0.3),
+            color: theme.colorScheme.primary.withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -178,8 +181,8 @@ class PictureInfoWidget extends ConsumerWidget {
             width: double.infinity,
             height: 56,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9B59FF), Color(0xFF8E44AD)],
+              gradient: LinearGradient(
+                colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -188,12 +191,12 @@ class PictureInfoWidget extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: Colors.white, size: 20),
+                Icon(icon, color: theme.colorScheme.onPrimary, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   label,
                   style: AppTextstyle.interMedium(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontSize: 16,
                   ),
                 ),
@@ -213,14 +216,15 @@ class InfoText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: theme.colorScheme.shadow.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -233,7 +237,7 @@ class InfoText extends ConsumerWidget {
             title!,
             style: AppTextstyle.interMedium(
               fontSize: 14,
-              color: Colors.grey[600]!,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 4),
@@ -241,7 +245,7 @@ class InfoText extends ConsumerWidget {
             info!,
             style: AppTextstyle.interMedium(
               fontSize: 16,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
             ),
             textAlign: TextAlign.center,
           )

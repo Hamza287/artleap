@@ -110,7 +110,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (response.status == Status.completed) {
       await getUserProfileData(UserData.ins.userId ?? "");
     } else {
-      appSnackBar("Error", "Failed to update credits", AppColors.redColor);
+      print("Failed to update credits");
     }
     setLoader(false);
     if (hasListeners) {

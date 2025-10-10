@@ -34,25 +34,28 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: isDark ? Color(0xFF0A0A0A) : Color(0xFFF8F9FA),
       extendBodyBehindAppBar: true,
       body: Column(
         children: [
-          _buildCustomAppBar(),
+          _buildCustomAppBar(theme, isDark),
           Expanded(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(32),
                   topRight: Radius.circular(32),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black12,
+                    color: isDark ? Colors.black.withOpacity(0.3) : Colors.grey.withOpacity(0.1),
                     blurRadius: 20,
-                    offset: Offset(0, -5),
+                    offset: const Offset(0, -5),
                   ),
                 ],
               ),
@@ -71,7 +74,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       ),
 
                     const SizedBox(height: 24),
-                    _buildImageSection(),
+                    _buildImageSection(theme, isDark),
                     const SizedBox(height: 24),
                     PictureOptionsWidget(
                       imageId: widget.params!.imageId,
@@ -92,9 +95,9 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       prompt: widget.params!.prompt,
                     ),
                     const SizedBox(height: 28),
-                    // PictureInfoWidget(
-                    //   styleName: widget.params!.modelName,
-                    // ),
+                    PictureInfoWidget(
+                      styleName: widget.params!.modelName,
+                    ),
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -106,7 +109,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     );
   }
 
-  Widget _buildCustomAppBar() {
+  Widget _buildCustomAppBar(ThemeData theme, bool isDark) {
     return SafeArea(
       bottom: false,
       child: Container(
@@ -114,28 +117,24 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Back Button with Gradient
+            // Back Button
             Container(
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                border: Border.all(
+                  color: isDark ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.1),
+                ),
               ),
               child: IconButton(
                 onPressed: () {
                   Navigation.pop();
                 },
-                icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                icon: Icon(
+                  Icons.arrow_back_rounded,
+                  color: isDark ? Colors.white : Colors.black,
+                  size: 20,
+                ),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
@@ -144,35 +143,40 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                 ),
               ),
             ),
+
+            // Title
             Expanded(
               child: Center(
-                child: ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ).createShader(bounds),
-                  child: Text(
-                    "AI Artwork Details",
-                    style: AppTextstyle.interMedium(
-                      fontSize: 20,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
+                child: Text(
+                  "AI Artwork Details",
+                  style: AppTextstyle.interMedium(
+                    fontSize: 18,
+                    color: isDark ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w600,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
+
+            // Close Button
             Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isDark ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.1),
+                ),
               ),
               child: IconButton(
                 onPressed: () {
                   Navigation.pop();
                 },
-                icon: const Icon(Icons.close_rounded, color: Colors.white),
+                icon: Icon(
+                  Icons.close_rounded,
+                  color: isDark ? Colors.white : Colors.black,
+                  size: 20,
+                ),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
@@ -187,22 +191,22 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     );
   }
 
-  Widget _buildImageSection() {
+  Widget _buildImageSection(ThemeData theme, bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 25,
-              offset: const Offset(0, 10),
+              color: isDark ? Colors.black.withOpacity(0.4) : Colors.grey.withOpacity(0.2),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
               // Main Image
@@ -216,6 +220,9 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                 child: Container(
                   height: 380,
                   width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: isDark ? Color(0xFF1E1E1E) : Color(0xFFF5F5F5),
+                  ),
                   child: CachedNetworkImage(
                     imageUrl: widget.params!.image!,
                     fit: BoxFit.cover,
@@ -223,22 +230,38 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                     placeholder: (context, url) => Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.grey[300]!, Colors.grey[200]!],
+                          colors: isDark
+                              ? [Color(0xFF2D2D2D), Color(0xFF1E1E1E)]
+                              : [Color(0xFFF0F0F0), Color(0xFFE5E5E5)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                       ),
+                      child: Center(
+                        child: Icon(
+                          Icons.photo,
+                          color: isDark ? Colors.white38 : Colors.grey.shade400,
+                          size: 50,
+                        ),
+                      ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[200],
+                      color: isDark ? Color(0xFF2D2D2D) : Color(0xFFF5F5F5),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.error_outline, color: Colors.grey[400], size: 48),
-                          const SizedBox(height: 8),
+                          Icon(
+                              Icons.error_outline,
+                              color: isDark ? Colors.white38 : Colors.grey.shade400,
+                              size: 48
+                          ),
+                          const SizedBox(height: 12),
                           Text(
                             'Failed to load image',
-                            style: TextStyle(color: Colors.grey[500]),
+                            style: TextStyle(
+                              color: isDark ? Colors.white54 : Colors.grey.shade600,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
@@ -258,39 +281,46 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                             Image: widget.params!.image!,
                           ));
                     },
-                    splashColor: Colors.white.withOpacity(0.2),
+                    splashColor: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
                     highlightColor: Colors.transparent,
                   ),
                 ),
               ),
-              //
-              // // View Fullscreen Hint
-              // Positioned(
-              //   bottom: 16,
-              //   right: 16,
-              //   child: Container(
-              //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              //     decoration: BoxDecoration(
-              //       color: Colors.black.withOpacity(0.7),
-              //       borderRadius: BorderRadius.circular(20),
-              //     ),
-              //     child: Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: [
-              //         Icon(Icons.fullscreen_rounded, size: 16, color: Colors.white),
-              //         const SizedBox(width: 4),
-              //         Text(
-              //           'Tap to view fullscreen',
-              //           style: TextStyle(
-              //             color: Colors.white,
-              //             fontSize: 12,
-              //             fontWeight: FontWeight.w500,
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+
+              // View Fullscreen Hint
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.black.withOpacity(0.7) : Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark ? Colors.white.withOpacity(0.2) : Colors.black.withOpacity(0.1),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                          Icons.fullscreen_rounded,
+                          size: 14,
+                          color: isDark ? Colors.white70 : Colors.black54
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'View fullscreen',
+                        style: TextStyle(
+                          color: isDark ? Colors.white70 : Colors.black54,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -14,6 +14,7 @@ class OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: GestureDetector(
@@ -23,26 +24,30 @@ class OptionCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
           decoration: BoxDecoration(
             border: Border.all(
-              color: isSelected ? const Color(0xFF875EFF) : Colors.grey.shade300,
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.outline,
               width: isSelected ? 2.0 : 1.5,
             ),
             borderRadius: BorderRadius.circular(12.0),
-            color: isSelected ? const Color(0xFF875EFF).withOpacity(0.05) : Colors.white,
+            color: isSelected
+                ? theme.colorScheme.primary.withOpacity(0.05)
+                : theme.colorScheme.surface,
             boxShadow: isSelected
                 ? [
-              BoxShadow(
-                color: const Color(0xFF875EFF).withOpacity(0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              )
-            ]
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    )
+                  ]
                 : [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              )
-            ],
+                    BoxShadow(
+                      color: theme.colorScheme.shadow.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    )
+                  ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +57,9 @@ class OptionCard extends StatelessWidget {
                   title,
                   style: AppTextstyle.interMedium(
                     fontSize: 16.0,
-                    color: isSelected ? const Color(0xFF875EFF) : Colors.black,
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -60,14 +67,14 @@ class OptionCard extends StatelessWidget {
                 Container(
                   width: 24,
                   height: 24,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF875EFF),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.check,
                     size: 16,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
             ],

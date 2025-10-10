@@ -2,9 +2,9 @@ import 'package:Artleap.ai/providers/interest_onboarding_controller.dart';
 import 'package:Artleap.ai/shared/utilities/progress_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../login_and_signup_section/login_section/login_screen.dart';
 import 'components/onboarding_step_content.dart';
 
 class InterestOnboardingScreen extends ConsumerWidget {
@@ -13,6 +13,7 @@ class InterestOnboardingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final currentStep = ref.watch(interestOnboardingStepProvider);
     final onboardingData = ref.watch(onboardingDataProvider);
     final selectedOptions = ref.watch(selectedOptionsProvider);
@@ -23,11 +24,14 @@ class InterestOnboardingScreen extends ConsumerWidget {
     final currentSelection = selectedOptions[currentStep];
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 0,
         leading: currentStep == 0
             ? null
             : IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (currentStep > 0) {
               ref.read(interestOnboardingStepProvider.notifier).state--;
@@ -43,7 +47,7 @@ class InterestOnboardingScreen extends ConsumerWidget {
               'Skip',
               style: AppTextstyle.interMedium(
                 fontSize: 16.0,
-                color: Colors.black54,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
           ),
@@ -87,5 +91,3 @@ class InterestOnboardingScreen extends ConsumerWidget {
     );
   }
 }
-
-

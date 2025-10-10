@@ -5,7 +5,6 @@ import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_user_profile_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
@@ -73,10 +72,6 @@ class RouteGenerator {
         return route(const ResultScreenRedesign());
       case SeePictureScreen.routeName:
         return route(SeePictureScreen(params: settings.arguments as SeePictureParams?));
-      case EditProfileScreen.routeName:
-        return route(EditProfileScreen(
-          params: settings.arguments as EditProfileSreenParams?,
-        ));
       case OtherUserProfileScreen.routeName:
         return route(OtherUserProfileScreen(
           params: settings.arguments as OtherUserProfileParams?,
