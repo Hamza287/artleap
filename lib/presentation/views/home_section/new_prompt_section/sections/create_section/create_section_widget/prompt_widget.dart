@@ -32,7 +32,7 @@ class PromptWidget extends ConsumerWidget {
             style: AppTextstyle.interBold(
                 color: theme.colorScheme.onSurface, fontSize: 14),
           ),
-          14.spaceY,
+          12.spaceY,
           Stack(
             children: [
               Container(
@@ -95,7 +95,10 @@ class PromptWidget extends ConsumerWidget {
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.only(
                                     left: 16, top: 16, right: 16),
-                                enabledBorder: InputBorder.none,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
                                 disabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 fillColor: theme.colorScheme.surface,
