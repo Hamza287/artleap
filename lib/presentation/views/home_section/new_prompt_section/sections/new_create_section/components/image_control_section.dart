@@ -12,7 +12,6 @@ import 'image_preview_redesign.dart';
 import 'image_selection_button_redesign.dart';
 import 'inspiration_button_redesign.dart';
 import 'ratio_selection_redesign.dart';
-import 'style_selection_redesign.dart';
 
 class ImageControlsRedesign extends ConsumerWidget {
   final VoidCallback onImageSelected;
@@ -66,7 +65,6 @@ class ImageControlsRedesign extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          // Image Selection Row
           Row(
             children: [
               Expanded(
@@ -101,7 +99,7 @@ class ImageControlsRedesign extends ConsumerWidget {
         Text(
           "Number of Images",
           style: AppTextstyle.interMedium(
-            fontSize: 16,
+            fontSize: 13,
             color: theme.colorScheme.onSurface,
           ),
         ),

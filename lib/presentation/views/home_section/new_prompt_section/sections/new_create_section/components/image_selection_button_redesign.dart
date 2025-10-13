@@ -16,7 +16,6 @@ class ImageSelectionButtonRedesign extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -75,28 +74,13 @@ class ImageSelectionButtonRedesign extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            hasImage ? "Change Image" : "Add Reference Image",
-                            style: AppTextstyle.interMedium(
-                              fontSize: 14,
-                              color: theme.colorScheme.onSurface,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (!hasImage)
-                            Text(
-                              "Upload for image-to-image",
-                              style: AppTextstyle.interMedium(
-                                fontSize: 11,
-                                color: theme.colorScheme.onSurface.withOpacity(0.6),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                        ],
+                      child: Text(
+                        hasImage ? "Change Image" : "Add Image",
+                        style: AppTextstyle.interMedium(
+                          fontSize: 14,
+                          color: theme.colorScheme.onSurface,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (hasImage)
@@ -120,8 +104,6 @@ class ImageSelectionButtonRedesign extends StatelessWidget {
             ),
           ),
         ),
-
-        // Premium Badge
         if (showPremiumIcon && !hasImage)
           Positioned(
             top: -6,

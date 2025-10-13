@@ -25,7 +25,7 @@ class PromptInputRedesign extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Describe Your Vision",
+              "Enter Prompt",
               style: AppTextstyle.interMedium(
                 color: theme.colorScheme.onSurface,
                 fontSize: 16,
@@ -73,7 +73,7 @@ class PromptInputRedesign extends ConsumerWidget {
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(10),
                 border: InputBorder.none,
-                hintText: "Describe the image you want to generate...\n\nExample: 'A majestic dragon flying over a medieval castle at sunset, fantasy art style, highly detailed'",
+                hintText: "Describe the image you want to generate..'",
                 hintStyle: AppTextstyle.interMedium(
                   color: theme.colorScheme.onSurface.withOpacity(0.5),
                   fontSize: 12,
@@ -92,8 +92,6 @@ class PromptInputRedesign extends ConsumerWidget {
             ),
           ),
         ),
-        8.spaceY,
-        _buildPromptTips(theme),
       ],
     );
   }
@@ -109,38 +107,6 @@ class PromptInputRedesign extends ConsumerWidget {
             ? theme.colorScheme.error
             : theme.colorScheme.onSurface.withOpacity(0.5),
         fontSize: 12,
-      ),
-    );
-  }
-
-  Widget _buildPromptTips(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(0.1),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.lightbulb_outline,
-            color: theme.colorScheme.primary,
-            size: 16,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              "Tip: Be descriptive! Include subject, style, colors, and mood for better results.",
-              style: AppTextstyle.interMedium(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

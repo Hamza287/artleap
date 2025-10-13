@@ -129,35 +129,17 @@ class RatioSelectionRedesign extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Main Content
             Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    text,
-                    style: AppTextstyle.interMedium(
-                      fontSize: 18,
-                      color: isSelected
-                          ? theme.colorScheme.onPrimary
-                          : theme.colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    "images",
-                    style: AppTextstyle.interMedium(
-                      fontSize: 10,
-                      color: isSelected
-                          ? theme.colorScheme.onPrimary.withOpacity(0.8)
-                          : theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                  ),
-                ],
+              child: Text(
+                text,
+                style: AppTextstyle.interMedium(
+                  fontSize: 18,
+                  color: isSelected
+                      ? theme.colorScheme.onPrimary
+                      : theme.colorScheme.onSurface,
+                ),
               ),
             ),
-
-            // Credits Badge
             if (credits != null)
               Positioned(
                 top: 6,

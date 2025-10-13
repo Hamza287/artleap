@@ -92,7 +92,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(21),
                         border: Border.all(
-                          color: Colors.amber,
+                          color: Colors.orange,
                           width: 1.5,
                         ),
                         color: theme.colorScheme.surface,
@@ -103,13 +103,13 @@ class HomeScreenTopBar extends ConsumerWidget {
                           Image.asset(
                             AppAssets.stackofcoins,
                             height: 20,
-                            color: Colors.amber,
+                            color: Colors.orange,
                           ),
                           SizedBox(width: screenWidth * 0.015),
                           Text(
                             "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
                             style: AppTextstyle.interMedium(
-                              color: Colors.amber,
+                              color: Colors.orange,
                               fontSize: screenWidth * 0.035 > 14
                                   ? 14
                                   : screenWidth * 0.035,
@@ -173,7 +173,28 @@ class HomeScreenTopBar extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFFFD700),
+                        Color(0xFFFFA500),
+                        Color(0xFFFF8C00),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                      BoxShadow(
+                        color: theme.colorScheme.surface,
+                        blurRadius: 0,
+                        offset: const Offset(0, 0),
+                        spreadRadius: 1,
+                      ),
+                    ],
                     shape: BoxShape.circle,
                   ),
                   child: Icon(

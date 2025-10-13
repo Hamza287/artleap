@@ -6,8 +6,10 @@ import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 import '../home_section/favourites_screen/favourites_screen.dart';
 import '../global_widgets/dialog_box/delete_account_dialog.dart';
-import '../home_section/profile_screen/edit_profile_screen_widgets/separator_widget.dart';
-import '../home_section/profile_screen/edit_profile_screen_widgets/user_info_widget.dart';
+import 'drawer_components/separator_widget.dart';
+import 'drawer_components/glass_circle_button.dart';
+import 'drawer_components/profile_menu_item.dart';
+import 'drawer_components/theme_selector_menu_item.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
 import 'logout_confirmation_dialog.dart';
 import 'social_media_bottom_sheet.dart';
@@ -90,7 +92,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                   padding: EdgeInsets.only(top: 16, right: 16),
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: _GlassCircleButton(
+                    child: GlassCircleButton(
                       icon: Icons.close,
                       size: iconSize,
                       onPressed: () => Navigator.pop(context),
@@ -159,49 +161,49 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                     context,
                     title: "General",
                     items: [
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.userinfoicon,
                         title: "Personal Information",
                         onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
                         theme: theme,
                       ),
                       user?.planName.toLowerCase() == 'free' ?
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.currentPlan,
                         title: "You don't have an active subscription",
                         onTap: ()=>Navigator.of(context).pushNamed("choose_plan_screen"),
                         color: theme.colorScheme.error,
                         theme: theme,
-                      ) : _ProfileMenuItem(
+                      ) : ProfileMenuItem(
                         icon: AppAssets.currentPlan,
                         title: "Current Plan",
                         onTap: () => _navigateTo(context, '/subscription-status'),
                         theme: theme,
                       ) ,
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.privacyicon,
                         title: "Privacy Policy",
                         onTap: () => _navigateTo(context, '/privacy-policy'),
                         theme: theme,
                       ),
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.payment,
                         title: "Subscription Plans",
                         onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
                         theme: theme,
                       ),
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.saveicon,
                         title: "Favourites",
                         onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
                         theme: theme,
                       ),
-                      _ProfileMenuItem(
-                        icon: AppAssets.darkMode,
-                        title: "Dark Mode",
-                        isToggle: true,
-                        onTap: () {},
+                      ThemeSelectorMenuItem(
                         theme: theme,
+                        currentTheme: ref.watch(themeProvider),
+                        onThemeChanged: (ThemeMode newTheme) {
+                          ref.read(themeProvider.notifier).setTheme(newTheme);
+                        },
                       ),
                     ],
                   ),
@@ -213,7 +215,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                     context,
                     title: "About",
                     items: [
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.follow,
                         title: "Follow us on Social Media",
                         onTap: () {
@@ -228,13 +230,13 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                         },
                         theme: theme,
                       ),
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.helpCenter,
                         title: "Help Center",
                         onTap: () => _navigateTo(context, '/help-screen'),
                         theme: theme,
                       ),
-                      _ProfileMenuItem(
+                      ProfileMenuItem(
                         icon: AppAssets.abouticon,
                         title: "About Artleap",
                         onTap: () => _navigateTo(context, '/about-artleap'),
@@ -243,8 +245,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                     ],
                   ),
                 ),
-
-                // Actions section with theme-aware background
                 Container(
                   decoration: BoxDecoration(
                     color: isDark
@@ -255,7 +255,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                     padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
                     child: Column(
                       children: [
-                        _ProfileMenuItem(
+                        ProfileMenuItem(
                           icon: AppAssets.logouticon,
                           title: "Logout",
                           color: theme.colorScheme.error,
@@ -265,7 +265,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                           ),
                           theme: theme,
                         ),
-                        _ProfileMenuItem(
+                        ProfileMenuItem(
                           icon: AppAssets.deleteicon,
                           title: "Delete Account",
                           color: theme.colorScheme.error.withOpacity(0.9),
@@ -287,21 +287,16 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     );
   }
 
-  Widget _buildSection(BuildContext context, {required String title, required List<_ProfileMenuItem> items}) {
-
+  Widget _buildSection(BuildContext context, {required String title, required List<Widget> items}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 10,
       children: [
         SeparatorWidget(
           title: title,
         ),
-        SingleChildScrollView(
-          child: Column(
-            spacing: 4,
-            children: items,
-          ),
-          physics: BouncingScrollPhysics(),
+        SizedBox(height: 10),
+        Column(
+          children: items,
         ),
       ],
     );
@@ -313,116 +308,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
   }
 }
 
-class _GlassCircleButton extends StatelessWidget {
-  final IconData icon;
-  final double size;
-  final VoidCallback onPressed;
-  final ThemeData theme;
 
-  const _GlassCircleButton({
-    required this.icon,
-    required this.size,
-    required this.onPressed,
-    required this.theme,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    final isDark = theme.brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: size * 1.8,
-        height: size * 1.8,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isDark
-              ? theme.colorScheme.surface.withOpacity(0.2)
-              : Colors.white.withOpacity(0.1),
-          border: Border.all(
-            color: isDark
-                ? theme.colorScheme.onSurface.withOpacity(0.3)
-                : Colors.white.withOpacity(0.3),
-            width: 1.5,
-          ),
-        ),
-        child: Center(
-          child: Icon(
-            icon,
-            color: isDark ? theme.colorScheme.onSurface : Colors.white,
-            size: size,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfileMenuItem extends ConsumerWidget {
-  final String icon;
-  final String title;
-  final Color? color;
-  final VoidCallback? onTap;
-  final bool isToggle;
-  final ThemeData theme;
-
-  const _ProfileMenuItem({
-    required this.icon,
-    required this.title,
-    this.color,
-    this.onTap,
-    this.isToggle = false,
-    required this.theme,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = theme.brightness == Brightness.dark;
-    final effectiveColor = color ?? (isDark ? theme.colorScheme.onSurface : Colors.white.withOpacity(0.9));
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height * 0.005,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.transparent,
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconWithTextTile(
-                  imageIcon: icon,
-                  title: title,
-                  titleColor: effectiveColor,
-                ),
-                if (isToggle)
-                  Switch(
-                    value: ref.watch(themeProvider) == ThemeMode.dark,
-                    onChanged: (_) {
-                      ref.read(themeProvider.notifier).toggleTheme();
-                    },
-                    activeThumbColor: theme.colorScheme.primary,
-                    inactiveThumbColor: theme.colorScheme.outline,
-                    inactiveTrackColor: theme.colorScheme.outline.withOpacity(0.5),
-                    trackColor: WidgetStateProperty.resolveWith((states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return theme.colorScheme.primary.withOpacity(0.5);
-                      }
-                      return theme.colorScheme.outline.withOpacity(0.5);
-                    }),
-                  ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -126,27 +126,42 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
         color: theme.colorScheme.onPrimary.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: theme.colorScheme.onPrimary.withOpacity(0.3),
+          color: Colors.orange.withOpacity(0.3),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Coin Icon
           Image.asset(
             AppAssets.stackofcoins,
-            width: 16,
-            height: 16,
-            color: theme.colorScheme.onPrimary,
+            width: 18,
+            height: 18,
+            color: Colors.amberAccent.shade200,
           ),
           6.spaceX,
-
-          // Credits Text
-          Text(
-            credits,
-            style: AppTextstyle.interMedium(
-              color: theme.colorScheme.onPrimary,
-              fontSize: 14,
+          ShaderMask(
+            shaderCallback: (bounds) => const LinearGradient(
+              colors: [
+                Color(0xFFFFD700),
+                Color(0xFFFFA500),
+                Color(0xFFFFE55C),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ).createShader(bounds),
+            child: Text(
+              credits,
+              style: TextStyle(
+                color: Colors.amberAccent.shade200,
+                fontSize: 14,
+                shadows: [
+                  Shadow(
+                    color: Colors.orange.withOpacity(0.4),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
