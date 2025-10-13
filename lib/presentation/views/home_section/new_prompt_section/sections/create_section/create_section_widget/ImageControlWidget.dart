@@ -215,33 +215,6 @@ class ImageControlsWidget extends ConsumerWidget {
                         ),
                       );
                     }),
-                    // Add "View All" card
-                    // if (styles.length > 3)
-                    //   GestureDetector(
-                    //     onTap: () => showStylesBottomSheet(context, ref),
-                    //     child: Container(
-                    //       width: 120,
-                    //       margin: const EdgeInsets.only(right: 8),
-                    //       decoration: BoxDecoration(
-                    //         color: theme.colorScheme.surfaceVariant,
-                    //         borderRadius: BorderRadius.circular(8),
-                    //       ),
-                    //       child: Column(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: [
-                    //           Icon(Icons.more_horiz, size: 24, color: theme.colorScheme.onSurface),
-                    //           const SizedBox(height: 8),
-                    //           Text(
-                    //             "View All",
-                    //             style: AppTextstyle.interMedium(
-                    //               fontSize: 12,
-                    //               color: theme.colorScheme.onSurface,
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
                   ],
                 ),
               ),

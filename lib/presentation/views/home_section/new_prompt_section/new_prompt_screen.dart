@@ -1,12 +1,12 @@
-import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/prompt_screen_widgets/prompt_top_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/create_section/prompt_create_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/edit_section/prompt_edit_screen.dart';
+import 'package:Artleap.ai/presentation/views/common/profile_drawer.dart';
+import 'package:Artleap.ai/providers/prompt_nav_provider.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../providers/prompt_nav_provider.dart';
-import '../../../../providers/user_profile_provider.dart';
-import '../../common/profile_drawer.dart';
 import '../home_screen/home_screen_sections/home_screen_top_bar.dart';
+import 'prompt_screen_widgets/prompt_top_bar.dart';
+import 'sections/edit_section/prompt_edit_screen.dart';
+import 'sections/new_create_section/prompt_create_screen.dart';
 
 class PromptScreen extends ConsumerStatefulWidget {
   const PromptScreen({super.key});
@@ -87,7 +87,9 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
   Widget _buildCurrentScreen(PromptNavItem navItem) {
     switch (navItem) {
       case PromptNavItem.create:
-        return const PromptCreateScreen();
+        // return const PromptCreateScreenCompact();
+        // return const PromptCreateScreen();
+        return const PromptCreateScreenRedesign();
       case PromptNavItem.edit:
         return const PromptEditScreen();
       case PromptNavItem.animate:
