@@ -78,6 +78,7 @@ class PromptInputRedesign extends ConsumerWidget {
                   color: theme.colorScheme.onSurface.withOpacity(0.5),
                   fontSize: 12,
                 ),
+                fillColor: Colors.transparent,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide.none,
                 ),
