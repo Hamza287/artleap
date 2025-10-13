@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/generate_high_q_model.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/api_models/models_list_model.dart';
 import '../shared/constants/app_static_data.dart';
@@ -221,7 +220,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     if (matchedWords.isNotEmpty) {
       print('Matched sexual words: $matchedWords');
     } else {
-      print('No sexual words found.');
+      // print('No sexual words found.');
     }
     _containsSexualWords = matchedWords.isNotEmpty;
     notifyListeners();

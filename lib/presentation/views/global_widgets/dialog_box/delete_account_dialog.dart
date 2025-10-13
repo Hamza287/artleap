@@ -2,7 +2,6 @@ import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../shared/navigation/navigation.dart';
@@ -12,22 +11,24 @@ class DeleteAccountDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(24.0),
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              spreadRadius: 2,
+              color: theme.colorScheme.shadow.withOpacity(0.3),
+              blurRadius: 32,
+              spreadRadius: -8,
             ),
           ],
         ),
@@ -35,98 +36,89 @@ class DeleteAccountDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Warning Icon
             Container(
-              width: 72,
-              height: 72,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
-                color: AppColors.redColor.withOpacity(0.1),
+                color: theme.colorScheme.error.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.delete_forever_rounded,
                 size: 36,
-                color: AppColors.redColor,
+                color: theme.colorScheme.error,
               ),
             ),
             const SizedBox(height: 24),
-
-            // Title
             Text(
               'Delete Account',
               style: AppTextstyle.interBold(
-                fontSize: 20,
-                color: AppColors.darkIndigo,
+                fontSize: 22,
+                color: theme.colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-
-            // Message
             Text(
               'Are you sure you want to permanently delete your account? '
-                  'This action cannot be undone and all your data will be lost.',
+              'This action cannot be undone and all your data will be lost.',
               style: AppTextstyle.interRegular(
                 fontSize: 16,
-                color: AppColors.darkIndigo.withOpacity(0.8),
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-
-            // Buttons Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Cancel Button
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigation.pop(),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      side: BorderSide(color: AppColors.darkIndigo),
+                      side: BorderSide(color: theme.colorScheme.outline),
                     ),
                     child: Text(
                       'Cancel',
                       style: AppTextstyle.interBold(
-                        color: AppColors.darkIndigo,
+                        color: theme.colorScheme.onSurface,
                         fontSize: 16,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
-
-                // Delete Button
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      ref.read(userProfileProvider)
+                      ref
+                          .read(userProfileProvider)
                           .deActivateAccount(UserData.ins.userId!);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.redColor,
+                      backgroundColor: theme.colorScheme.error,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       elevation: 0,
                     ),
                     child: ref.watch(userProfileProvider).isLoading
                         ? LoadingAnimationWidget.threeArchedCircle(
-                      color: Colors.white,
-                      size: 24,
-                    )
+                            color: theme.colorScheme.onError,
+                            size: 24,
+                          )
                         : Text(
-                      'Delete Account',
-                      style: AppTextstyle.interBold(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
+                            'Delete Account',
+                            style: AppTextstyle.interBold(
+                              color: theme.colorScheme.onError,
+                              fontSize: 14,
+                            ),
+                          ),
                   ),
                 ),
               ],

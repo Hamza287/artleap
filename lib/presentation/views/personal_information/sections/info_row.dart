@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class InfoRow extends StatelessWidget {
@@ -18,6 +17,8 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -26,7 +27,7 @@ class InfoRow extends StatelessWidget {
           Icon(
             icon,
             size: 20,
-            color: iconColor ?? AppColors.purple,
+            color: iconColor ?? theme.colorScheme.primary,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -37,7 +38,7 @@ class InfoRow extends StatelessWidget {
                   label,
                   style: AppTextstyle.interMedium(
                     fontSize: 14,
-                    color: Colors.grey[600]!,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -45,7 +46,7 @@ class InfoRow extends StatelessWidget {
                   value,
                   style: AppTextstyle.interRegular(
                     fontSize: 14,
-                    color: Colors.black87,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
               ],

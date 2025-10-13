@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../../domain/subscriptions/subscription_model.dart';
 import '../choose_plan_screen.dart';
@@ -21,6 +20,7 @@ class ActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
+        final theme = Theme.of(context);
         return Column(
           children: [
             SizedBox(
@@ -31,8 +31,8 @@ class ActionButtons extends StatelessWidget {
                   Navigator.pushNamed(context, ChoosePlanScreen.routeName);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.darkBlue,
-                  foregroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -42,7 +42,7 @@ class ActionButtons extends StatelessWidget {
                   isActive && subscription!.planSnapshot?.name != 'Free' ? 'Change Plan' : 'Subscribe Now',
                   style: AppTextstyle.interBold(
                     fontSize: 16,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ),
@@ -57,8 +57,8 @@ class ActionButtons extends StatelessWidget {
                     CancelSubscriptionDialog.show(context, ref, subscription!);
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.redColor,
-                    side: const BorderSide(color: AppColors.redColor),
+                    foregroundColor: theme.colorScheme.error,
+                    side: BorderSide(color: theme.colorScheme.error),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -67,7 +67,7 @@ class ActionButtons extends StatelessWidget {
                     'Cancel Subscription',
                     style: AppTextstyle.interBold(
                       fontSize: 16,
-                      color: AppColors.redColor,
+                      color: theme.colorScheme.error,
                     ),
                   ),
                 ),

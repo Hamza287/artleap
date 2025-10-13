@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -9,16 +8,18 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(theme),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.white,
-              AppColors.lightBlue.withOpacity(0.1),
+              theme.colorScheme.surface,
+              theme.colorScheme.surfaceContainer.withOpacity(0.1),
             ],
           ),
         ),
@@ -29,11 +30,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderSection(),
+                _buildHeaderSection(theme),
                 const SizedBox(height: 32),
-                _buildPolicyContent(),
+                _buildPolicyContent(theme),
                 const SizedBox(height: 24),
-                _buildFooterSection(context),
+                _buildFooterSection(context, theme),
               ],
             ),
           ),
@@ -42,25 +43,25 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
       title: Text(
         'Privacy Policy',
         style: AppTextstyle.interBold(
           fontSize: 20,
-          color: AppColors.darkBlue,
+          color: theme.colorScheme.onSurface,
         ),
       ),
       centerTitle: true,
-      backgroundColor: AppColors.white,
-      iconTheme: const IconThemeData(color: AppColors.darkBlue),
+      backgroundColor: theme.colorScheme.surface,
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       elevation: 0,
       scrolledUnderElevation: 4,
-      shadowColor: AppColors.darkBlue.withOpacity(0.1),
+      shadowColor: theme.colorScheme.shadow.withOpacity(0.1),
     );
   }
 
-  Widget _buildHeaderSection() {
+  Widget _buildHeaderSection(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -69,7 +70,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           'Privacy Policy',
           style: AppTextstyle.interBold(
             fontSize: 32,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 8),
@@ -77,7 +78,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           'Effective Date: January 1, 2025',
           style: AppTextstyle.interRegular(
             fontSize: 14,
-            color: AppColors.darkBlue.withOpacity(0.6),
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: 16),
@@ -85,10 +86,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.lightBlue.withOpacity(0.1),
+            color: theme.colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppColors.lightBlue.withOpacity(0.3),
+              color: theme.colorScheme.outline.withOpacity(0.3),
               width: 1,
             ),
           ),
@@ -96,7 +97,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             'At ArtLeap.AI, we value your privacy. This Privacy Policy explains how we collect, use, and protect your information when you use our photo generator AI application ("App"). By using the App, you agree to the practices outlined in this policy.',
             style: AppTextstyle.interRegular(
               fontSize: 16,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
             ),
           ),
         ),
@@ -104,7 +105,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPolicyContent() {
+  Widget _buildPolicyContent(ThemeData theme) {
     return Column(
       children: [
         _buildPolicySection(
@@ -131,6 +132,7 @@ Usage Logs: We collect information about your interactions with the App, such as
 
 We may use anonymous cookies or similar technologies to analyze user behavior and enhance your experience with the App. These tools help us understand usage trends and optimize features.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.analytics,
@@ -144,6 +146,7 @@ We use collected information to:
 • Customize user experience and show relevant features.
 • Comply with legal and policy requirements.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.share,
@@ -154,6 +157,7 @@ We do not sell or rent your personal information. We may share limited data with
 • Trusted service providers who help us operate, maintain, and improve the App.
 • Legal authorities, only when required to comply with applicable laws or to protect rights and safety.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.security,
@@ -161,6 +165,7 @@ We do not sell or rent your personal information. We may share limited data with
           content: """
 We implement industry-standard security practices to protect your information, including encryption, secure data storage, and access controls. While we strive to protect all user data, no digital system is completely immune to risks.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.person_outline,
@@ -175,6 +180,7 @@ Depending on your location, you may have the right to:
 
 To exercise your rights, please contact us at info@x-r.digital.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.storage,
@@ -183,6 +189,7 @@ To exercise your rights, please contact us at info@x-r.digital.
 • Uploaded images are stored temporarily and deleted after processing.
 • Other data is retained only as long as needed for operational, legal, or business purposes.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.child_care,
@@ -190,6 +197,7 @@ To exercise your rights, please contact us at info@x-r.digital.
           content: """
 The App is not intended for children under 13. We do not knowingly collect personal information from anyone under this age. If such data is identified, it will be promptly deleted.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.update,
@@ -197,6 +205,7 @@ The App is not intended for children under 13. We do not knowingly collect perso
           content: """
 We may update this Privacy Policy to reflect changes to our features or legal requirements. Any updates will be posted within the App. Your continued use of the App indicates acceptance of the updated policy.
 """,
+          theme: theme,
         ),
         _buildPolicySection(
           icon: Icons.contact_support,
@@ -206,6 +215,7 @@ For any privacy-related inquiries or concerns, please reach out to us:
 
 📧 Email: info@x-r.digital
 """,
+          theme: theme,
         ),
       ],
     );
@@ -215,19 +225,20 @@ For any privacy-related inquiries or concerns, please reach out to us:
     required IconData icon,
     required String title,
     required String content,
+    required ThemeData theme,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.lightBlue.withOpacity(0.3),
+          color: theme.colorScheme.outline.withOpacity(0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkBlue.withOpacity(0.05),
+            color: theme.colorScheme.shadow.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -243,12 +254,12 @@ For any privacy-related inquiries or concerns, please reach out to us:
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.lightBlue.withOpacity(0.1),
+                    color: theme.colorScheme.primary.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     icon,
-                    color: AppColors.darkBlue,
+                    color: theme.colorScheme.primary,
                     size: 24,
                   ),
                 ),
@@ -258,7 +269,7 @@ For any privacy-related inquiries or concerns, please reach out to us:
                     title,
                     style: AppTextstyle.interBold(
                       fontSize: 20,
-                      color: AppColors.darkBlue,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -271,7 +282,7 @@ For any privacy-related inquiries or concerns, please reach out to us:
                 content,
                 style: AppTextstyle.interRegular(
                   fontSize: 15,
-                  color: AppColors.darkBlue,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -281,11 +292,11 @@ For any privacy-related inquiries or concerns, please reach out to us:
     );
   }
 
-  Widget _buildFooterSection(BuildContext context) {
+  Widget _buildFooterSection(BuildContext context, ThemeData theme) {
     return Column(
       children: [
-        const Divider(
-          color: AppColors.lightBlue,
+        Divider(
+          color: theme.colorScheme.outline.withOpacity(0.3),
           thickness: 0.5,
           height: 1,
         ),
@@ -294,7 +305,7 @@ For any privacy-related inquiries or concerns, please reach out to us:
           'By using ArtLeap.AI, you acknowledge that you have read and understood this Privacy Policy.',
           style: AppTextstyle.interRegular(
             fontSize: 14,
-            color: AppColors.darkBlue.withOpacity(0.6),
+            color: theme.colorScheme.onSurfaceVariant,
           ),
           textAlign: TextAlign.center,
         ),
@@ -303,7 +314,7 @@ For any privacy-related inquiries or concerns, please reach out to us:
           '© ${DateTime.now().year} ArtLeap.AI\nAll rights reserved.',
           style: AppTextstyle.interRegular(
             fontSize: 12,
-            color: AppColors.darkBlue.withOpacity(0.6),
+            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
           ),
           textAlign: TextAlign.center,
         ),

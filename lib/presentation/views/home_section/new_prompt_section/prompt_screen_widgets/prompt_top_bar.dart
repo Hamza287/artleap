@@ -23,7 +23,6 @@ class PromptTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final currentNav = ref.watch(promptNavProvider);
     final screenSize = getScreenSizeCategory(context);
 

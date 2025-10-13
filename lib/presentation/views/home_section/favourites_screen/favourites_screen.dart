@@ -25,8 +25,6 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
   Widget build(BuildContext context) {
     final favouriteState = ref.watch(favouriteProvider);
     final size = MediaQuery.of(context).size;
-    final bottomNavBarState = ref.watch(bottomNavBarProvider);
-    final pageIndex = bottomNavBarState.pageIndex;
 
     return Scaffold(
       appBar: AppBar(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'info_row.dart';
 
-
 class SubscriptionCard extends StatelessWidget {
   final String status;
   final String planName;
@@ -21,12 +20,15 @@ class SubscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
       margin: EdgeInsets.zero,
+      color: theme.colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -39,10 +41,10 @@ class SubscriptionCard extends StatelessWidget {
                   "Subscription",
                   style: AppTextstyle.interBold(
                     fontSize: 18,
-                    color: Colors.black87,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
-                _StatusChip(status: status),
+                _StatusChip(status: status, theme: theme),
               ],
             ),
             const SizedBox(height: 16),
@@ -72,8 +74,9 @@ class SubscriptionCard extends StatelessWidget {
 
 class _StatusChip extends StatelessWidget {
   final String status;
+  final ThemeData theme;
 
-  const _StatusChip({required this.status});
+  const _StatusChip({required this.status, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +97,7 @@ class _StatusChip extends StatelessWidget {
         icon = Icons.cancel_outlined;
         break;
       default:
-        chipColor = Colors.grey;
+        chipColor = theme.colorScheme.onSurfaceVariant;
         icon = Icons.help_outline;
     }
 

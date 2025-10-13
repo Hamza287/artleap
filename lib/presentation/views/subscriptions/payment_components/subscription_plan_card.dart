@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class SubscriptionPlanCard extends StatelessWidget {
@@ -23,24 +22,25 @@ class SubscriptionPlanCard extends StatelessWidget {
     }
   }
 
-  Color _getPlanColor(String type) {
+  Color _getPlanColor(String type, ThemeData theme) {
     switch (type.toLowerCase()) {
       case 'basic':
-        return  AppColors.primaryGold;
+        return theme.colorScheme.primary;
       case 'standard':
-        return  AppColors.primaryGold;
+        return theme.colorScheme.primary;
       case 'premium':
-        return  AppColors.primaryGold;
+        return theme.colorScheme.primary;
       case 'trial':
-        return  AppColors.primaryGold;
+        return theme.colorScheme.primary;
       default:
-        return AppColors.primaryGold;
+        return theme.colorScheme.primary;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final planColor = _getPlanColor(plan.type);
+    final theme = Theme.of(context);
+    final planColor = _getPlanColor(plan.type, theme);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -71,20 +71,20 @@ class SubscriptionPlanCard extends StatelessWidget {
                 plan.name,
                 style: AppTextstyle.interBold(
                   fontSize: 22,
-                  color: AppColors.white,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.2),
+                  color: theme.colorScheme.onPrimary.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '\$${plan.price.toStringAsFixed(2)}/${_getPlanPeriod(plan.type)}',
                   style: AppTextstyle.interBold(
                     fontSize: 18,
-                    color: AppColors.white,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ),
@@ -94,23 +94,26 @@ class SubscriptionPlanCard extends StatelessWidget {
           _buildFeatureItem(
             'Up to ${(plan.imageGenerationCredits / 24).toInt()} Image-to-Image Generations',
             planColor,
+            theme,
           ),
           _buildFeatureItem(
             'Up to ${(plan.promptGenerationCredits / 2).toInt()} Text-to-Image Generations',
             planColor,
+            theme,
           ),
           _buildFeatureItem(
             'Total Credits: ${plan.totalCredits.toInt()}',
             planColor,
+            theme,
           ),
           const SizedBox(height: 12),
-          ...plan.features.take(3).map((feature) => _buildFeatureRow(feature, planColor)),
+          ...plan.features.take(3).map((feature) => _buildFeatureRow(feature, planColor, theme)),
         ],
       ),
     );
   }
 
-  Widget _buildFeatureItem(String text, Color planColor) {
+  Widget _buildFeatureItem(String text, Color planColor, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -119,7 +122,7 @@ class SubscriptionPlanCard extends StatelessWidget {
           Icon(
             Icons.check_circle_rounded,
             size: 16,
-            color: AppColors.white.withOpacity(0.9),
+            color: theme.colorScheme.onPrimary.withOpacity(0.9),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -127,7 +130,7 @@ class SubscriptionPlanCard extends StatelessWidget {
               text,
               style: AppTextstyle.interRegular(
                 fontSize: 14,
-                color: AppColors.white.withOpacity(0.9),
+                color: theme.colorScheme.onPrimary.withOpacity(0.9),
               ),
             ),
           ),
@@ -136,7 +139,7 @@ class SubscriptionPlanCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureRow(String feature, Color planColor) {
+  Widget _buildFeatureRow(String feature, Color planColor, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -144,7 +147,7 @@ class SubscriptionPlanCard extends StatelessWidget {
           Icon(
             Icons.star_rounded,
             size: 14,
-            color: AppColors.white,
+            color: theme.colorScheme.onPrimary,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -152,7 +155,7 @@ class SubscriptionPlanCard extends StatelessWidget {
               feature,
               style: AppTextstyle.interMedium(
                 fontSize: 14,
-                color: AppColors.white,
+                color: theme.colorScheme.onPrimary,
               ),
             ),
           ),

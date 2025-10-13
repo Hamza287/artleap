@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class SubscribeButton extends StatelessWidget {
@@ -16,28 +15,30 @@ class SubscribeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
         onPressed: (isLoading || !isEnabled) ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryGold,
-          disabledBackgroundColor: AppColors.primaryGold.withOpacity(0.5),
-          foregroundColor: AppColors.white,
+          backgroundColor: theme.colorScheme.primary,
+          disabledBackgroundColor: theme.colorScheme.primary.withOpacity(0.5),
+          foregroundColor: theme.colorScheme.onPrimary,
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          shadowColor: AppColors.primaryGold.withOpacity(0.3),
+          shadowColor: theme.colorScheme.primary.withOpacity(0.3),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
           width: 20,
           height: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            color: AppColors.white,
+            color: theme.colorScheme.onPrimary,
           ),
         )
             : Row(
@@ -47,11 +48,11 @@ class SubscribeButton extends StatelessWidget {
               'Subscribe Now',
               style: AppTextstyle.interBold(
                 fontSize: 16,
-                color: AppColors.white,
+                color: theme.colorScheme.onPrimary,
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.arrow_forward_rounded, size: 20),
+            Icon(Icons.arrow_forward_rounded, size: 20, color: theme.colorScheme.onPrimary),
           ],
         ),
       ),

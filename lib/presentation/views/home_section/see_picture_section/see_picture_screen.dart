@@ -2,16 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/picture_info_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/picture_options_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/profile_name_follow_widget.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/prompt_text_widget.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 
@@ -95,9 +91,9 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       prompt: widget.params!.prompt,
                     ),
                     const SizedBox(height: 28),
-                    PictureInfoWidget(
-                      styleName: widget.params!.modelName,
-                    ),
+                    // PictureInfoWidget(
+                    //   styleName: widget.params!.modelName,
+                    // ),
                     const SizedBox(height: 40),
                   ],
                 ),

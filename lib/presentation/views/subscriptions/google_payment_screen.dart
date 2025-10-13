@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/domain/subscriptions/plan_provider.dart';
@@ -51,7 +50,6 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
     super.dispose();
   }
 
-  // Safe state update method
   void _safeStateUpdate(VoidCallback callback) {
     if (_isMounted) {
       callback();
@@ -225,13 +223,14 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isLoading = ref.watch(paymentLoadingProvider);
     final selectedPaymentMethod = ref.watch(selectedPaymentMethodProvider);
     final isInitialized = ref.watch(inAppPurchaseInitializedProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: _buildAppBar(),
+      backgroundColor: theme.colorScheme.background,
+      appBar: _buildAppBar(theme),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -240,7 +239,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
             children: [
               SubscriptionPlanCard(plan: widget.plan),
               const SizedBox(height: 30),
-              _buildPaymentMethodSection(isInitialized, selectedPaymentMethod),
+              _buildPaymentMethodSection(theme, isInitialized, selectedPaymentMethod),
               const SizedBox(height: 24),
               TermsAndConditions(
                 onTermsChanged: (value) {
@@ -263,16 +262,16 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
       title: Text(
         'Confirm Your Subscription',
-        style: AppTextstyle.interBold(fontSize: 16, color: AppColors.darkBlue),
+        style: AppTextstyle.interBold(fontSize: 16, color: theme.colorScheme.onBackground),
       ),
       centerTitle: true,
       elevation: 0,
-      backgroundColor: AppColors.background,
-      iconTheme: const IconThemeData(color: AppColors.darkBlue),
+      backgroundColor: theme.colorScheme.background,
+      iconTheme: IconThemeData(color: theme.colorScheme.onBackground),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
         onPressed: () => Navigator.of(context).pop(),
@@ -280,7 +279,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
     );
   }
 
-  Widget _buildPaymentMethodSection(bool isInitialized, String selectedPaymentMethod) {
+  Widget _buildPaymentMethodSection(ThemeData theme, bool isInitialized, String selectedPaymentMethod) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,7 +287,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
           'Payment Method',
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onBackground,
           ),
         ),
         const SizedBox(height: 16),

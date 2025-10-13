@@ -33,8 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
     final shouldRefresh = ref.watch(refreshProvider);
-    final bottomNavBarState = ref.watch(bottomNavBarProvider);
-    final pageIndex = bottomNavBarState.pageIndex;
+    ref.watch(bottomNavBarProvider);
     final theme = Theme.of(context);
 
     if (shouldRefresh && UserData.ins.userId != null) {

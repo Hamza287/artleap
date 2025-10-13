@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class TermsAndConditions extends StatefulWidget {
@@ -40,13 +39,15 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.backgroundLight,
+        color: theme.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.greyLight,
+          color: theme.colorScheme.outline.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -57,10 +58,10 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: widget.isAccepted ? AppColors.primaryGold : AppColors.white,
+              color: widget.isAccepted ? theme.colorScheme.primary : theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(4),
               border: Border.all(
-                color: widget.isAccepted ? AppColors.primaryGold : AppColors.greyMedium,
+                color: widget.isAccepted ? theme.colorScheme.primary : theme.colorScheme.outline,
                 width: 2,
               ),
             ),
@@ -68,7 +69,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
               value: widget.isAccepted,
               onChanged: _safeOnChanged,
               activeColor: Colors.transparent,
-              checkColor: AppColors.white,
+              checkColor: theme.colorScheme.onPrimary,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -82,14 +83,14 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 text: 'I agree to the ',
                 style: AppTextstyle.interRegular(
                   fontSize: 14,
-                  color: AppColors.darkBlue,
+                  color: theme.colorScheme.onSurface,
                 ),
                 children: [
                   TextSpan(
                     text: 'Terms of Service',
                     style: AppTextstyle.interMedium(
                       fontSize: 14,
-                      color: AppColors.primaryGold,
+                      color: theme.colorScheme.primary,
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
@@ -103,7 +104,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     text: 'Privacy Policy',
                     style: AppTextstyle.interMedium(
                       fontSize: 14,
-                      color: AppColors.primaryGold,
+                      color: theme.colorScheme.primary,
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {

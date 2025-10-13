@@ -90,8 +90,8 @@ class ImageControlsWidget extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Wrap(
-                  spacing: 16,
-                  runSpacing: 8,
+                  spacing: 12,
+                  runSpacing: 4,
                   children: provider.imageNumber.map((number) {
                     return RatioSelectionCard(
                       text: number.toString(),
@@ -108,59 +108,55 @@ class ImageControlsWidget extends ConsumerWidget {
         SizedBox(
           height: 90,
           width: double.infinity,
-          child: Stack(
-            children: [
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
-                    side: BorderSide(
-                        color: theme.colorScheme.onSurface.withOpacity(0.2)
-                    )
-                ),
-                color: theme.cardColor,
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Aspect Ratio",
-                        style: AppTextstyle.interMedium(
-                            fontSize: 14,
-                            color: theme.colorScheme.onSurface
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Expanded(
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: (scrollNotification) {
-                            return true;
-                          },
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: freePikAspectRatio.length,
-                            controller: ScrollController(),
-                            physics: const BouncingScrollPhysics(),
-                            separatorBuilder: (context, index) => const SizedBox(width: 5),
-                            itemBuilder: (context, index) {
-                              final ratio = freePikAspectRatio[index];
-                              return RatioSelectionCard(
-                                text: ratio['title'] ?? '',
-                                isSelected: ratio['value'] == selectedRatio,
-                                onTap: () => ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'],
-                                isSmall: true,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(7),
+                side: BorderSide(
+                    color: theme.colorScheme.onSurface.withOpacity(0.2)
+                )
+            ),
+            color: theme.cardColor,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Aspect Ratio",
+                    style: AppTextstyle.interMedium(
+                        fontSize: 14,
+                        color: theme.colorScheme.onSurface
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: (scrollNotification) {
+                        return true;
+                      },
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: freePikAspectRatio.length,
+                        controller: ScrollController(),
+                        physics: const BouncingScrollPhysics(),
+                        separatorBuilder: (context, index) => const SizedBox(width: 5),
+                        itemBuilder: (context, index) {
+                          final ratio = freePikAspectRatio[index];
+                          return RatioSelectionCard(
+                            text: ratio['title'] ?? '',
+                            isSelected: ratio['value'] == selectedRatio,
+                            onTap: () => ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'],
+                            isSmall: true,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         24.spaceY,

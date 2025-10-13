@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 import '../../../providers/notification_provider.dart';
@@ -21,177 +20,256 @@ class NotificationDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: Text(
-          'Notification Details',
+          'Notification',
           style: AppTextstyle.interBold(
             fontSize: 20,
-            color: AppColors.black,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
-        foregroundColor: Colors.black,
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.colorScheme.surface,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.black),
+        foregroundColor: theme.colorScheme.onSurface,
+        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_outline,color: Colors.red,),
-            onPressed: () => _handleDelete(context, ref,notification.id),
+            icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+            onPressed: () => _handleDelete(context, ref, notification.id),
           ),
         ],
       ),
-      body: Container(
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.white, AppColors.white],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeaderSection(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderSection(theme),
+            const SizedBox(height: 24),
+            _buildContentSection(theme),
+            if (notification.data?.isNotEmpty ?? false) ...[
               const SizedBox(height: 24),
-              _buildContentSection(),
-              if (notification.data?.isNotEmpty ?? false) ...[
-                const SizedBox(height: 24),
-                _buildDataSection(),
-              ],
-              const SizedBox(height: 32),
-              if (_hasAction()) _buildActionButton(context),
+              _buildDataSection(theme),
             ],
-          ),
+            const SizedBox(height: 32),
+            if (_hasAction()) _buildActionButton(context, theme),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeaderSection() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: AppColors.lightPurple,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            _getNotificationIcon(notification.type),
-            color: AppColors.black,
-            size: 28,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                notification.title,
-                style: AppTextstyle.interBold(
-                  fontSize: 20,
-                  color: AppColors.black,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                DateFormat('MMM d, y • h:mm a').format(notification.timestamp),
-                style: AppTextstyle.interRegular(
-                  fontSize: 14,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContentSection() {
+  Widget _buildHeaderSection(ThemeData theme) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        notification.body,
-        style: AppTextstyle.interRegular(
-          fontSize: 16,
-          color: AppColors.black.withValues(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDataSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Details',
-          style: AppTextstyle.interBold(
-            fontSize: 18,
-            color: AppColors.black,
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.white.withValues(),
-            borderRadius: BorderRadius.circular(12),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primaryContainer,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              _getNotificationIcon(notification.type),
+              color: theme.colorScheme.onPrimary,
+              size: 28,
+            ),
           ),
-          child: Column(
-            children: notification.data!.entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  notification.title,
+                  style: AppTextstyle.interBold(
+                    fontSize: 20,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
                   children: [
-                    Text(
-                      '${entry.key}: ',
-                      style: AppTextstyle.interMedium(
-                        fontSize: 14,
-                        color: AppColors.lightPurple,
-                      ),
+                    Icon(
+                      Icons.access_time_rounded,
+                      size: 16,
+                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
                     ),
-                    Expanded(
-                      child: Text(
-                        entry.value.toString(),
-                        style: AppTextstyle.interRegular(
-                          fontSize: 14,
-                          color: AppColors.black,
-                        ),
+                    const SizedBox(width: 6),
+                    Text(
+                      DateFormat('MMM d, y • h:mm a').format(notification.timestamp),
+                      style: AppTextstyle.interRegular(
+                        fontSize: 14,
+                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.8),
                       ),
                     ),
                   ],
                 ),
-              );
-            }).toList(),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildActionButton(BuildContext context) {
+  Widget _buildContentSection(ThemeData theme) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Message',
+            style: AppTextstyle.interBold(
+              fontSize: 16,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            notification.body,
+            style: AppTextstyle.interRegular(
+              fontSize: 16,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDataSection(ThemeData theme) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Details',
+            style: AppTextstyle.interBold(
+              fontSize: 16,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ...notification.data!.entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      entry.key,
+                      style: AppTextstyle.interMedium(
+                        fontSize: 12,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      entry.value.toString(),
+                      style: AppTextstyle.interRegular(
+                        fontSize: 14,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context, ThemeData theme) {
     return Center(
-      child: CommonButton(
-        title: _getActionText(notification.type),
-        onpress: () => _handleNotificationAction(context),
-        gradient: const LinearGradient(
-          colors: [AppColors.lightPurple, AppColors.matepink],
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.primaryContainer,
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: CommonButton(
+          title: _getActionText(notification.type),
+          onpress: () => _handleNotificationAction(context),
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.primaryContainer,
+            ],
+          ),
         ),
       ),
     );
@@ -199,23 +277,23 @@ class NotificationDetailScreen extends ConsumerWidget {
 
   Future<void> _handleDelete(BuildContext context, WidgetRef ref,String notificationId) async {
     final shouldDelete = await showDeleteConfirmationDialog(
-        context,
-        notificationId: notificationId,
-        userId: UserData.ins.userId!,
+      context,
+      notificationId: notificationId,
+      userId: UserData.ins.userId!,
     );
     if (shouldDelete ?? false) {
       try {
         await ref.read(notificationProvider(UserData.ins.userId!).notifier)
             .deleteNotification(notification.id,UserData.ins.userId!);
         if (context.mounted) {
-          Navigator.pop(context, true); // Return true to indicate deletion
+          Navigator.pop(context, true);
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Failed to delete notification: ${e.toString()}'),
-              backgroundColor: AppColors.redColor,
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
@@ -226,13 +304,19 @@ class NotificationDetailScreen extends ConsumerWidget {
   IconData _getNotificationIcon(String type) {
     switch (type) {
       case 'system':
-        return Icons.info_outline;
+        return Icons.info_rounded;
       case 'message':
-        return Icons.message;
+        return Icons.chat_rounded;
       case 'alert':
         return Icons.warning_rounded;
+      case 'like':
+        return Icons.favorite_rounded;
+      case 'comment':
+        return Icons.comment_rounded;
+      case 'follow':
+        return Icons.person_add_rounded;
       default:
-        return Icons.notifications;
+        return Icons.notifications_rounded;
     }
   }
 
@@ -247,6 +331,12 @@ class NotificationDetailScreen extends ConsumerWidget {
         return 'Reply to Message';
       case 'alert':
         return 'View Alert Details';
+      case 'like':
+        return 'View Post';
+      case 'comment':
+        return 'View Comments';
+      case 'follow':
+        return 'View Profile';
       default:
         return 'View More';
     }
@@ -256,7 +346,6 @@ class NotificationDetailScreen extends ConsumerWidget {
     switch (notification.type) {
       case 'message':
       // Navigate to chat screen
-      // Example: Navigator.pushNamed(context, ChatScreen.routeName);
         break;
       case 'alert':
       // Handle alert action
@@ -264,7 +353,6 @@ class NotificationDetailScreen extends ConsumerWidget {
       default:
         if (notification.data?['url'] != null) {
           // Open URL
-          // Example: launchUrl(Uri.parse(notification.data!['url']));
         }
     }
   }

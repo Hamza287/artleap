@@ -23,9 +23,9 @@ class ResultContainerWidget extends ConsumerWidget {
         padding:
             const EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
         child: GridView.builder(
-          shrinkWrap: true, // Makes GridView take only necessary space
+          shrinkWrap: true,
           physics:
-              const NeverScrollableScrollPhysics(), // Disables GridView scrolling
+              const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 10.0,

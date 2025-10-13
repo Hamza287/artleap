@@ -54,7 +54,7 @@ class _OtherUserProfileScreenState extends ConsumerState<OtherUserProfileScreen>
                   MyCreationsWidget(
                     userName: widget.params!.profileName,
                     listofCreations: ref.watch(userProfileProvider).otherUserProfileData!.user.images,
-                    userId: '9y37',
+                    userId: widget.params!.userId,
                   ),
                   20.spaceY,
                 ],
@@ -84,7 +84,7 @@ class _OtherUserProfileScreenState extends ConsumerState<OtherUserProfileScreen>
           Text(
             "Artist Profile",
             style: AppTextstyle.interMedium(
-              color: theme.colorScheme.onBackground,
+              color: theme.colorScheme.onSurface,
               fontSize: 20,
             ),
           ),

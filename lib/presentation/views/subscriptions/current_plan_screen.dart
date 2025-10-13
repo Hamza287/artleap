@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import '../../../domain/subscriptions/subscription_repo_provider.dart';
@@ -37,6 +36,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final userId = UserData.ins.userId;
     final profileProvider = ref.watch(userProfileProvider);
     final userPersonalData = profileProvider.userProfileData?.user;
@@ -48,7 +48,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
             'User not authenticated',
             style: AppTextstyle.interRegular(
               fontSize: 16,
-              color: AppColors.redColor,
+              color: theme.colorScheme.error,
             ),
           ),
         ),
@@ -64,16 +64,17 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
           'My Subscription',
           style: AppTextstyle.interBold(
             fontSize: 20,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+        backgroundColor: theme.colorScheme.surface,
+        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       ),
       body: SafeArea(
         child: subscriptionAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => Center(child: CircularProgressIndicator(color: theme.colorScheme.primary)),
           error: (error, stack) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +83,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                   'Error: $error',
                   style: AppTextstyle.interRegular(
                     fontSize: 16,
-                    color: AppColors.redColor,
+                    color: theme.colorScheme.error,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -95,7 +96,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.purple,
+                    backgroundColor: theme.colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -104,7 +105,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                     'Retry',
                     style: AppTextstyle.interBold(
                       fontSize: 16,
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -123,7 +124,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                         'You do not have an active subscription',
                         style: AppTextstyle.interRegular(
                           fontSize: 16,
-                          color: AppColors.redColor,
+                          color: theme.colorScheme.error,
                         ),
                       ),
                       10.spaceY,
@@ -135,8 +136,8 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                             Navigator.pushNamed(context, ChoosePlanScreen.routeName);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.darkBlue,
-                            foregroundColor: Colors.white,
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: theme.colorScheme.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -146,7 +147,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                             'Subscribe Now',
                             style: AppTextstyle.interBold(
                               fontSize: 16,
-                              color: Colors.white,
+                              color: theme.colorScheme.onPrimary,
                             ),
                           ),
                         ),
@@ -157,7 +158,6 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
               );
             }
 
-            // Use planSnapshot for plan details
             final planName = subscription.planSnapshot?.name ?? 'Free';
             final isActive = subscription.isActive;
 

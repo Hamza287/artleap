@@ -138,7 +138,7 @@ class _CommentsSectionState extends ConsumerState<CommentsSection> {
             Container(
               decoration: BoxDecoration(
                 color: theme.colorScheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(28),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isCommentFocused
                       ? theme.colorScheme.primary
@@ -170,11 +170,11 @@ class _CommentsSectionState extends ConsumerState<CommentsSection> {
                           border: InputBorder.none,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(28),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
-                            borderRadius: BorderRadius.circular(28),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           hintStyle: TextStyle(
                             color: theme.colorScheme.onSurface,
@@ -300,7 +300,6 @@ class _CommentsSectionState extends ConsumerState<CommentsSection> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // User Avatar
           Container(
             width: 36,
             height: 36,
@@ -333,8 +332,6 @@ class _CommentsSectionState extends ConsumerState<CommentsSection> {
             ),
           ),
           const SizedBox(width: 12),
-
-          // Comment Content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

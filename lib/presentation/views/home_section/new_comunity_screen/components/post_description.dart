@@ -16,7 +16,7 @@ class PostDescription extends ConsumerWidget {
     final isExpanded = ref.watch(isPromptExpandedProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -63,7 +63,6 @@ class PostDescription extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        // Expand/Collapse indicator
                         Icon(
                           isExpanded ? Icons.expand_less : Icons.expand_more,
                           color: theme.colorScheme.primary.withOpacity(0.6),

@@ -36,6 +36,7 @@ class Images {
     required this.presetStyle,
     required this.prompt,
     required this.createdAt,
+    this.privacy = 'public',
   });
   late final String id;
   late final String imageUrl;
@@ -44,6 +45,7 @@ class Images {
   late final String presetStyle;
   late final String prompt;
   late final String createdAt;
+  late final String? privacy;
 
   Images.fromJson(Map<String, dynamic> json) {
     id = json['_id'] ?? "";
@@ -53,6 +55,7 @@ class Images {
     presetStyle = json['presetStyle'] ?? "";
     prompt = json['prompt'];
     createdAt = json['createdAt'];
+    privacy = json['privacy'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +67,7 @@ class Images {
     data['presetStyle'] = presetStyle;
     data['prompt'] = prompt;
     data['createdAt'] = createdAt;
+    data['privacy'] = privacy;
     return data;
   }
 }

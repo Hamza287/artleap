@@ -2,7 +2,6 @@ import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../components/communiry_header.dart';
 import '../components/post_card.dart';
@@ -145,7 +144,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                                   .getProfilesForUserIds(ids);
                             });
                             final profile = userProfileProviderWatch
-                                .getProfileById(image.userId ?? "");
+                                .getProfileById(image.userId);
                             final profileImage = profile?.user.profilePic;
 
                             return PostCard(

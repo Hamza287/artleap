@@ -288,7 +288,6 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
   }
 
   Widget _buildSection(BuildContext context, {required String title, required List<_ProfileMenuItem> items}) {
-    final theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

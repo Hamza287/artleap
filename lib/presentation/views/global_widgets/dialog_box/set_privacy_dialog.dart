@@ -1,6 +1,6 @@
+import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../providers/image_privacy_provider.dart';
 
 ImagePrivacy _privacyFromString(String privacy) {
   switch (privacy.toLowerCase()) {
@@ -17,9 +17,9 @@ ImagePrivacy _privacyFromString(String privacy) {
   }
 }
 
-final selectedPrivacyProvider = StateProvider.autoDispose
-    .family<ImagePrivacy, ImagePrivacy?>(
-      (ref, initial) => initial ?? ImagePrivacy.public,
+final selectedPrivacyProvider =
+    StateProvider.autoDispose.family<ImagePrivacy, ImagePrivacy?>(
+  (ref, initial) => initial ?? ImagePrivacy.public,
 );
 
 final saveOperationProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -44,6 +44,7 @@ class SetPrivacyDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final selected = ref.watch(selectedPrivacyProvider(initialPrivacy));
     final isSaving = ref.watch(saveOperationProvider);
     final screenWidth = MediaQuery.of(context).size.width;
@@ -55,12 +56,12 @@ class SetPrivacyDialog extends ConsumerWidget {
       child: Container(
         constraints: const BoxConstraints(maxWidth: 400),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 25,
+              color: theme.colorScheme.shadow.withOpacity(0.3),
+              blurRadius: 32,
               offset: const Offset(0, 8),
             ),
           ],
@@ -68,63 +69,60 @@ class SetPrivacyDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header
-            _buildHeader(context, ref, isSaving),
-
-            // Content
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.privacy_tip,
+                      color: theme.colorScheme.onPrimary, size: 24),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Privacy Settings',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close,
+                        size: 20, color: theme.colorScheme.onPrimary),
+                    onPressed:
+                        isSaving ? null : () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(24),
-              child: _buildPrivacyOptions(selected, initialPrivacy, ref, isSaving),
+              child: _buildPrivacyOptions(
+                  selected, initialPrivacy, ref, isSaving, theme),
             ),
-
-            // Actions
-            _buildActionButtons(context, ref, selected, initialPrivacy, isSaving),
+            _buildActionButtons(
+                context, ref, selected, initialPrivacy, isSaving, theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, WidgetRef ref, bool isSaving) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade700,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.privacy_tip, color: Colors.white, size: 24),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Text(
-              'Privacy Settings',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.close, size: 20, color: Colors.white),
-            onPressed: isSaving ? null : () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildPrivacyOptions(
-      ImagePrivacy selected,
-      ImagePrivacy currentStatus,
-      WidgetRef ref,
-      bool isSaving,
-      ) {
+    ImagePrivacy selected,
+    ImagePrivacy currentStatus,
+    WidgetRef ref,
+    bool isSaving,
+    ThemeData theme,
+  ) {
     final options = [
       _PrivacyOption(
         value: ImagePrivacy.public,
@@ -162,7 +160,10 @@ class SetPrivacyDialog extends ConsumerWidget {
           isSelected: isSelected,
           isCurrent: isCurrent,
           isSaving: isSaving,
-          onTap: () => ref.read(selectedPrivacyProvider(initialPrivacy).notifier).state = option.value,
+          onTap: () => ref
+              .read(selectedPrivacyProvider(initialPrivacy).notifier)
+              .state = option.value,
+          theme: theme,
         );
       },
     );
@@ -174,9 +175,12 @@ class SetPrivacyDialog extends ConsumerWidget {
     required bool isCurrent,
     required bool isSaving,
     required VoidCallback onTap,
+    required ThemeData theme,
   }) {
     return Material(
-      color: isSelected ? option.color.withOpacity(0.1) : Colors.grey.shade50,
+      color: isSelected
+          ? option.color.withOpacity(0.1)
+          : theme.colorScheme.surfaceContainerLow,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: isSaving ? null : onTap,
@@ -195,7 +199,9 @@ class SetPrivacyDialog extends ConsumerWidget {
             children: [
               Icon(
                 option.icon,
-                color: isSelected ? option.color : Colors.grey.shade600,
+                color: isSelected
+                    ? option.color
+                    : theme.colorScheme.onSurfaceVariant,
                 size: 32,
               ),
               const SizedBox(height: 8),
@@ -204,7 +210,8 @@ class SetPrivacyDialog extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? option.color : Colors.black87,
+                  color:
+                      isSelected ? option.color : theme.colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 4),
@@ -212,7 +219,9 @@ class SetPrivacyDialog extends ConsumerWidget {
                 option.subtitle,
                 style: TextStyle(
                   fontSize: 11,
-                  color: isSelected ? option.color.withOpacity(0.8) : Colors.grey.shade600,
+                  color: isSelected
+                      ? option.color.withOpacity(0.8)
+                      : theme.colorScheme.onSurfaceVariant,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -228,16 +237,18 @@ class SetPrivacyDialog extends ConsumerWidget {
   }
 
   Widget _buildActionButtons(
-      BuildContext context,
-      WidgetRef ref,
-      ImagePrivacy selected,
-      ImagePrivacy currentStatus,
-      bool isSaving,
-      ) {
+    BuildContext context,
+    WidgetRef ref,
+    ImagePrivacy selected,
+    ImagePrivacy currentStatus,
+    bool isSaving,
+    ThemeData theme,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey.shade300)),
+        border: Border(
+            top: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2))),
       ),
       child: Row(
         children: [
@@ -247,35 +258,44 @@ class SetPrivacyDialog extends ConsumerWidget {
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                side: BorderSide(color: theme.colorScheme.outline),
               ),
-              child: const Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: theme.colorScheme.onSurface),
+              ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: isSaving ? null : () => _savePrivacy(context, ref),
+              onPressed:
+                  isSaving ? null : () => _savePrivacy(context, ref, theme),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                backgroundColor: Colors.blue.shade700,
+                backgroundColor: theme.colorScheme.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: isSaving
-                  ? const SizedBox(
-                height: 18,
-                width: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              ) : Text(
-                selected == currentStatus ? 'Save' : 'Update',
-                style: const TextStyle(fontWeight: FontWeight.w600,color: Colors.white),
-              ),
+                  ? SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    )
+                  : Text(
+                      selected == currentStatus ? 'Save' : 'Update',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
             ),
           ),
         ],
@@ -283,17 +303,18 @@ class SetPrivacyDialog extends ConsumerWidget {
     );
   }
 
-  Future<void> _savePrivacy(BuildContext context, WidgetRef ref) async {
+  Future<void> _savePrivacy(
+      BuildContext context, WidgetRef ref, ThemeData theme) async {
     ref.read(saveOperationProvider.notifier).state = true;
 
     try {
       final newPrivacy = ref.read(selectedPrivacyProvider(initialPrivacy));
 
       await ref.read(imagePrivacyProvider.notifier).setPrivacy(
-        imageId: imageId,
-        userId: userId,
-        privacy: newPrivacy,
-      );
+            imageId: imageId,
+            userId: userId,
+            privacy: newPrivacy,
+          );
 
       if (context.mounted) {
         ref.read(saveOperationProvider.notifier).state = false;
@@ -306,7 +327,7 @@ class SetPrivacyDialog extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to update privacy: $error'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.colorScheme.error,
           ),
         );
       }

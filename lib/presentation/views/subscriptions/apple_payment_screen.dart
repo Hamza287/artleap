@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
@@ -154,6 +153,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isLoading = ref.watch(paymentLoadingProvider);
     final selectedPaymentMethod = ref.watch(selectedPaymentMethodProvider);
     final isInitialized = ref.watch(inAppPurchaseInitializedProvider);
@@ -161,8 +161,8 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: _buildAppBar(),
+        backgroundColor: theme.colorScheme.surface,
+        appBar: _buildAppBar(theme),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -171,7 +171,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
               children: [
                 SubscriptionPlanCard(plan: widget.plan),
                 const SizedBox(height: 30),
-                _buildPaymentMethodSection(isInitialized, selectedPaymentMethod),
+                _buildPaymentMethodSection(theme, isInitialized, selectedPaymentMethod),
                 const SizedBox(height: 24),
                 TermsAndConditions(
                   onTermsChanged: (value) {
@@ -210,16 +210,16 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
       title: Text(
         'Confirm Your Subscription',
-        style: AppTextstyle.interBold(fontSize: 16, color: AppColors.darkBlue),
+        style: AppTextstyle.interBold(fontSize: 16, color: theme.colorScheme.onSurface),
       ),
       centerTitle: true,
       elevation: 0,
-      backgroundColor: AppColors.background,
-      iconTheme: const IconThemeData(color: AppColors.darkBlue),
+      backgroundColor: theme.colorScheme.surface,
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
         onPressed: () {
@@ -233,7 +233,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
     );
   }
 
-  Widget _buildPaymentMethodSection(bool isInitialized, String selectedPaymentMethod) {
+  Widget _buildPaymentMethodSection(ThemeData theme, bool isInitialized, String selectedPaymentMethod) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -241,7 +241,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
           'Payment Method',
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 16),

@@ -1,6 +1,5 @@
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../../domain/subscriptions/subscription_model.dart';
 
@@ -20,7 +19,7 @@ class CurrentPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate remaining credits safely
+    final theme = Theme.of(context);
     final totalCredits = (userPersonalData?.totalCredits ?? 0) + (userPersonalData?.usedImageCredits ?? 0) + (userPersonalData?.usedPromptCredits ?? 0) ;
     final usedCredits = (userPersonalData?.usedImageCredits ?? 0) + (userPersonalData?.usedPromptCredits ?? 0);
     final remainingCredits = totalCredits - usedCredits;
@@ -31,10 +30,10 @@ class CurrentPlanCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _getPlanColor(planName).withOpacity(0.1),
+        color: _getPlanColor(planName, theme).withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: _getPlanColor(planName).withOpacity(0.3),
+          color: _getPlanColor(planName, theme).withOpacity(0.3),
           width: 1.5,
         ),
       ),
@@ -47,18 +46,18 @@ class CurrentPlanCard extends StatelessWidget {
                 planName,
                 style: AppTextstyle.interBold(
                   fontSize: 24,
-                  color: _getPlanColor(planName),
+                  color: _getPlanColor(planName, theme),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? AppColors.green.withOpacity(0.1)
-                      : AppColors.redColor.withOpacity(0.1),
+                      ? theme.colorScheme.primary.withOpacity(0.1)
+                      : theme.colorScheme.error.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isActive ? AppColors.green : AppColors.redColor,
+                    color: isActive ? theme.colorScheme.primary : theme.colorScheme.error,
                     width: 1,
                   ),
                 ),
@@ -66,7 +65,7 @@ class CurrentPlanCard extends StatelessWidget {
                   isActive && subscription!.autoRenew ? 'Active' : 'Active',
                   style: AppTextstyle.interMedium(
                     fontSize: 14,
-                    color: isActive ? AppColors.green : AppColors.redColor,
+                    color: isActive ? theme.colorScheme.primary : theme.colorScheme.error,
                   ),
                 ),
               ),
@@ -76,8 +75,8 @@ class CurrentPlanCard extends StatelessWidget {
           if (isActive && subscription?.planSnapshot != null) ...[
             LinearProgressIndicator(
               value: progressValue.toDouble(),
-              backgroundColor: AppColors.white.withOpacity(0.5),
-              valueColor: AlwaysStoppedAnimation<Color>(_getPlanColor(planName)),
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation<Color>(_getPlanColor(planName, theme)),
               minHeight: 8,
               borderRadius: BorderRadius.circular(4),
             ),
@@ -91,7 +90,7 @@ class CurrentPlanCard extends StatelessWidget {
                       : 'No credits available',
                   style: AppTextstyle.interRegular(
                     fontSize: 12,
-                    color: AppColors.darkBlue.withOpacity(0.7),
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 if (totalCredits > 0)
@@ -99,7 +98,7 @@ class CurrentPlanCard extends StatelessWidget {
                     '$percentageRemaining% remaining',
                     style: AppTextstyle.interMedium(
                       fontSize: 12,
-                      color: AppColors.darkBlue,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
               ],
@@ -110,7 +109,7 @@ class CurrentPlanCard extends StatelessWidget {
               'Subscribe to unlock premium features',
               style: AppTextstyle.interRegular(
                 fontSize: 14,
-                color: AppColors.darkBlue.withOpacity(0.7),
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -119,20 +118,20 @@ class CurrentPlanCard extends StatelessWidget {
     );
   }
 
-  Color _getPlanColor(String planName) {
+  Color _getPlanColor(String planName, ThemeData theme) {
     switch (planName.toLowerCase()) {
       case 'premium':
       case 'weekly pro':
-        return AppColors.purple;
+        return theme.colorScheme.primary;
       case 'pro':
       case 'monthly pro':
       case 'standard':
-        return AppColors.blue;
+        return theme.colorScheme.primary;
       case 'yearly pro':
       case 'basic':
-        return AppColors.green;
+        return theme.colorScheme.primary;
       default:
-        return AppColors.darkBlue;
+        return theme.colorScheme.primary;
     }
   }
 }

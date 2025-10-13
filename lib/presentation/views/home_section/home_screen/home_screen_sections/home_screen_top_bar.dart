@@ -14,8 +14,6 @@ class HomeScreenTopBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
-
-    final subscriptionAsync =
     ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
@@ -217,7 +215,6 @@ class HomeScreenTopBar extends ConsumerWidget {
   }
 
   Widget _buildPlanBadge(String planName, double screenWidth, ThemeData theme) {
-    Color badgeColor;
     Color textColor;
     Color borderColor;
     IconData icon;

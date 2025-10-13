@@ -80,7 +80,7 @@ class PictureOptionsWidget extends ConsumerWidget {
             builder: (context, constraints) {
               final buttonWidth = 72.0;
               final availableWidth = constraints.maxWidth;
-              final buttonsPerRow = (availableWidth / buttonWidth).floor();
+              (availableWidth / buttonWidth).floor();
               return Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 12,
@@ -137,42 +137,43 @@ class PictureOptionsWidget extends ConsumerWidget {
                     },
                   ),
                   if (isCurrentUser)
-                    _buildActionButton(
-                      icon: Icons.lock_rounded,
-                      label: "Privacy",
-                      color: Colors.purple,
-                      context: context,
-                      onTap: () async {
-                        await showDialog<ImagePrivacy>(
-                          context: context,
-                          builder: (context) => SetPrivacyDialog(
-                            imageId: imageId!,
-                            userId: currentUserId!,
-                            initialPrivacyString: privacy,
-                          ),
-                        );
-                      },
-                    ),
-                  if (isCurrentUser)
-                    _buildActionButton(
-                      icon: Icons.delete_rounded,
-                      label: "Delete",
-                      color: Colors.red,
-                      isLoading: ref.watch(imageActionsProvider).isDeleting,
-                      context: context,
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return DeleteAlertDialog(
-                              imageId: imageId,
-                            );
-                          },
-                        );
-                        AnalyticsService.instance
-                            .logButtonClick(buttonName: 'delete button event');
-                      },
-                    ),
+                    ...[
+                      _buildActionButton(
+                        icon: Icons.lock_rounded,
+                        label: "Privacy",
+                        color: Colors.purple,
+                        context: context,
+                        onTap: () async {
+                          await showDialog<ImagePrivacy>(
+                            context: context,
+                            builder: (context) => SetPrivacyDialog(
+                              imageId: imageId!,
+                              userId: currentUserId!,
+                              initialPrivacyString: privacy,
+                            ),
+                          );
+                        },
+                      ),
+                      _buildActionButton(
+                        icon: Icons.delete_rounded,
+                        label: "Delete",
+                        color: Colors.red,
+                        isLoading: ref.watch(imageActionsProvider).isDeleting,
+                        context: context,
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DeleteAlertDialog(
+                                imageId: imageId,
+                              );
+                            },
+                          );
+                          AnalyticsService.instance
+                              .logButtonClick(buttonName: 'delete button event');
+                        },
+                      ),
+                    ],
                   _buildActionButton(
                     icon: Icons.flag_rounded,
                     context: context,

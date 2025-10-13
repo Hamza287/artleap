@@ -1,5 +1,3 @@
-
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +13,8 @@ class DeleteCommentDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24.0),
@@ -24,11 +24,11 @@ class DeleteCommentDialog extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: theme.colorScheme.shadow.withOpacity(0.3),
               blurRadius: 32,
               spreadRadius: -8,
             ),
@@ -38,48 +38,40 @@ class DeleteCommentDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Warning Icon
             Container(
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.errorColor.withOpacity(0.1),
+                color: theme.colorScheme.error.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.delete_outline_rounded,
                 size: 36,
-                color: AppColors.errorColor,
+                color: theme.colorScheme.error,
               ),
             ),
             const SizedBox(height: 24),
-
-            // Title
             Text(
               'Delete Comment?',
               style: AppTextstyle.interBold(
                 fontSize: 22,
-                color: AppColors.primaryTextColor,
+                color: theme.colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-
-            // Message
             Text(
               'This comment will be permanently removed. This action cannot be undone.',
               style: AppTextstyle.interRegular(
                 fontSize: 16,
-                color: AppColors.hintTextColor,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-
-            // Buttons Row
             Row(
               children: [
-                // Cancel Button
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
@@ -88,20 +80,18 @@ class DeleteCommentDialog extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      side: BorderSide(color: AppColors.primaryColor),
+                      side: BorderSide(color: theme.colorScheme.outline),
                     ),
                     child: Text(
                       'Cancel',
                       style: AppTextstyle.interMedium(
-                        color: AppColors.primaryColor,
+                        color: theme.colorScheme.onSurface,
                         fontSize: 16,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
-
-                // Delete Button
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
@@ -109,7 +99,7 @@ class DeleteCommentDialog extends StatelessWidget {
                       onDelete();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.errorColor,
+                      backgroundColor: theme.colorScheme.error,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -119,7 +109,7 @@ class DeleteCommentDialog extends StatelessWidget {
                     child: Text(
                       'Delete',
                       style: AppTextstyle.interMedium(
-                        color: Colors.white,
+                        color: theme.colorScheme.onError,
                         fontSize: 16,
                       ),
                     ),

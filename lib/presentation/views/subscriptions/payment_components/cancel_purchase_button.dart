@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class CancelPurchaseButton extends StatelessWidget {
@@ -9,6 +8,8 @@ class CancelPurchaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SizedBox(
       width: double.infinity,
       height: 50,
@@ -22,17 +23,17 @@ class CancelPurchaseButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.cancel_rounded,
               size: 18,
-              color: AppColors.red,
+              color: theme.colorScheme.error,
             ),
             const SizedBox(width: 8),
             Text(
               'Cancel Purchase',
               style: AppTextstyle.interMedium(
                 fontSize: 14,
-                color: AppColors.red,
+                color: theme.colorScheme.error,
               ),
             ),
           ],

@@ -1,8 +1,7 @@
+import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../../domain/subscriptions/subscription_model.dart';
 
 class BillingSection extends StatelessWidget {
   final UserSubscriptionModel subscription;
@@ -11,6 +10,8 @@ class BillingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -18,17 +19,17 @@ class BillingSection extends StatelessWidget {
           'Billing Information',
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 15),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.white.withOpacity(0.05),
+            color: theme.colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppColors.white.withOpacity(0.2),
+              color: theme.colorScheme.outline.withOpacity(0.3),
               width: 1,
             ),
           ),
@@ -38,6 +39,7 @@ class BillingSection extends StatelessWidget {
                 icon: Icons.calendar_today,
                 title: 'Start Date',
                 value: DateFormat('MMMM d, y').format(subscription.startDate),
+                theme: theme,
               ),
 
               if(subscription.isActive && subscription.planSnapshot?.name != 'Free') ... [
@@ -46,6 +48,7 @@ class BillingSection extends StatelessWidget {
                   icon: Icons.calendar_today,
                   title: 'End Date',
                   value: DateFormat('MMMM d, y').format(subscription.endDate),
+                  theme: theme,
                 ),
               ],
               if (subscription.paymentMethod != null) ...[
@@ -54,6 +57,7 @@ class BillingSection extends StatelessWidget {
                   icon: Icons.payment,
                   title: 'Payment Method',
                   value: subscription.paymentMethod!,
+                  theme: theme,
                 ),
               ],
               if (subscription.cancelledAt != null) ...[
@@ -62,6 +66,7 @@ class BillingSection extends StatelessWidget {
                   icon: Icons.block,
                   title: 'Cancelled On',
                   value: DateFormat('MMMM d, y').format(subscription.cancelledAt!),
+                  theme: theme,
                 ),
               ],
               if (subscription.isTrial) ...[
@@ -70,6 +75,7 @@ class BillingSection extends StatelessWidget {
                   icon: Icons.star,
                   title: 'Trial Status',
                   value: 'Active Trial',
+                  theme: theme,
                 ),
               ],
             ],
@@ -83,6 +89,7 @@ class BillingSection extends StatelessWidget {
     required IconData icon,
     required String title,
     required String value,
+    required ThemeData theme,
     bool isClickable = false,
     VoidCallback? onTap,
   }) {
@@ -92,14 +99,14 @@ class BillingSection extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.darkBlue.withOpacity(0.6)),
+            Icon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 title,
                 style: AppTextstyle.interRegular(
                   fontSize: 15,
-                  color: AppColors.darkBlue.withOpacity(0.7),
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -107,7 +114,7 @@ class BillingSection extends StatelessWidget {
               value,
               style: AppTextstyle.interMedium(
                 fontSize: 15,
-                color: isClickable ? AppColors.blue : AppColors.darkBlue,
+                color: isClickable ? theme.colorScheme.primary : theme.colorScheme.onSurface,
               ),
             ),
             if (isClickable) const SizedBox(width: 4),
@@ -115,7 +122,7 @@ class BillingSection extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 size: 20,
-                color: AppColors.blue,
+                color: theme.colorScheme.primary,
               ),
           ],
         ),

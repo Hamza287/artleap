@@ -6,6 +6,7 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../sections/create_section/image_control_widgets/style_selection_card.dart';
 
 void showStylesBottomSheet(BuildContext context, WidgetRef ref) {
+  final theme = Theme.of(context);
   final selectedStyle = ref.watch(generateImageProvider).selectedStyle;
   final styles = ref.watch(generateImageProvider).images.isEmpty
       ? freePikStyles
@@ -24,9 +25,9 @@ void showStylesBottomSheet(BuildContext context, WidgetRef ref) {
 
       return Container(
         height: screenHeight * 0.75, // 75% of screen height
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -38,17 +39,24 @@ void showStylesBottomSheet(BuildContext context, WidgetRef ref) {
                 children: [
                   Text(
                     "Select Styles",
-                    style: AppTextstyle.interBold(fontSize: 18),
+                    style: AppTextstyle.interBold(
+                      fontSize: 18,
+                      color: theme.colorScheme.onSurface,
+                    ),
                   ),
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: theme.colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.close, size: 24),
+                      icon: Icon(
+                        Icons.close,
+                        size: 24,
+                        color: theme.colorScheme.onSurface,
+                      ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),

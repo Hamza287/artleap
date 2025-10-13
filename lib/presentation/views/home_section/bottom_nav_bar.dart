@@ -53,16 +53,15 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
         body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
             ? bottomNavBarState.widgets[pageIndex]
             : Center(
-          child: CircularProgressIndicator(
-            color: theme.colorScheme.primary,
-          ),
-        ),
+                child: CircularProgressIndicator(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
       ),
     );
   }
 
   Widget _buildEnhancedNavBar(int currentIndex, ThemeData theme) {
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       height: 75,
@@ -128,7 +127,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     required ThemeData theme,
   }) {
     final isSelected = currentIndex == index;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Material(
       color: Colors.transparent,
@@ -139,23 +137,16 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
           width: 60,
           height: 60,
           decoration: BoxDecoration(
-            color: isSelected
-                ? theme.colorScheme.primary.withOpacity(0.1)
-                : Colors.transparent,
+            color: Colors.transparent,
             shape: BoxShape.circle,
-            border: isSelected
-                ? Border.all(
-              color: theme.colorScheme.primary.withOpacity(0.3),
-              width: 1.5,
-            )
-                : null,
           ),
           child: Center(
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+                color:
+                    isSelected ? theme.colorScheme.primary : Colors.transparent,
               ),
               child: Icon(
                 icon,

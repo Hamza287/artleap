@@ -63,31 +63,31 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
             const SizedBox(height: 24),
             ImageResultsGrid(ref: ref),
             const SizedBox(height: 24),
-            if (!isLoading) const ActionButtonsRow(),
+            if (!isLoading) ActionButtonsRow(ref: ref),
             const SizedBox(height: 20),
-            if (!isLoading)
-              const FeatureButton(
-                icon: Icons.auto_awesome,
-                label: "Re Generate",
-                isPrimary: true,
-              ),
-            const SizedBox(height: 24),
-            PromptSection(ref: ref),
-            const SizedBox(height: 20),
-            if (!isLoading) ...[
-              const FeatureButton(
-                icon: Icons.open_in_full,
-                label: "Upscale",
-                isPrimary: true,
-              ),
-              const SizedBox(height: 12),
-              const FeatureButton(
-                icon: Icons.brush_outlined,
-                label: "Add/Remove Object",
-                isPrimary: true,
-              ),
-            ],
-            const SizedBox(height: 40),
+            // if (!isLoading)
+            //   const FeatureButton(
+            //     icon: Icons.auto_awesome,
+            //     label: "Re Generate",
+            //     isPrimary: true,
+            //   ),
+            // const SizedBox(height: 24),
+            // PromptSection(ref: ref),
+            // const SizedBox(height: 20),
+            // if (!isLoading) ...[
+            //   const FeatureButton(
+            //     icon: Icons.open_in_full,
+            //     label: "Upscale",
+            //     isPrimary: true,
+            //   ),
+            //   const SizedBox(height: 12),
+            //   const FeatureButton(
+            //     icon: Icons.brush_outlined,
+            //     label: "Add/Remove Object",
+            //     isPrimary: true,
+            //   ),
+            // ],
+            // const SizedBox(height: 40),
           ],
         ),
       ),

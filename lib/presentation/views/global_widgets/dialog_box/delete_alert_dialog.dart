@@ -1,9 +1,8 @@
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import '../../../../shared/constants/app_colors.dart';
-import '../../../../shared/constants/app_textstyle.dart';
 
 class DeleteAlertDialog extends ConsumerWidget {
   final String? imageId;
@@ -11,22 +10,24 @@ class DeleteAlertDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(24.0),
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              spreadRadius: 2,
+              color: theme.colorScheme.shadow.withOpacity(0.3),
+              blurRadius: 32,
+              spreadRadius: -8,
             ),
           ],
         ),
@@ -34,102 +35,95 @@ class DeleteAlertDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Warning Icon
             Container(
-              width: 92,
-              height: 92,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
-                color: AppColors.redColor.withOpacity(0.2),
+                color: theme.colorScheme.error.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.delete_outline_sharp,
                 size: 36,
-                color: AppColors.redColor,
+                color: theme.colorScheme.error,
               ),
             ),
             const SizedBox(height: 24),
-
-            // Title
             Text(
-              'Are you sure you want to delete this ?',
+              'Are you sure you want to delete this?',
               style: AppTextstyle.interBold(
                 fontSize: 20,
-                color: AppColors.darkBlue,
+                color: theme.colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-
-            // Message
             Text(
               'You are deleting this image. This action cant be undone later.',
               style: AppTextstyle.interRegular(
                 fontSize: 16,
-                color: AppColors.darkBlue.withOpacity(0.8),
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-
-            // Buttons Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Cancel Button
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context, false),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      side: BorderSide(color: AppColors.darkBlue),
+                      side: BorderSide(color: theme.colorScheme.outline),
                     ),
                     child: Text(
                       'Cancel',
                       style: AppTextstyle.interMedium(
-                        color: AppColors.darkBlue,
+                        color: theme.colorScheme.onSurface,
                         fontSize: 16,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
-
-                // Delete Button
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final success = await ref.read(imageActionsProvider).deleteImage(imageId!);
+                      final success = await ref
+                          .read(imageActionsProvider)
+                          .deleteImage(imageId!);
                       if (success) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => const BottomNavBar()),
+                          MaterialPageRoute(
+                              builder: (_) => const BottomNavBar()),
                         );
                       } else {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             content: Text("Failed to delete image"),
-                            backgroundColor: Colors.red,
+                            backgroundColor: theme.colorScheme.error,
                           ),
                         );
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.redColor,
+                      backgroundColor: theme.colorScheme.error,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       elevation: 0,
                     ),
                     child: Text(
                       'Delete',
                       style: AppTextstyle.interMedium(
-                        color: Colors.white,
+                        color: theme.colorScheme.onError,
                         fontSize: 16,
                       ),
                     ),

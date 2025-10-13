@@ -1,33 +1,33 @@
+import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
+import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../../domain/api_models/user_profile_model.dart';
-import '../../../../domain/subscriptions/subscription_model.dart';
-import '../../../../shared/constants/app_assets.dart';
 
 class UsageSection extends StatelessWidget {
   final UserSubscriptionModel? subscription;
   final User? userPersonalData;
-  const UsageSection({super.key, required this.subscription, this.userPersonalData});
+  const UsageSection(
+      {super.key, required this.subscription, this.userPersonalData});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     String getSubscriptionEndDate(DateTime? endDate, String planName) {
       if (endDate != null && planName != 'Free') {
         final currentDate = DateTime.now();
         final difference = endDate.difference(currentDate).inDays;
 
-        // Return the number of days remaining
-        return difference >= 0
-            ? '$difference Days'
-            : 'Expired';
+        return difference >= 0 ? '$difference Days' : 'Expired';
       } else {
         return '1 Day';
       }
     }
+
     if (userPersonalData == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
+      return Center(
+        child: CircularProgressIndicator(color: theme.colorScheme.primary),
       );
     }
 
@@ -38,12 +38,12 @@ class UsageSection extends StatelessWidget {
           'Usage Statistics',
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 15),
         SizedBox(
-          height: 120, // Fixed height to ensure layout stability
+          height: 120,
           child: GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -55,14 +55,16 @@ class UsageSection extends StatelessWidget {
               _buildStatCard(
                 imageAsset: AppAssets.stackofcoins,
                 title: 'Image Credits',
-                value: '${userPersonalData!.usedImageCredits ?? 0}',
-                color: Colors.amber,
+                value: '${userPersonalData!.usedImageCredits}',
+                color: theme.colorScheme.primary,
+                theme: theme,
               ),
               _buildStatCard(
                 imageAsset: AppAssets.stackofcoins,
                 title: 'Prompt Credits',
                 value: '${userPersonalData!.usedPromptCredits}',
-                color: Colors.amber,
+                color: theme.colorScheme.primary,
+                theme: theme,
               ),
             ],
           ),
@@ -70,10 +72,12 @@ class UsageSection extends StatelessWidget {
         const SizedBox(height: 10),
         _buildResetCard(
           title: 'Reset In',
-          value: getSubscriptionEndDate(subscription?.endDate, userPersonalData?.planName ?? ''),
-          color: Colors.amber,
+          value: getSubscriptionEndDate(
+              subscription?.endDate, userPersonalData?.planName ?? ''),
+          color: theme.colorScheme.primary,
           width: MediaQuery.of(context).size.width,
           isResetCard: true,
+          theme: theme,
         ),
       ],
     );
@@ -84,6 +88,7 @@ class UsageSection extends StatelessWidget {
     required String title,
     required String value,
     required Color color,
+    required ThemeData theme,
     double? width,
     bool isResetCard = false,
   }) {
@@ -93,10 +98,10 @@ class UsageSection extends StatelessWidget {
           width: width,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.05),
+            color: theme.colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.grey.withOpacity(0.7),
+              color: theme.colorScheme.outline.withOpacity(0.3),
               width: 1,
             ),
           ),
@@ -113,7 +118,7 @@ class UsageSection extends StatelessWidget {
                     value,
                     style: AppTextstyle.interBold(
                       fontSize: constraints.maxWidth < 150 ? 20 : 25,
-                      color: AppColors.darkBlue,
+                      color: theme.colorScheme.onSurface,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -139,7 +144,7 @@ class UsageSection extends StatelessWidget {
                 isResetCard ? title : 'Used $title',
                 style: AppTextstyle.interRegular(
                   fontSize: constraints.maxWidth < 150 ? 12 : 14,
-                  color: AppColors.darkBlue.withOpacity(0.6),
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -154,6 +159,7 @@ class UsageSection extends StatelessWidget {
     required String title,
     required String value,
     required Color color,
+    required ThemeData theme,
     double? width,
     bool isResetCard = false,
   }) {
@@ -163,10 +169,10 @@ class UsageSection extends StatelessWidget {
           width: width,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.05),
+            color: theme.colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.grey.withOpacity(0.7),
+              color: theme.colorScheme.outline.withOpacity(0.3),
               width: 1,
             ),
           ),
@@ -175,12 +181,16 @@ class UsageSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 10,
             children: [
-              Icon(Icons.timer,color: Colors.amber,size: 20,),
+              Icon(
+                Icons.timer,
+                color: color,
+                size: 20,
+              ),
               Text(
                 isResetCard ? title : 'Used $title',
                 style: AppTextstyle.interRegular(
                   fontSize: constraints.maxWidth < 150 ? 12 : 14,
-                  color: AppColors.darkBlue.withOpacity(0.6),
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -188,7 +198,7 @@ class UsageSection extends StatelessWidget {
                 value,
                 style: AppTextstyle.interBold(
                   fontSize: constraints.maxWidth < 150 ? 20 : 25,
-                  color: AppColors.darkBlue,
+                  color: theme.colorScheme.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
