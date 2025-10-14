@@ -61,31 +61,50 @@ class AppInitialization {
     try {
       final userId = UserData.ins.userId;
       if (userId == null || userId.isEmpty) {
-        debugPrint('⚠️ Skipping FCM registration: userId is null');
         return;
       }
 
       final messaging = FirebaseMessaging.instance;
       final token = await messaging.getToken();
-      debugPrint('📲 FCM Token: $token');
-      debugPrint('👤 User ID: $userId');
 
       if (token != null) {
         final repo = ref.read(notificationRepositoryProvider);
         await repo.registerDeviceToken(userId, token);
-        debugPrint('✅ Device token registered successfully.');
       }
 
-      // 🔁 Listen for token refresh
       messaging.onTokenRefresh.listen((newToken) async {
         if (UserData.ins.userId != null) {
           final repo = ref.read(notificationRepositoryProvider);
           await repo.registerDeviceToken(UserData.ins.userId!, newToken);
-          debugPrint('🔁 Token refreshed and re-registered.');
         }
       });
     } catch (e, stack) {
-      debugPrint('❌ FCM registration failed: $e');
+      debugPrint(stack.toString());
+    }
+  }
+
+  static Future<void> registerUserDeviceTokenRef(WidgetRef ref) async {
+    try {
+      final userId = UserData.ins.userId;
+      if (userId == null || userId.isEmpty) {
+        return;
+      }
+
+      final messaging = FirebaseMessaging.instance;
+      final token = await messaging.getToken();
+
+      if (token != null) {
+        final repo = ref.read(notificationRepositoryProvider);
+        await repo.registerDeviceToken(userId, token);
+      }
+
+      messaging.onTokenRefresh.listen((newToken) async {
+        if (UserData.ins.userId != null) {
+          final repo = ref.read(notificationRepositoryProvider);
+          await repo.registerDeviceToken(UserData.ins.userId!, newToken);
+        }
+      });
+    } catch (e, stack) {
       debugPrint(stack.toString());
     }
   }

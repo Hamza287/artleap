@@ -152,7 +152,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       final userProfile = ref.read(userProfileProvider).userProfileData;
 
       if (userProfile != null && userProfile.user.id.isNotEmpty) {
-
+        await AppInitialization.registerUserDeviceTokenRef(ref);
         Navigator.of(context).pushNamedAndRemoveUntil(
           BottomNavBar.routeName,
               (route) => false,
