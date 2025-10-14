@@ -16,6 +16,17 @@ import '../domain/api_models/Image_to_Image_model.dart' as ImgToImg;
 final generateImageProvider = ChangeNotifierProvider<GenerateImageProvider>(
     (ref) => GenerateImageProvider(ref));
 
+enum ImagePrivacy {
+  public('Public', 'Visible to everyone', Icons.public_rounded),
+  private('Private', 'Only visible to you', Icons.lock_rounded);
+
+  final String title;
+  final String description;
+  final IconData icon;
+
+  const ImagePrivacy(this.title, this.description, this.icon);
+}
+
 class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
@@ -52,6 +63,9 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   String? _aspectRatio = "social_story_9_16";
   String? get aspectRatio => _aspectRatio;
+
+  ImagePrivacy _selectedPrivacy = ImagePrivacy.private;
+  ImagePrivacy get selectedPrivacy => _selectedPrivacy;
 
   set aspectRatio(String? value) {
     _aspectRatio = value;
@@ -111,6 +125,10 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+  set selectedPrivacy(ImagePrivacy value) {
+    _selectedPrivacy = value;
+    notifyListeners();
+  }
 
   String? dataUrl;
   Future<bool> generateTextToImage() async {
@@ -125,7 +143,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
         "presetStyle": _selectedStyle,
         "num_images": _selectedItem,
         "aspectRatio": _aspectRatio,
-        "generationType": 'prompt'
+        "generationType": 'prompt',
+        "privacy": _selectedPrivacy.name,
       };
 
       ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
@@ -173,7 +192,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
         "creatorEmail": UserData.ins.userEmail,
         "presetStyle": selectedStyle,
         "num_images": selectedImageNumber,
-        "generationType": 'image'
+        "generationType": 'image',
+        "privacy": _selectedPrivacy.name,
       };
 
       final ApiResponse generateImageRes = await generateImgToImgRepo.generateImgToImg(data, images);

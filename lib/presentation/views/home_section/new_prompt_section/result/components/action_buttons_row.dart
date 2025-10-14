@@ -1,5 +1,5 @@
 import 'package:Artleap.ai/presentation/views/global_widgets/dialog_box/set_privacy_dialog.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
+import 'package:Artleap.ai/providers/generate_image_provider.dart' hide ImagePrivacy;
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';

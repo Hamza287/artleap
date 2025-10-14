@@ -52,7 +52,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
               HomeScreenTopBar(
                 onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
               ),
-              PromptTopBar(),
+              // PromptTopBar(),
               Expanded(
                 child: Stack(
                   children: [
@@ -87,7 +87,6 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
   Widget _buildCurrentScreen(PromptNavItem navItem) {
     switch (navItem) {
       case PromptNavItem.create:
-        // return const PromptCreateScreenCompact();
         // return const PromptCreateScreen();
         return const PromptCreateScreenRedesign();
       case PromptNavItem.edit:

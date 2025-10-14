@@ -17,6 +17,7 @@ import 'components/generation_footer_redesign.dart';
 import 'components/image_control_section.dart';
 import 'components/loading_overlay_redesign.dart';
 import 'components/prompt_input_section.dart';
+import 'components/privacy_selection_section.dart'; // Add this import
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
@@ -180,9 +181,13 @@ class _PromptCreateScreenRedesignState
     }
 
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall ? 16.0 : 24.0;
+            screenSize == ScreenSizeCategory.extraSmall
+        ? 16.0
+        : 24.0;
     final topPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall ? 16.0 : 24.0;
+            screenSize == ScreenSizeCategory.extraSmall
+        ? 16.0
+        : 24.0;
 
     return PopScope(
       canPop: false,
@@ -215,7 +220,9 @@ class _PromptCreateScreenRedesignState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         PromptInputRedesign(),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 16),
+                        PrivacySelectionSection(),
+                        const SizedBox(height: 16),
                         ImageControlsRedesign(
                           onImageSelected: () {
                             AnalyticsService.instance.logButtonClick(
