@@ -22,8 +22,8 @@ class HomeScreenTopBar extends ConsumerWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            top: 20,
-            left: screenWidth * 0.05,
+            top: 16,
+            left: screenWidth * 0.04,
             right: screenWidth * 0.03,
           ),
           child: Row(
@@ -34,20 +34,20 @@ class HomeScreenTopBar extends ConsumerWidget {
                   GestureDetector(
                     onTap: onMenuTap,
                     child: Container(
-                      width: screenWidth * 0.1 > 42 ? 42 : screenWidth * 0.1,
-                      height: screenWidth * 0.1 > 42 ? 42 : screenWidth * 0.1,
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                         ),
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
                             color: theme.colorScheme.primary.withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
@@ -56,20 +56,20 @@ class HomeScreenTopBar extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              width: 16,
-                              height: 2,
+                              width: 14,
+                              height: 1.5,
                               color: theme.colorScheme.onPrimary,
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 3),
                             Container(
-                              width: 16,
-                              height: 2,
+                              width: 14,
+                              height: 1.5,
                               color: theme.colorScheme.onPrimary,
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 3),
                             Container(
-                              width: 16,
-                              height: 2,
+                              width: 14,
+                              height: 1.5,
                               color: theme.colorScheme.onPrimary,
                             ),
                           ],
@@ -77,7 +77,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.03),
+                  SizedBox(width: screenWidth * 0.025),
                   InkWell(
                     onTap: () {
                       if (!isFreePlan) {
@@ -87,13 +87,13 @@ class HomeScreenTopBar extends ConsumerWidget {
                       }
                     },
                     child: Container(
-                      height: 42,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(21),
+                        borderRadius: BorderRadius.circular(18),
                         border: Border.all(
                           color: Colors.orange,
-                          width: 1.5,
+                          width: 1.2,
                         ),
                         color: theme.colorScheme.surface,
                       ),
@@ -102,17 +102,15 @@ class HomeScreenTopBar extends ConsumerWidget {
                         children: [
                           Image.asset(
                             AppAssets.stackofcoins,
-                            height: 20,
+                            height: 16,
                             color: Colors.orange,
                           ),
-                          SizedBox(width: screenWidth * 0.015),
+                          SizedBox(width: screenWidth * 0.012),
                           Text(
                             "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
                             style: AppTextstyle.interMedium(
                               color: Colors.orange,
-                              fontSize: screenWidth * 0.035 > 14
-                                  ? 14
-                                  : screenWidth * 0.035,
+                              fontSize: 13,
                               fontWeight: FontWeight.w700,
                             ),
                           )
@@ -126,7 +124,7 @@ class HomeScreenTopBar extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -134,12 +132,12 @@ class HomeScreenTopBar extends ConsumerWidget {
   Widget _buildProfessionalProButton(double screenWidth, BuildContext context, ThemeData theme) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.primary.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: theme.colorScheme.primary.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -149,9 +147,9 @@ class HomeScreenTopBar extends ConsumerWidget {
           onTap: () {
             Navigator.of(context).pushNamed("choose_plan_screen");
           },
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(20),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -161,17 +159,17 @@ class HomeScreenTopBar extends ConsumerWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(25),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: theme.colorScheme.onPrimary.withOpacity(0.8),
-                width: 1.5,
+                width: 1.2,
               ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
@@ -185,14 +183,8 @@ class HomeScreenTopBar extends ConsumerWidget {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.orange.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                      BoxShadow(
-                        color: theme.colorScheme.surface,
-                        blurRadius: 0,
-                        offset: const Offset(0, 0),
-                        spreadRadius: 1,
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                     shape: BoxShape.circle,
@@ -200,32 +192,24 @@ class HomeScreenTopBar extends ConsumerWidget {
                   child: Icon(
                     Icons.star,
                     color: theme.colorScheme.onPrimary,
-                    size: 16,
+                    size: 14,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Text(
-                  "GET PRO",
+                  "PRO",
                   style: TextStyle(
                     color: theme.colorScheme.onPrimary,
-                    fontSize:
-                    screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0.8,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
+                    letterSpacing: 0.6,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 2),
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   color: theme.colorScheme.onPrimary.withOpacity(0.9),
-                  size: 12,
+                  size: 10,
                 ),
               ],
             ),
@@ -276,33 +260,33 @@ class HomeScreenTopBar extends ConsumerWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         gradient: gradient,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: borderColor,
-          width: 1.5,
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: borderColor.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: borderColor.withOpacity(0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: textColor, size: 16),
-          const SizedBox(width: 6),
+          Icon(icon, color: textColor, size: 14),
+          const SizedBox(width: 4),
           Text(
             planName.toUpperCase(),
             style: TextStyle(
               color: textColor,
-              fontSize: screenWidth * 0.032 > 13 ? 13 : screenWidth * 0.032,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.4,
             ),
           ),
         ],

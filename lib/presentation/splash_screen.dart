@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/main/app_initialization.dart';
 import 'package:Artleap.ai/presentation/views/common/privacy_policy_accept.dart';
 import 'package:Artleap.ai/providers/splash_screen_provider.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +22,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late AnimationController _controller;
   bool _hasNavigated = false;
   bool _initialized = false;
-  DateTime? _startTime; // Track when initialization started
+  DateTime? _startTime;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
-    _startTime = DateTime.now(); // Record start time
+    _startTime = DateTime.now();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeApp();
     });
@@ -122,25 +123,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _navigateToNextScreen() async {
-    // Calculate elapsed time
     final elapsedTime = DateTime.now().difference(_startTime!);
     final remainingTime = Duration(seconds: 4) - elapsedTime;
 
-    // Wait for remaining time if needed
     if (remainingTime > Duration.zero) {
       await Future.delayed(remainingTime);
     }
 
-    if (!mounted) return; // 🚨 prevent navigation after dispose
+    if (!mounted) return;
 
     final userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     final userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
-    final userProfilePicture =
-        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
+    final userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     final userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
 
     if (userid.isNotEmpty) {
-      // Set local user data
       UserData.ins.setUserData(
         id: userid,
         name: userName,
@@ -148,14 +145,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         email: userEmail,
       );
 
-      // Fetch from DB
       await ref.read(userProfileProvider).getUserProfileData(userid);
 
-      if (!mounted) return; // 🚨 check again after async work
+      if (!mounted) return;
 
       final userProfile = ref.read(userProfileProvider).userProfileData;
 
       if (userProfile != null && userProfile.user.id.isNotEmpty) {
+
         Navigator.of(context).pushNamedAndRemoveUntil(
           BottomNavBar.routeName,
               (route) => false,

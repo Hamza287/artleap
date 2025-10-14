@@ -1,10 +1,10 @@
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-import '../../../../../providers/user_profile_provider.dart';
-import '../../../../../shared/constants/user_data.dart';
 
 class ProfileInfoWidget extends ConsumerWidget {
   final String? profileName;
@@ -41,6 +41,9 @@ class ProfileInfoWidget extends ConsumerWidget {
                         color: theme.colorScheme.onSurface,
                         fontSize: 18,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: false,
                     ),
                     6.spaceY,
                     Text(

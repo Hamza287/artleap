@@ -65,26 +65,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const HomeScreenSearchBar(),
                     const SizedBox(height: 20),
                     const PortraitOptions(),
-                    // _buildCard(
-                    //   "Generate Image",
-                    //   "Let's create magic and bring your imagination to life.",
-                    //   "Create Magic",
-                    //   'assets/images/image_generate_dumy.png',
-                    //   theme.colorScheme.primary,
-                    //       () => ref.read(bottomNavBarProvider).setPageIndex(1),
-                    //   theme.colorScheme.onPrimary,
-                    // ),
                     SizedBox(height: 20),
                     AiFiltersGrid(),
-                    // _buildCard(
-                    //   "Community",
-                    //   "Explore community and follow what others have created",
-                    //   "Explore Community",
-                    //   'assets/images/community_dumy.png',
-                    //   theme.brightness == Brightness.dark ? Color(0xFF7B4AE0) : Color(0xFFDBADFF),
-                    //       () => ref.read(bottomNavBarProvider).setPageIndex(2),
-                    //   theme.brightness == Brightness.dark ? Colors.white : Colors.black,
-                    // ),
                     const SizedBox(height: 24),
                     const TrendingStyles(),
                     const SizedBox(height: 24),
@@ -99,83 +81,4 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-
-  // Widget _buildCard(String title, String subtitle, String buttonText,
-  //     String image, Color color, VoidCallback onTap, Color btnTextColor) {
-  //   final theme = Theme.of(context);
-  //   return Center(
-  //     child: Container(
-  //       width: MediaQuery.of(context).size.width * 0.9,
-  //       height: 260,
-  //       padding: EdgeInsets.all(16.0),
-  //       decoration: BoxDecoration(
-  //           image: DecorationImage(
-  //             image: AssetImage(image),
-  //             fit: BoxFit.cover,
-  //           ),
-  //           borderRadius: BorderRadius.circular(20.0),
-  //           border: Border.all(color: theme.colorScheme.surface, width: 2.0),
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.grey.withOpacity(0.5),
-  //               spreadRadius: 2,
-  //               blurRadius: 5,
-  //               offset: Offset(0, 3),
-  //             ),
-  //           ]),
-  //       child: Padding(
-  //         padding: const EdgeInsets.only(left: 20,right: 20),
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Text(
-  //               title,
-  //               style: TextStyle(
-  //                 fontSize: 28.0,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.white,
-  //               ),
-  //             ),
-  //             SizedBox(height: 15.0),
-  //             Text(
-  //               subtitle,
-  //               textAlign: TextAlign.center,
-  //               style: TextStyle(
-  //                 fontSize: 16.0,
-  //                 color: Colors.white,
-  //               ),
-  //             ),
-  //             SizedBox(height: 20.0),
-  //             Container(
-  //               width: MediaQuery.of(context).size.width * 0.8,
-  //               decoration: BoxDecoration(boxShadow: [
-  //                 BoxShadow(
-  //                   color: Colors.grey.withOpacity(0.5),
-  //                   spreadRadius: 2,
-  //                   blurRadius: 5,
-  //                   offset: Offset(0, 3),
-  //                 ),
-  //               ]),
-  //               child: ElevatedButton(
-  //                 onPressed: onTap,
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: color,
-  //                   padding:
-  //                   EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(10.0),
-  //                   ),
-  //                 ),
-  //                 child: Text(
-  //                   buttonText,
-  //                   style: TextStyle(fontSize: 16.0, color: btnTextColor),
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

@@ -135,7 +135,6 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
         ),
         child: Column(
           children: [
-            // Enhanced Header
             Container(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
               decoration: BoxDecoration(
@@ -173,8 +172,6 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     ),
                   ),
                   const SizedBox(width: 16),
-
-                  // Title with Count
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,8 +210,6 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                       ],
                     ),
                   ),
-
-                  // Refresh Button
                   Container(
                     width: 40,
                     height: 40,
@@ -235,8 +230,6 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                 ],
               ),
             ),
-
-            // Comments List
             Expanded(
               child: commentsAsync.when(
                 data: (comments) {
@@ -272,8 +265,6 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                 ),
               ),
             ),
-
-            // Enhanced Comment Input
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -297,7 +288,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant,
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
                           color: _commentFocusNode.hasFocus ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.3),
@@ -318,7 +309,16 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                           focusNode: _commentFocusNode,
                           decoration: InputDecoration(
                             hintText: 'Share your thoughts...',
+                            fillColor: theme.colorScheme.surfaceContainerHighest,
                             border: InputBorder.none,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             hintStyle: AppTextstyle.interRegular(
                               fontSize: 16,
                               color: theme.colorScheme.onSurface.withOpacity(0.5),
@@ -338,8 +338,6 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     ),
                   ),
                   const SizedBox(width: 12),
-
-                  // Enhanced Send Button
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: 50,
@@ -371,7 +369,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                         onTap: hasText ? _postComment : null,
                         child: Icon(
                           Icons.send_rounded,
-                          color: theme.colorScheme.onPrimary,
+                          color: hasText ? theme.colorScheme.onPrimary : theme.colorScheme.surface,
                           size: 22,
                         ),
                       ),

@@ -40,7 +40,6 @@ class UserData {
     userEmail = email;
   }
 
-  /// 💾 Save user data locally
   Future<void> saveUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userId', userId ?? '');
@@ -50,9 +49,8 @@ class UserData {
     debugPrint('💾 User data saved locally');
   }
 
-  /// 🔄 Load user data if available
   Future<void> loadUserDataIfNeeded() async {
-    if (userId != null) return; // Already loaded in memory
+    if (userId != null) return;
 
     final prefs = await SharedPreferences.getInstance();
     final storedId = prefs.getString('userId');
@@ -67,7 +65,6 @@ class UserData {
     }
   }
 
-  /// ❌ Clear user data (e.g., on logout)
   Future<void> clearUserData() async {
     userId = null;
     userName = null;

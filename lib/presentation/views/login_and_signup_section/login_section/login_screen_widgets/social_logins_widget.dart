@@ -42,7 +42,7 @@ class SocialLoginsWidget extends ConsumerWidget {
                           color: Colors.grey.withOpacity(0.2),
                           spreadRadius: 1,
                           blurRadius: 5,
-                          offset: Offset(0, 3), // changes position of shadow
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -54,49 +54,16 @@ class SocialLoginsWidget extends ConsumerWidget {
                 ),
           if (Platform.isIOS)
             Container(
-              height: 45, 
+              height: 45,
               width: 139,
               child: SignInWithAppleButton(
                 style: SignInWithAppleButtonStyle.white,
                 text: "",
                 onPressed: () async {
                   ref.read(authprovider).signInWithApple();
-
-                  // final result = await signInWithApple();
-                  // if (result != null) {
-                  //   print(
-                  //       "Apple sign-in successful: ${result.userCredential.user?.uid}");
-                  // } else {
-                  //   print("Apple sign-in failed or cancelled");
-                  // }
                 },
               ),
             )
-          // ref.watch(authprovider).isLoading(LoginMethod.facebook)
-          //     ? const SizedBox(
-          //         width: 85,
-          //         child: Center(
-          //           child: CircularProgressIndicator(
-          //             backgroundColor: AppColors.indigo,
-          //           ),
-          //         ),
-          //       )
-          //     : InkWell(
-          //         onTap: () {
-          //           ref.read(authprovider).signInWithFacebook();
-          //         },
-          //         child: Container(
-          //           width: 85,
-          //           child: Image.asset(
-          //             AppAssets.facebooklogin,
-          //             scale: 2.2,
-          //           ),
-          //         ),
-          //       ),
-          // Image.asset(
-          //   AppAssets.applelogin,
-          //   scale: 2.2,
-          // ),
         ],
       ),
     );

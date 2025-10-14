@@ -1,5 +1,6 @@
 import 'package:Artleap.ai/domain/community/models/comment_model.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,58 +16,53 @@ class CommentTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final isCurrentUser = true;
+    final isCurrentUser = UserData.ins.userId == comment.user;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment:
+            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.colorScheme.primary.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                comment.userName.substring(0, 1).toUpperCase(),
-                style: AppTextstyle.interBold(
-                  fontSize: 16,
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
+          if (!isCurrentUser) ...[
+            _buildUserAvatar(theme, comment.userName),
+            const SizedBox(width: 12),
+          ],
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: isCurrentUser
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
+                    color: isCurrentUser
+                        ? theme.colorScheme.primary.withOpacity(0.1)
+                        : theme.colorScheme.surface,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(20),
+                      topRight: const Radius.circular(20),
+                      bottomLeft: isCurrentUser
+                          ? const Radius.circular(20)
+                          : const Radius.circular(8),
+                      bottomRight: isCurrentUser
+                          ? const Radius.circular(8)
+                          : const Radius.circular(20),
+                    ),
                     border: Border.all(
-                      color: theme.colorScheme.outline.withOpacity(0.3),
-                      width: 1,
+                      color: isCurrentUser
+                          ? theme.colorScheme.primary.withOpacity(0.3)
+                          : theme.colorScheme.outline.withOpacity(0.2),
+                      width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.colorScheme.shadow.withOpacity(0.05),
+                        color: isCurrentUser
+                            ? theme.colorScheme.primary.withOpacity(0.1)
+                            : theme.colorScheme.shadow.withOpacity(0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -77,13 +73,35 @@ class CommentTile extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            comment.userName,
-                            style: AppTextstyle.interBold(
-                              fontSize: 15,
-                              color: theme.colorScheme.onSurface,
+                          if (!isCurrentUser)
+                            Text(
+                              comment.userName,
+                              style: AppTextstyle.interBold(
+                                fontSize: 14,
+                                color: theme.colorScheme.onSurface,
+                              ),
                             ),
-                          ),
+                          if (isCurrentUser)
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    "You",
+                                    style: AppTextstyle.interBold(
+                                      fontSize: 12,
+                                      color: theme.colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                              ],
+                            ),
                           const Spacer(),
                           if (isCurrentUser)
                             Container(
@@ -97,7 +115,7 @@ class CommentTile extends ConsumerWidget {
                                 onPressed: onDelete,
                                 icon: Icon(
                                   Icons.delete_outline_rounded,
-                                  size: 18,
+                                  size: 16,
                                   color: theme.colorScheme.error,
                                 ),
                                 padding: EdgeInsets.zero,
@@ -110,7 +128,9 @@ class CommentTile extends ConsumerWidget {
                         comment.comment,
                         style: AppTextstyle.interRegular(
                           fontSize: 15,
-                          color: theme.colorScheme.onSurface,
+                          color: isCurrentUser
+                              ? theme.colorScheme.onSurface
+                              : theme.colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -119,18 +139,91 @@ class CommentTile extends ConsumerWidget {
                 const SizedBox(height: 6),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    _formatTime(comment.createdAt),
-                    style: AppTextstyle.interRegular(
-                      fontSize: 12,
-                      color: theme.colorScheme.onSurface.withOpacity(0.5),
-                    ),
+                  child: Row(
+                    mainAxisAlignment: isCurrentUser
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        _formatTime(comment.createdAt),
+                        style: AppTextstyle.interRegular(
+                          fontSize: 11,
+                          color: theme.colorScheme.onSurface.withOpacity(0.5),
+                        ),
+                      ),
+                      if (isCurrentUser) ...[
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 12,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],
             ),
           ),
+          if (isCurrentUser) ...[
+            const SizedBox(width: 12),
+            _buildUserAvatar(theme, comment.userName, isCurrentUser: true),
+          ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildUserAvatar(ThemeData theme, String userName,
+      {bool isCurrentUser = false}) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: isCurrentUser
+            ? LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primaryContainer
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : LinearGradient(
+                colors: [
+                  theme.colorScheme.surfaceContainerHighest,
+                  theme.colorScheme.surfaceContainerHighest.withOpacity(0.7),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+        boxShadow: [
+          BoxShadow(
+            color: isCurrentUser
+                ? theme.colorScheme.primary.withOpacity(0.3)
+                : theme.colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: isCurrentUser
+            ? Border.all(
+                color: theme.colorScheme.primary.withOpacity(0.5),
+                width: 2,
+              )
+            : null,
+      ),
+      child: Center(
+        child: Text(
+          userName.substring(0, 1).toUpperCase(),
+          style: AppTextstyle.interBold(
+            fontSize: 14,
+            color: isCurrentUser
+                ? theme.colorScheme.onPrimary
+                : theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }
