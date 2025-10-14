@@ -154,8 +154,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                 ),
               ),
             ),
-
-            // Close Button
             Container(
               decoration: BoxDecoration(
                 color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
@@ -205,7 +203,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              // Main Image
               GestureDetector(
                 onTap: () {
                   Navigation.pushNamed(FullImageViewerScreen.routeName,
@@ -265,8 +262,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                   ),
                 ),
               ),
-
-              // Tap to View Overlay
               Positioned.fill(
                 child: Material(
                   color: Colors.transparent,
