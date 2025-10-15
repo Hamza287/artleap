@@ -42,12 +42,18 @@ class PromptTopBar extends ConsumerWidget {
           horizontal: screenSize == ScreenSizeCategory.extraSmall ? 16 : 20,
           vertical: 12,
         ),
-        child: _buildProfessionalDropdown(context, ref, currentNav, screenSize, theme),
+        child: _buildProfessionalDropdown(
+            context, ref, currentNav, screenSize, theme),
       ),
     );
   }
 
-  Widget _buildProfessionalDropdown(BuildContext context, WidgetRef ref, PromptNavItem currentNav, ScreenSizeCategory screenSize, ThemeData theme) {
+  Widget _buildProfessionalDropdown(
+      BuildContext context,
+      WidgetRef ref,
+      PromptNavItem currentNav,
+      ScreenSizeCategory screenSize,
+      ThemeData theme) {
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final animationController = ref.watch(_animationControllerProvider);
 
@@ -97,7 +103,8 @@ class PromptTopBar extends ConsumerWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                ref.read(isDropdownExpandedProvider.notifier).state = !isExpanded;
+                ref.read(isDropdownExpandedProvider.notifier).state =
+                    !isExpanded;
                 if (isExpanded) {
                   animationController.reverse();
                 } else {
@@ -106,7 +113,8 @@ class PromptTopBar extends ConsumerWidget {
               },
               borderRadius: BorderRadius.circular(12),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: padding, vertical: 10),
+                padding:
+                    EdgeInsets.symmetric(horizontal: padding, vertical: 10),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -200,25 +208,32 @@ class PromptTopBar extends ConsumerWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Column(
-                  children: options.where((opt) => opt.value != currentNav).map((option) {
+                  children: options
+                      .where((opt) => opt.value != currentNav)
+                      .map((option) {
                     return Material(
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          ref.read(promptNavProvider.notifier).setNavItem(option.value);
-                          ref.read(isDropdownExpandedProvider.notifier).state = false;
+                          ref
+                              .read(promptNavProvider.notifier)
+                              .setNavItem(option.value);
+                          ref.read(isDropdownExpandedProvider.notifier).state =
+                              false;
                           animationController.reverse();
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: padding, vertical: 12),
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: options.last == option
                                   ? BorderSide.none
                                   : BorderSide(
-                                color: theme.colorScheme.outline.withOpacity(0.1),
-                                width: 1,
-                              ),
+                                      color: theme.colorScheme.outline
+                                          .withOpacity(0.1),
+                                      width: 1,
+                                    ),
                             ),
                           ),
                           child: Row(
@@ -255,7 +270,8 @@ class PromptTopBar extends ConsumerWidget {
                               // Chevron Icon
                               Icon(
                                 Icons.chevron_right_rounded,
-                                color: theme.colorScheme.onSurface.withOpacity(0.5),
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.5),
                                 size: 18,
                               ),
                             ],

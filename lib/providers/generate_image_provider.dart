@@ -64,7 +64,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   String? _aspectRatio = "social_story_9_16";
   String? get aspectRatio => _aspectRatio;
 
-  ImagePrivacy _selectedPrivacy = ImagePrivacy.private;
+  ImagePrivacy _selectedPrivacy = ImagePrivacy.public;
   ImagePrivacy get selectedPrivacy => _selectedPrivacy;
 
   set aspectRatio(String? value) {

@@ -59,6 +59,7 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
   Future<void> reportImage(
     String imageId,
     String creatorId,
+      BuildContext context,
   ) async {
     loadingState = ImageActionLoading.reporting;
     try {
@@ -70,6 +71,7 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
           await imageActionRepo.reportImage(body: body, imageId: imageId);
       if (userRes.status == Status.completed) {
         appSnackBar("Success", "Image reported successfully", AppColors.green);
+        Navigator.pop(context);
       }
     } finally {
       loadingState = ImageActionLoading.none;

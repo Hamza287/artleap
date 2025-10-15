@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import '../login_and_signup_section/login_section/login_screen.dart';
+import '../../login_and_signup_section/login_section/login_screen.dart';
 
 class LogoutConfirmationDialog extends ConsumerWidget {
   const LogoutConfirmationDialog({super.key});

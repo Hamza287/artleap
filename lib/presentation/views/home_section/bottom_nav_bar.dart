@@ -43,76 +43,76 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ColorScheme.of(context).surface,
-        resizeToAvoidBottomInset: false,
-        bottomNavigationBar: isKeyboardOpen
-            ? const SizedBox.shrink()
-            : _buildEnhancedNavBar(pageIndex, theme),
-        body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
-            ? bottomNavBarState.widgets[pageIndex]
-            : Center(
-                child: CircularProgressIndicator(
-                  color: theme.colorScheme.primary,
-                ),
+    return Scaffold(
+      backgroundColor: ColorScheme.of(context).surface,
+      resizeToAvoidBottomInset: false,
+      bottomNavigationBar: isKeyboardOpen
+          ? const SizedBox.shrink()
+          : _buildEnhancedNavBar(pageIndex, theme),
+      body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
+          ? bottomNavBarState.widgets[pageIndex]
+          : Center(
+              child: CircularProgressIndicator(
+                color: theme.colorScheme.primary,
               ),
-      ),
+            ),
     );
   }
 
   Widget _buildEnhancedNavBar(int currentIndex, ThemeData theme) {
 
-    return Container(
-      height: 75,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 10.0,
-            sigmaY: 10.0,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavButton(
-                icon: Icons.home,
-                index: 0,
-                currentIndex: currentIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
-                theme: theme,
-              ),
-              _buildNavButton(
-                icon: Icons.add_circle,
-                index: 1,
-                currentIndex: currentIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
-                theme: theme,
-              ),
-              _buildNavButton(
-                icon: Icons.groups,
-                index: 2,
-                currentIndex: currentIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
-                theme: theme,
-              ),
-              _buildNavButton(
-                icon: Icons.person,
-                index: 3,
-                currentIndex: currentIndex,
-                onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
-                theme: theme,
-              ),
-            ],
+    return SafeArea(
+      child: Container(
+        height: 75,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.shadow.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 10.0,
+              sigmaY: 10.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavButton(
+                  icon: Icons.home,
+                  index: 0,
+                  currentIndex: currentIndex,
+                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
+                  theme: theme,
+                ),
+                _buildNavButton(
+                  icon: Icons.add_circle,
+                  index: 1,
+                  currentIndex: currentIndex,
+                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
+                  theme: theme,
+                ),
+                _buildNavButton(
+                  icon: Icons.groups,
+                  index: 2,
+                  currentIndex: currentIndex,
+                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
+                  theme: theme,
+                ),
+                _buildNavButton(
+                  icon: Icons.person,
+                  index: 3,
+                  currentIndex: currentIndex,
+                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
+                  theme: theme,
+                ),
+              ],
+            ),
           ),
         ),
       ),

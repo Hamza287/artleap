@@ -10,7 +10,7 @@ import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/search_textfield.dart';
-import '../../../base_widgets/common_appbar.dart';
+import '../../../../widgets/common_appbar.dart';
 import 'community_screen_widgets/trending_creations_widget.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -59,7 +59,9 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
   }
 
   List<Color> _getAppBarColors(int pageIndex) {
-    return pageIndex == 3 ? [AppColors.lightIndigo, AppColors.darkIndigo] : [AppColors.darkBlue, AppColors.darkBlue];
+    return pageIndex == 3
+        ? [AppColors.lightIndigo, AppColors.darkIndigo]
+        : [AppColors.darkBlue, AppColors.darkBlue];
   }
 
   @override
@@ -77,11 +79,13 @@ class _HomeScreenState extends ConsumerState<CommunityScreen> {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text('No', style: AppTextstyle.interBold(color: AppColors.white)),
+                    child: Text('No',
+                        style: AppTextstyle.interBold(color: AppColors.white)),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: Text('Yes', style: AppTextstyle.interBold(color: AppColors.white)),
+                    child: Text('Yes',
+                        style: AppTextstyle.interBold(color: AppColors.white)),
                   ),
                 ],
               ),

@@ -1,10 +1,12 @@
+import 'package:Artleap.ai/widgets/custom_pro_icon_widget.dart';
+import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class PrivacySelectionSection extends ConsumerWidget {
-  const PrivacySelectionSection({super.key});
+  final bool isPremiumUser;
+  const PrivacySelectionSection({super.key,required this.isPremiumUser});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,38 +30,28 @@ class PrivacySelectionSection extends ConsumerWidget {
         ],
       ),
       child: Row(
-        children: [
-          Icon(
-            Icons.privacy_tip_rounded,
-            color: theme.colorScheme.primary,
-            size: 16,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            "Privacy",
-            style: AppTextstyle.interMedium(
-              fontSize: 13,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: ImagePrivacy.values.map((privacy) {
-                return _buildIconRadioOption(
-                  privacy: privacy,
-                  isSelected: privacy == selectedPrivacy,
-                  onTap: () {
-                    ref.read(generateImageProvider.notifier).selectedPrivacy =
-                        privacy;
-                  },
-                  theme: theme,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: ImagePrivacy.values.map((privacy) {
+          final isPremiumFeature = !isPremiumUser && privacy != ImagePrivacy.public;
+
+          return _buildIconRadioOption(
+            privacy: privacy,
+            isSelected: privacy == selectedPrivacy,
+            onTap: () {
+              if (!isPremiumFeature) {
+                ref.read(generateImageProvider.notifier).selectedPrivacy = privacy;
+              } else {
+                PremiumUpgradeDialog.show(
+                  context: context,
+                  featureName: "${privacy.title} Privacy",
+                  customDescription: "",
                 );
-              }).toList(),
-            ),
-          ),
-        ],
+              }
+            },
+            theme: theme,
+            isPremiumFeature: isPremiumFeature,
+          );
+        }).toList(),
       ),
     );
   }
@@ -69,48 +61,60 @@ class PrivacySelectionSection extends ConsumerWidget {
     required bool isSelected,
     required VoidCallback onTap,
     required ThemeData theme,
+    required bool isPremiumFeature,
   }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          width: 100,
-          decoration: BoxDecoration(
-            color: isSelected
-                ? theme.colorScheme.primary.withOpacity(0.15)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : Colors.transparent,
-              width: 1.5,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(
-                privacy.icon,
-                size: 18,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              width: 100,
+              decoration: BoxDecoration(
                 color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
-              Text(
-                privacy.title,
-                style: TextStyle(
-                  color:  theme.colorScheme.onSurface,
-                  fontSize: 14,
+                    ? theme.colorScheme.primary.withOpacity(0.15)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected
+                      ? theme.colorScheme.primary
+                      : Colors.transparent,
+                  width: 1.5,
                 ),
               ),
-            ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Icon(
+                    privacy.icon,
+                    size: 18,
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface.withOpacity(0.6),
+                  ),
+                  Text(
+                    privacy.title,
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+        if (isPremiumFeature)
+          Positioned(
+            top: -8,
+            right: -8,
+            child: ProIconBadge(size: 14),
+          ),
+      ],
     );
   }
 }

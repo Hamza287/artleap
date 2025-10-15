@@ -2,9 +2,9 @@ import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../components/communiry_header.dart';
 import '../components/post_card.dart';
+import 'no_image_widget.dart';
 import 'shimmer_loading.dart';
 
 class CommunityFeedWidget extends ConsumerStatefulWidget {
@@ -29,26 +29,22 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
       }
     });
 
-    _scrollController.addListener(() {
-      final now = DateTime.now();
-      if (_lastScrollTime != null &&
-          now.difference(_lastScrollTime!) < _throttleDuration) {
-        return;
-      }
-      _lastScrollTime = now;
-
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 300 &&
-          !ref.read(homeScreenProvider).isLoadingMore) {
-        ref.read(homeScreenProvider).loadMoreImages();
-      }
-    });
+    _scrollController.addListener(_onScroll);
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void _onScroll() {
+    final now = DateTime.now();
+    if (_lastScrollTime != null &&
+        now.difference(_lastScrollTime!) < _throttleDuration) {
+      return;
+    }
+    _lastScrollTime = now;
+
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 300 &&
+        !ref.read(homeScreenProvider).isLoadingMore) {
+      ref.read(homeScreenProvider).loadMoreImages();
+    }
   }
 
   Widget _buildLoadMoreShimmer() {
@@ -67,6 +63,13 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -89,31 +92,8 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                     await ref.read(homeScreenProvider).refreshUserCreations();
                   },
                   child: filteredList.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.image_not_supported,
-                                  size: 64,
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(0.4),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  "No images available for this filter",
-                                  style: AppTextstyle.interMedium(
-                                    fontSize: 16,
-                                    color: theme.colorScheme.onSurface
-                                        .withOpacity(0.6),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
+                      ? NoContentWidget.noImagesForFilter(
+                          filterName: homeProvider.selectedStyleTitle,
                         )
                       : ListView.builder(
                           controller: _scrollController,

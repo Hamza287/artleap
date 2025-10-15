@@ -25,16 +25,33 @@ class MyCreationsWidget extends StatefulWidget {
 }
 
 class _MyCreationsWidgetState extends State<MyCreationsWidget> {
-  late final List<Images> filteredCreations;
+  late List<Images> filteredCreations;
 
   @override
   void initState() {
+    super.initState();
+    _updateFilteredCreations();
+  }
+
+  @override
+  void didUpdateWidget(MyCreationsWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.userId != widget.userId ||
+        oldWidget.listofCreations != widget.listofCreations) {
+      _updateFilteredCreations();
+    }
+  }
+
+  void _updateFilteredCreations() {
     final filteredList = widget.userId == UserData.ins.userId!
         ? widget.listofCreations
         : widget.listofCreations.where((image) => image.privacy == 'public').toList();
-    filteredCreations = filteredList.reversed.toList();
 
-    super.initState();
+    if (mounted) {
+      setState(() {
+        filteredCreations = filteredList.reversed.toList();
+      });
+    }
   }
 
   @override

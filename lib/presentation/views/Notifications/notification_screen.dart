@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/common/dialog_box/notification_delele_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
@@ -7,7 +8,6 @@ import 'package:Artleap.ai/shared/constants/user_data.dart';
 import '../../../shared/notification_utils/empty_state.dart';
 import '../../../shared/notification_utils/error_state.dart';
 import '../../../shared/notification_utils/loading_indicator.dart';
-import '../global_widgets/dialog_box/notification_delele_dialog.dart';
 import 'notification_card.dart';
 import 'notification_details_screen.dart';
 

@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_alert_dialog.dart';
+import 'package:Artleap.ai/presentation/views/common/dialog_box/set_privacy_dialog.dart';
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
@@ -7,13 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:Artleap.ai/presentation/views/global_widgets/dialog_box/delete_alert_dialog.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../../global_widgets/dialog_box/set_privacy_dialog.dart';
 
 // ignore: must_be_immutable
 class PictureOptionsWidget extends ConsumerWidget {

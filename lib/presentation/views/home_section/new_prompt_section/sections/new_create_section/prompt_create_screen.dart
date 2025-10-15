@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import 'package:Artleap.ai/presentation/views/common/dialog_box/custom_credit_dialog.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
@@ -10,7 +11,6 @@ import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../prompt_screen_widgets/prompt_top_bar.dart';
 import '../../result/result_prompt_screen.dart';
 import 'components/generation_footer_redesign.dart';
@@ -53,6 +53,13 @@ class _PromptCreateScreenRedesignState
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
+      final userProfile = ref.read(userProfileProvider).userProfileData;
+      if (userProfile != null && userProfile.user.totalCredits == 0) {
+        showDialog(
+          context: context,
+          builder: (context) => const CustomCreditDialog(),
+        );
+      }
     });
 
     _animationController = AnimationController(
@@ -221,7 +228,9 @@ class _PromptCreateScreenRedesignState
                       children: [
                         PromptInputRedesign(),
                         const SizedBox(height: 16),
-                        PrivacySelectionSection(),
+                        PrivacySelectionSection(
+                          isPremiumUser: !isFreePlan,
+                        ),
                         const SizedBox(height: 16),
                         ImageControlsRedesign(
                           onImageSelected: () {
@@ -234,7 +243,9 @@ class _PromptCreateScreenRedesignState
                         ),
                         SizedBox(
                             height: screenSize == ScreenSizeCategory.small ||
-                                    screenSize == ScreenSizeCategory.extraSmall ? 100.0 : 120.0),
+                                    screenSize == ScreenSizeCategory.extraSmall
+                                ? 100.0
+                                : 120.0),
                       ],
                     ),
                   ),

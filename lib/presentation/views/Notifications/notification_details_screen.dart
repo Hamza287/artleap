@@ -1,13 +1,12 @@
+import 'package:Artleap.ai/presentation/views/common/dialog_box/notification_delele_dialog.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-
 import '../../../providers/notification_provider.dart';
 import '../global_widgets/app_common_button.dart';
-import '../global_widgets/dialog_box/notification_delele_dialog.dart';
 
 class NotificationDetailScreen extends ConsumerWidget {
   static const routeName = '/notification-details';

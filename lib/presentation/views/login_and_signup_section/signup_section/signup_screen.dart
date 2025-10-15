@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/base_widgets/scaffold_background.dart';
+import 'package:Artleap.ai/widgets/scaffold_background.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen_widgets/go_back_widget.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen_widgets/signup_textfields_section.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
@@ -17,6 +17,7 @@ class SignUpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context).colorScheme;
     return RegistrationBackgroundWidget(
         widget: Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -25,7 +26,7 @@ class SignUpScreen extends ConsumerWidget {
           height: 650,
           width: double.infinity,
           decoration: BoxDecoration(
-              color: AppColors.white,
+              color: theme.surface,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30), topRight: Radius.circular(30))),
           child: Padding(
@@ -73,25 +74,6 @@ class SignUpScreen extends ConsumerWidget {
             ),
           ),
         ),
-        // const SignupScreenText(),
-        // 20.spaceY,
-        // const SignupTextfieldSection(),
-        // 20.spaceY,
-        // ref.watch(authprovider).isLoading
-        //     ? const CircularProgressIndicator(
-        //         color: AppColors.indigo,
-        //       )
-        //     : CommonButton(
-        //         title: "Create Account",
-        //         color: AppColors.indigo,
-        //         onpress: () {
-        //           print("dddddddddd");
-        //           ref.read(authprovider).signUpWithEmail();
-        //         },
-        //       ),
-        // 20.spaceY,
-        // const AlreadyHaveAccountText(),
-        // 60.spaceY
       ],
     ));
   }

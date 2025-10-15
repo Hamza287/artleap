@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/domain/notifications_repo/notification_repository.dart';
+import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
@@ -37,12 +38,21 @@ class AppInitialization {
 
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.transparent,
       statusBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.light,
     ));
+  }
+
+  static Future<bool> shouldShowTutorial(WidgetRef ref) async {
+    try {
+      final storageService = ref.read(tutorialStorageServiceProvider);
+      await storageService.init();
+      return !storageService.hasSeenTutorial();
+    } catch (e) {
+      debugPrint('Error checking tutorial status: $e');
+      return true;
+    }
   }
 
   static Future<String?> initializeAuthAndNotifications(WidgetRef ref) async {

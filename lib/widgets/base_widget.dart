@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/api_services/api_response.dart';
+import '../domain/api_services/api_response.dart';
 import 'issue_widget.dart';
 
 class BaseWidget extends StatelessWidget {

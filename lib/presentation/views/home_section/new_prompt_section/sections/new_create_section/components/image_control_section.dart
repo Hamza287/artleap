@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/utilities/photo_permission_helper.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,8 @@ import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../../prompt_screen_widgets/styles_bottom_sheet.dart';
-import '../../create_section/image_control_widgets/style_selection_card.dart';
+import 'styles_bottom_sheet.dart';
+import 'style_selection_card.dart';
 import 'image_preview_redesign.dart';
 import 'image_selection_button_redesign.dart';
 import 'inspiration_button_redesign.dart';
@@ -127,7 +128,7 @@ class ImageControlsRedesign extends ConsumerWidget {
         Text(
           "Aspect Ratio",
           style: AppTextstyle.interMedium(
-            fontSize: 16,
+            fontSize: 13,
             color: theme.colorScheme.onSurface,
           ),
         ),
@@ -228,7 +229,11 @@ class ImageControlsRedesign extends ConsumerWidget {
   Future<void> _handleImagePick(BuildContext context, WidgetRef ref) async {
     try {
       if (!isPremiumUser) {
-        await _showPremiumFeatureDialog(context);
+        PremiumUpgradeDialog.show(
+          context: context,
+          featureName: "Reference Image",
+          customDescription: "Add Reference Image to Make it with Ai",
+        );
         return;
       }
 
@@ -290,46 +295,5 @@ class ImageControlsRedesign extends ConsumerWidget {
         );
       }
     }
-  }
-
-  Future<void> _showPremiumFeatureDialog(BuildContext context) async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.workspace_premium, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(width: 8),
-            Text(
-              'Premium Feature',
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-          ],
-        ),
-        content: Text(
-          'Image selection is a premium feature. Upgrade to premium to access this functionality.',
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed("choose_plan_screen");
-            },
-            child: Text(
-              'Upgrade',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

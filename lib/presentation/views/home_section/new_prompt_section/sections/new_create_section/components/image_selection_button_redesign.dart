@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/custom_pro_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
@@ -106,52 +107,9 @@ class ImageSelectionButtonRedesign extends StatelessWidget {
         ),
         if (showPremiumIcon && !hasImage)
           Positioned(
-            top: -6,
-            right: -6,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFFFFD700),
-                    Color(0xFFFFA500),
-                    Color(0xFFFF8C00),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.orange.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-                border: Border.all(
-                  color: theme.colorScheme.surface,
-                  width: 2,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.workspace_premium_rounded,
-                    color: Colors.white,
-                    size: 10,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'PRO',
-                    style: AppTextstyle.interMedium(
-                      fontSize: 10,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            top: -8,
+            right: -8,
+            child: ProIconBadge(size: 14),
           ),
       ],
     );

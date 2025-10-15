@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../shared/constants/app_colors.dart';
-import '../../shared/constants/app_textstyle.dart';
+import '../shared/constants/app_colors.dart';
+import '../shared/constants/app_textstyle.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;

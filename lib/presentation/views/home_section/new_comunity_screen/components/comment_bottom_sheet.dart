@@ -1,8 +1,8 @@
 import 'package:Artleap.ai/domain/community/providers/comment_provider.dart';
+import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_coment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../global_widgets/dialog_box/delete_coment_dialog.dart';
 import '../bottom_sheet_components/comment_tile.dart';
 import '../bottom_sheet_components/empty_comment_widget.dart';
 import '../bottom_sheet_components/error_coment_state.dart';
