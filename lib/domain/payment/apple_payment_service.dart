@@ -7,7 +7,7 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart'
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 
-import '../../presentation/views/subscriptions/payment_screen.dart';
+import '../../presentation/views/subscriptions/google_payment_screen.dart';
 import '../api_services/api_response.dart';
 
 // Provider for Apple payment service

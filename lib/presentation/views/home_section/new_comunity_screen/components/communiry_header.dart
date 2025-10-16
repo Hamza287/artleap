@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../widegts/art_style_dialog.dart';
 
@@ -17,15 +16,16 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final homeProvider = ref.watch(homeScreenProvider);
     final hasActiveFilter = homeProvider.selectedStyleTitle != null;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: theme.colorScheme.shadow.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -41,14 +41,14 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                 'Community',
                 style: AppTextstyle.interBold(
                   fontSize: 24,
-                  color: AppColors.darkBlue,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               Text(
                 'Discover amazing AI art',
                 style: AppTextstyle.interRegular(
                   fontSize: 12,
-                  color: Colors.grey.shade600,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ],
@@ -65,26 +65,26 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
               children: [
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
                     gradient: hasActiveFilter
                         ? LinearGradient(
-                            colors: [AppColors.darkBlue, AppColors.pinkColor],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          )
+                      colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
                         : LinearGradient(
-                            colors: [
-                              Colors.grey.shade100,
-                              Colors.grey.shade100
-                            ],
-                          ),
+                      colors: [
+                        theme.colorScheme.surfaceVariant,
+                        theme.colorScheme.surfaceVariant
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
                         color:
-                            (hasActiveFilter ? AppColors.darkBlue : Colors.grey)
-                                .withOpacity(0.2),
+                        (hasActiveFilter ? theme.colorScheme.primary : theme.colorScheme.outline)
+                            .withOpacity(0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -96,8 +96,8 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                       Icon(
                         Icons.filter_alt_rounded,
                         color: hasActiveFilter
-                            ? Colors.white
-                            : Colors.grey.shade700,
+                            ? theme.colorScheme.onPrimary
+                            : theme.colorScheme.onSurfaceVariant,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -108,8 +108,8 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                         style: AppTextstyle.interMedium(
                           fontSize: 14,
                           color: hasActiveFilter
-                              ? Colors.white
-                              : Colors.grey.shade700,
+                              ? theme.colorScheme.onPrimary
+                              : theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -122,8 +122,8 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                     child: Container(
                       width: 8,
                       height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.error,
                         shape: BoxShape.circle,
                       ),
                     ),

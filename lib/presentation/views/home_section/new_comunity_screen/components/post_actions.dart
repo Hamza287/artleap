@@ -1,10 +1,8 @@
 import 'dart:math';
-
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
 import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'comment_section.dart';
 
@@ -17,6 +15,7 @@ class PostActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final imageId = image.id?.toString() ?? '${image.hashCode}';
 
     final likeStatus = ref.watch(likeProvider(imageId));
@@ -59,23 +58,26 @@ class PostActions extends ConsumerWidget {
                 isLiked: isLiked,
                 likeCount: likeCount,
                 context: context,
+                theme: theme,
               ),
               const SizedBox(width: 20),
               _CommentButton(
                 imageId: imageId,
                 commentCount: commentCount,
+                theme: theme,
               ),
               const Spacer(),
               _SaveButton(
                 imageId: imageId,
                 isSaved: isSaved,
                 context: context,
+                theme: theme,
               ),
             ],
           ),
           if (likeCount > 0) ...[
             const SizedBox(height: 12),
-            _LikeCountText(likeCount: likeCount),
+            _LikeCountText(likeCount: likeCount, theme: theme),
           ],
         ],
       ),
@@ -88,12 +90,14 @@ class _LikeButtonWithAnimation extends ConsumerStatefulWidget {
   final bool isLiked;
   final int likeCount;
   final BuildContext context;
+  final ThemeData theme;
 
   const _LikeButtonWithAnimation({
     required this.imageId,
     required this.isLiked,
     required this.likeCount,
     required this.context,
+    required this.theme,
   });
 
   @override
@@ -157,7 +161,7 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
       ScaffoldMessenger.of(widget.context).showSnackBar(
         SnackBar(
           content: Text('Failed to update like: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: widget.theme.colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -180,10 +184,10 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: widget.isLiked ? Colors.red.withOpacity(0.1) : Colors.grey.shade100,
+              color: widget.isLiked ? widget.theme.colorScheme.error.withOpacity(0.1) : widget.theme.colorScheme.surfaceVariant,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: widget.isLiked ? Colors.red : Colors.transparent,
+                color: widget.isLiked ? widget.theme.colorScheme.error : Colors.transparent,
                 width: 1.5,
               ),
             ),
@@ -195,7 +199,7 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
                   child: Icon(
                     widget.isLiked ? Icons.favorite : Icons.favorite_outline,
                     key: ValueKey(widget.isLiked),
-                    color: widget.isLiked ? Colors.red : Colors.grey.shade700,
+                    color: widget.isLiked ? widget.theme.colorScheme.error : widget.theme.colorScheme.onSurfaceVariant,
                     size: 20, // Fixed size
                   ),
                 ),
@@ -204,7 +208,7 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
                   _formatCount(widget.likeCount),
                   style: AppTextstyle.interMedium(
                     fontSize: 14,
-                    color: widget.isLiked ? Colors.red : Colors.grey.shade700,
+                    color: widget.isLiked ? widget.theme.colorScheme.error : widget.theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -220,7 +224,7 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.red.withOpacity(_pulseAnimation.value * 0.5),
+                      color: widget.theme.colorScheme.error.withOpacity(_pulseAnimation.value * 0.5),
                       width: 2.0 * _pulseAnimation.value,
                     ),
                   ),
@@ -255,11 +259,11 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
                 width: size,
                 height: size,
                 decoration: BoxDecoration(
-                  color: Colors.red,
+                  color: widget.theme.colorScheme.error,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.red.withOpacity(0.6),
+                      color: widget.theme.colorScheme.error.withOpacity(0.6),
                       blurRadius: 2,
                     ),
                   ],
@@ -282,10 +286,12 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
 class _CommentButton extends ConsumerWidget {
   final String imageId;
   final int commentCount;
+  final ThemeData theme;
 
   const _CommentButton({
     required this.imageId,
     required this.commentCount,
+    required this.theme,
   });
 
   void _focusCommentField(WidgetRef ref) {
@@ -299,7 +305,7 @@ class _CommentButton extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: theme.colorScheme.surfaceVariant,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -307,7 +313,7 @@ class _CommentButton extends ConsumerWidget {
           children: [
             Icon(
               Icons.chat_bubble_outline_rounded,
-              color: Colors.grey.shade700,
+              color: theme.colorScheme.onSurfaceVariant,
               size: 20,
             ),
             const SizedBox(width: 8),
@@ -315,7 +321,7 @@ class _CommentButton extends ConsumerWidget {
               _formatCount(commentCount),
               style: AppTextstyle.interMedium(
                 fontSize: 14,
-                color: Colors.grey.shade700,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -335,11 +341,13 @@ class _SaveButton extends ConsumerWidget {
   final String imageId;
   final bool isSaved;
   final BuildContext context;
+  final ThemeData theme;
 
   const _SaveButton({
     required this.imageId,
     required this.isSaved,
-    required this.context
+    required this.context,
+    required this.theme,
   });
 
   void _toggleSave(WidgetRef ref) async {
@@ -349,7 +357,7 @@ class _SaveButton extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(isSaved ? 'Removed from saved collection' : 'Saved to your collection'),
-          backgroundColor: AppColors.darkBlue,
+          backgroundColor: theme.colorScheme.primary,
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
         ),
@@ -359,7 +367,7 @@ class _SaveButton extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to update save: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: theme.colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -373,16 +381,16 @@ class _SaveButton extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSaved ? AppColors.darkBlue.withOpacity(0.1) : Colors.grey.shade100,
+          color: isSaved ? theme.colorScheme.primary.withOpacity(0.1) : theme.colorScheme.surfaceVariant,
           shape: BoxShape.circle,
           border: Border.all(
-            color: isSaved ? AppColors.darkBlue : Colors.transparent,
+            color: isSaved ? theme.colorScheme.primary : Colors.transparent,
             width: 1.5,
           ),
         ),
         child: Icon(
           isSaved ? Icons.bookmark : Icons.bookmark_outline,
-          color: isSaved ? AppColors.darkBlue : Colors.grey.shade700,
+          color: isSaved ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
           size: 22,
         ),
       ),
@@ -392,8 +400,9 @@ class _SaveButton extends ConsumerWidget {
 
 class _LikeCountText extends StatelessWidget {
   final int likeCount;
+  final ThemeData theme;
 
-  const _LikeCountText({required this.likeCount});
+  const _LikeCountText({required this.likeCount, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -403,7 +412,7 @@ class _LikeCountText extends StatelessWidget {
         '$likeCount ${likeCount == 1 ? 'like' : 'likes'}',
         style: AppTextstyle.interBold(
           fontSize: 14,
-          color: Colors.black87,
+          color: theme.colorScheme.onSurface,
         ),
       ),
     );

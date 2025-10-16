@@ -12,12 +12,14 @@ class AlreadyHaveAccountText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         RichText(
             text: TextSpan(
                 style: AppTextstyle.interRegular(
-                    color: AppColors.black.withOpacity(0.4), fontSize: 12),
+                    color: theme.onSurface, fontSize: 12),
                 text: "Already have an account?  ",
                 children: [
               TextSpan(

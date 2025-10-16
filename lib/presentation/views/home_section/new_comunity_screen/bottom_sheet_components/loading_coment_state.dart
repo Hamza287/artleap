@@ -5,15 +5,17 @@ class LoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
-        children: List.generate(3, (index) => _buildShimmerComment()),
+        children: List.generate(3, (index) => _buildShimmerComment(theme)),
       ),
     );
   }
 
-  Widget _buildShimmerComment() {
+  Widget _buildShimmerComment(ThemeData theme) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -23,7 +25,7 @@ class LoadingState extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: theme.colorScheme.surfaceContainerHighest,
               shape: BoxShape.circle,
             ),
           ),
@@ -35,10 +37,10 @@ class LoadingState extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.grey.shade200,
+                      color: theme.colorScheme.outline.withOpacity(0.3),
                       width: 1,
                     ),
                   ),
@@ -49,7 +51,7 @@ class LoadingState extends StatelessWidget {
                         width: 120,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -58,7 +60,7 @@ class LoadingState extends StatelessWidget {
                         width: double.infinity,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -67,7 +69,7 @@ class LoadingState extends StatelessWidget {
                         width: 200,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -79,7 +81,7 @@ class LoadingState extends StatelessWidget {
                   width: 80,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

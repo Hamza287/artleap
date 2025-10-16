@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import '../../../domain/subscriptions/subscription_repo_provider.dart';
-import 'sections/credits_card.dart';
 import 'sections/profile_header.dart';
 import 'sections/stats_card.dart';
 import 'sections/subscription_card.dart';
@@ -30,14 +28,13 @@ class _PersonalInformationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final profileProvider = ref.watch(userProfileProvider);
     final user = profileProvider.userProfileData?.user;
     final isLoading = profileProvider.isLoading;
-    final userId = UserData.ins.userId;
-    final subscriptionAsync = userId != null ? ref.watch(currentSubscriptionProvider(userId)) : null;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -49,11 +46,11 @@ class _PersonalInformationScreenState
                 flexibleSpace: FlexibleSpaceBar(
                     background: user != null
                         ? ProfileHeader(
-                            profilePic: user.profilePic,
-                            username: user.username,
-                            email: user.email,
-                          )
-                        : Container(color: Colors.grey[200])),
+                      profilePic: user.profilePic,
+                      username: user.username,
+                      email: user.email,
+                    )
+                        : Container(color: theme.colorScheme.surfaceContainer)),
                 actions: [
                   // IconButton(
                   //   icon: const Icon(Icons.edit, color: Colors.white),
@@ -68,7 +65,7 @@ class _PersonalInformationScreenState
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                if (isLoading) _buildLoadingState(),
+                if (isLoading) _buildLoadingState(theme),
                 if (!isLoading && user != null) ...[
                   StatsCard(
                     followers: user.followers.length,
@@ -114,16 +111,16 @@ class _PersonalInformationScreenState
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(ThemeData theme) {
     return Column(
       children: List.generate(
         4,
-        (index) => Padding(
+            (index) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Container(
             height: 100,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: theme.colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(12),
             ),
           ),

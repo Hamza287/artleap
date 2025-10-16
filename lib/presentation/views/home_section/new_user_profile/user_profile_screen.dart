@@ -4,7 +4,6 @@ import '../../../../providers/bottom_nav_bar_provider.dart';
 import '../../../../providers/notification_provider.dart';
 import '../../../../providers/user_profile_provider.dart';
 import '../../../../shared/constants/app_assets.dart';
-import '../../../../shared/constants/app_colors.dart';
 import '../../../../shared/constants/app_textstyle.dart';
 import '../../../../shared/constants/user_data.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
@@ -46,6 +45,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     final user = userPersonalData?.user;
     final profilePic = user?.profilePic;
     final userName = user?.username ?? 'Guest';
+    final theme = Theme.of(context);
 
     if (user == null || userPersonalData == null) {
       return const Scaffold(
@@ -61,7 +61,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF011E63),
+        backgroundColor: theme.colorScheme.primary,
         body: SafeArea(
           bottom: false,
           child: LayoutBuilder(
@@ -89,7 +89,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.save, color: Colors.white),
+                                    icon: Icon(Icons.save, color: theme.colorScheme.onPrimary),
                                     onPressed: (){
                                       Navigator.of(context).pushNamed('saved-images-screens');
                                     },
@@ -98,7 +98,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                   IconButton(
                                     icon: Badge(
                                       label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                                      child: const Icon(Icons.notifications, color: AppColors.white, size: 30),
+                                      child: Icon(Icons.notifications, color: theme.colorScheme.onPrimary, size: 30),
                                     ),
                                     onPressed: () {
                                       Navigator.pushNamed(context, NotificationScreen.routeName);
@@ -112,18 +112,17 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       ),
                     ),
                   ),
-                  // White content area with profile info
                   SliverToBoxAdapter(
                     child: Container(
                       constraints: BoxConstraints(
                         minHeight: screenHeight - (screenHeight * 0.2) - MediaQuery.of(context).padding.top,
                       ),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black12,
+                            color: theme.colorScheme.shadow.withOpacity(0.1),
                             blurRadius: 10,
                             spreadRadius: 2,
                           ),
@@ -134,7 +133,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           left: 16,
                           right: 16,
                           top: 16,
-                          bottom: 16 + safeAreaBottom, // Add bottom padding for safe area
+                          bottom: 16 + safeAreaBottom,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,10 +150,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       height: 100,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: Colors.white, width: 4),
+                                        border: Border.all(color: theme.colorScheme.surface, width: 4),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
+                                            color: theme.colorScheme.shadow.withOpacity(0.1),
                                             blurRadius: 8,
                                             spreadRadius: 2,
                                           ),
@@ -175,7 +174,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       userName.toUpperCase(),
                                       style: AppTextstyle.interBold(
                                         fontSize: 22,
-                                        color: Colors.black,
+                                        color: theme.colorScheme.onSurface,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
@@ -183,7 +182,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       '@${user.id}',
                                       style: AppTextstyle.interMedium(
                                         fontSize: 16,
-                                        color: Colors.grey,
+                                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                                       ),
                                     ),
                                     const SizedBox(height: 8),
@@ -191,7 +190,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       'Creating images just for fun',
                                       style: AppTextstyle.interRegular(
                                         fontSize: 15,
-                                        color: Colors.black87,
+                                        color: theme.colorScheme.onSurface,
                                       ),
                                     ),
                                     const SizedBox(height: 16),
@@ -202,24 +201,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                         _buildStatColumn(
                                           userPersonalData.user.followers.length.toString(),
                                           'Followers',
+                                          theme,
                                         ),
                                         const SizedBox(width: 30),
                                         _buildStatColumn(
                                           userPersonalData.user.following.length.toString(),
                                           'Following',
+                                          theme,
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 16),
                                     Row(
                                       children: [
-                                        const Icon(Icons.auto_awesome, color: Color(0xFF8962EB)),
+                                        Icon(Icons.auto_awesome, color: theme.colorScheme.primary),
                                         const SizedBox(width: 10),
                                         Text(
                                           '${userPersonalData.user.images.length.toString()} Generations',
                                           style: AppTextstyle.interMedium(
                                             fontSize: 18,
-                                            color: Color(0xFF8962EB),
+                                            color: theme.colorScheme.primary,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -248,14 +249,14 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  Widget _buildStatColumn(String value, String label) {
+  Widget _buildStatColumn(String value, String label, ThemeData theme) {
     return Row(
       children: [
         Text(
           value,
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: Colors.black,
+            color: theme.colorScheme.onBackground,
           ),
         ),
         const SizedBox(width: 10),
@@ -263,7 +264,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           label,
           style: AppTextstyle.interRegular(
             fontSize: 14,
-            color: Colors.grey,
+            color: theme.colorScheme.onSurface.withOpacity(0.6),
           ),
         ),
       ],

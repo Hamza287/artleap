@@ -5,7 +5,6 @@ import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widg
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'widegts/community_feed_widget.dart';
@@ -56,6 +55,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
@@ -63,17 +64,29 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         bool shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            backgroundColor: AppColors.blue,
-            title: const Text('Confirm Exit'),
-            content: const Text('Are you sure you want to leave?'),
+            backgroundColor: theme.colorScheme.surface,
+            title: Text(
+              'Confirm Exit',
+              style: TextStyle(color: theme.colorScheme.onSurface),
+            ),
+            content: Text(
+              'Are you sure you want to leave?',
+              style: TextStyle(color: theme.colorScheme.onSurface),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text('No', style: AppTextstyle.interBold(color: AppColors.white)),
+                child: Text(
+                    'No',
+                    style: AppTextstyle.interBold(color: theme.colorScheme.primary)
+                ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text('Yes', style: AppTextstyle.interBold(color: AppColors.white)),
+                child: Text(
+                    'Yes',
+                    style: AppTextstyle.interBold(color: theme.colorScheme.primary)
+                ),
               ),
             ],
           ),

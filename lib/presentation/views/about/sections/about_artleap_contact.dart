@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class AboutArtleapContactSection extends StatelessWidget {
@@ -7,6 +6,7 @@ class AboutArtleapContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       decoration: BoxDecoration(
@@ -14,8 +14,8 @@ class AboutArtleapContactSection extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.lightPurple.withOpacity(0.1),
-            AppColors.lightBlue.withOpacity(0.1),
+            theme.colorScheme.secondaryContainer.withOpacity(0.1),
+            theme.colorScheme.primaryContainer.withOpacity(0.1),
           ],
         ),
       ),
@@ -25,7 +25,7 @@ class AboutArtleapContactSection extends StatelessWidget {
             'Get In Touch',
             style: AppTextstyle.interBold(
               fontSize: 24,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 24),
@@ -33,16 +33,19 @@ class AboutArtleapContactSection extends StatelessWidget {
             icon: Icons.email,
             title: 'Email Us',
             value: 'info@x-r.digital',
+            theme: theme,
           ),
           _buildContactMethod(
             icon: Icons.language,
             title: 'Website',
             value: 'https://x-r.digital/',
+            theme: theme,
           ),
           _buildContactMethod(
             icon: Icons.phone,
             title: 'Support',
             value: '+44 (20) 3807 5235',
+            theme: theme,
           ),
           const SizedBox(height: 5),
         ],
@@ -54,17 +57,18 @@ class AboutArtleapContactSection extends StatelessWidget {
     required IconData icon,
     required String title,
     required String value,
+    required ThemeData theme,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 24, color: AppColors.purple),
+          Icon(icon, size: 24, color: theme.colorScheme.primary),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -74,14 +78,14 @@ class AboutArtleapContactSection extends StatelessWidget {
                   title,
                   style: AppTextstyle.interRegular(
                     fontSize: 14,
-                    color: AppColors.darkBlue.withOpacity(0.6),
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
                 Text(
                   value,
                   style: AppTextstyle.interBold(
                     fontSize: 16,
-                    color: AppColors.darkBlue,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
               ],

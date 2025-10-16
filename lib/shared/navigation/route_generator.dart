@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/presentation/views/common/tutorial_screen.dart';
 import 'package:Artleap.ai/presentation/views/personal_information/personal_info_screen.dart';
 import 'package:Artleap.ai/presentation/views/saved_images_screen/save_image_screen.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
 import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/edit_profile_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_user_profile_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
@@ -21,13 +21,12 @@ import '../../presentation/views/home_section/new_prompt_section/result/result_p
 import '../../presentation/views/interest_onboarding_screens/interest_onboarding_screen.dart';
 import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
-import '../../presentation/views/login_or_signup_screen/login_or_signup_screen.dart';
 import '../../presentation/views/policies_screens/help_screen.dart';
 import '../../presentation/views/policies_screens/privacy_policy_screen.dart';
 import '../../presentation/views/subscriptions/apple_payment_screen.dart';
 import '../../presentation/views/subscriptions/choose_plan_screen.dart';
 import '../../presentation/views/subscriptions/current_plan_screen.dart';
-import '../../presentation/views/subscriptions/payment_screen.dart';
+import '../../presentation/views/subscriptions/google_payment_screen.dart';
 
 
 class RouteGenerator {
@@ -37,6 +36,8 @@ class RouteGenerator {
         return route(const SplashScreen());
       case InterestOnboardingScreen.routeName:
         return route(const InterestOnboardingScreen());
+      case TutorialScreen.routeName:
+        return route(const TutorialScreen());
       case AcceptPrivacyPolicyScreen.routeName:
         return route(const AcceptPrivacyPolicyScreen());
       case ChoosePlanScreen.routeName:
@@ -47,8 +48,6 @@ class RouteGenerator {
         return route(const AboutArtleapScreen());
       case LoginScreen.routeName:
         return route(const LoginScreen());
-      case LoginORsignUpScreen.routeName:
-        return route(const LoginORsignUpScreen());
       case SignUpScreen.routeName:
         return route(const SignUpScreen());
       case CurrentPlanScreen.routeName:
@@ -57,10 +56,10 @@ class RouteGenerator {
         return route(const FavouritesScreen());
       case SavedImagesScreen.routeName:
         return route(const SavedImagesScreen());
-      case PaymentScreen.routeName:
+      case GooglePaymentScreen.routeName:
         final args = settings.arguments as SubscriptionPlanModel;
         return MaterialPageRoute(
-          builder: (_) => PaymentScreen(plan: args),
+          builder: (_) => GooglePaymentScreen(plan: args),
           settings: settings,
         );
 
@@ -76,10 +75,6 @@ class RouteGenerator {
         return route(const ResultScreenRedesign());
       case SeePictureScreen.routeName:
         return route(SeePictureScreen(params: settings.arguments as SeePictureParams?));
-      case EditProfileScreen.routeName:
-        return route(EditProfileScreen(
-          params: settings.arguments as EditProfileSreenParams?,
-        ));
       case OtherUserProfileScreen.routeName:
         return route(OtherUserProfileScreen(
           params: settings.arguments as OtherUserProfileParams?,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class UserProfileMatricsWidget extends ConsumerWidget {
@@ -18,12 +17,15 @@ class UserProfileMatricsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Container(
       height: 50,
       width: double.infinity,
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [AppColors.lightIndigo, AppColors.darkIndigo])),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+        theme.colorScheme.primary,
+        theme.colorScheme.primaryContainer
+      ])),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -76,17 +78,20 @@ class MatricsTextWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           title!,
           style: AppTextstyle.interMedium(
-              color: AppColors.lightgrey, fontSize: 14),
+              color: theme.colorScheme.onPrimary.withOpacity(0.8),
+              fontSize: 14),
         ),
         Text(
           count!,
-          style: AppTextstyle.interMedium(color: AppColors.white, fontSize: 15),
+          style: AppTextstyle.interMedium(
+              color: theme.colorScheme.onPrimary, fontSize: 15),
         )
       ],
     );

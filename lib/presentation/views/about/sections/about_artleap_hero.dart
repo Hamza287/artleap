@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class AboutArtleapHeroSection extends StatelessWidget {
@@ -7,6 +6,7 @@ class AboutArtleapHeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       decoration: BoxDecoration(
@@ -14,8 +14,8 @@ class AboutArtleapHeroSection extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.darkBlue,
-            AppColors.lightBlue.withOpacity(0.1),
+            theme.colorScheme.primary,
+            theme.colorScheme.primaryContainer.withOpacity(0.1),
           ],
         ),
       ),
@@ -30,7 +30,7 @@ class AboutArtleapHeroSection extends StatelessWidget {
             'Where Creativity Meets AI',
             style: AppTextstyle.interBold(
               fontSize: 28,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onPrimary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -39,7 +39,7 @@ class AboutArtleapHeroSection extends StatelessWidget {
             'Artleap is revolutionizing digital art creation by combining human creativity with cutting-edge artificial intelligence.',
             style: AppTextstyle.interRegular(
               fontSize: 16,
-              color: AppColors.darkBlue.withOpacity(0.8),
+              color: theme.colorScheme.onPrimary.withOpacity(0.8),
             ),
             textAlign: TextAlign.center,
           ),

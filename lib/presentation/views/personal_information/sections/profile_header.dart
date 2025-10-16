@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/utilities/safe_network_image.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -17,23 +16,24 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Background Image or Gradient
         if (profilePic != null && profilePic!.isNotEmpty)
           SafeNetworkImage(
             imageUrl: profilePic!,
           )
         else
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.purple,
-                  AppColors.lightPurple,
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primaryContainer,
                 ],
               ),
             ),
@@ -41,26 +41,22 @@ class ProfileHeader extends StatelessWidget {
               child: Icon(
                 Icons.person,
                 size: 120,
-                color: Colors.white.withOpacity(0.8),
+                color: theme.colorScheme.onPrimary.withOpacity(0.8),
               ),
             ),
           ),
-
-        // Gradient Overlay
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Colors.black.withOpacity(0.7),
+                theme.colorScheme.scrim.withOpacity(0.7),
                 Colors.transparent,
               ],
             ),
           ),
         ),
-
-        // User Info
         Positioned(
           bottom: 20,
           left: 20,
@@ -71,7 +67,7 @@ class ProfileHeader extends StatelessWidget {
                 username,
                 style: AppTextstyle.interBold(
                   fontSize: 28,
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -79,7 +75,7 @@ class ProfileHeader extends StatelessWidget {
                 email,
                 style: AppTextstyle.interRegular(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.9),
+                  color: theme.colorScheme.onPrimary.withOpacity(0.9),
                 ),
               ),
             ],

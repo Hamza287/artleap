@@ -8,6 +8,7 @@ class FilterOfTheDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -19,7 +20,7 @@ class FilterOfTheDay extends StatelessWidget {
               'Filters of Day',
               style: AppTextstyle.interMedium(
                 fontSize: 18,
-                color: Colors.grey[200]!,
+                color: theme.colorScheme.onBackground,
               ),
             ),
           ),
@@ -28,7 +29,7 @@ class FilterOfTheDay extends StatelessWidget {
             height: 289,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color:Colors.grey[200],
+              color: theme.colorScheme.surface,
             ),
             child: Stack(
               children: [
@@ -39,19 +40,11 @@ class FilterOfTheDay extends StatelessWidget {
                   child: Container(
                     height: 60,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      // gradient: RadialGradient(
-                      //   tileMode: TileMode.clamp,
-                      //     radius: 2,
-                      //     colors: [
-                      //   Color(0xFFD4BEFF),
-                      //   Color(0xFF683FEA),
-                      //     ],
-                      // ),
+                      color: theme.colorScheme.primary,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey[200]!,
+                          color: theme.colorScheme.primary.withOpacity(0.3),
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
@@ -63,7 +56,7 @@ class FilterOfTheDay extends StatelessWidget {
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
+                            borderRadius: BorderRadius.circular(10)
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                       ),
@@ -77,11 +70,11 @@ class FilterOfTheDay extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: theme.colorScheme.onPrimary,
                                 ),
                               ),
                               10.spaceX,
-                              Icon(Icons.auto_awesome,color: Colors.white,size: 20,),
+                              Icon(Icons.auto_awesome,color: theme.colorScheme.onPrimary,size: 20,),
                             ],
                           ),
                           20.spaceX,
@@ -89,7 +82,7 @@ class FilterOfTheDay extends StatelessWidget {
                           Text(
                             "20",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: theme.colorScheme.onPrimary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

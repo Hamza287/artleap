@@ -110,7 +110,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (response.status == Status.completed) {
       await getUserProfileData(UserData.ins.userId ?? "");
     } else {
-      appSnackBar("Error", "Failed to update credits", AppColors.redColor);
+      print("Failed to update credits");
     }
     setLoader(false);
     if (hasListeners) {
@@ -133,125 +133,6 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       notifyListeners();
     }
   }
-
-  // Future<void> getSubscriptionPlans() async {
-  //   setLoader(true);
-  //   final response = await userFollowingRepo.getSubscriptionPlans();
-  //   if (response.status == Status.completed) {
-  //     _subscriptionPlans = response.data ?? [];
-  //   } else {
-  //     appSnackBar("Error", response.message ?? "Failed to fetch subscription plans", AppColors.redColor);
-  //   }
-  //   setLoader(false);
-  //   if (hasListeners) { // Check before notifying
-  //     notifyListeners();
-  //   }
-  // }
-  //
-  // Future<void> subscribe(String planId, String paymentMethod) async {
-  //   setLoader(true);
-  //   final data = {
-  //     "userId": UserData.ins.userId,
-  //     "planId": planId,
-  //     "paymentMethod": paymentMethod,
-  //   };
-  //   final response = await userFollowingRepo.subscribe(data);
-  //   if (response.status == Status.completed) {
-  //     await getCurrentSubscription();
-  //     await getUserProfileData(UserData.ins.userId ?? "");
-  //     appSnackBar("Success", response.data?['message'] ?? "Subscription created successfully", AppColors.green);
-  //   } else {
-  //     appSnackBar("Error", response.message ?? "Failed to subscribe", AppColors.redColor);
-  //   }
-  //   setLoader(false);
-  //   if (hasListeners) { // Check before notifying
-  //     notifyListeners();
-  //   }
-  // }
-  //
-  // Future<void> startTrial(String planId) async {
-  //   setLoader(true);
-  //   final data = {
-  //     "userId": UserData.ins.userId,
-  //     "planId": planId,
-  //   };
-  //   final response = await userFollowingRepo.startTrial(data);
-  //   if (response.status == Status.completed) {
-  //     await getCurrentSubscription();
-  //     await getUserProfileData(UserData.ins.userId ?? "");
-  //     appSnackBar("Success", "Trial started successfully", AppColors.green);
-  //   } else {
-  //     appSnackBar("Error", response.message ?? "Failed to start trial", AppColors.redColor);
-  //   }
-  //   setLoader(false);
-  //   if (hasListeners) {
-  //     notifyListeners();
-  //   }
-  // }
-  //
-  // Future<void> cancelSubscription({required bool immediate}) async {
-  //   setLoader(true);
-  //   final data = {
-  //     "userId": UserData.ins.userId,
-  //     "immediate": immediate,
-  //   };
-  //   final response = await userFollowingRepo.cancelSubscription(data);
-  //   if (response.status == Status.completed) {
-  //     await getCurrentSubscription();
-  //     await getUserProfileData(UserData.ins.userId ?? "");
-  //     appSnackBar(
-  //       "Success",
-  //       response.data?['message'] ?? (immediate ? "Subscription cancelled immediately" : "Subscription will not renew"),
-  //       AppColors.green,
-  //     );
-  //   } else {
-  //     appSnackBar("Error", response.message ?? "Failed to cancel subscription", AppColors.redColor);
-  //   }
-  //   setLoader(false);
-  //   if (hasListeners) {
-  //     notifyListeners();
-  //   }
-  // }
-  //
-  // Future<void> getCurrentSubscription() async {
-  //   setLoader(true);
-  //   final response = await userFollowingRepo.getCurrentSubscription(UserData.ins.userId ?? "");
-  //   if (response.status == Status.completed) {
-  //     _currentSubscription = response.data;
-  //   } else {
-  //     _currentSubscription = null;
-  //     appSnackBar("Error", response.message ?? "Failed to fetch current subscription", AppColors.redColor);
-  //   }
-  //   setLoader(false);
-  //   if (hasListeners) { // Check before notifying
-  //     notifyListeners();
-  //   }
-  // }
-
-  // Future<void> updateProfile({String? username, String? email, String? password, XFile? profilePic,}) async {
-  //   setLoader(true);
-  //   try {
-  //     final response = await userFollowingRepo.updateProfile(
-  //       userId: UserData.ins.userId ?? "",
-  //       username: username,
-  //       email: email,
-  //       password: password,
-  //       profilePic: profilePic,
-  //     );
-  //
-  //     if (response.status == Status.completed) {
-  //       await getUserProfileData(UserData.ins.userId ?? "");
-  //       appSnackBar("Success", "Profile updated successfully", AppColors.green);
-  //     } else {
-  //       appSnackBar("Error", response.message ?? "Failed to update profile", AppColors.redColor);
-  //     }
-  //   } catch (e) {
-  //     appSnackBar("Error", "An error occurred while updating profile", AppColors.redColor);
-  //   } finally {
-  //     setLoader(false);
-  //     notifyListeners();
-  //   }
-  // }
 
   Future<void> launchAnyUrl(String? url) async {
     if (url == null) return;

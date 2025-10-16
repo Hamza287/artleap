@@ -12,12 +12,13 @@ class SignupTextfieldSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text( 
           "Sign Up",
-          style: AppTextstyle.interBold(color: AppColors.black, fontSize: 32),
+          style: AppTextstyle.interBold(color: theme.onSurface, fontSize: 32),
         ),
         30.spaceY,
         AppCommonTextfield(

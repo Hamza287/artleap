@@ -1,28 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
-import 'package:Artleap.ai/presentation/views/subscriptions/apple_payment_screen.dart';
-import '../../../../domain/subscriptions/plan_provider.dart';
-import '../../../../domain/subscriptions/subscription_repo_provider.dart';
-import '../../../../shared/constants/app_colors.dart';
-import '../../../../shared/constants/app_textstyle.dart';
-import '../payment_screen.dart';
+import '../../../../domain/subscriptions/subscription_model.dart';
+import '../apple_payment_screen.dart';
+import '../google_payment_screen.dart';
 import 'plan_card.dart';
-import 'plan_selection_content.dart';
+import '../../../../shared/constants/app_textstyle.dart';
+import '../../../../providers/user_profile_provider.dart';
+import '../../../../shared/constants/user_data.dart';
+
+final selectedPlanProvider = StateProvider<SubscriptionPlanModel?>((ref) => null);
 
 class PlanListContent extends ConsumerStatefulWidget {
   final List<SubscriptionPlanModel> plans;
-  final SubscriptionPlanModel? selectedPlan;
-  final PageController pageController;
-  final String? currentPlan;
-
   const PlanListContent({
     super.key,
     required this.plans,
-    required this.selectedPlan,
-    required this.pageController,
-    this.currentPlan,
   });
 
   @override
@@ -30,313 +23,134 @@ class PlanListContent extends ConsumerStatefulWidget {
 }
 
 class _PlanListContentState extends ConsumerState<PlanListContent> {
-  late List<Map<String, dynamic>> _tabsAndPages;
-
   @override
   void initState() {
     super.initState();
-    _tabsAndPages = _buildTabsAndPages();
-    widget.pageController.addListener(_onPageChanged);
     Future.microtask(() {
-      if (mounted) {
-        _autoSelectFirstPlanInTab(ref.read(currentTabIndexProvider));
+      if (widget.plans.isNotEmpty) {
+        ref.read(selectedPlanProvider.notifier).state = widget.plans.first;
       }
+      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
     });
-  }
-
-  void _onPageChanged() {
-    if (!mounted) return;
-
-    final currentPage = widget.pageController.page?.round() ?? 0;
-    if (currentPage < _tabsAndPages.length) {
-      final actualTabIndex = _tabsAndPages[currentPage]["tabIndex"] as int;
-      if (actualTabIndex != ref.read(currentTabIndexProvider)) {
-        Future.microtask(() {
-          if (mounted) {
-            ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
-            _autoSelectFirstPlanInTab(actualTabIndex);
-          }
-        });
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    widget.pageController.removeListener(_onPageChanged);
-    super.dispose();
-  }
-
-  List<Map<String, dynamic>> _buildTabsAndPages() {
-    final tabsAndPages = <Map<String, dynamic>>[];
-
-    final basicPlans = _getPlansForTab(0);
-    if (basicPlans.isNotEmpty) {
-      tabsAndPages.add({
-        "title": widget.currentPlan == 'Basic' ? "Current" : "Basic",
-        "plans": basicPlans,
-        "tabIndex": 0
-      });
-    }
-
-    final standardPlans = _getPlansForTab(1);
-    if (standardPlans.isNotEmpty) {
-      tabsAndPages.add({
-        "title": widget.currentPlan == 'Standard' ? "Current" : "Standard",
-        "plans": standardPlans,
-        "tabIndex": 1
-      });
-    }
-
-    final premiumPlans = _getPlansForTab(2);
-    if (premiumPlans.isNotEmpty) {
-      tabsAndPages.add({
-        "title": widget.currentPlan == 'Premium' ? "Current" : "Premium",
-        "plans": premiumPlans,
-        "tabIndex": 2
-      });
-    }
-
-    return tabsAndPages;
-  }
-
-  void _autoSelectFirstPlanInTab(int tabIndex) {
-    if (!mounted) return;
-
-    try {
-      final tabData = _tabsAndPages.firstWhere(
-            (tab) => tab["tabIndex"] == tabIndex,
-        orElse: () => _tabsAndPages.first,
-      );
-
-      final plans = tabData["plans"] as List<SubscriptionPlanModel>;
-      if (plans.isNotEmpty) {
-        Future.microtask(() {
-          if (mounted) {
-            ref.read(selectedPlanProvider.notifier).state = plans.first;
-          }
-        });
-      }
-    } catch (e) {
-    }
-  }
-
-  List<SubscriptionPlanModel> _filterPlansByCurrent({
-    required List<SubscriptionPlanModel> widgetPlans,
-    required String? currentPlan,
-  }) {
-    if (currentPlan == null || currentPlan.isEmpty) {
-      return widgetPlans; // show all if no current plan
-    }
-
-    final order = ["basic", "standard", "premium"];
-    final currentIndex = order.indexOf(currentPlan.toLowerCase());
-
-    if (currentIndex == -1) {
-      return widgetPlans;
-    }
-
-    return widgetPlans.where((plan) {
-      final planIndex = order.indexOf(plan.type.toLowerCase());
-      return planIndex >= currentIndex;
-    }).toList();
-  }
-
-  List<SubscriptionPlanModel> _getPlansForTab(int tabIndex) {
-    List<SubscriptionPlanModel> tabPlans;
-    switch (tabIndex) {
-      case 0:
-        tabPlans = widget.plans.where((plan) => plan.type.toLowerCase().contains('basic')).toList();
-        break;
-      case 1:
-        tabPlans = widget.plans.where((plan) => plan.type.toLowerCase().contains('standard')).toList();
-        break;
-      case 2:
-        tabPlans = widget.plans.where((plan) => plan.type.toLowerCase().contains('premium')).toList();
-        break;
-      default:
-        tabPlans = [];
-    }
-
-    return _filterPlansByCurrent(
-      widgetPlans: tabPlans,
-      currentPlan: widget.currentPlan,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentTabIndex = ref.watch(currentTabIndexProvider);
     final screenSize = MediaQuery.of(context).size;
+    final selectedPlan = ref.watch(selectedPlanProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          SizedBox(height: screenSize.height * 0.02),
-          Center(
-            child: Column(
-              children: [
-                Text(
-                  'Purchase a subscription',
-                  style: AppTextstyle.interBold(
-                    fontSize: screenSize.width * 0.06,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: screenSize.height * 0.005),
-                Text(
-                  'Choose the plan that works for you',
-                  style: AppTextstyle.interMedium(
-                    fontSize: screenSize.width * 0.035,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: screenSize.width * 0.05,
-              vertical: screenSize.height * 0.02,
-            ),
-            padding: EdgeInsets.all(screenSize.width * 0.02),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(_tabsAndPages.length, (index) {
-                return _buildPlanTab(
-                  _tabsAndPages[index]["title"] as String,
-                  _tabsAndPages[index]["tabIndex"] as int,
-                  index,
-                );
-              }),
-            ),
-          ),
-          Expanded(
-            child: PageView(
-              controller: widget.pageController,
-              onPageChanged: (index) {
-                if (index < _tabsAndPages.length) {
-                  final actualTabIndex = _tabsAndPages[index]["tabIndex"] as int;
-                  Future.microtask(() {
-                    if (mounted) {
-                      ref.read(currentTabIndexProvider.notifier).state = actualTabIndex;
-                      _autoSelectFirstPlanInTab(actualTabIndex);
-                    }
-                  });
-                }
-              },
-              children: List.generate(
-                _tabsAndPages.length,
-                    (index) => _buildPlanPage(context, _tabsAndPages[index]["plans"] as List<SubscriptionPlanModel>),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    SubscriptionPlanModel? weekly;
+    SubscriptionPlanModel? monthly;
+    SubscriptionPlanModel? yearly;
 
-  Widget _buildPlanTab(String title, int actualTabIndex, int displayIndex) {
-    final currentTabIndex = ref.watch(currentTabIndexProvider);
-    final screenSize = MediaQuery.of(context).size;
-    final isSelected = currentTabIndex == actualTabIndex;
-
-    return GestureDetector(
-      onTap: () {
-        widget.pageController.animateToPage(
-          displayIndex,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-        Future.microtask(() {
-          if (mounted) {
-            _autoSelectFirstPlanInTab(actualTabIndex);
-          }
-        });
-      },
-      child: Container(
-        constraints: BoxConstraints(
-          minWidth: screenSize.width * 0.25,
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: screenSize.width * 0.045,
-          vertical: screenSize.height * 0.015,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? Color(0xFFE4C1FF) : Colors.transparent,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: AppTextstyle.interMedium(
-            fontSize: screenSize.width * 0.035,
-            color: isSelected ? AppColors.purple : Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPlanPage(
-      BuildContext context, List<SubscriptionPlanModel> plans) {
-    final screenSize = MediaQuery.of(context).size;
-
-    if (plans.isEmpty) {
-      return Center(
-        child: Text(
-          'No plans available',
-          style: AppTextstyle.interMedium(
-            fontSize: screenSize.width * 0.04,
-            color: Colors.white,
-          ),
-        ),
-      );
+    for (var p in widget.plans) {
+      final lower = p.type.toLowerCase();
+      if (weekly == null && lower.contains('basic')) weekly = p;
+      if (monthly == null && lower.contains('standard')) monthly = p;
+      if (yearly == null && lower.contains('premium')) yearly = p;
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        ref.invalidate(subscriptionPlansProvider);
-        await ref.read(subscriptionPlansProvider.future);
-      },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
+    // Fallbacks
+    weekly ??= widget.plans.isNotEmpty ? widget.plans[0] : null;
+    monthly ??= widget.plans.length > 1 ? widget.plans[1] : null;
+    yearly ??= widget.plans.length > 2 ? widget.plans[2] : null;
+
+    final plansToShow = [weekly, monthly, yearly].whereType<SubscriptionPlanModel>().toList();
+
+    return Column(
+      children: [
+        Row(
           children: [
-            SizedBox(height: screenSize.height * 0.01),
-            ...plans
-                .map((plan) => Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenSize.width * 0.05,
-                vertical: screenSize.height * 0.005,
+            for (int i = 0; i < plansToShow.length; i++) ...[
+              Expanded(
+                child: Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        ref.read(selectedPlanProvider.notifier).state = plansToShow[i];
+                        // final route = Platform.isIOS
+                        //     ? ApplePaymentScreen.routeName
+                        //     : PaymentScreen.routeName;
+                        // Navigator.pushNamed(context, route, arguments: plansToShow[i]);
+                      },
+                      child: PlanCard(
+                        plan: plansToShow[i],
+                        isCompact: true,
+                        selected: selectedPlan?.id == plansToShow[i].id,
+                        highlighted: plansToShow[i].type.toLowerCase().contains('standard'),
+                      ),
+                    ),
+                    if (plansToShow[i].type.toLowerCase().contains('standard'))
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD6B26A),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(0, 2),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            "Mostly Used",
+                            style: AppTextstyle.interMedium(
+                              fontSize: 11,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-              child: PlanCard(
-                plan: plan,
-                isSelected: ref.watch(selectedPlanProvider)?.id == plan.id,
-                onSelect: () {
-                  Future.microtask(() {
-                    if (mounted) {
-                      ref.read(selectedPlanProvider.notifier).state = plan;
-                      final route = Platform.isIOS ? ApplePaymentScreen.routeName : PaymentScreen.routeName;
-                      Navigator.pushNamed(context, route, arguments: plan,);
-                    }
-                  });
-                },
-              ),
-            )).toList(),
+              if (i < plansToShow.length - 1)
+                SizedBox(width: screenSize.width * 0.035),
+            ]
           ],
+        ),
+        SizedBox(height: screenSize.height * 0.025),
+        _subscribeButton(context),
+        SizedBox(height: screenSize.height * 0.02),
+        Text(
+          "\$${(selectedPlan?.price ?? monthly?.price ?? 0).toStringAsFixed(2)} billed annually. Cancel anytime.",
+          style: AppTextstyle.interMedium(
+            fontSize: 12,
+            color: Colors.white70,
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        SizedBox(height: screenSize.height * 0.03),
+      ],
+    );
+  }
+
+  Widget _subscribeButton(BuildContext context) {
+    final selectedPlan = ref.watch(selectedPlanProvider);
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: () {
+          if (selectedPlan == null) return;
+          final route = Platform.isIOS ? ApplePaymentScreen.routeName : GooglePaymentScreen.routeName;
+          Navigator.pushNamed(context, route, arguments: selectedPlan);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFAF8B47),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 6,
+          shadowColor: Colors.black45,
+        ),
+        child: Text(
+          "SUBSCRIBE NOW",
+          style: AppTextstyle.interBold(fontSize: 16, color: Colors.white),
         ),
       ),
     );

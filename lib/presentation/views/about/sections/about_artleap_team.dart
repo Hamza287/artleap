@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class AboutArtleapTeamSection extends StatelessWidget {
@@ -7,6 +6,7 @@ class AboutArtleapTeamSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       decoration: BoxDecoration(
@@ -14,8 +14,8 @@ class AboutArtleapTeamSection extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.lightBlue.withOpacity(0.1),
-            AppColors.lightPurple.withOpacity(0.1),
+            theme.colorScheme.primaryContainer.withOpacity(0.1),
+            theme.colorScheme.secondaryContainer.withOpacity(0.1),
           ],
         ),
       ),
@@ -25,7 +25,7 @@ class AboutArtleapTeamSection extends StatelessWidget {
             'Meet The Team',
             style: AppTextstyle.interBold(
               fontSize: 24,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 24),
@@ -76,6 +76,7 @@ class TeamMemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: 150,
       child: Column(
@@ -90,7 +91,7 @@ class TeamMemberCard extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
               border: Border.all(
-                color: AppColors.lightPurple.withOpacity(0.5),
+                color: theme.colorScheme.primary.withOpacity(0.5),
                 width: 2,
               ),
             ),
@@ -100,14 +101,14 @@ class TeamMemberCard extends StatelessWidget {
             name,
             style: AppTextstyle.interBold(
               fontSize: 16,
-              color: AppColors.darkBlue,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           Text(
             role,
             style: AppTextstyle.interRegular(
               fontSize: 14,
-              color: AppColors.darkBlue.withOpacity(0.7),
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
         ],

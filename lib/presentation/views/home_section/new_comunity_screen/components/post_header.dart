@@ -5,7 +5,6 @@ import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../profile_screen/other_user_profile_screen.dart';
 import '../../see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
@@ -123,6 +122,7 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
   }
 
   void _handleDownload(BuildContext context) {
+    final theme = Theme.of(context);
     final downloadUrl = _filteredImageUrl;
     final downloadUint8List = widget.uint8ListImage;
     ref
@@ -132,7 +132,7 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Downloading image...'),
-        backgroundColor: AppColors.successColor,
+        backgroundColor: theme.colorScheme.primary,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -140,6 +140,7 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
   }
 
   void _handleShare(BuildContext context) async {
+    final theme = Theme.of(context);
     final shareUrl = _filteredImageUrl;
 
     if (shareUrl != null) {
@@ -148,10 +149,10 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Unable to share image'),
-          backgroundColor: AppColors.errorColor,
+          backgroundColor: theme.colorScheme.error,
           behavior: SnackBarBehavior.floating,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -188,6 +189,8 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(
@@ -195,14 +198,14 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
           InkWell(
             onTap: _filteredOtherUserId != null
                 ? () {
-                    Navigation.pushNamed(
-                      OtherUserProfileScreen.routeName,
-                      arguments: OtherUserProfileParams(
-                        userId: _filteredOtherUserId!,
-                        profileName: _getDisplayName(_filteredImage),
-                      ),
-                    );
-                  }
+              Navigation.pushNamed(
+                OtherUserProfileScreen.routeName,
+                arguments: OtherUserProfileParams(
+                  userId: _filteredOtherUserId!,
+                  profileName: _getDisplayName(_filteredImage),
+                ),
+              );
+            }
                 : null,
             child: Container(
               width: 50,
@@ -210,13 +213,13 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
-                  colors: [AppColors.darkBlue, AppColors.pinkColor],
+                  colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.darkBlue.withOpacity(0.3),
+                    color: theme.colorScheme.primary.withOpacity(0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -225,27 +228,27 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
               child: ClipOval(
                 child: widget.profilePic != null
                     ? Image.network(
-                        widget.profilePic!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Center(
-                          child: Text(
-                            _getUserInitials(_filteredImage),
-                            style: AppTextstyle.interBold(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: Text(
-                          _getUserInitials(_filteredImage),
-                          style: AppTextstyle.interBold(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
+                  widget.profilePic!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Center(
+                    child: Text(
+                      _getUserInitials(_filteredImage),
+                      style: AppTextstyle.interBold(
+                        fontSize: 18,
+                        color: theme.colorScheme.onPrimary,
                       ),
+                    ),
+                  ),
+                )
+                    : Center(
+                  child: Text(
+                    _getUserInitials(_filteredImage),
+                    style: AppTextstyle.interBold(
+                      fontSize: 18,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -257,20 +260,20 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
                 InkWell(
                   onTap: _filteredOtherUserId != null
                       ? () {
-                          Navigation.pushNamed(
-                            OtherUserProfileScreen.routeName,
-                            arguments: OtherUserProfileParams(
-                              userId: _filteredOtherUserId!,
-                              profileName: _getDisplayName(_filteredImage),
-                            ),
-                          );
-                        }
+                    Navigation.pushNamed(
+                      OtherUserProfileScreen.routeName,
+                      arguments: OtherUserProfileParams(
+                        userId: _filteredOtherUserId!,
+                        profileName: _getDisplayName(_filteredImage),
+                      ),
+                    );
+                  }
                       : null,
                   child: Text(
                     _getDisplayName(_filteredImage),
                     style: AppTextstyle.interBold(
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -279,7 +282,7 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
                   'AI Art Creator • ${_getTimeAgo(_filteredImage)}',
                   style: AppTextstyle.interRegular(
                     fontSize: 12,
-                    color: Colors.grey.shade600,
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ],
@@ -289,12 +292,12 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: theme.colorScheme.surfaceVariant,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.more_horiz,
-                color: Colors.grey.shade600,
+                color: theme.colorScheme.onSurfaceVariant,
                 size: 20,
               ),
             ),
@@ -307,13 +310,13 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
                     Icon(
                       Icons.download_outlined,
                       size: 20,
-                      color: AppColors.darkBlue,
+                      color: theme.colorScheme.primary,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Download',
                       style: AppTextstyle.interMedium(
-                        color: AppColors.darkBlue,
+                        color: theme.colorScheme.primary,
                         fontSize: 14,
                       ),
                     ),
@@ -327,13 +330,13 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
                     Icon(
                       Icons.share_outlined,
                       size: 20,
-                      color: AppColors.darkBlue,
+                      color: theme.colorScheme.primary,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Share',
                       style: AppTextstyle.interMedium(
-                        color: AppColors.darkBlue,
+                        color: theme.colorScheme.primary,
                         fontSize: 14,
                       ),
                     ),
@@ -347,13 +350,13 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
                     Icon(
                       Icons.flag_outlined,
                       size: 20,
-                      color: AppColors.redColor,
+                      color: theme.colorScheme.error,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Report',
                       style: AppTextstyle.interMedium(
-                        color: AppColors.redColor,
+                        color: theme.colorScheme.error,
                         fontSize: 14,
                       ),
                     ),

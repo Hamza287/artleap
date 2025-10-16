@@ -14,11 +14,9 @@ class AppAssets {
   static const artstyle2 = "${imagesDir}artstyle2.png";
   static const artstyle3 = "${imagesDir}artstyle3.png";
   static const artstyle4 = "${imagesDir}artstyle4.png";
-  static const profilebackground = "${imagesDir}profilebackground.png";
   static const profilepic = "${imagesDir}profilepic.png";
   static const forgotbg = "${imagesDir}forgotbg.png";
 
-  static const splashscreenanimation = "${imagesDir}splashscreenanimation.gif";
   static const cartoon = "${imagesDir}cartoon.jpg";
   static const anime = "${imagesDir}anime.jpg";
   static const threeD = "${imagesDir}threed.jpg";
@@ -57,20 +55,10 @@ class AppAssets {
   static const leo_sketch = "${imagesDir}leo_sketch.png";
 
   ///icons
-  static const googleicon = "${iconsdir}googleicon.png";
-  static const micicon = "${iconsdir}mic.png";
-  static const searchicon = "${iconsdir}searchicon.png";
-  static const cameraicon = "${iconsdir}camera.png";
   static const generateicon = "${iconsdir}generateicon.png";
-  static const downloadicon = "${iconsdir}downloadicon.png";
   static const saveicon = "${iconsdir}saveicon.png";
-  static const shareicon = "${iconsdir}shareicon.png";
-  static const upscaleicon = "${iconsdir}upscaleicon.png";
   static const googlelogin = "${iconsdir}googlelogin.png";
-  static const facebooklogin = "${iconsdir}facebook.png";
-  static const applelogin = "${iconsdir}applelogin.png";
   static const gobackicon = "${iconsdir}gobackicon.png";
-  static const notificationicon = "${iconsdir}notificationicon.png";
   static const selecticon = "${iconsdir}selecticon.png";
   static const cross = "${iconsdir}cross.png";
   static const trendingicon = "${iconsdir}trendingicon.png";
@@ -82,17 +70,11 @@ class AppAssets {
   static const photography = "${iconsdir}photography.png";
   static const charatericon = "${iconsdir}character.png";
   static const galleryicon = "${iconsdir}gallery.png";
-  static const questionmark = "${iconsdir}questionmark.png";
-  static const copyicon = "${iconsdir}copyicon.png";
   static const logouticon = "${iconsdir}logout.png";
   static const userinfoicon = "${iconsdir}userinfo.png";
   static const abouticon = "${iconsdir}abouticon.png";
   static const privacyicon = "${iconsdir}privacyicon.png";
-  static const trashicon = "${iconsdir}Trash.png";
-  static const reporticon = "${iconsdir}reporticon.png";
   static const stackofcoins = "${iconsdir}stackofcoins.png";
-  static const logo = "${iconsdir}logo.png";
-  static const adicon = "${iconsdir}adicon.png";
   static const nine = "${iconsdir}nine.png";
   static const five = "${iconsdir}five.png";
   static const four = "${iconsdir}four.png";
@@ -101,11 +83,7 @@ class AppAssets {
   static const two = "${iconsdir}two.png";
   static const sixteen = "${iconsdir}sixteen.png";
   static const deleteicon = "${iconsdir}deleteicon.png";
-  static const privacypolicyicon = "${iconsdir}privacypolicyicon.png";
 
-  //json
-  static const splashanimation = "${jsondir}splashanimation.json";
-  static const splashscreen = "${jsondir}splashscreen.mp4";
 
     //new icons
    static const animate = "${iconsdir}animate.png";
@@ -113,7 +91,6 @@ class AppAssets {
    static const editObject = "${iconsdir}enhance.png";
    static const pencil = "${iconsdir}Pencil.png";
    static const removeBackground = "${iconsdir}background_remover.png";
-   static const sidebar = "${iconsdir}sidebar.png";
    static const currentPlan = "${iconsdir}current_plan.png";
    static const payment = "${iconsdir}payment.png";
    static const darkMode = "${iconsdir}dark_mode.png";
@@ -122,5 +99,4 @@ class AppAssets {
    static const proBtn = "${iconsdir}pro_btn.png";
    static const create = "${iconsdir}create.png";
    static const upgrade = "${iconsdir}upgrade_pro.png";
-   static const menu = "${iconsdir}menu.png";
 }

@@ -14,12 +14,14 @@ class FullImageViewerScreen extends ConsumerStatefulWidget {
   const FullImageViewerScreen({super.key, this.params});
 
   @override
-  ConsumerState<FullImageViewerScreen> createState() => _FullImageViewerScreenState();
+  ConsumerState<FullImageViewerScreen> createState() =>
+      _FullImageViewerScreenState();
 }
 
 class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     with SingleTickerProviderStateMixin {
-  final TransformationController _transformationController = TransformationController();
+  final TransformationController _transformationController =
+      TransformationController();
   late AnimationController _animationController;
   Animation<Matrix4>? _animation;
   final double _minScale = 1.0;
@@ -39,8 +41,6 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     });
 
     AnalyticsService.instance.logScreenView(screenName: 'full image screen');
-
-    // Delay the image loading until after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadImage();
     });
@@ -51,8 +51,6 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     if (imageUrl == null || imageUrl.isEmpty) return;
 
     await ref.read(fullImageProvider.notifier).loadOriginalImage(imageUrl);
-
-    // Check if widget is still mounted before proceeding
     if (!mounted) return;
 
     final imageBytes = ref.read(fullImageProvider).originalImageBytes;
@@ -65,7 +63,6 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
   void dispose() {
     _animationController.dispose();
     _transformationController.dispose();
-    // ref.read(fullImageProvider.notifier).reset();
     super.dispose();
   }
 
@@ -123,10 +120,10 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
     if (watermarkState.isLoading) {
       return imageUrl != null
           ? CachedNetworkImage(
-        imageUrl: imageUrl,
-        fit: BoxFit.contain,
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      )
+              imageUrl: imageUrl,
+              fit: BoxFit.contain,
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            )
           : const Center(child: Icon(Icons.error));
     }
 
@@ -140,37 +137,37 @@ class _FullImageViewerScreenState extends ConsumerState<FullImageViewerScreen>
 
     return imageUrl != null
         ? CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.contain,
-      errorWidget: (context, url, error) => const Icon(Icons.error),
-    )
+            imageUrl: imageUrl,
+            fit: BoxFit.contain,
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          )
         : const Center(child: Icon(Icons.error));
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor:  const Color(0xFFFFFFFF),
-        appBar: AppBar(
-          backgroundColor:  const Color(0xFFFFFFFF),
-          iconTheme: const IconThemeData(color: AppColors.darkBlue),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onDoubleTap: () => _handleDoubleTap(context),
-            child: InteractiveViewer(
-              transformationController: _transformationController,
-              minScale: _minScale,
-              maxScale: _maxScale,
-              child: SizedBox(
-                height: double.infinity,
-                width: double.infinity,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                  child: _buildImageContent(),
-                ),
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor:theme.colorScheme.surface,
+      appBar: AppBar(
+        backgroundColor: theme.colorScheme.surface,
+        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+          onDoubleTap: () => _handleDoubleTap(context),
+          child: InteractiveViewer(
+            transformationController: _transformationController,
+            minScale: _minScale,
+            maxScale: _maxScale,
+            child: SizedBox(
+              height: double.infinity,
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: _buildImageContent(),
               ),
             ),
           ),

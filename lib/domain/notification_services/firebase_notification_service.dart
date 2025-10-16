@@ -10,7 +10,7 @@ import '../notifications_repo/notification_repository.dart';
 
 class FirebaseNotificationService {
   final Ref ref;
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin; // Add this
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   FirebaseNotificationService(this.ref) {
     _initializeLocalNotifications();
@@ -65,23 +65,6 @@ class FirebaseNotificationService {
       badge: true,
       sound: true,
     );
-
-    final token = await messaging.getToken();
-    debugPrint('FCM Token: $token');
-
-    if (token != null && UserData.ins.userId != null) {
-      final repo = ref.read(notificationRepositoryProvider);
-      await repo.registerDeviceToken(UserData.ins.userId!, token);
-    }
-
-
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-
-      if (UserData.ins.userId != null) {
-        final repo = ref.read(notificationRepositoryProvider);
-        await repo.registerDeviceToken(UserData.ins.userId!, newToken);
-      }
-    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(message);

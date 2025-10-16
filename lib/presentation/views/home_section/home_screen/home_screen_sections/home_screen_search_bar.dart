@@ -5,26 +5,27 @@ class HomeScreenSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: TextField(
         decoration: InputDecoration(
           hintText: "Search AI Creations",
-          hintStyle: TextStyle(color: Colors.grey[200]!),
-          prefixIcon: Icon(Icons.search,color: Colors.grey[200],),
-          focusedBorder:OutlineInputBorder(
+          hintStyle: TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+          prefixIcon: Icon(Icons.search, color: theme.colorScheme.onSurface.withOpacity(0.6)),
+          focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderSide: BorderSide(color: theme.colorScheme.primary),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderSide: BorderSide(color: theme.colorScheme.outline),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: theme.colorScheme.surface,
         ),
       ),
     );

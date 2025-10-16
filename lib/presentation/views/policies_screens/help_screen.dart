@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../../../providers/help_screen_provider.dart';
 
@@ -12,12 +11,13 @@ class HelpScreen extends ConsumerWidget {
   final List<Map<String, dynamic>> faqItems = const [
     {
       'question': 'How do I create a new artwork?',
-      'answer': 'Tap the "+" button on the home screen to start a new creation. '
-          'Select your canvas size and begin painting with our tools.',
+      'answer':
+          'Tap the "+" button on the home screen to start a new creation. '
+              'Select your canvas size and begin painting with our tools.',
     },
     {
       'question': 'Where are my saved artworks stored?',
-      'answer': 'All your artworks are saved in the "My Gallery" section. '
+      'answer': 'All your artworks are saved in the "My Profile" section. '
           'You can access them anytime from the bottom navigation.',
     },
     {
@@ -27,13 +27,14 @@ class HelpScreen extends ConsumerWidget {
     },
     {
       'question': 'What subscription options are available?',
-      'answer': 'We offer monthly and yearly subscriptions. '
-          'Go to "Account" > "Subscription" to view available plans.',
+      'answer': 'We offer weekly, monthly and yearly subscriptions. '
+          'Go to "Sidebar" > "Subscription plan" to view available plans.',
     },
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final isLoading = ref.watch(helpScreenProvider);
     final notifier = ref.read(helpScreenProvider.notifier);
 
@@ -42,14 +43,14 @@ class HelpScreen extends ConsumerWidget {
         title: Text(
           'Help Center',
           style: AppTextstyle.interBold(
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
             fontSize: 20,
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.white,
+        backgroundColor: theme.colorScheme.surface,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -57,48 +58,41 @@ class HelpScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header section
-              _buildSectionHeader('Need Help?'),
+              _buildSectionHeader('Need Help?', theme),
               const SizedBox(height: 10),
               Text(
                 'We\'re here to assist you with any questions or issues you might have.',
                 style: AppTextstyle.interRegular(
-                  color: AppColors.darkBlue.withOpacity(0.7),
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 30),
-
-              // FAQ Section
-              _buildSectionHeader('Frequently Asked Questions'),
+              _buildSectionHeader('Frequently Asked Questions', theme),
               const SizedBox(height: 20),
               ...faqItems.map((item) => _buildFAQItem(
-                question: item['question']!,
-                answer: item['answer']!,
-              )),
-
-              // Contact Section
+                    question: item['question']!,
+                    answer: item['answer']!,
+                    theme: theme,
+                  )),
               const SizedBox(height: 40),
-              _buildSectionHeader('Still Need Help?'),
+              _buildSectionHeader('Still Need Help?', theme),
               const SizedBox(height: 15),
               Text(
                 'Our support team is ready to help you with any questions or issues.',
                 style: AppTextstyle.interRegular(
-                  color: AppColors.darkBlue.withOpacity(0.7),
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 25),
-
-              // Contact button
               Center(
                 child: _buildContactButton(
                   isLoading: isLoading,
                   onPressed: () => _launchEmail(notifier, context),
+                  theme: theme,
                 ),
               ),
-
-              // Footer
               const SizedBox(height: 40),
-              _buildFooter(),
+              _buildFooter(theme),
             ],
           ),
         ),
@@ -106,7 +100,8 @@ class HelpScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _launchEmail(HelpScreenNotifier notifier, BuildContext context) async {
+  Future<void> _launchEmail(
+      HelpScreenNotifier notifier, BuildContext context) async {
     if (notifier.state) return;
 
     notifier.setLoading(true);
@@ -132,7 +127,8 @@ class HelpScreen extends ConsumerWidget {
         );
       } else {
         await launchUrl(
-          Uri.parse('https://mail.google.com/mail/?view=cm&fs=1&to=$email&su=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}'),
+          Uri.parse(
+              'https://mail.google.com/mail/?view=cm&fs=1&to=$email&su=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}'),
           mode: LaunchMode.externalApplication,
         );
       }
@@ -152,13 +148,14 @@ class HelpScreen extends ConsumerWidget {
   }
 
   void _showErrorSnackBar(BuildContext context, String message) {
+    final theme = Theme.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,
-          style: AppTextstyle.interRegular(color: AppColors.white),
+          style: AppTextstyle.interRegular(color: theme.colorScheme.onError),
         ),
-        backgroundColor: AppColors.redColor,
+        backgroundColor: theme.colorScheme.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -169,24 +166,27 @@ class HelpScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionHeader(String text) {
+  Widget _buildSectionHeader(String text, ThemeData theme) {
     return Text(
       text,
       style: AppTextstyle.interBold(
-        color: AppColors.darkBlue,
+        color: theme.colorScheme.onBackground,
         fontSize: 18,
       ),
     );
   }
 
-  Widget _buildFAQItem({required String question, required String answer}) {
+  Widget _buildFAQItem(
+      {required String question,
+      required String answer,
+      required ThemeData theme}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.white.withOpacity(0.5),
+          color: theme.colorScheme.outline.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -194,7 +194,7 @@ class HelpScreen extends ConsumerWidget {
         title: Text(
           question,
           style: AppTextstyle.interMedium(
-            color: AppColors.darkBlue,
+            color: theme.colorScheme.onSurface,
             fontSize: 16,
           ),
         ),
@@ -204,15 +204,15 @@ class HelpScreen extends ConsumerWidget {
             child: Text(
               answer,
               style: AppTextstyle.interRegular(
-                color: AppColors.darkBlue.withOpacity(0.8),
+                color: theme.colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),
           ),
         ],
         tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-        iconColor: AppColors.darkBlue,
-        collapsedIconColor: AppColors.darkBlue,
+        iconColor: theme.colorScheme.onSurface,
+        collapsedIconColor: theme.colorScheme.onSurface,
       ),
     );
   }
@@ -220,29 +220,31 @@ class HelpScreen extends ConsumerWidget {
   Widget _buildContactButton({
     required bool isLoading,
     required VoidCallback onPressed,
+    required ThemeData theme,
   }) {
     return ElevatedButton.icon(
       onPressed: isLoading ? null : onPressed,
       icon: isLoading
-          ? const SizedBox(
-        width: 20,
-        height: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: AppColors.white,
-        ),
-      )
-          : const Icon(Icons.email_outlined, size: 20),
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: theme.colorScheme.onPrimary,
+              ),
+            )
+          : Icon(Icons.email_outlined,
+              size: 20, color: theme.colorScheme.onPrimary),
       label: Text(
         isLoading ? 'Opening...' : 'Contact Support',
         style: AppTextstyle.interMedium(
-          color: AppColors.white,
+          color: theme.colorScheme.onPrimary,
           fontSize: 16,
         ),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.darkBlue,
-        foregroundColor: AppColors.white,
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
         padding: const EdgeInsets.symmetric(
           horizontal: 25,
           vertical: 15,
@@ -251,26 +253,26 @@ class HelpScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 3,
-        shadowColor: AppColors.darkBlue.withOpacity(0.3),
+        shadowColor: theme.colorScheme.shadow.withOpacity(0.3),
       ),
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(ThemeData theme) {
     return Center(
       child: Column(
         children: [
           Text(
             'X r Digital Team',
             style: AppTextstyle.interMedium(
-              color: AppColors.darkBlue.withOpacity(0.9),
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             'We appreciate your feedback',
             style: AppTextstyle.interRegular(
-              color: AppColors.darkBlue.withOpacity(0.6),
+              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
               fontSize: 12,
             ),
           ),

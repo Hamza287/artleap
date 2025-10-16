@@ -1,22 +1,19 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-// ⚠️ Adjust this import path if your AppData is elsewhere.
 import '../../shared/app_persistance/app_data.dart';
 
 class DioCore {
   late final Dio _dio;
   Dio get dio => _dio;
 
-  // A simple lock so only one refresh runs at a time.
   static Completer<String?>? _refreshCompleter;
 
   DioCore(String baseUrl) {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        validateStatus: (status) => true, // keep your existing behavior
+        validateStatus: (status) => true,
         connectTimeout: const Duration(minutes: 3),
         sendTimeout: const Duration(minutes: 3),
         receiveTimeout: const Duration(minutes: 3),
@@ -25,18 +22,16 @@ class DioCore {
 
     _dio.interceptors.add(
       InterceptorsWrapper(
-        // Attach auth + useful IDs on every request if we have them
         onRequest: (options, handler) {
           final token = AppData.instance.token;
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
 
-          // 👇 Optional: attach IDs as headers so backends that read from headers are happy
           final uid = AppData.instance.userId;
           if (uid != null && uid.isNotEmpty) {
             options.headers['userId'] = uid;
-            options.headers['userid'] = uid; // tolerant casing
+            options.headers['userid'] = uid;
           }
           final fuid = AppData.instance.firebaseUid;
           if (fuid != null && fuid.isNotEmpty) {
@@ -47,28 +42,21 @@ class DioCore {
           handler.next(options);
         },
 
-        // On 401, force-refresh Firebase ID token and retry once.
         onError: (e, handler) async {
-          // 🔎 DEBUG HOOK: Log *any* server reply that mentions "user id is required"
           _debugLogIfUserIdRequired(e);
 
           final status = e.response?.statusCode;
-
-          // Only attempt for 401 Unauthorized
           if (status == 401) {
             try {
-              // If a refresh is already in progress, just await it.
               if (_refreshCompleter != null) {
                 final fresh = await _refreshCompleter!.future;
                 if (fresh != null && fresh.isNotEmpty) {
                   final retried = await _retryWithToken(_dio, e.requestOptions, fresh);
                   return handler.resolve(retried);
                 }
-                // If refresh failed, fall through to next(error)
                 return handler.next(e);
               }
 
-              // Start our own refresh
               _refreshCompleter = Completer<String?>();
 
               final user = FirebaseAuth.instance.currentUser;
@@ -79,19 +67,16 @@ class DioCore {
                   AppData.instance.setToken(freshToken);
                   _refreshCompleter!.complete(freshToken);
 
-                  // Retry original request with new token.
                   final retried = await _retryWithToken(_dio, e.requestOptions, freshToken);
                   _refreshCompleter = null;
                   return handler.resolve(retried);
                 }
               }
 
-              // No user or no token -> complete with null
               _refreshCompleter!.complete(null);
               _refreshCompleter = null;
               return handler.next(e);
             } catch (err) {
-              // Make sure completer is completed on exceptions
               if (_refreshCompleter != null && !(_refreshCompleter!.isCompleted)) {
                 _refreshCompleter!.complete(null);
               }
@@ -100,7 +85,6 @@ class DioCore {
             }
           }
 
-          // Any other error = pass through
           return handler.next(e);
         },
       ),

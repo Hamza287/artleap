@@ -9,6 +9,8 @@ class ActionButtonsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.9),
       child: Row(
@@ -16,21 +18,24 @@ class ActionButtonsRow extends ConsumerWidget {
         children: [
           _RoundIconButton(
             icon: Icons.share,
-            borderColor: Colors.grey[200]!,
+            borderColor: theme.colorScheme.outline.withOpacity(0.3),
             size: isSmallScreen ? 40 : 50,
-            onPressed: () {}, // Implement share functionality
+            onPressed: () {},
+            theme: theme,
           ),
           _RoundIconButton(
             icon: Icons.download,
-            borderColor: Colors.grey[200]!,
+            borderColor: theme.colorScheme.outline.withOpacity(0.3),
             size: isSmallScreen ? 40 : 50,
-            onPressed: () {}, // Implement download functionality
+            onPressed: () {},
+            theme: theme,
           ),
           _RoundIconButton(
             icon: Icons.delete,
-            borderColor: Colors.grey[200]!,
+            borderColor: theme.colorScheme.outline.withOpacity(0.3),
             size: isSmallScreen ? 40 : 50,
             onPressed: () => ref.read(promptEditProvider.notifier).removeImage(),
+            theme: theme,
           ),
         ],
       ),
@@ -43,12 +48,14 @@ class _RoundIconButton extends StatelessWidget {
   final Color borderColor;
   final double size;
   final VoidCallback onPressed;
+  final ThemeData theme;
 
   const _RoundIconButton({
     required this.icon,
-    this.borderColor = Colors.black54,
+    required this.borderColor,
     required this.size,
     required this.onPressed,
+    required this.theme,
   });
 
   @override
@@ -62,11 +69,11 @@ class _RoundIconButton extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(color: borderColor, width: 1),
             borderRadius: BorderRadius.circular(12),
-            color: Colors.white,
+            color: theme.colorScheme.surface,
           ),
           child: Icon(
             icon,
-            color: borderColor,
+            color: theme.colorScheme.onSurface,
             size: size * 0.6,
           ),
         ),

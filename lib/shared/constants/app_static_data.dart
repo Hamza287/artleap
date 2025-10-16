@@ -72,23 +72,9 @@ List<Map<String, String>> textToImageStyles = [
   {"title": "GENERAL", "icon": AppAssets.photo},
   {"title": "HDR", "icon": AppAssets.leo_hdr},
   {"title": "ILLUSTRATION", "icon": AppAssets.leo_illustration},
-  // {"title": "LEONARDO", "icon": AppAssets.leo},
-  // {"title": "LONG_EXPOSURE", "icon": AppAssets.photo},
-  // {"title": "MACRO", "icon": AppAssets.photo},
-  // {"title": "MINIMALISTIC", "icon": AppAssets.leo_mo},
   {"title": "MONOCHROME", "icon": AppAssets.leo_monochrome},
   {"title": "MOODY", "icon": AppAssets.leo_moody},
-  // {"title": "NONE", "icon": AppAssets.vector},
-  // {"title": "NEUTRAL", "icon": AppAssets.photo},
-  // {"title": "PHOTOGRAPHY", "icon": AppAssets.photo},
-  // {"title": "PORTRAIT", "icon": AppAssets.studio},
-  // {"title": "RAYTRACED", "icon": AppAssets.threeD},
-  // {"title": "RENDER_3D", "icon": AppAssets.threeD},
-  // {"title": "RETRO", "icon": AppAssets.seventyVibe},
   {"title": "SKETCH_BW", "icon": AppAssets.leo_sketch},
-  // {"title": "STOCK_PHOTO", "icon": AppAssets.photo},
-  // {"title": "VIBRANT", "icon": AppAssets.vintage},
-  // {"title": "UNPROCESSED", "icon": AppAssets.photo},
 ];
 
 List<Map<String, String>> freePikAspectRatio = [
@@ -116,7 +102,7 @@ final List<String> sexualWordsList = [
   "nude", "nudes", "naked", "nekked",
   "porn", "porn", "pornhub", "porn hub",
   "xnxx", "xxxvideos", "xxx videos",
-  "erotic", "erotica", "sensual", "provocative",
+  "erotic", "erotica", "sensual", "provocative","lesbian"
 
   // Body parts / slang
   "boobs", "boob", "boobs", "breasts", "nipples", "nipple",

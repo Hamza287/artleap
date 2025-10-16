@@ -1,4 +1,3 @@
-//  import 'package:Artleap.ai/presentation/base_widgets/common_appbar.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +10,7 @@
 // import 'package:Artleap.ai/shared/constants/user_data.dart';
 // import 'package:Artleap.ai/shared/extensions/sized_box.dart';
 // import 'package:Artleap.ai/presentation/views/global_widgets/search_textfield.dart';
+// import '../../../../widgets/common_appbar.dart';
 // import 'community_screen_widgets/trending_creations_widget.dart';
 //
 // class CommunityScreen extends ConsumerStatefulWidget {
@@ -59,7 +59,9 @@
 //   }
 //
 //   List<Color> _getAppBarColors(int pageIndex) {
-//     return pageIndex == 3 ? [AppColors.lightIndigo, AppColors.darkIndigo] : [AppColors.darkBlue, AppColors.darkBlue];
+//     return pageIndex == 3
+//         ? [AppColors.lightIndigo, AppColors.darkIndigo]
+//         : [AppColors.darkBlue, AppColors.darkBlue];
 //   }
 //
 //   @override
@@ -77,11 +79,13 @@
 //                 actions: [
 //                   TextButton(
 //                     onPressed: () => Navigator.pop(context, false),
-//                     child: Text('No', style: AppTextstyle.interBold(color: AppColors.white)),
+//                     child: Text('No',
+//                         style: AppTextstyle.interBold(color: AppColors.white)),
 //                   ),
 //                   TextButton(
 //                     onPressed: () => Navigator.pop(context, true),
-//                     child: Text('Yes', style: AppTextstyle.interBold(color: AppColors.white)),
+//                     child: Text('Yes',
+//                         style: AppTextstyle.interBold(color: AppColors.white)),
 //                   ),
 //                 ],
 //               ),
@@ -91,7 +95,7 @@
 //       },
 //       child: Scaffold(
 //         appBar: CommonAppBar(
-//           title: _getAppBarTitle(0), // Using 0 for home page
+//           title: _getAppBarTitle(0),
 //           listOfColors: _getAppBarColors(0),
 //           bottomWidget: Column(
 //             children: [

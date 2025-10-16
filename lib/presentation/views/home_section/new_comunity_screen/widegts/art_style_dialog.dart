@@ -8,16 +8,18 @@ class ArtStyleDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(20),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: theme.colorScheme.shadow.withOpacity(0.2),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -35,7 +37,7 @@ class ArtStyleDialog extends ConsumerWidget {
                   Text(
                     "Filter by Art Style",
                     style: AppTextstyle.interBold(
-                        color: AppColors.darkBlue, fontSize: 20),
+                        color: theme.colorScheme.onSurface, fontSize: 20),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -44,13 +46,13 @@ class ArtStyleDialog extends ConsumerWidget {
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: theme.colorScheme.surfaceVariant,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.close,
                         size: 20,
-                        color: Colors.grey.shade700,
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),

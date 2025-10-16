@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'sections/about_artleap_contact.dart';
 import 'sections/about_artleap_footer.dart';
 import 'sections/about_artleap_hero.dart';
 import 'sections/about_artleap_mission.dart';
+import 'sections/about_artleap_team.dart';
 import 'sections/about_artleap_technology.dart';
 
 class AboutArtleapScreen extends StatelessWidget {
@@ -14,28 +14,18 @@ class AboutArtleapScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(theme),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Hero Section
               const AboutArtleapHeroSection(),
-        
-              // Mission Section
               const AboutArtleapMissionSection(),
-        
-              // Team Section
-              // const AboutArtleapTeamSection(),
-        
-              // Technology Section
+              const AboutArtleapTeamSection(),
               const AboutArtleapTechnologySection(),
-        
-              // Contact Section
               const AboutArtleapContactSection(),
-        
-              // Footer
               const AboutArtleapFooter(),
             ],
           ),
@@ -44,19 +34,19 @@ class AboutArtleapScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
       title: Text(
         'About Artleap',
         style: AppTextstyle.interBold(
           fontSize: 20,
-          color: AppColors.white,
+          color: theme.colorScheme.onPrimary,
         ),
       ),
       centerTitle: true,
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: theme.colorScheme.primary,
       elevation: 0,
-      iconTheme: const IconThemeData(color: AppColors.white),
+      iconTheme: IconThemeData(color: theme.colorScheme.onPrimary),
     );
   }
 }

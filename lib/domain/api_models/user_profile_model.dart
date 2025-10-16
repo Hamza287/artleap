@@ -40,7 +40,6 @@ class User {
   final List<Following> following;
   final String createdAt;
   final int V;
-  // New fields from old model
   final DateTime? lastCreditReset;
   final List<String> hiddenNotifications;
   final String? currentSubscription;
@@ -71,7 +70,6 @@ class User {
     required this.following,
     required this.createdAt,
     required this.V,
-    // New fields initialization
     this.lastCreditReset,
     required this.hiddenNotifications,
     this.currentSubscription,
@@ -97,7 +95,7 @@ class User {
       password: json['password'] ?? "",
       favorites: List.castFrom<dynamic, String>(json['favorites'] ?? []),
       profilePic: json['profilePic'] ?? "",
-      dailyCredits: json['dailyCredits'] ?? 10,
+      dailyCredits: json['dailyCredits'] ?? 4,
       isSubscribed: json['isSubscribed'] ?? false,
       images: List.from(json['images'] ?? []).map((e) => Images.fromJson(e ?? {})).toList(),
       followers: List.castFrom<dynamic, dynamic>(json['followers'] ?? []),
@@ -110,7 +108,7 @@ class User {
       subscriptionStatus: json['subscriptionStatus'] ?? 'none',
       planName: json['planName'] ?? 'Free',
       planType: json['planType'] ?? 'free',
-      totalCredits: json['totalCredits'] ?? 10,
+      totalCredits: json['totalCredits'] ?? 4,
       usedImageCredits: json['usedImageCredits'] ?? 0,
       usedPromptCredits: json['usedPromptCredits'] ?? 0,
       imageGenerationCredits: json['imageGenerationCredits'] ?? 0,

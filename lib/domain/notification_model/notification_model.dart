@@ -9,7 +9,7 @@ class AppNotification {
   final DateTime timestamp;
   final Map<String, dynamic>? data;
   final bool isRead;
-  final String type; // 'general' or 'user'
+  final String type;
 
   const AppNotification({
     required this.id,

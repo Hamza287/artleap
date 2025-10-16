@@ -1,12 +1,12 @@
-import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/prompt_screen_widgets/prompt_top_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/create_section/prompt_create_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/edit_section/prompt_edit_screen.dart';
+import 'package:Artleap.ai/presentation/views/common/profile_drawer.dart';
+import 'package:Artleap.ai/providers/prompt_nav_provider.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../providers/prompt_nav_provider.dart';
-import '../../../../providers/user_profile_provider.dart';
-import '../../common/profile_drawer.dart';
 import '../home_screen/home_screen_sections/home_screen_top_bar.dart';
+import 'prompt_screen_widgets/prompt_top_bar.dart';
+import 'sections/edit_section/prompt_edit_screen.dart';
+import 'sections/new_create_section/prompt_create_screen.dart';
 
 class PromptScreen extends ConsumerStatefulWidget {
   const PromptScreen({super.key});
@@ -27,12 +27,14 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final currentNav = ref.watch(promptNavProvider);
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
         key: _scaffoldKey,
         drawer: ProfileDrawer(
           profileImage: userProfile?.profilePic ?? '',
@@ -50,6 +52,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
               HomeScreenTopBar(
                 onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
               ),
+              // PromptTopBar(),
               Expanded(
                 child: Stack(
                   children: [
@@ -59,11 +62,11 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
                       right: 0,
                       top: 0,
                       child: Container(
-                        height: 4, // Shadow height
+                        height: 4,
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
+                              color: theme.colorScheme.shadow.withOpacity(0.1),
                               blurRadius: 0,
                               offset: const Offset(0, 4),
                             ),
@@ -84,14 +87,32 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
   Widget _buildCurrentScreen(PromptNavItem navItem) {
     switch (navItem) {
       case PromptNavItem.create:
-        return const PromptCreateScreen();
+        // return const PromptCreateScreen();
+        return const PromptCreateScreenRedesign();
       case PromptNavItem.edit:
         return const PromptEditScreen();
       case PromptNavItem.animate:
-      return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
+        return Center(
+          child: Text(
+            'Coming soon',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+        );
       case PromptNavItem.enhance:
-        return Center(child: Text('Coming soon',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),);
+        return Center(
+          child: Text(
+            'Coming soon',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+        );
     }
   }
 }
-

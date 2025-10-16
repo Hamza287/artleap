@@ -4,6 +4,7 @@ import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../../../../../shared/constants/user_data.dart';
 
 class HomeScreenTopBar extends ConsumerWidget {
@@ -13,8 +14,8 @@ class HomeScreenTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
-
-    final subscriptionAsync = ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
+    final theme = Theme.of(context);
+    ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
 
@@ -22,8 +23,8 @@ class HomeScreenTopBar extends ConsumerWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            top: 20,
-            left: screenWidth * 0.05,
+            top: 16,
+            left: screenWidth * 0.04,
             right: screenWidth * 0.03,
           ),
           child: Row(
@@ -31,24 +32,23 @@ class HomeScreenTopBar extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  // Hamburger Icon
                   GestureDetector(
                     onTap: onMenuTap,
                     child: Container(
-                      width: screenWidth * 0.1 > 42 ? 42 : screenWidth * 0.1,
-                      height: screenWidth * 0.1 > 42 ? 42 : screenWidth * 0.1,
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Color(0xFF923CFF), Color(0xFF6A11CB)],
+                          colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
                         ),
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF923CFF).withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                            color: theme.colorScheme.primary.withOpacity(0.3),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
@@ -57,29 +57,28 @@ class HomeScreenTopBar extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              width: 16,
-                              height: 2,
-                              color: Colors.white,
+                              width: 14,
+                              height: 1.5,
+                              color: theme.colorScheme.onPrimary,
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 3),
                             Container(
-                              width: 16,
-                              height: 2,
-                              color: Colors.white,
+                              width: 14,
+                              height: 1.5,
+                              color: theme.colorScheme.onPrimary,
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 3),
                             Container(
-                              width: 16,
-                              height: 2,
-                              color: Colors.white,
+                              width: 14,
+                              height: 1.5,
+                              color: theme.colorScheme.onPrimary,
                             ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.03),
-                  // Coin container
+                  SizedBox(width: screenWidth * 0.025),
                   InkWell(
                     onTap: () {
                       if (!isFreePlan) {
@@ -89,29 +88,30 @@ class HomeScreenTopBar extends ConsumerWidget {
                       }
                     },
                     child: Container(
-                      height: 42,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(21),
+                        borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: Colors.amber.shade300,
-                          width: 1.5,
+                          color: Colors.orange,
+                          width: 1.2,
                         ),
+                        color: theme.colorScheme.surface,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
                             AppAssets.stackofcoins,
-                            height: 20,
-                            color: Colors.amber[700],
+                            height: 16,
+                            color: Colors.orange,
                           ),
-                          SizedBox(width: screenWidth * 0.015),
+                          SizedBox(width: screenWidth * 0.012),
                           Text(
                             "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
                             style: AppTextstyle.interMedium(
-                              color: Colors.amber.shade900,
-                              fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
+                              color: Colors.orange,
+                              fontSize: 13,
                               fontWeight: FontWeight.w700,
                             ),
                           )
@@ -121,107 +121,173 @@ class HomeScreenTopBar extends ConsumerWidget {
                   ),
                 ],
               ),
-
-              // Show different UI based on plan type
-              isFreePlan
-                  ? ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed("choose_plan_screen");
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF923CFF),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.04,
-                    vertical: 10,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(86),
-                  ),
-                  elevation: 2,
-                  shadowColor: const Color(0xFF923CFF).withOpacity(0.4),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Image.asset(
-                      AppAssets.proBtn,
-                      height: 30,
-                    ),
-                    SizedBox(width: screenWidth * 0.01),
-                    Text(
-                      "Get Pro",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-                  : _buildPlanBadge(planName, screenWidth),
+              isFreePlan ? _buildProfessionalProButton(screenWidth, context, theme) : _buildPlanBadge(planName, screenWidth, theme),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
       ],
     );
   }
 
-  // Helper method to build the plan badge with appropriate colors
-  Widget _buildPlanBadge(String planName, double screenWidth) {
-    Color badgeColor;
+  Widget _buildProfessionalProButton(double screenWidth, BuildContext context, ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).pushNamed("choose_plan_screen");
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primaryContainer,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                width: 1.2,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFFFD700),
+                        Color(0xFFFFA500),
+                        Color(0xFFFF8C00),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                   Feather.award,
+                    color: theme.colorScheme.onPrimary,
+                    size: 14,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  "PRO",
+                  style: TextStyle(
+                    color: theme.colorScheme.onPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                  ),
+                ),
+                const SizedBox(width: 2),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: theme.colorScheme.onPrimary.withOpacity(0.9),
+                  size: 10,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlanBadge(String planName, double screenWidth, ThemeData theme) {
     Color textColor;
     Color borderColor;
     IconData icon;
+    LinearGradient? gradient;
 
-    // Set different colors based on plan type
     switch (planName.toLowerCase()) {
       case 'basic':
-        badgeColor = Colors.blue.shade50;
-        textColor = Colors.blue.shade800;
-        borderColor = Colors.blue.shade300;
+        gradient = LinearGradient(
+          colors: [theme.colorScheme.surface, theme.colorScheme.surfaceContainerHighest],
+        );
+        textColor = theme.colorScheme.primary;
+        borderColor = theme.colorScheme.primary.withOpacity(0.5);
         icon = Icons.star_outline;
         break;
       case 'standard':
-        badgeColor = Colors.purple.shade50;
-        textColor = Colors.purple.shade800;
-        borderColor = Colors.purple.shade300;
+        gradient = LinearGradient(
+          colors: [theme.colorScheme.surface, theme.colorScheme.surfaceContainerHighest],
+        );
+        textColor = theme.colorScheme.primary;
+        borderColor = theme.colorScheme.primary.withOpacity(0.5);
         icon = Icons.star_half;
         break;
       case 'premium':
-        badgeColor = Colors.amber.shade50;
-        textColor = Colors.amber.shade900;
-        borderColor = Colors.amber.shade300;
+        gradient = LinearGradient(
+          colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
+        );
+        textColor = theme.colorScheme.onPrimary;
+        borderColor = theme.colorScheme.primary;
         icon = Icons.star;
         break;
       default:
-        badgeColor = Colors.green.shade50;
-        textColor = Colors.green.shade800;
-        borderColor = Colors.green.shade300;
+        gradient = LinearGradient(
+          colors: [theme.colorScheme.surface, theme.colorScheme.surfaceContainerHighest],
+        );
+        textColor = theme.colorScheme.primary;
+        borderColor = theme.colorScheme.primary.withOpacity(0.5);
         icon = Icons.verified;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: badgeColor,
-        borderRadius: BorderRadius.circular(20),
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: borderColor,
-          width: 1.5,
+          width: 1.2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: borderColor.withOpacity(0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: textColor, size: 18),
-          SizedBox(width: screenWidth * 0.01),
+          Icon(icon, color: textColor, size: 14),
+          const SizedBox(width: 4),
           Text(
-            planName,
+            planName.toUpperCase(),
             style: TextStyle(
               color: textColor,
-              fontSize: screenWidth * 0.035 > 14 ? 14 : screenWidth * 0.035,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
+              letterSpacing: 0.4,
             ),
           ),
         ],

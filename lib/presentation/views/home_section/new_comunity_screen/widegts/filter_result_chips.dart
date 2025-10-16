@@ -18,6 +18,7 @@ class FilterResultChips extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final allStyles = [...freePikStyles, ...textToImageStyles];
     final homeProvider = ref.watch(homeScreenProvider);
 
@@ -38,9 +39,9 @@ class FilterResultChips extends ConsumerWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppColors.pinkColor.withOpacity(0.1),
+                      color: theme.colorScheme.error.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.pinkColor, width: 1),
+                      border: Border.all(color: theme.colorScheme.error, width: 1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -50,14 +51,14 @@ class FilterResultChips extends ConsumerWidget {
                         Icon(
                           Icons.clear,
                           size: 16,
-                          color: AppColors.pinkColor,
+                          color: theme.colorScheme.error,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           'Clear',
                           style: AppTextstyle.interMedium(
                             fontSize: 12,
-                            color: AppColors.pinkColor,
+                            color: theme.colorScheme.error,
                           ),
                         ),
                       ],
@@ -66,8 +67,8 @@ class FilterResultChips extends ConsumerWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10,),
-            Expanded(
+          SizedBox(height: 10,),
+          Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Wrap(
@@ -83,6 +84,7 @@ class FilterResultChips extends ConsumerWidget {
                     label: 'All Styles',
                     icon: null,
                     styleTitle: null,
+                    theme: theme,
                   ),
                   ...allStyles.map((e) => _buildFilterChip(
                     context: context,
@@ -91,6 +93,7 @@ class FilterResultChips extends ConsumerWidget {
                     label: e["title"]!,
                     icon: e['icon'],
                     styleTitle: e["title"]!,
+                    theme: theme,
                   )),
                 ],
               ),
@@ -108,6 +111,7 @@ class FilterResultChips extends ConsumerWidget {
     required String label,
     required String? icon,
     required String? styleTitle,
+    required ThemeData theme,
   }) {
     return GestureDetector(
       onTap: () => _handleFilterSelection(ref, styleTitle, context),
@@ -115,21 +119,21 @@ class FilterResultChips extends ConsumerWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.darkBlue : Colors.white,
+          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.darkBlue : Colors.grey.shade300,
+            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.outline.withOpacity(0.3),
             width: 1.5,
           ),
           boxShadow: [
             if (isSelected)
               BoxShadow(
-                color: AppColors.darkBlue.withOpacity(0.3),
+                color: theme.colorScheme.primary.withOpacity(0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: theme.colorScheme.shadow.withOpacity(0.05),
               blurRadius: 4,
               offset: const Offset(0, 1),
             ),
@@ -149,7 +153,7 @@ class FilterResultChips extends ConsumerWidget {
                     fit: BoxFit.cover,
                   ),
                   border: Border.all(
-                    color: isSelected ? Colors.white : Colors.grey.shade400,
+                    color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.outline,
                     width: 1,
                   ),
                 ),
@@ -160,7 +164,7 @@ class FilterResultChips extends ConsumerWidget {
               label,
               style: AppTextstyle.interMedium(
                 fontSize: 13,
-                color: isSelected ? Colors.white : AppColors.darkBlue,
+                color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
               ),
             ),
             if (isSelected) ...[
@@ -168,7 +172,7 @@ class FilterResultChips extends ConsumerWidget {
               Icon(
                 Icons.check,
                 size: 16,
-                color: Colors.white,
+                color: theme.colorScheme.onPrimary,
               ),
             ],
           ],

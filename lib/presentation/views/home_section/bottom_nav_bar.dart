@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 
@@ -16,11 +17,28 @@ class BottomNavBar extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends ConsumerState<BottomNavBar> {
+class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerProviderStateMixin {
   bool _initialized = false;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.6,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (_initialized) return;
       _initialized = true;
@@ -37,153 +55,202 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     });
   }
 
-  // Widget _buildProfilePicture() {
-  //   final userProfileState = ref.watch(userProfileProvider);
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
-  //   if (userProfileState.isloading) {
-  //     return const SizedBox(
-  //       height: 35,
-  //       width: 35,
-  //       child: Center(
-  //         child: CircularProgressIndicator(
-  //           color: AppColors.indigo,
-  //           strokeWidth: 2,
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   final profilePic = userProfileState.userProfileData?.user.profilePic;
-
-  //   if (profilePic != null && profilePic.isNotEmpty) {
-  //     return Container(
-  //       height: 35,
-  //       width: 35,
-  //       decoration: BoxDecoration(
-  //         image: DecorationImage(
-  //           image: NetworkImage(profilePic),
-  //           fit: BoxFit.cover,
-  //         ),
-  //         shape: BoxShape.circle,
-  //         color: AppColors.white,
-  //         border: Border.all(
-  //           color: ref.watch(bottomNavBarProvider).pageIndex == 3
-  //               ? const Color(0xFFAB8AFF) // Purple when selected
-  //               : AppColors.darkBlue, // Dark blue when unselected
-  //           width: 2,
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   // Default profile picture
-  //   return Container(
-  //     height: 35,
-  //     width: 35,
-  //     decoration: BoxDecoration(
-  //       image: const DecorationImage(
-  //         image: AssetImage(AppAssets.artstyle1),
-  //         fit: BoxFit.cover,
-  //       ),
-  //       shape: BoxShape.circle,
-  //       color: AppColors.white,
-  //       border: Border.all(
-  //         color: ref.watch(bottomNavBarProvider).pageIndex == 3
-  //             ? const Color(0xFFAB8AFF) // Purple when selected
-  //             : AppColors.darkBlue, // Dark blue when unselected
-  //         width: 2,
-  //       ),
-  //     ),
-  //   );
-  // }
+  void _onItemTapped(int index) {
+    _animationController.forward().then((_) {
+      _animationController.reverse();
+    });
+    ref.read(bottomNavBarProvider).setPageIndex(index);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        bottomNavigationBar: SafeArea(
-          child: Container(
-            height: 65,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade400,
-                  blurRadius: 2,
-                  spreadRadius: 2,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: 10.0,
-                  sigmaY: 10.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavButton(
-                      icon: Icons.home,
-                      index: 0,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
-                    ),
-                    _buildNavButton(
-                      icon: Icons.add_circle,
-                      index: 1,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
-                    ),
-                    _buildNavButton(
-                      icon: Icons.groups,
-                      index: 2,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
-                    ),
-                    _buildNavButton(
-                      icon: Icons.person,
-                      index: 3,
-                      currentIndex: pageIndex,
-                      onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      resizeToAvoidBottomInset: false,
+      bottomNavigationBar: isKeyboardOpen
+          ? const SizedBox.shrink()
+          : _buildEnhancedNavBar(pageIndex, theme),
+      body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
+          ? bottomNavBarState.widgets[pageIndex]
+          : Center(
+        child: CircularProgressIndicator(
+          color: theme.colorScheme.primary,
         ),
-        body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
-            ? bottomNavBarState.widgets[pageIndex]
-            : const Center(child: CircularProgressIndicator()),
       ),
     );
   }
 
-  Widget _buildNavButton({
+  Widget _buildEnhancedNavBar(int currentIndex, ThemeData theme) {
+    return SafeArea(
+      top: false,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.onSurface.withOpacity(0.25),
+              blurRadius: 25,
+              spreadRadius: 3,
+              offset: const Offset(0, 8),
+            ),
+            BoxShadow(
+              color: theme.colorScheme.onSurface.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: -2,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    theme.colorScheme.surface.withOpacity(0.95),
+                    theme.colorScheme.surface.withOpacity(0.98),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.onSurface.withOpacity(0.15),
+                  width: 1.5,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavigationItem(
+                    icon: Feather.home,
+                    activeIcon: Feather.home,
+                    label: 'Home',
+                    index: 0,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: Feather.edit_3,
+                    activeIcon: Feather.edit_3,
+                    label: 'Create',
+                    index: 1,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: Feather.users,
+                    activeIcon: Feather.users,
+                    label: 'Community',
+                    index: 2,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: Feather.users,
+                    activeIcon: Feather.users,
+                    label: 'Profile',
+                    index: 3,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavigationItem({
     required IconData icon,
+    required IconData activeIcon,
+    required String label,
     required int index,
     required int currentIndex,
-    required VoidCallback onTap,
+    required ThemeData theme,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: SizedBox(
-        height: 55,
-        width: 40,
-        child: Center(
-          child: Icon(
-            icon,
-            size: 33,
-            color: currentIndex == index
-                ? const Color(0xFFAB8AFF)
-                : AppColors.darkBlue,
-          ),
+    final isActive = currentIndex == index;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _onItemTapped(index),
+        child: AnimatedBuilder(
+          animation: _fadeAnimation,
+          builder: (context, child) {
+            return Opacity(
+              opacity: isActive ? _fadeAnimation.value : 0.7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: isActive
+                          ? LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.colorScheme.primary.withOpacity(0.15),
+                          theme.colorScheme.primary.withOpacity(0.25),
+                        ],
+                      )
+                          : null,
+                      color: isActive
+                          ? null
+                          : theme.colorScheme.onSurface.withOpacity(0.05),
+                      boxShadow: isActive
+                          ? [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withOpacity(0.3),
+                          blurRadius: 8,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                          : null,
+                    ),
+                    child: Icon(
+                      isActive ? activeIcon : icon,
+                      size: isActive ? 26 : 22,
+                      color: isActive
+                          ? theme.colorScheme.onSurface
+                          : theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                  // const SizedBox(height: 4),
+                  // Text(
+                  //   label,
+                  //   style: TextStyle(
+                  //     fontSize: 11,
+                  //     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  //     color: isActive
+                  //         ? theme.colorScheme.onSurface
+                  //         : theme.colorScheme.onSurface.withOpacity(0.7),
+                  //     letterSpacing: 0.3,
+                  //   ),
+                  // ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

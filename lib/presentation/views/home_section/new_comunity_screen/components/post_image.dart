@@ -31,37 +31,39 @@ class PostImage extends ConsumerWidget {
     return 'Anonymous Artist';
   }
 
-  Widget _buildImageShimmer() {
+  Widget _buildImageShimmer(BuildContext context) {
+    final theme = Theme.of(context);
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor: theme.colorScheme.surfaceContainerHighest,
+      highlightColor: theme.colorScheme.surface,
       child: Container(
         width: double.infinity,
         height: 450,
         decoration: BoxDecoration(
-          color: Colors.grey.shade300,
+          color: theme.colorScheme.surfaceContainerHighest,
         ),
       ),
     );
   }
 
-  Widget _buildErrorPlaceholder() {
+  Widget _buildErrorPlaceholder(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      color: Colors.grey.shade200,
+      color: theme.colorScheme.surfaceContainerHighest,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.image_not_supported_outlined,
-              color: Colors.grey.shade400,
+              color: theme.colorScheme.onSurface.withOpacity(0.4),
               size: 60,
             ),
             const SizedBox(height: 12),
             Text(
               'Image not available',
               style: AppTextstyle.interRegular(
-                color: Colors.grey.shade500,
+                color: theme.colorScheme.onSurface.withOpacity(0.5),
               ),
             ),
           ],
@@ -72,6 +74,7 @@ class PostImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final isImageVisible = homeProvider.visibleImages.contains(image.imageUrl);
 
     return VisibilityDetector(
@@ -110,21 +113,20 @@ class PostImage extends ConsumerWidget {
           width: double.infinity,
           height: 450,
           decoration: BoxDecoration(
-            color: Colors.grey.shade100,
+            color: theme.colorScheme.surfaceVariant,
           ),
           child: isImageVisible
               ? CachedNetworkImage(
             imageUrl: image.imageUrl,
             fit: BoxFit.cover,
             fadeInDuration: Duration.zero,
-            placeholder: (context, url) => _buildImageShimmer(),
-            errorWidget: (context, url, error) => _buildErrorPlaceholder(),
+            placeholder: (context, url) => _buildImageShimmer(context),
+            errorWidget: (context, url, error) => _buildErrorPlaceholder(context),
             cacheKey: image.imageUrl,
             maxWidthDiskCache: 1080,
             maxHeightDiskCache: 1080,
             useOldImageOnUrlChange: true,
-          )
-              : _buildImageShimmer(),
+          ) : _buildImageShimmer(context),
         ),
       ),
     );
