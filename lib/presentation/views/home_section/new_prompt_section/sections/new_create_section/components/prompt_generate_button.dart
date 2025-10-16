@@ -16,18 +16,17 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
   final bool? suffixRow;
   final String credits;
 
-  const PromptScreenButtonRedesign({
-    super.key,
-    this.title,
-    this.imageIcon,
-    this.onpress,
-    required this.isLoading,
-    this.height,
-    this.width,
-    this.imageIconSize,
-    this.suffixRow,
-    this.credits = '2'
-  });
+  const PromptScreenButtonRedesign(
+      {super.key,
+      this.title,
+      this.imageIcon,
+      this.onpress,
+      required this.isLoading,
+      this.height,
+      this.width,
+      this.imageIconSize,
+      this.suffixRow,
+      this.credits = '2'});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,7 +56,6 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Left side - Icon and Text
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +84,6 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Icon with background
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -100,9 +97,7 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
             color: theme.colorScheme.onPrimary,
           ),
         ),
-
         if (title != null) 12.spaceX,
-
         if (title != null)
           Flexible(
             child: Text(
@@ -126,7 +121,7 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
         color: theme.colorScheme.onPrimary.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.3),
+          color:Colors.amberAccent.shade200,
         ),
       ),
       child: Row(
@@ -139,29 +134,10 @@ class PromptScreenButtonRedesign extends ConsumerWidget {
             color: Colors.amberAccent.shade200,
           ),
           6.spaceX,
-          ShaderMask(
-            shaderCallback: (bounds) => const LinearGradient(
-              colors: [
-                Color(0xFFFFD700),
-                Color(0xFFFFA500),
-                Color(0xFFFFE55C),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ).createShader(bounds),
-            child: Text(
-              credits,
-              style: TextStyle(
-                color: Colors.amberAccent.shade200,
-                fontSize: 14,
-                shadows: [
-                  Shadow(
-                    color: Colors.orange.withOpacity(0.4),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+          Text(
+            credits,
+            style: TextStyle(
+              color: Colors.amberAccent.shade200,
             ),
           ),
         ],

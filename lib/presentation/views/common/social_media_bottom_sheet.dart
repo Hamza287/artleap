@@ -55,35 +55,37 @@ class SocialMediaBottomSheet extends StatelessWidget {
     final iconSize = isSmallScreen ? 28.0 : 32.0;
     final fontSize = isSmallScreen ? 12.0 : 14.0;
 
-    return Container(
-      padding: EdgeInsets.only(
-        top: 24,
-        left: 24,
-        right: 24,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.3),
-            blurRadius: 32,
-            offset: const Offset(0, -8),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHeader(theme,context),
-          const SizedBox(height: 8),
-          _buildSubtitle(theme),
-          const SizedBox(height: 32),
-          _buildSocialMediaGrid(theme, iconSize, fontSize),
-          const SizedBox(height: 32),
-          _buildFooter(theme),
-        ],
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.only(
+          top: 24,
+          left: 24,
+          right: 24,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        ),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.shadow.withOpacity(0.3),
+              blurRadius: 32,
+              offset: const Offset(0, -8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(theme,context),
+            const SizedBox(height: 8),
+            _buildSubtitle(theme),
+            const SizedBox(height: 32),
+            _buildSocialMediaGrid(theme, iconSize, fontSize),
+            const SizedBox(height: 32),
+            _buildFooter(theme),
+          ],
+        ),
       ),
     );
   }

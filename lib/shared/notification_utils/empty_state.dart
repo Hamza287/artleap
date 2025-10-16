@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class EmptyState extends StatelessWidget {
@@ -18,6 +17,7 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
 
     return Center(
@@ -37,17 +37,17 @@ class EmptyState extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withOpacity(0.06),
-                Colors.black.withOpacity(0.5),
+                theme.colorScheme.surfaceContainer.withOpacity(0.06),
+                theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
               ],
             ),
             border: Border.all(
-              color: Colors.white.withOpacity(0.1),
+              color: theme.colorScheme.outline.withOpacity(0.1),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.4),
+                color: theme.colorScheme.shadow.withOpacity(0.4),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
               ),
@@ -64,7 +64,7 @@ class EmptyState extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      (iconColor ?? AppColors.lightPurple).withOpacity(0.25),
+                      (iconColor ?? theme.colorScheme.primary).withOpacity(0.25),
                       Colors.transparent,
                     ],
                     center: Alignment.center,
@@ -75,7 +75,7 @@ class EmptyState extends StatelessWidget {
                   child: Icon(
                     icon,
                     size: size.width * 0.13,
-                    color: iconColor ?? AppColors.lightPurple,
+                    color: iconColor ?? theme.colorScheme.primary,
                   ),
                 ),
               ),
@@ -86,7 +86,7 @@ class EmptyState extends StatelessWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: AppTextstyle.interMedium(
-                  color: Colors.white,
+                  color: theme.colorScheme.onSurface,
                   fontSize: size.width * 0.05,
                 ),
               ),
@@ -97,7 +97,7 @@ class EmptyState extends StatelessWidget {
                 subtitle,
                 textAlign: TextAlign.center,
                 style: AppTextstyle.interRegular(
-                  color: Colors.white70,
+                  color: theme.colorScheme.onSurface.withOpacity(0.7),
                   fontSize: size.width * 0.038,
                 ),
               ),

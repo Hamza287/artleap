@@ -40,50 +40,48 @@ class RatioSelectionRedesign extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 80,
-        height: 48,
-        margin: const EdgeInsets.only(right: 8),
+        width: 70,
+        height: 44,
+        margin: const EdgeInsets.only(right: 6),
         decoration: BoxDecoration(
           color: isSelected
               ? theme.colorScheme.primary.withOpacity(0.15)
               : theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected
                 ? theme.colorScheme.primary
                 : theme.colorScheme.outline.withOpacity(0.2),
-            width: isSelected ? 2 : 1.5,
+            width: isSelected ? 1.5 : 1,
           ),
           boxShadow: [
             if (isSelected)
               BoxShadow(
-                color: theme.colorScheme.primary.withOpacity(0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: theme.colorScheme.primary.withOpacity(0.15),
+                blurRadius: 6,
+                offset: const Offset(0, 1),
               ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Ratio Icon
             Icon(
               isPortrait
                   ? Icons.crop_portrait_rounded
                   : isLandscape
-                      ? Icons.crop_landscape_rounded
-                      : Icons.crop_square_rounded,
+                  ? Icons.crop_landscape_rounded
+                  : Icons.crop_square_rounded,
               color: isSelected
                   ? theme.colorScheme.primary
                   : theme.colorScheme.onSurface.withOpacity(0.6),
-              size: 16,
+              size: 14,
             ),
-            const SizedBox(height: 4),
-            // Ratio Text
+            const SizedBox(height: 2),
             Text(
               text,
               style: AppTextstyle.interMedium(
-                fontSize: 12,
+                fontSize: 11,
                 color: isSelected
                     ? theme.colorScheme.primary
                     : theme.colorScheme.onSurface,
@@ -95,35 +93,34 @@ class RatioSelectionRedesign extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildNumberCard(ThemeData theme) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 70,
-        height: 70,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
           color: isSelected
               ? theme.colorScheme.primary
               : theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected
                 ? theme.colorScheme.primary
                 : theme.colorScheme.outline.withOpacity(0.2),
-            width: isSelected ? 2 : 1.5,
+            width: isSelected ? 1.5 : 1,
           ),
           boxShadow: [
             BoxShadow(
               color: theme.colorScheme.shadow.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              blurRadius: 6,
+              offset: const Offset(0, 1),
             ),
             if (isSelected)
               BoxShadow(
-                color: theme.colorScheme.primary.withOpacity(0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                color: theme.colorScheme.primary.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
           ],
         ),
@@ -133,7 +130,7 @@ class RatioSelectionRedesign extends StatelessWidget {
               child: Text(
                 text,
                 style: AppTextstyle.interMedium(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: isSelected
                       ? theme.colorScheme.onPrimary
                       : theme.colorScheme.onSurface,
@@ -142,32 +139,32 @@ class RatioSelectionRedesign extends StatelessWidget {
             ),
             if (credits != null)
               Positioned(
-                top: 6,
-                right: 6,
+                top: 4,
+                right: 4,
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? theme.colorScheme.onPrimary.withOpacity(0.2)
                         : theme.colorScheme.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.bolt_rounded,
-                        size: 8,
+                        size: 7,
                         color: isSelected
                             ? theme.colorScheme.onPrimary
                             : theme.colorScheme.primary,
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 1),
                       Text(
                         credits.toString(),
                         style: AppTextstyle.interMedium(
-                          fontSize: 8,
+                          fontSize: 7,
                           color: isSelected
                               ? theme.colorScheme.onPrimary
                               : theme.colorScheme.primary,

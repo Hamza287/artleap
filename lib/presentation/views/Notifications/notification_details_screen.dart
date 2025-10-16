@@ -43,21 +43,23 @@ class NotificationDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeaderSection(theme),
-            const SizedBox(height: 24),
-            _buildContentSection(theme),
-            if (notification.data?.isNotEmpty ?? false) ...[
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderSection(theme),
               const SizedBox(height: 24),
-              _buildDataSection(theme),
+              _buildContentSection(theme),
+              if (notification.data?.isNotEmpty ?? false) ...[
+                const SizedBox(height: 24),
+                _buildDataSection(theme),
+              ],
+              const SizedBox(height: 32),
+              if (_hasAction()) _buildActionButton(context, theme),
             ],
-            const SizedBox(height: 32),
-            if (_hasAction()) _buildActionButton(context, theme),
-          ],
+          ),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 
@@ -16,11 +17,28 @@ class BottomNavBar extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _BottomNavBarState();
 }
 
-class _BottomNavBarState extends ConsumerState<BottomNavBar> {
+class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerProviderStateMixin {
   bool _initialized = false;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.6,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (_initialized) return;
       _initialized = true;
@@ -38,13 +56,27 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    _animationController.forward().then((_) {
+      _animationController.reverse();
+    });
+    ref.read(bottomNavBarProvider).setPageIndex(index);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bottomNavBarState = ref.watch(bottomNavBarProvider);
     final pageIndex = bottomNavBarState.pageIndex;
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
-      backgroundColor: ColorScheme.of(context).surface,
+      backgroundColor: theme.colorScheme.surface,
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: isKeyboardOpen
           ? const SizedBox.shrink()
@@ -52,66 +84,93 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
       body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
           ? bottomNavBarState.widgets[pageIndex]
           : Center(
-              child: CircularProgressIndicator(
-                color: theme.colorScheme.primary,
-              ),
-            ),
+        child: CircularProgressIndicator(
+          color: theme.colorScheme.primary,
+        ),
+      ),
     );
   }
 
   Widget _buildEnhancedNavBar(int currentIndex, ThemeData theme) {
-
     return SafeArea(
+      top: false,
       child: Container(
-        height: 75,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: theme.colorScheme.shadow.withOpacity(0.1),
-              blurRadius: 15,
-              offset: const Offset(0, -2),
+              color: theme.colorScheme.onSurface.withOpacity(0.25),
+              blurRadius: 25,
+              spreadRadius: 3,
+              offset: const Offset(0, 8),
+            ),
+            BoxShadow(
+              color: theme.colorScheme.onSurface.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: -2,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
           child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10.0,
-              sigmaY: 10.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavButton(
-                  icon: Icons.home,
-                  index: 0,
-                  currentIndex: currentIndex,
-                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(0),
-                  theme: theme,
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    theme.colorScheme.surface.withOpacity(0.95),
+                    theme.colorScheme.surface.withOpacity(0.98),
+                  ],
                 ),
-                _buildNavButton(
-                  icon: Icons.add_circle,
-                  index: 1,
-                  currentIndex: currentIndex,
-                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(1),
-                  theme: theme,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.onSurface.withOpacity(0.15),
+                  width: 1.5,
                 ),
-                _buildNavButton(
-                  icon: Icons.groups,
-                  index: 2,
-                  currentIndex: currentIndex,
-                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(2),
-                  theme: theme,
-                ),
-                _buildNavButton(
-                  icon: Icons.person,
-                  index: 3,
-                  currentIndex: currentIndex,
-                  onTap: () => ref.read(bottomNavBarProvider).setPageIndex(3),
-                  theme: theme,
-                ),
-              ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavigationItem(
+                    icon: Feather.home,
+                    activeIcon: Feather.home,
+                    label: 'Home',
+                    index: 0,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: Feather.edit_3,
+                    activeIcon: Feather.edit_3,
+                    label: 'Create',
+                    index: 1,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: Feather.users,
+                    activeIcon: Feather.users,
+                    label: 'Community',
+                    index: 2,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: Feather.users,
+                    activeIcon: Feather.users,
+                    label: 'Profile',
+                    index: 3,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -119,44 +178,79 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     );
   }
 
-  Widget _buildNavButton({
+  Widget _buildNavigationItem({
     required IconData icon,
+    required IconData activeIcon,
+    required String label,
     required int index,
     required int currentIndex,
-    required VoidCallback onTap,
     required ThemeData theme,
   }) {
-    final isSelected = currentIndex == index;
+    final isActive = currentIndex == index;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(100),
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
-                    isSelected ? theme.colorScheme.primary : Colors.transparent,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _onItemTapped(index),
+        child: AnimatedBuilder(
+          animation: _fadeAnimation,
+          builder: (context, child) {
+            return Opacity(
+              opacity: isActive ? _fadeAnimation.value : 0.7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: isActive
+                          ? LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.colorScheme.primary.withOpacity(0.15),
+                          theme.colorScheme.primary.withOpacity(0.25),
+                        ],
+                      )
+                          : null,
+                      color: isActive
+                          ? null
+                          : theme.colorScheme.onSurface.withOpacity(0.05),
+                      boxShadow: isActive
+                          ? [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withOpacity(0.3),
+                          blurRadius: 8,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                          : null,
+                    ),
+                    child: Icon(
+                      isActive ? activeIcon : icon,
+                      size: isActive ? 26 : 22,
+                      color: isActive
+                          ? theme.colorScheme.onSurface
+                          : theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                  // const SizedBox(height: 4),
+                  // Text(
+                  //   label,
+                  //   style: TextStyle(
+                  //     fontSize: 11,
+                  //     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  //     color: isActive
+                  //         ? theme.colorScheme.onSurface
+                  //         : theme.colorScheme.onSurface.withOpacity(0.7),
+                  //     letterSpacing: 0.3,
+                  //   ),
+                  // ),
+                ],
               ),
-              child: Icon(
-                icon,
-                size: 32,
-                color: isSelected
-                    ? theme.colorScheme.onPrimary
-                    : theme.colorScheme.onSurface.withOpacity(0.7),
-              ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

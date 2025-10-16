@@ -105,3 +105,18 @@ final notificationProvider = StateNotifierProvider.family<NotificationNotifier, 
     userId,
   ),
 );
+
+enum NotificationFilter {
+  all('All'),
+  alert('Alerts'),
+  like('Likes'),
+  comment('Comments'),
+  follow('Follows');
+
+  const NotificationFilter(this.displayName);
+  final String displayName;
+}
+
+final notificationFilterProvider = StateProvider<NotificationFilter>(
+      (ref) => NotificationFilter.all,
+);

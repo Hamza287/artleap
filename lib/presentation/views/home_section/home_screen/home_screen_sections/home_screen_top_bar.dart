@@ -4,6 +4,7 @@ import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../../../../../shared/constants/user_data.dart';
 
 class HomeScreenTopBar extends ConsumerWidget {
@@ -190,7 +191,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.star,
+                   Feather.award,
                     color: theme.colorScheme.onPrimary,
                     size: 14,
                   ),
