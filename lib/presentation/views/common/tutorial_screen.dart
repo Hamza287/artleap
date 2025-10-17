@@ -188,14 +188,15 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
                           physics: const ClampingScrollPhysics(),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 currentScreen.title,
                                 style: AppTextstyle.interBold(
-                                  fontSize: isSmallScreen ? 20 : 22,
+                                  fontSize: isSmallScreen ? 16 : 18,
                                   color: theme.colorScheme.onSurface,
                                 ),
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.start,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -203,11 +204,11 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
                               Text(
                                 currentScreen.description,
                                 style: AppTextstyle.interRegular(
-                                  fontSize: isSmallScreen ? 13 : 14,
+                                  fontSize: isSmallScreen ? 11 : 12,
                                   color: theme.colorScheme.onSurface
                                       .withOpacity(0.7),
                                 ),
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.start,
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -247,7 +248,6 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
                                 width: screenWidth * 0.35,
                                 child: TextButton(
                                   onPressed: () {
-                                    // FIX: Use the state notifier to go to previous page
                                     final newPage = state.currentPage - 1;
                                     notifier.setCurrentPage(newPage);
                                     _pageController.animateToPage(

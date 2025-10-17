@@ -147,7 +147,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     final userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
 
-    // User is logged in
     if (userid.isNotEmpty) {
       UserData.ins.setUserData(
         id: userid,
