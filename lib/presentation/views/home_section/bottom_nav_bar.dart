@@ -162,8 +162,8 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
                     theme: theme,
                   ),
                   _buildNavigationItem(
-                    icon: Feather.users,
-                    activeIcon: Feather.users,
+                    icon: Feather.user,
+                    activeIcon: Feather.user,
                     label: 'Profile',
                     index: 3,
                     currentIndex: currentIndex,
@@ -232,7 +232,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
                       size: isActive ? 26 : 22,
                       color: isActive
                           ? theme.colorScheme.onSurface
-                          : theme.colorScheme.onSurface.withOpacity(0.6),
+                          : theme.colorScheme.onSurface,
                     ),
                   ),
                   // const SizedBox(height: 4),

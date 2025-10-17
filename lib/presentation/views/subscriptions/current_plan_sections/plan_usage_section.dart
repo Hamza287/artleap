@@ -71,7 +71,7 @@ class UsageSection extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         _buildResetCard(
-          title: 'Reset In',
+          title: 'End in',
           value: getSubscriptionEndDate(
               subscription?.endDate, userPersonalData?.planName ?? ''),
           color: theme.colorScheme.primary,

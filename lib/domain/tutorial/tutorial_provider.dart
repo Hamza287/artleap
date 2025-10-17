@@ -10,23 +10,23 @@ final tutorialDataProvider = Provider<List<TutorialScreenModel>>((ref) {
   return [
     TutorialScreenModel(
       imageAsset: 'assets/images/tutorial1.png',
-      title: 'Welcome to Artleap.ai',
-      description: 'Create stunning AI-generated artwork with just a few taps. Unleash your creativity!',
+      title: 'New ways to connect!',
+      description: 'You can now like, comment, and save posts in the community. Show some love, share your thoughts, and keep your favorite posts close — your community just got a whole lot more interactive!',
     ),
     TutorialScreenModel(
       imageAsset: 'assets/images/tutorial2.png',
-      title: 'Explore Community',
-      description: 'Discover amazing artwork from other creators and get inspired by the community.',
+      title: 'Your privacy, your control',
+      description: 'Now you can make your posts private with just one tap!. Press the Private button to share your content only when and how you want you’re in charge.',
     ),
     TutorialScreenModel(
       imageAsset: 'assets/images/tutorial3.png',
-      title: 'Explore Community',
-      description: 'Like, comment, and save your favorite creations. Engage with other artists.',
+      title: 'Your privacy, your control',
+      description: 'Now you can make your posts private with just one tap!. Press the Private button to share your content only when and how you want you’re in charge.',
     ),
     TutorialScreenModel(
       imageAsset: 'assets/images/tutorial4.png',
-      title: 'Get Started',
-      description: 'Ready to create your masterpiece? Let\'s begin your artistic journey!',
+      title: 'Your app, your vibe',
+      description: 'Switch between Light Mode, Dark Mode, or let it match your system automatically. Find the look that fits your mood!',
     ),
   ];
 });

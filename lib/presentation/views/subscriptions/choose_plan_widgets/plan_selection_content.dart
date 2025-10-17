@@ -84,7 +84,7 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "09% OFF",
+                    "10% OFF",
                     style: AppTextstyle.interBold(
                       fontSize: screenSize.width * 0.14,
                       color: Colors.white,

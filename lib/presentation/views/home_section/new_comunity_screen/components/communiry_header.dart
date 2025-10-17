@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../widegts/art_style_dialog.dart';
 
 
@@ -75,8 +76,8 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                     )
                         : LinearGradient(
                       colors: [
-                        theme.colorScheme.surfaceVariant,
-                        theme.colorScheme.surfaceVariant
+                        theme.colorScheme.surfaceContainerHighest,
+                        theme.colorScheme.surfaceContainerHighest
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
@@ -94,7 +95,7 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.filter_alt_rounded,
+                        Feather.filter,
                         color: hasActiveFilter
                             ? theme.colorScheme.onPrimary
                             : theme.colorScheme.onSurfaceVariant,

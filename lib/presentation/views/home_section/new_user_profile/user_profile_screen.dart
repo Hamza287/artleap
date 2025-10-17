@@ -44,7 +44,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     final userPersonalData = userProfile.userProfileData;
     final user = userPersonalData?.user;
     final profilePic = user?.profilePic;
-    final userName = user?.username ?? 'Guest';
+    final userName = user?.username ?? 'User';
     final theme = Theme.of(context);
 
     if (user == null || userPersonalData == null) {
@@ -61,7 +61,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: theme.colorScheme.primary,
+        backgroundColor: Colors.deepPurple,
         body: SafeArea(
           bottom: false,
           child: LayoutBuilder(
@@ -179,7 +179,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '@${user.id}',
+                                      '@${user.email}',
                                       style: AppTextstyle.interMedium(
                                         fontSize: 16,
                                         color: theme.colorScheme.onSurface.withOpacity(0.6),

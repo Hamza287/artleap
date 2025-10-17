@@ -106,7 +106,7 @@ class ActionButtonsRow extends ConsumerWidget {
 
     if (isCurrentUser) {
       buttons.addAll([
-        _buildPrivacyButton(context, ref, imageId, privacy, theme),
+        // _buildPrivacyButton(context, ref, imageId, privacy, theme),
         _buildDeleteButton(context, ref, imageId, theme),
       ]);
     }

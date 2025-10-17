@@ -74,5 +74,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+		<key>MinimumOSVersion</key>
+    	<string>15.0</string>
 </dict>
 </plist>

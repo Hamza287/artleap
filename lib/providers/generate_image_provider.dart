@@ -61,7 +61,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   bool _containsSexualWords = false;
   bool get containsSexualWords => _containsSexualWords;
 
-  String? _aspectRatio = "social_story_9_16";
+  String? _aspectRatio = "classic_4_3";
   String? get aspectRatio => _aspectRatio;
 
   ImagePrivacy _selectedPrivacy = ImagePrivacy.public;

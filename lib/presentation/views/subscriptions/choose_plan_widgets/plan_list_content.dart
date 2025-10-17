@@ -82,8 +82,8 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
                     ),
                     if (plansToShow[i].type.toLowerCase().contains('standard'))
                       Positioned(
-                        right: 8,
-                        top: 8,
+                        right: -8,
+                        top: -8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(

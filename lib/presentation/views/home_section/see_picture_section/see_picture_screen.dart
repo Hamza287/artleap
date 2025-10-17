@@ -1,3 +1,5 @@
+import 'package:Artleap.ai/presentation/views/common/dialog_box/custom_credit_dialog.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,12 +28,21 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   void initState() {
     super.initState();
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
+    final userProfile = ref.read(userProfileProvider).userProfileData;
+    if (userProfile != null && userProfile.user.totalCredits == 0) {
+      showDialog(
+        context: context,
+        builder: (context) => const CustomCreditDialog(),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final isFreePlan = planName.toLowerCase() == 'free';
 
     return Scaffold(
       backgroundColor: isDark ? Color(0xFF0A0A0A) : Color(0xFFF8F9FA),
@@ -84,6 +95,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       creatorEmail: widget.params!.creatorEmail,
                       otherUserId: widget.params!.userId,
                       privacy: widget.params!.privacy,
+                      isPremiumUser: !isFreePlan,
                     ),
 
                     const SizedBox(height: 28),
@@ -113,7 +125,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Back Button
             Container(
               decoration: BoxDecoration(
                 color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),

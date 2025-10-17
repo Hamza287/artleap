@@ -34,8 +34,8 @@ List<Map> filterResult = [
 ];
 
 List<Map<String, String>> freePikStyles = [
-  {"title": "mockup", "icon": AppAssets.mockup},
   {"title": "photo", "icon": AppAssets.photo},
+  {"title": "mockup", "icon": AppAssets.mockup},
   {"title": "cartoon", "icon": AppAssets.cartoon},
   {"title": "3d", "icon": AppAssets.threeD},
   {"title": "vector", "icon": AppAssets.vector},
@@ -78,9 +78,9 @@ List<Map<String, String>> textToImageStyles = [
 ];
 
 List<Map<String, String>> freePikAspectRatio = [
+  {"title": "4:3", "icon": AppAssets.four, "value": "classic_4_3"},
   {"title": "9:16", "icon": AppAssets.nine, "value": "social_story_9_16"},
   {"title": "5:4", "icon": AppAssets.five, "value": "social_5_4"},
-  {"title": "4:3", "icon": AppAssets.four, "value": "classic_4_3"},
   {"title": "3:2", "icon": AppAssets.three, "value": "standard_3_2"},
   {"title": "1:1", "icon": AppAssets.one, "value": "square_1_1"},
   {"title": "2:3", "icon": AppAssets.two, "value": "portrait_2_3"},

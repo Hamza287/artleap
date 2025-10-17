@@ -109,7 +109,7 @@ class ImageControlsRedesign extends ConsumerWidget {
         8.spaceY,
         Wrap(
           spacing: 30,
-          runSpacing: 8,
+          runSpacing: 20,
           alignment: WrapAlignment.start,
           children: provider.imageNumber.map((number) {
             return RatioSelectionRedesign(

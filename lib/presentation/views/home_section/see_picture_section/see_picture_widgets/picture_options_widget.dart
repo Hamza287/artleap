@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_alert_dialog.dart';
 import 'package:Artleap.ai/presentation/views/common/dialog_box/set_privacy_dialog.dart';
+import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
@@ -30,21 +31,25 @@ class PictureOptionsWidget extends ConsumerWidget {
   int? index;
   String? imageId;
   String privacy;
-  PictureOptionsWidget(
-      {super.key,
-        this.imageUrl,
-        this.prompt,
-        this.modelName,
-        this.creatorName,
-        this.creatorEmail,
-        this.isGeneratedScreenNavigation,
-        this.isRecentGeneration,
-        this.uint8ListImage,
-        this.currentUserId,
-        this.otherUserId,
-        this.index,
-        this.imageId,
-        required this.privacy});
+  final bool isPremiumUser;
+
+  PictureOptionsWidget({
+    super.key,
+    this.imageUrl,
+    this.prompt,
+    this.modelName,
+    this.creatorName,
+    this.creatorEmail,
+    this.isGeneratedScreenNavigation,
+    this.isRecentGeneration,
+    this.uint8ListImage,
+    this.currentUserId,
+    this.otherUserId,
+    this.index,
+    this.imageId,
+    required this.privacy,
+    required this.isPremiumUser,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,8 +96,7 @@ class PictureOptionsWidget extends ConsumerWidget {
                     label: "Favorite",
                     color: Colors.red,
                     context: context,
-                    isLiked:
-                    ref.watch(favouriteProvider).usersFavourites != null
+                    isLiked: ref.watch(favouriteProvider).usersFavourites != null
                         ? ref
                         .watch(favouriteProvider)
                         .usersFavourites!
@@ -143,7 +147,17 @@ class PictureOptionsWidget extends ConsumerWidget {
                         label: "Privacy",
                         color: Colors.purple,
                         context: context,
+                        showPremiumIcon: !isPremiumUser,
                         onTap: () async {
+                          if (!isPremiumUser) {
+                            PremiumUpgradeDialog.show(
+                              context: context,
+                              featureName: "Privacy Settings",
+                              customDescription: "Change image privacy settings to control who can see your images",
+                            );
+                            return;
+                          }
+
                           await showDialog<ImagePrivacy>(
                             context: context,
                             builder: (context) => SetPrivacyDialog(
@@ -174,25 +188,28 @@ class PictureOptionsWidget extends ConsumerWidget {
                         },
                       ),
                     ],
-                  _buildActionButton(
-                    icon: Icons.flag_rounded,
-                    context: context,
-                    label: "Report",
-                    color: Colors.orange,
-                    onTap: () {
-                      showModalBottomSheet(
+                  if(!isCurrentUser)
+                    ...[
+                      _buildActionButton(
+                        icon: Icons.flag_rounded,
                         context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) {
-                          return ReportImageBottomSheet(
-                            imageId: imageId,
-                            creatorId: otherUserId,
+                        label: "Report",
+                        color: Colors.orange,
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) {
+                              return ReportImageBottomSheet(
+                                imageId: imageId,
+                                creatorId: otherUserId,
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    ]
                 ],
               );
             },
@@ -209,6 +226,7 @@ class PictureOptionsWidget extends ConsumerWidget {
     bool isLoading = false,
     bool isLiked = false,
     bool isLikeButton = false,
+    bool showPremiumIcon = false,
     required VoidCallback onTap,
     required BuildContext context,
   }) {
@@ -219,61 +237,89 @@ class PictureOptionsWidget extends ConsumerWidget {
         width: 60,
         child: Column(
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: color.withOpacity(0.3)),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: onTap,
-                  borderRadius: BorderRadius.circular(16),
-                  child: isLoading
-                      ? Center(
-                    child: LoadingAnimationWidget.threeArchedCircle(
-                      color: color,
-                      size: 24,
-                    ),
-                  )
-                      : isLikeButton
-                      ? Center(
-                    child: LikeButton(
-                      size: 28,
-                      isLiked: isLiked,
-                      likeBuilder: (bool isLiked) {
-                        return Icon(
-                          isLiked
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          color: isLiked
-                              ? color
-                              : color.withOpacity(0.6),
+            Stack(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: color.withOpacity(0.3)),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onTap,
+                      borderRadius: BorderRadius.circular(16),
+                      child: isLoading
+                          ? Center(
+                        child: LoadingAnimationWidget.threeArchedCircle(
+                          color: color,
+                          size: 24,
+                        ),
+                      )
+                          : isLikeButton
+                          ? Center(
+                        child: LikeButton(
                           size: 28,
-                        );
-                      },
-                      bubblesColor: BubblesColor(
-                        dotPrimaryColor: color,
-                        dotSecondaryColor: color,
+                          isLiked: isLiked,
+                          likeBuilder: (bool isLiked) {
+                            return Icon(
+                              isLiked
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              color: isLiked
+                                  ? color
+                                  : color.withOpacity(0.6),
+                              size: 28,
+                            );
+                          },
+                          bubblesColor: BubblesColor(
+                            dotPrimaryColor: color,
+                            dotSecondaryColor: color,
+                          ),
+                          onTap: (isLiked) async {
+                            onTap();
+                            return !isLiked;
+                          },
+                        ),
+                      )
+                          : Center(
+                        child: Icon(
+                          icon,
+                          color: color,
+                          size: 28,
+                        ),
                       ),
-                      onTap: (isLiked) async {
-                        onTap();
-                        return !isLiked;
-                      },
-                    ),
-                  )
-                      : Center(
-                    child: Icon(
-                      icon,
-                      color: color,
-                      size: 28,
                     ),
                   ),
                 ),
-              ),
+                // Premium icon overlay
+                if (showPremiumIcon)
+                  Positioned(
+                    top: -4,
+                    right: -4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: theme.colorScheme.surface,
+                          width: 2,
+                        ),
+                      ),
+                      child: Text(
+                        "PRO",
+                        style: AppTextstyle.interMedium(
+                          fontSize: 6,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 6),
             Text(
