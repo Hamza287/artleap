@@ -95,7 +95,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         if (_isMounted) {
-                          Navigator.pushNamed(context, '/terms-of-service');
+                          Navigator.pushNamed(context, '/privacy-policy');
                         }
                       },
                   ),
