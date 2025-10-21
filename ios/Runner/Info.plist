@@ -51,10 +51,10 @@
 	<string>This app uses Apple Sign-In for authentication.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To scan cards</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app requires permission to save images to your Photo Library.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires permission to access your Photo Library.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs access to your photo library to select images for AI generation.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app needs access to your photo library to save generated images.</string>
 	<key>NSUserTrackingUsageDescription</key>
     <string>This identifier will be used to deliver personalized ads and improve app experience.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

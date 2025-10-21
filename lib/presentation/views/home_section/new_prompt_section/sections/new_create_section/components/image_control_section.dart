@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
@@ -265,13 +267,14 @@ class ImageControlsRedesign extends ConsumerWidget {
         return;
       }
 
-      final hasPermission = await PhotoPermissionHelper.requestPhotoPermission();
-
-      if (!hasPermission) {
-        if (context.mounted) {
-          await _showPermissionSettingsDialog(context);
+      if (Platform.isAndroid) {
+        final hasPermission = await PhotoPermissionHelper.requestPhotoPermission();
+        if (!hasPermission) {
+          if (context.mounted) {
+            await _showPermissionSettingsDialog(context);
+          }
+          return;
         }
-        return;
       }
       await ref.read(generateImageProvider.notifier).pickImage();
       onImageSelected();

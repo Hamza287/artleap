@@ -22,12 +22,10 @@ class ActionButtonsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
-    final generatedTextToImageData =
-        ref.watch(generateImageProvider).generatedTextToImageData;
+    final generatedTextToImageData = ref.watch(generateImageProvider).generatedTextToImageData;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
-    final currentImageData =
-        _getCurrentImageData(generatedImages, generatedTextToImageData);
+    final currentImageData = _getCurrentImageData(generatedImages, generatedTextToImageData);
 
     if (isLoading || currentImageData == null) {
       return _buildLoadingButtons(theme);

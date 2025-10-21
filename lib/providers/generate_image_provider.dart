@@ -42,7 +42,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   bool get isImageReferenceLoading => _isImageReferenceLoading;
 
   ModelsListModel? _selectedModelName;
-  ModelsListModel? get selectedModeldata => _selectedModelName; // Getter
+  ModelsListModel? get selectedModeldata => _selectedModelName;
   int? _selectedItem = 1;
   int? get selectedImageNumber => _selectedItem;
   final List<int> _dropdownItems = [1, 2, 3, 4];
@@ -208,7 +208,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
         final generatedData = generateImageRes.data as ImgToImg.ImageToImageModel;
         _generatedImage.addAll(generatedData.images);
 
-        selectedStyle = null;
+        selectedStyle = freePikStyles[0]['title'];
         images = [];
         return true;
       } else {
