@@ -9,55 +9,58 @@ class PhotoPermissionHelper {
     return info.version.sdkInt;
   }
 
-  /// Returns:
-  ///   true  -> photos available to pick now
-  ///   false -> user still denied or restricted
-  ///
-  /// If it sends user to settings, it will return false immediately; you should
-  /// re-check on app resume (see lifecycle section below).
-  static Future<bool> ensurePhotosPermission() async {
+  static Future<bool> requestPhotoPermission() async {
     if (Platform.isAndroid) {
       final sdk = await _androidSdkInt();
       if (sdk >= 33) {
-        // Android 13+ uses READ_MEDIA_IMAGES under the hood
         final status = await Permission.photos.status;
         if (status.isGranted) return true;
-
-        final req = await Permission.photos.request();
-        return req.isGranted;
+        final result = await Permission.photos.request();
+        return result.isGranted;
       } else {
-        // Android 12 and below use legacy storage permission
         final status = await Permission.storage.status;
         if (status.isGranted) return true;
-
-        final req = await Permission.storage.request();
-        return req.isGranted;
+        final result = await Permission.storage.request();
+        return result.isGranted;
       }
     } else if (Platform.isIOS) {
       final status = await Permission.photos.status;
 
-      if (status.isGranted) return true;
+      if (status.isGranted || status.isLimited) return true;
 
-      if (status.isLimited) {
-        // iOS "Limited" = user gave access to selected photos. This is OK.
-        // Most pickers (ImagePicker/PhotoKit) will work with the limited set.
-        return true;
-      }
+      final result = await Permission.photos.request();
 
-      final req = await Permission.photos.request();
+      if (result.isGranted || result.isLimited) return true;
 
-      if (req.isGranted || req.isLimited) return true;
-
-      if (req.isPermanentlyDenied) {
-        // Take user to settings; caller should recheck on resume.
+      if (result.isPermanentlyDenied) {
         await openAppSettings();
-        return false;
       }
 
       return false;
     } else {
-      // Other platforms (web/desktop) — usually handled by the picker without runtime perms
       return true;
+    }
+  }
+
+  static Future<bool> hasPhotoPermission() async {
+    try {
+      if (Platform.isAndroid) {
+        final sdk = await _androidSdkInt();
+        if (sdk >= 33) {
+          final status = await Permission.photos.status;
+          return status.isGranted;
+        } else {
+          final status = await Permission.storage.status;
+          return status.isGranted;
+        }
+      } else if (Platform.isIOS) {
+        final status = await Permission.photos.status;
+        return status.isGranted || status.isLimited;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      return false;
     }
   }
 }

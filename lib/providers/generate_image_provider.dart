@@ -168,17 +168,24 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   }
 
   Future<void> pickImage() async {
-    String? imagePath = await Pickers.ins.pickImage();
-    if (imagePath == null) return;
+    try {
+      String? imagePath = await Pickers.ins.pickImage();
 
-    File imageData = File(imagePath);
-    images = [imageData];
-    _selectedStyle = textToImageStyles.firstWhere(
-      (style) => style['title'] == 'ANIME',
-      orElse: () => textToImageStyles[0],
-    )['title'];
+      if (imagePath == null) {
+        return;
+      }
 
-    notifyListeners();
+      File imageData = File(imagePath);
+      images = [imageData];
+      _selectedStyle = textToImageStyles.firstWhere(
+            (style) => style['title'] == 'ANIME',
+        orElse: () => textToImageStyles[0],
+      )['title'];
+
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> generateImgToImg() async {

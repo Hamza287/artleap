@@ -232,6 +232,7 @@ class ImageControlsRedesign extends ConsumerWidget {
       ),
     );
   }
+
   List<Map<String, String>> _reorderStylesWithSelectedFirst(
       List<Map<String, String>> styles,
       String selectedStyle
@@ -257,66 +258,60 @@ class ImageControlsRedesign extends ConsumerWidget {
         return;
       }
 
-      final ok = await PhotoPermissionHelper.ensurePhotosPermission();
+      final hasPermission = await PhotoPermissionHelper.requestPhotoPermission();
 
-      if (!ok) {
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(
-              'Permission Required',
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-            content: Text(
-              'Please enable photos access in settings',
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-            ),
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Cancel',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  openAppSettings();
-                },
-                child: Text(
-                  'Open Settings',
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
-                ),
-              ),
-            ],
-          ),
-        );
-        return;
-      }
-      final status = await Permission.photos.status;
-      if (!status.isGranted && !status.isLimited) {
+      if (!hasPermission) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content:
-                    Text('Photos permission is required to select images')),
-          );
+          await _showPermissionSettingsDialog(context);
         }
         return;
       }
-
       await ref.read(generateImageProvider.notifier).pickImage();
       onImageSelected();
+
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('Failed to pick image: ${e.toString()}')),
         );
       }
     }
+  }
+
+  Future<void> _showPermissionSettingsDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Photo Access Required',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
+        content: Text(
+          'This app needs access to your photos to select images. '
+              'Please enable photo access in your device settings.',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              openAppSettings();
+            },
+            child: Text(
+              'Open Settings',
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
