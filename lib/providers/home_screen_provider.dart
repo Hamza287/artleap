@@ -42,9 +42,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   final List<Images> _searchResults = [];
   List<Images> get searchResults => _searchResults;
   final Random _random = Random();
-  List<Images> _randomizedImages = [];
-  bool _isInitialRandomizationDone = false;
-  String? _previousFilter;
+  List<Images> _organizedImages = [];
+  bool _isInitialOrganizationDone = false;
 
   set isLoadingMore(bool val) {
     _isLoadingMore = val;
@@ -84,7 +83,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     final lowerQuery = query.toLowerCase();
     _searchResults.clear();
 
-    final sourceList = _selectedStyleTitle != null ? _filteredCreations.whereType<Images>().toList() : _randomizedImages;
+    final sourceList = _selectedStyleTitle != null ? _filteredCreations.whereType<Images>().toList() : _organizedImages;
 
     _searchResults.addAll(sourceList.where((image) {
       final promptMatch = image.prompt.toLowerCase().contains(lowerQuery);
@@ -108,16 +107,95 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     } else if (_selectedStyleTitle != null) {
       return _filteredCreations.whereType<Images>().toList();
     } else {
-      return _randomizedImages;
+      return _organizedImages;
     }
   }
 
-  void _randomizeImagesOnce() {
-    if (!_isInitialRandomizationDone && _communityImagesList.isNotEmpty) {
-      _randomizedImages = List.from(_communityImagesList);
-      _randomizedImages.shuffle(_random);
-      _isInitialRandomizationDone = true;
+  void _organizeImages() {
+    if (!_isInitialOrganizationDone && _communityImagesList.isNotEmpty) {
+      final now = DateTime.now();
+      final oneDayAgo = now.subtract(const Duration(days: 1));
+      final List<Images> recentPosts = [];
+      final List<Images> olderPosts = [];
+
+      for (var image in _communityImagesList) {
+        final createdAt = DateTime.parse(image.createdAt);
+        if (createdAt.isAfter(oneDayAgo)) {
+          recentPosts.add(image);
+        } else {
+          olderPosts.add(image);
+        }
+            }
+
+      recentPosts.sort((a, b) {
+        return DateTime.parse(b.createdAt).compareTo(DateTime.parse(a.createdAt));
+      });
+      olderPosts.shuffle(_random);
+      _organizedImages = _organizePostsWithoutConsecutiveUsers([...recentPosts, ...olderPosts]);
+
+      _isInitialOrganizationDone = true;
     }
+  }
+
+  List<Images> _organizePostsWithoutConsecutiveUsers(List<Images> posts) {
+    if (posts.isEmpty) return [];
+
+    final List<Images> organized = [];
+    final Map<String, List<Images>> userPosts = {};
+    final List<String> userIds = [];
+
+    // Group posts by user
+    for (var post in posts) {
+      if (!userPosts.containsKey(post.userId)) {
+        userPosts[post.userId] = [];
+        userIds.add(post.userId);
+      }
+      userPosts[post.userId]!.add(post);
+    }
+
+    // Sort user groups by number of posts (descending)
+    userIds.sort((a, b) => userPosts[b]!.length.compareTo(userPosts[a]!.length));
+
+    // Organize posts using round-robin approach
+    int index = 0;
+    bool hasPosts = true;
+
+    while (hasPosts) {
+      hasPosts = false;
+
+      for (String userId in userIds) {
+        final userPostsList = userPosts[userId]!;
+
+        if (index < userPostsList.length) {
+          // Check if the last post in organized list is from same user
+          if (organized.isNotEmpty && organized.last.userId == userId) {
+            // Find a post from different user to insert between
+            String? alternativeUserId;
+            for (String altUserId in userIds) {
+              if (altUserId != userId &&
+                  userPosts[altUserId]!.length > index &&
+                  (organized.isEmpty || organized.last.userId != altUserId)) {
+                alternativeUserId = altUserId;
+                break;
+              }
+            }
+
+            if (alternativeUserId != null) {
+              organized.add(userPosts[alternativeUserId]![index]);
+              hasPosts = true;
+            }
+          }
+
+          // Add the current user's post
+          organized.add(userPostsList[index]);
+          hasPosts = true;
+        }
+      }
+
+      index++;
+    }
+
+    return organized;
   }
 
   Future<void> loadMoreImages() async {
@@ -199,7 +277,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     if (_usersData?.images != null) {
       _communityImagesList.addAll(_usersData!.images);
       _filteredCreations = List.from(_communityImagesList);
-      _randomizeImagesOnce();
+      _organizeImages();
     }
 
     notifyListeners();
@@ -271,7 +349,6 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   void filteredListFtn(String modelName) {
-    _previousFilter = _selectedStyleTitle;
     _selectedStyleTitle = modelName;
     final lowerCaseModel = modelName.toLowerCase();
 
@@ -279,6 +356,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
       final model = img.modelName.toLowerCase();
       return model == lowerCaseModel || modelNameMatchAliases(model, lowerCaseModel);
     }).toList();
+
+    _organizedImages = _organizePostsWithoutConsecutiveUsers(_filteredCreations.whereType<Images>().toList());
 
     notifyListeners();
   }
@@ -296,13 +375,13 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   void clearFilteredList() {
-    _previousFilter = _selectedStyleTitle;
     selectAllStyles();
   }
 
   void selectAllStyles() {
     _selectedStyleTitle = null;
     _filteredCreations = List.from(_communityImagesList);
+    _organizeImages();
     notifyListeners();
   }
 
@@ -313,9 +392,8 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     _searchResults.clear();
     _searchQuery = null;
     _isSearching = false;
-    _randomizedImages.clear();
-    _isInitialRandomizationDone = false;
-    _previousFilter = null;
+    _organizedImages.clear();
+    _isInitialOrganizationDone = false;
     notifyListeners();
     await getUserCreations();
   }
