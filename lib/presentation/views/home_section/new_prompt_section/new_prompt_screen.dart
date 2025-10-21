@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/common/profile_drawer.dart';
+import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:Artleap.ai/providers/prompt_nav_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
     final currentNav = ref.watch(promptNavProvider);
     final isExpanded = ref.watch(isDropdownExpandedProvider);
     final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
+    ref.watch(keyboardVisibleProvider);
 
     return SafeArea(
       child: Scaffold(
@@ -38,7 +40,7 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
         key: _scaffoldKey,
         drawer: ProfileDrawer(
           profileImage: userProfile?.profilePic ?? '',
-          userName: userProfile?.username ?? 'Guest',
+          userName: userProfile?.username ?? 'User',
           userEmail: userProfile?.email ?? 'guest@example.com',
         ),
         body: GestureDetector(
@@ -50,9 +52,11 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
           child: Column(
             children: [
               HomeScreenTopBar(
-                onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+                onMenuTap: (){
+                  _scaffoldKey.currentState?.openDrawer();
+                  ref.read(keyboardControllerProvider).hideKeyboard(context);
+                },
               ),
-              // PromptTopBar(),
               Expanded(
                 child: Stack(
                   children: [

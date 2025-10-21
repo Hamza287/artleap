@@ -50,7 +50,6 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
       if (yearly == null && lower.contains('premium')) yearly = p;
     }
 
-    // Fallbacks
     weekly ??= widget.plans.isNotEmpty ? widget.plans[0] : null;
     monthly ??= widget.plans.length > 1 ? widget.plans[1] : null;
     yearly ??= widget.plans.length > 2 ? widget.plans[2] : null;
@@ -64,14 +63,11 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
             for (int i = 0; i < plansToShow.length; i++) ...[
               Expanded(
                 child: Stack(
+                  clipBehavior: Clip.none,
                   children: [
                     GestureDetector(
                       onTap: () {
                         ref.read(selectedPlanProvider.notifier).state = plansToShow[i];
-                        // final route = Platform.isIOS
-                        //     ? ApplePaymentScreen.routeName
-                        //     : PaymentScreen.routeName;
-                        // Navigator.pushNamed(context, route, arguments: plansToShow[i]);
                       },
                       child: PlanCard(
                         plan: plansToShow[i],
@@ -82,27 +78,46 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
                     ),
                     if (plansToShow[i].type.toLowerCase().contains('standard'))
                       Positioned(
-                        right: -8,
-                        top: -8,
+                        top: -10,
+                        right: -5,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFD6B26A),
-                            borderRadius: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFFFD700), Color(0xFFFFA000)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black26,
-                                offset: Offset(0, 2),
-                                blurRadius: 4,
+                                color: Colors.orange.withOpacity(0.4),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
                               ),
                             ],
-                          ),
-                          child: Text(
-                            "Mostly Used",
-                            style: AppTextstyle.interMedium(
-                              fontSize: 11,
+                            border: Border.all(
                               color: Colors.white,
+                              width: 1.5,
                             ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.star_rounded,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                "Popular",
+                                style: AppTextstyle.interBold(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -125,7 +140,6 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
           ),
           textAlign: TextAlign.center,
         ),
-
         SizedBox(height: screenSize.height * 0.03),
       ],
     );

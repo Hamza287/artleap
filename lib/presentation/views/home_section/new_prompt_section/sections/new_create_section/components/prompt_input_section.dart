@@ -1,10 +1,9 @@
+import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-
-final keyboardVisibleProvider = StateProvider<bool>((ref) => false);
 
 class PromptInputRedesign extends ConsumerWidget {
   const PromptInputRedesign({super.key});
@@ -12,7 +11,6 @@ class PromptInputRedesign extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    ref.watch(keyboardVisibleProvider);
     final screenSize = MediaQuery.of(context).size;
 
     final maxHeight = screenSize.height * 0.4;
@@ -64,7 +62,7 @@ class PromptInputRedesign extends ConsumerWidget {
                 ref.watch(generateImageProvider).checkSexualWords(value);
               },
               onTap: () {
-                ref.read(keyboardVisibleProvider.notifier).state = true;
+                ref.read(keyboardControllerProvider).setVisible(true);
               },
               style: AppTextstyle.interMedium(
                 color: theme.colorScheme.onSurface,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +14,10 @@ import '../shared/constants/app_static_data.dart';
 import '../shared/constants/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-final homeScreenProvider =
-    ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
+final homeScreenProvider = ChangeNotifierProvider<HomeScreenProvider>((ref) => HomeScreenProvider());
 
 class HomeScreenProvider extends ChangeNotifier with BaseRepo {
-  final notificationSettings =
-      FirebaseMessaging.instance.requestPermission(provisional: true);
+  final notificationSettings = FirebaseMessaging.instance.requestPermission(provisional: true);
   List<Images?> _filteredCreations = [];
   List<Images?> get filteredCreations => _filteredCreations;
   final bool _isLoading = false;
@@ -36,6 +35,17 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   String? get selectedStyleTitle => _selectedStyleTitle;
   bool _isLoadingMore = false;
   bool get isLoadingMore => _isLoadingMore;
+  String? _searchQuery;
+  String? get searchQuery => _searchQuery;
+  bool _isSearching = false;
+  bool get isSearching => _isSearching;
+  final List<Images> _searchResults = [];
+  List<Images> get searchResults => _searchResults;
+  final Random _random = Random();
+  List<Images> _randomizedImages = [];
+  bool _isInitialRandomizationDone = false;
+  String? _previousFilter;
+
   set isLoadingMore(bool val) {
     _isLoadingMore = val;
     notifyListeners();
@@ -58,12 +68,66 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
+  void setSearchQuery(String? query) {
+    _searchQuery = query;
+    _isSearching = query != null && query.isNotEmpty;
+
+    if (_isSearching) {
+      _performSearch(query!);
+    } else {
+      _searchResults.clear();
+    }
+    notifyListeners();
+  }
+
+  void _performSearch(String query) {
+    final lowerQuery = query.toLowerCase();
+    _searchResults.clear();
+
+    final sourceList = _selectedStyleTitle != null ? _filteredCreations.whereType<Images>().toList() : _randomizedImages;
+
+    _searchResults.addAll(sourceList.where((image) {
+      final promptMatch = image.prompt.toLowerCase().contains(lowerQuery);
+      final userNameMatch = image.username.toLowerCase().contains(lowerQuery);
+      final modelNameMatch = image.modelName.toLowerCase().contains(lowerQuery);
+
+      return promptMatch || userNameMatch || modelNameMatch;
+    }));
+  }
+
+  void clearSearch() {
+    _searchQuery = null;
+    _isSearching = false;
+    _searchResults.clear();
+    notifyListeners();
+  }
+
+  List<Images> getDisplayedImages() {
+    if (_isSearching) {
+      return _searchResults;
+    } else if (_selectedStyleTitle != null) {
+      return _filteredCreations.whereType<Images>().toList();
+    } else {
+      return _randomizedImages;
+    }
+  }
+
+  void _randomizeImagesOnce() {
+    if (!_isInitialRandomizationDone && _communityImagesList.isNotEmpty) {
+      _randomizedImages = List.from(_communityImagesList);
+      _randomizedImages.shuffle(_random);
+      _isInitialRandomizationDone = true;
+    }
+  }
+
   Future<void> loadMoreImages() async {
     _isLoadingMore = true;
+    notifyListeners();
 
     await getUserCreations();
 
     _isLoadingMore = false;
+    notifyListeners();
   }
 
   Future<void> requestPermission() async {
@@ -106,8 +170,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   getUserInfo() {
     var userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
     var userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
-    var userProfilePicture =
-        AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
+    var userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? AppAssets.artstyle1;
     var userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
     UserData.ins.setUserData(
         id: userid,
@@ -136,6 +199,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     if (_usersData?.images != null) {
       _communityImagesList.addAll(_usersData!.images);
       _filteredCreations = List.from(_communityImagesList);
+      _randomizeImagesOnce();
     }
 
     notifyListeners();
@@ -207,6 +271,7 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   void filteredListFtn(String modelName) {
+    _previousFilter = _selectedStyleTitle;
     _selectedStyleTitle = modelName;
     final lowerCaseModel = modelName.toLowerCase();
 
@@ -231,6 +296,11 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
   }
 
   void clearFilteredList() {
+    _previousFilter = _selectedStyleTitle;
+    selectAllStyles();
+  }
+
+  void selectAllStyles() {
     _selectedStyleTitle = null;
     _filteredCreations = List.from(_communityImagesList);
     notifyListeners();
@@ -240,6 +310,12 @@ class HomeScreenProvider extends ChangeNotifier with BaseRepo {
     _page = 0;
     _communityImagesList.clear();
     _filteredCreations.clear();
+    _searchResults.clear();
+    _searchQuery = null;
+    _isSearching = false;
+    _randomizedImages.clear();
+    _isInitialRandomizationDone = false;
+    _previousFilter = null;
     notifyListeners();
     await getUserCreations();
   }

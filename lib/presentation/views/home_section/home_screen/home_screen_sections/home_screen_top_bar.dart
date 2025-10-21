@@ -19,6 +19,7 @@ class HomeScreenTopBar extends ConsumerWidget {
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
 
+
     return Column(
       children: [
         Padding(

@@ -3,6 +3,7 @@ import 'package:Artleap.ai/presentation/views/common/dialog_box/custom_credit_di
 import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
+import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:Artleap.ai/providers/refresh_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
@@ -17,7 +18,7 @@ import 'components/generation_footer_redesign.dart';
 import 'components/image_control_section.dart';
 import 'components/loading_overlay_redesign.dart';
 import 'components/prompt_input_section.dart';
-import 'components/privacy_selection_section.dart'; // Add this import
+import 'components/privacy_selection_section.dart';
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
@@ -177,9 +178,9 @@ class _PromptCreateScreenRedesignState
     final shouldRefresh = ref.watch(refreshProvider);
     final isLoading = ref.watch(isLoadingProvider);
     final screenSize = getScreenSizeCategory(context);
-    final planName =
-        ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
+    final isKeyboardVisible = ref.watch(keyboardVisibleProvider);
 
     if (shouldRefresh && UserData.ins.userId != null) {
       Future.microtask(() {
@@ -201,17 +202,20 @@ class _PromptCreateScreenRedesignState
       onPopInvoked: (bool didPop) async {
         if (!didPop && !isLoading) {
           ref.read(bottomNavBarProvider).setPageIndex(0);
-          ref.read(keyboardVisibleProvider.notifier).state = false;
+          if (isKeyboardVisible) {
+            ref.read(keyboardControllerProvider).hideKeyboard(context);
+          }
         }
       },
-      child: Scaffold(
-        body: Stack(
+      child: Stack(
           children: [
             AppBackgroundWidget(
               widget: GestureDetector(
                 onTap: () {
                   ref.read(isDropdownExpandedProvider.notifier).state = false;
-                  ref.read(keyboardVisibleProvider.notifier).state = false;
+                  if (isKeyboardVisible) {
+                    ref.read(keyboardControllerProvider).hideKeyboard(context);
+                  }
                   FocusScope.of(context).unfocus();
                 },
                 child: Padding(
@@ -263,7 +267,6 @@ class _PromptCreateScreenRedesignState
               ),
           ],
         ),
-      ),
     );
   }
 }

@@ -59,6 +59,26 @@ class NoContentWidget extends StatelessWidget {
     );
   }
 
+  factory NoContentWidget.noSearchResults({String? query}) {
+    return NoContentWidget(
+      title: "No results found",
+      description: query != null
+          ? 'No posts found for "$query". Try different keywords or check your spelling.'
+          : 'Try searching for prompts, usernames, or styles.',
+      iconPath: 'assets/images/search_empty.png',
+      showActionButton: false,
+    );
+  }
+
+  factory NoContentWidget.noImages() {
+    return NoContentWidget(
+      title: "No images yet",
+      description: "Start creating amazing AI art to see it appear here!",
+      iconPath: 'assets/images/empty_state.png',
+      showActionButton: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -126,6 +146,8 @@ class NoContentWidget extends StatelessWidget {
       return Icons.people_outline;
     } else if (title.toLowerCase().contains('error')) {
       return Icons.wifi_off_outlined;
+    } else if (title.toLowerCase().contains('search') || title.toLowerCase().contains('results')) {
+      return Icons.search_off_outlined;
     } else {
       return Icons.image_not_supported_outlined;
     }
@@ -149,9 +171,9 @@ class NoContentWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (actionText == 'Clear Filter')
-              Icon(Icons.clear_all, size: 18),
+              const Icon(Icons.clear_all, size: 18),
             if (actionText == 'Retry')
-              Icon(Icons.refresh, size: 18),
+              const Icon(Icons.refresh, size: 18),
             const SizedBox(width: 8),
             Text(
               actionText,

@@ -4,7 +4,14 @@ import 'package:Artleap.ai/shared/shared.dart';
 import 'filter_result_chips.dart';
 
 class ArtStyleDialog extends ConsumerWidget {
-  const ArtStyleDialog({super.key});
+  final Function(String)? onStyleSelected;
+  final String? currentFilter;
+
+  const ArtStyleDialog({
+    super.key,
+    this.onStyleSelected,
+    this.currentFilter
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,7 +66,10 @@ class ArtStyleDialog extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              const FilterResultChips(),
+              FilterResultChips(
+                onStyleSelected: onStyleSelected,
+                currentFilter: currentFilter,
+              ),
             ],
           ),
         ),

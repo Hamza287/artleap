@@ -5,14 +5,31 @@ import 'package:Artleap.ai/shared/shared.dart';
 import '../../../../../providers/home_screen_provider.dart';
 
 class FilterResultChips extends ConsumerWidget {
-  const FilterResultChips({super.key});
+  final Function(String)? onStyleSelected;
+  final String? currentFilter;
+
+  const FilterResultChips({
+    super.key,
+    this.onStyleSelected,
+    this.currentFilter,
+  });
 
   void _handleFilterSelection(WidgetRef ref, String? styleTitle, BuildContext context) {
+    final homeProvider = ref.read(homeScreenProvider.notifier);
+
     if (styleTitle == null) {
-      ref.read(homeScreenProvider).clearFilteredList();
+      homeProvider.selectAllStyles();
     } else {
-      ref.read(homeScreenProvider).filteredListFtn(styleTitle);
+      homeProvider.filteredListFtn(styleTitle);
     }
+    onStyleSelected?.call(styleTitle ?? '');
+    Navigator.of(context).pop();
+  }
+
+  void _handleClearFilter(WidgetRef ref, BuildContext context) {
+    final homeProvider = ref.read(homeScreenProvider.notifier);
+    homeProvider.selectAllStyles();
+    onStyleSelected?.call('');
     Navigator.of(context).pop();
   }
 
@@ -35,7 +52,7 @@ class FilterResultChips extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 InkWell(
-                  onTap: () => _handleFilterSelection(ref, null, context),
+                  onTap: () => _handleClearFilter(ref, context),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -67,7 +84,7 @@ class FilterResultChips extends ConsumerWidget {
                 ),
               ],
             ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -76,7 +93,6 @@ class FilterResultChips extends ConsumerWidget {
                 runSpacing: 10,
                 alignment: WrapAlignment.start,
                 children: [
-                  // All Styles Chip
                   _buildFilterChip(
                     context: context,
                     ref: ref,

@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
+import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/utilities/photo_permission_helper.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class ImageControlsRedesign extends ConsumerWidget {
             ],
           ),
           16.spaceY,
-          _buildNumberSelection(ref, theme),
+          _buildNumberSelection(ref, theme,context),
           16.spaceY,
           _buildAspectRatioSelection(ref, theme),
         ],
@@ -92,9 +93,12 @@ class ImageControlsRedesign extends ConsumerWidget {
     );
   }
 
-  Widget _buildNumberSelection(WidgetRef ref, ThemeData theme) {
+  Widget _buildNumberSelection(WidgetRef ref, ThemeData theme, BuildContext context) {
     final provider = ref.watch(generateImageProvider);
     final selectedImageNumber = provider.selectedImageNumber;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final spacing = (screenWidth / 15).clamp(10, 30).toDouble();
+    ref.watch(keyboardVisibleProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,16 +112,17 @@ class ImageControlsRedesign extends ConsumerWidget {
         ),
         8.spaceY,
         Wrap(
-          spacing: 30,
-          runSpacing: 20,
+          spacing: spacing,
+          runSpacing: 16,
           alignment: WrapAlignment.start,
           children: provider.imageNumber.map((number) {
             return RatioSelectionRedesign(
               text: number.toString(),
               isSelected: number == selectedImageNumber,
-              onTap: () => ref
-                  .read(generateImageProvider.notifier)
-                  .selectedImageNumber = number,
+              onTap: () {
+                ref.read(generateImageProvider.notifier).selectedImageNumber = number;
+                ref.read(keyboardControllerProvider).hideKeyboard(context);
+              },
               credits: ref.watch(generateImageProvider).images.isEmpty
                   ? number * 2
                   : number * 24,
@@ -130,6 +135,7 @@ class ImageControlsRedesign extends ConsumerWidget {
 
   Widget _buildAspectRatioSelection(WidgetRef ref, ThemeData theme) {
     final selectedRatio = ref.watch(generateImageProvider).aspectRatio;
+    ref.watch(keyboardVisibleProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,9 +159,10 @@ class ImageControlsRedesign extends ConsumerWidget {
               return RatioSelectionRedesign(
                 text: ratio['title'] ?? '',
                 isSelected: ratio['value'] == selectedRatio,
-                onTap: () => ref
-                    .read(generateImageProvider.notifier)
-                    .aspectRatio = ratio['value'],
+                onTap: () {
+                  ref.read(generateImageProvider.notifier).aspectRatio = ratio['value'];
+                  ref.read(keyboardControllerProvider).hideKeyboard(context);
+                  },
                 isAspectRatio: true,
                 aspectRatio: ratio['value'],
               );

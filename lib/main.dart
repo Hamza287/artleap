@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Artleap.ai/main/app_keyboard_listener.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/providers/localization_provider.dart';
@@ -30,7 +31,7 @@ void main() {
           notificationServiceProvider
               .overrideWith((ref) => NotificationService(ref)),
         ],
-        child: const MyApp(),
+        child: AppKeyboardListener(child: const MyApp()),
       ),
     );
   }, (error, stack) {
