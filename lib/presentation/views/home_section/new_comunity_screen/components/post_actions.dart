@@ -1,9 +1,9 @@
-import 'dart:math';
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
 import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'comment_bottom_sheet.dart';
 import 'comment_section.dart';
 
 final likeAnimationProvider = StateProvider.family<bool, String>((ref, imageId) => false);
@@ -47,24 +47,30 @@ class PostActions extends ConsumerWidget {
       error: (error, stack) => 0,
     );
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         children: [
           Row(
             children: [
-              _LikeButtonWithAnimation(
+              _LikeButton(
                 imageId: imageId,
                 isLiked: isLiked,
                 likeCount: likeCount,
                 context: context,
                 theme: theme,
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 12),
               _CommentButton(
                 imageId: imageId,
                 commentCount: commentCount,
                 theme: theme,
+                image: image,
+                context: context,
               ),
               const Spacer(),
               _SaveButton(
@@ -85,14 +91,14 @@ class PostActions extends ConsumerWidget {
   }
 }
 
-class _LikeButtonWithAnimation extends ConsumerStatefulWidget {
+class _LikeButton extends ConsumerWidget {
   final String imageId;
   final bool isLiked;
   final int likeCount;
   final BuildContext context;
   final ThemeData theme;
 
-  const _LikeButtonWithAnimation({
+  const _LikeButton({
     required this.imageId,
     required this.isLiked,
     required this.likeCount,
@@ -100,68 +106,21 @@ class _LikeButtonWithAnimation extends ConsumerStatefulWidget {
     required this.theme,
   });
 
-  @override
-  ConsumerState<_LikeButtonWithAnimation> createState() => _LikeButtonWithAnimationState();
-}
-
-class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _pulseAnimation;
-  late Animation<double> _particleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _pulseAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.fastOutSlowIn,
-    ));
-
-    _particleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 1.0, curve: Curves.fastOutSlowIn),
-    ));
-  }
-
-  @override
-  void didUpdateWidget(_LikeButtonWithAnimation oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Trigger animation when like status changes to liked
-    if (oldWidget.isLiked != widget.isLiked && widget.isLiked) {
-      _animationController.forward(from: 0.0);
-    }
-  }
-
-  void _toggleLike() async {
-    if (widget.isLiked) {
+  void _toggleLike(WidgetRef ref) async {
+    if (isLiked) {
       SoundService.playUnlikeSound();
     } else {
       SoundService.playLikeSound();
-      _animationController.forward(from: 0.0);
     }
 
     try {
-      await ref.read(likeProvider(widget.imageId).notifier).toggleLike();
-      ref.invalidate(likeCountProvider(widget.imageId));
+      await ref.read(likeProvider(imageId).notifier).toggleLike();
+      ref.invalidate(likeCountProvider(imageId));
     } catch (e) {
-      ScaffoldMessenger.of(widget.context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to update like: $e'),
-          backgroundColor: widget.theme.colorScheme.error,
+          backgroundColor: theme.colorScheme.error,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -169,111 +128,65 @@ class _LikeButtonWithAnimationState extends ConsumerState<_LikeButtonWithAnimati
   }
 
   @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: _toggleLike,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: widget.isLiked ? widget.theme.colorScheme.error.withOpacity(0.1) : widget.theme.colorScheme.surfaceVariant,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: widget.isLiked ? widget.theme.colorScheme.error : Colors.transparent,
-                width: 1.5,
+      onTap: () => _toggleLike(ref),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          gradient: isLiked
+              ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.error.withOpacity(0.9),
+              theme.colorScheme.error.withOpacity(0.7),
+            ],
+          )
+              : LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.surfaceVariant.withOpacity(0.9),
+              theme.colorScheme.surfaceVariant.withOpacity(0.7),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            if (isLiked)
+              BoxShadow(
+                color: theme.colorScheme.error.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              )
+            else
+              BoxShadow(
+                color: theme.colorScheme.onSurface.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+              color: isLiked ? Colors.white : theme.colorScheme.onSurfaceVariant,
+              size: 18,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              _formatCount(likeCount),
+              style: AppTextstyle.interMedium(
+                fontSize: 13,
+                color: isLiked ? Colors.white : theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    widget.isLiked ? Icons.favorite : Icons.favorite_outline,
-                    key: ValueKey(widget.isLiked),
-                    color: widget.isLiked ? widget.theme.colorScheme.error : widget.theme.colorScheme.onSurfaceVariant,
-                    size: 20, // Fixed size
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  _formatCount(widget.likeCount),
-                  style: AppTextstyle.interMedium(
-                    fontSize: 14,
-                    color: widget.isLiked ? widget.theme.colorScheme.error : widget.theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_animationController.status == AnimationStatus.forward)
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Container(
-                  width: 56, // Fixed size matching the button
-                  height: 36,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: widget.theme.colorScheme.error.withOpacity(_pulseAnimation.value * 0.5),
-                      width: 2.0 * _pulseAnimation.value,
-                    ),
-                  ),
-                );
-              },
-            ),
-          if (_animationController.status == AnimationStatus.forward)
-            ..._buildParticleEffects(),
-        ],
+          ],
+        ),
       ),
     );
-  }
-
-  List<Widget> _buildParticleEffects() {
-    return List.generate(6, (index) {
-      return AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          final angle = (index * 60.0) * (3.14159 / 180.0);
-          final distance = _particleAnimation.value * 20.0; // Shorter distance
-          final opacity = 1.0 - _particleAnimation.value;
-          final size = 3.0; // Fixed small size
-
-          return Transform.translate(
-            offset: Offset(
-              cos(angle) * distance,
-              sin(angle) * distance,
-            ),
-            child: Opacity(
-              opacity: opacity.clamp(0.0, 1.0),
-              child: Container(
-                width: size,
-                height: size,
-                decoration: BoxDecoration(
-                  color: widget.theme.colorScheme.error,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.theme.colorScheme.error.withOpacity(0.6),
-                      blurRadius: 2,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    });
   }
 
   String _formatCount(int count) {
@@ -287,40 +200,71 @@ class _CommentButton extends ConsumerWidget {
   final String imageId;
   final int commentCount;
   final ThemeData theme;
+  final BuildContext context;
+  final dynamic image;
 
   const _CommentButton({
     required this.imageId,
     required this.commentCount,
     required this.theme,
+    required this.context,
+    required this.image,
   });
 
   void _focusCommentField(WidgetRef ref) {
     ref.read(commentFocusProvider.notifier).state = true;
   }
 
+  void _showComments() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CommentsBottomSheet(
+        imageId: image.id?.toString() ?? '${image.hashCode}',
+        postImage: image,
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () => _focusCommentField(ref),
+      onTap: () => _showComments(),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceVariant,
-          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.surfaceVariant.withOpacity(0.9),
+              theme.colorScheme.surfaceVariant.withOpacity(0.7),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.onSurface.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.chat_bubble_outline_rounded,
+              Icons.mode_comment_outlined,
               color: theme.colorScheme.onSurfaceVariant,
-              size: 20,
+              size: 18,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Text(
               _formatCount(commentCount),
               style: AppTextstyle.interMedium(
-                fontSize: 14,
+                fontSize: 13,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
@@ -381,17 +325,43 @@ class _SaveButton extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSaved ? theme.colorScheme.primary.withOpacity(0.1) : theme.colorScheme.surfaceVariant,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: isSaved ? theme.colorScheme.primary : Colors.transparent,
-            width: 1.5,
+          gradient: isSaved
+              ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.primary.withOpacity(0.9),
+              theme.colorScheme.primary.withOpacity(0.7),
+            ],
+          )
+              : LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.surfaceVariant.withOpacity(0.9),
+              theme.colorScheme.surfaceVariant.withOpacity(0.7),
+            ],
           ),
+          shape: BoxShape.circle,
+          boxShadow: [
+            if (isSaved)
+              BoxShadow(
+                color: theme.colorScheme.primary.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              )
+            else
+              BoxShadow(
+                color: theme.colorScheme.onSurface.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+          ],
         ),
         child: Icon(
-          isSaved ? Icons.bookmark : Icons.bookmark_outline,
-          color: isSaved ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
-          size: 22,
+          isSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
+          color: isSaved ? Colors.white : theme.colorScheme.onSurfaceVariant,
+          size: 20,
         ),
       ),
     );
@@ -406,15 +376,31 @@ class _LikeCountText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        '$likeCount ${likeCount == 1 ? 'like' : 'likes'}',
-        style: AppTextstyle.interBold(
-          fontSize: 14,
-          color: theme.colorScheme.onSurface,
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.favorite_rounded,
+            color: theme.colorScheme.error.withOpacity(0.8),
+            size: 14,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '$likeCount ${likeCount == 1 ? 'like' : 'likes'}',
+            style: AppTextstyle.interMedium(
+              fontSize: 12,
+              color: theme.colorScheme.onSurface.withOpacity(0.8),
+            ),
+          ),
+        ],
       ),
     );
   }
+
 }
