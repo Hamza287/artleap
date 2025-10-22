@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 
@@ -138,34 +138,42 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildNavigationItem(
-                    icon: Feather.home,
-                    activeIcon: Feather.home,
+                    icon: FeatherIcons.home,
+                    activeIcon: FeatherIcons.home,
                     label: 'Home',
                     index: 0,
                     currentIndex: currentIndex,
                     theme: theme,
                   ),
                   _buildNavigationItem(
-                    icon: Feather.edit_3,
-                    activeIcon: Feather.edit_3,
+                    icon: FeatherIcons.edit3,
+                    activeIcon: FeatherIcons.edit3,
                     label: 'Create',
                     index: 1,
                     currentIndex: currentIndex,
                     theme: theme,
                   ),
                   _buildNavigationItem(
-                    icon: Feather.users,
-                    activeIcon: Feather.users,
+                    icon: FeatherIcons.users,
+                    activeIcon: FeatherIcons.users,
                     label: 'Community',
                     index: 2,
                     currentIndex: currentIndex,
                     theme: theme,
                   ),
                   _buildNavigationItem(
-                    icon: Feather.user,
-                    activeIcon: Feather.user,
-                    label: 'Profile',
+                    icon: FeatherIcons.video,
+                    activeIcon: FeatherIcons.video,
+                    label: 'Reels',
                     index: 3,
+                    currentIndex: currentIndex,
+                    theme: theme,
+                  ),
+                  _buildNavigationItem(
+                    icon: FeatherIcons.user,
+                    activeIcon: FeatherIcons.user,
+                    label: 'Profile',
+                    index: 4,
                     currentIndex: currentIndex,
                     theme: theme,
                   ),

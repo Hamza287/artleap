@@ -1,8 +1,8 @@
+import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../widegts/art_style_dialog.dart';
 
 class CommunityHeader extends ConsumerStatefulWidget {
@@ -243,7 +243,7 @@ class _CommunityHeaderState extends ConsumerState<CommunityHeader> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              Feather.filter,
+                              FeatherIcons.filter,
                               color: hasActiveFilter
                                   ? theme.colorScheme.onPrimary
                                   : theme.colorScheme.onSurfaceVariant,

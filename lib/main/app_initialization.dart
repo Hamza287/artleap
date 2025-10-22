@@ -5,6 +5,7 @@ import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -18,8 +19,24 @@ import '../di/di.dart';
 import '../providers/notification_provider.dart';
 
 class AppInitialization {
+  static Future<bool> checkNetworkConnectivity() async {
+    try {
+      final connectivity = Connectivity();
+      final result = await connectivity.checkConnectivity();
+      return result != ConnectivityResult.none;
+    } catch (e) {
+      debugPrint('Network connectivity check failed: $e');
+      return false;
+    }
+  }
+
   static Future<void> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    final isConnected = await checkNetworkConnectivity();
+    if (!isConnected) {
+      throw Exception('No internet connection available');
+    }
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -56,6 +73,12 @@ class AppInitialization {
   }
 
   static Future<String?> initializeAuthAndNotifications(WidgetRef ref) async {
+    final isConnected = await checkNetworkConnectivity();
+    if (!isConnected) {
+      debugPrint('Skipping auth initialization: No network connection');
+      return null;
+    }
+
     final token = await ref.read(authprovider).ensureValidFirebaseToken();
 
     await ref.read(firebaseNotificationServiceProvider).initialize();

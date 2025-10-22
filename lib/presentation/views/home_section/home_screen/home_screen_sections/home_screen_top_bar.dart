@@ -2,9 +2,9 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart'
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import '../../../../../shared/constants/user_data.dart';
 
 class HomeScreenTopBar extends ConsumerWidget {
@@ -192,7 +192,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                   Feather.award,
+                   FeatherIcons.award,
                     color: theme.colorScheme.onPrimary,
                     size: 14,
                   ),
