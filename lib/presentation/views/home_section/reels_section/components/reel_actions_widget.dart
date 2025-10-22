@@ -25,29 +25,33 @@ class ReelActionsWidget extends ConsumerWidget {
           _buildActionButton(
             icon: isLiked ? FeatherIcons.heart : FeatherIcons.heart,
             label: _formatCount(reel.likes),
-            color: isLiked ? Colors.red : theme.colorScheme.onSurface,
+            color: isLiked ? Colors.red : Colors.white,
             onTap: () => ref.read(reelProvider.notifier).toggleLike(reel.id),
+            theme: theme,
           ),
           const SizedBox(height: 20),
           _buildActionButton(
             icon: FeatherIcons.messageCircle,
             label: _formatCount(reel.comments),
-            color: theme.colorScheme.onSurface,
+            color: Colors.white,
             onTap: () => _showComingSoonDialog(context),
+            theme: theme,
           ),
           const SizedBox(height: 20),
           _buildActionButton(
             icon: FeatherIcons.send,
             label: _formatCount(reel.shares),
-            color: theme.colorScheme.onSurface,
+            color: Colors.white,
             onTap: () => _showComingSoonDialog(context),
+            theme: theme,
           ),
           const SizedBox(height: 20),
           _buildActionButton(
             icon: isMuted ? FeatherIcons.volumeX : FeatherIcons.volume2,
             label: 'Sound',
-            color: theme.colorScheme.onSurface,
+            color: Colors.white,
             onTap: () => ref.read(reelProvider.notifier).toggleMute(),
+            theme: theme,
           ),
         ],
       ),
@@ -100,6 +104,7 @@ class ReelActionsWidget extends ConsumerWidget {
     required String label,
     required Color color,
     required VoidCallback onTap,
+    required ThemeData theme,
   }) {
     return Column(
       children: [
@@ -120,8 +125,8 @@ class ReelActionsWidget extends ConsumerWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: theme.colorScheme.onSurface,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),

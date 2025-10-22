@@ -168,8 +168,32 @@ We implement industry-standard security practices to protect your information, i
           theme: theme,
         ),
         _buildPolicySection(
+          icon: Icons.security,
+          title: "5. Children’s Privacy",
+          content: """
+The App
+is not intended for children under 13. We do not knowingly collect personal
+information from anyone under this age. If such data is identified, it will be
+promptly deleted.
+
+Published Standards — Child Safety
+Last updated: October 2025
+At ArtLeap, we are committed to maintaining a safe and respectful environment for all users, especially minors.
+We strictly prohibit:
+
+Any content, activity, or behaviour that involves or promotes Child Sexual Abuse and Exploitation (CSAE).
+The sharing, creation, or distribution of any sexualized or harmful content involving minors.
+Grooming, harassment, or solicitation of minors in any form.
+We actively moderate and report any violations of these standards to the appropriate legal authorities in accordance with applicable laws.
+If you encounter content or behaviour that violates these standards, please report it immediately through our in-app reporting tools or by contacting us at:
+
+info@x-r.digital
+These standards apply to all users and content within XR Digital""",
+          theme: theme,
+        ),
+        _buildPolicySection(
           icon: Icons.person_outline,
-          title: "5. Your Rights",
+          title: "6. Your Rights",
           content: """
 Depending on your location, you may have the right to:
 
@@ -184,7 +208,7 @@ To exercise your rights, please contact us at info@x-r.digital.
         ),
         _buildPolicySection(
           icon: Icons.storage,
-          title: "6. Data Retention",
+          title: "7. Data Retention",
           content: """
 • Uploaded images are stored temporarily and deleted after processing.
 • Other data is retained only as long as needed for operational, legal, or business purposes.
@@ -193,7 +217,7 @@ To exercise your rights, please contact us at info@x-r.digital.
         ),
         _buildPolicySection(
           icon: Icons.child_care,
-          title: "7. Children's Privacy",
+          title: "8. Children's Privacy",
           content: """
 The App is not intended for children under 13. We do not knowingly collect personal information from anyone under this age. If such data is identified, it will be promptly deleted.
 """,
@@ -201,7 +225,7 @@ The App is not intended for children under 13. We do not knowingly collect perso
         ),
         _buildPolicySection(
           icon: Icons.update,
-          title: "8. Policy Updates",
+          title: "9. Policy Updates",
           content: """
 We may update this Privacy Policy to reflect changes to our features or legal requirements. Any updates will be posted within the App. Your continued use of the App indicates acceptance of the updated policy.
 """,
@@ -209,7 +233,7 @@ We may update this Privacy Policy to reflect changes to our features or legal re
         ),
         _buildPolicySection(
           icon: Icons.contact_support,
-          title: "9. Contact Us",
+          title: "10. Contact Us",
           content: """
 For any privacy-related inquiries or concerns, please reach out to us:
 

@@ -10,7 +10,7 @@ class ReelShimmerWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: theme.colorScheme.surface,
       body: Shimmer.fromColors(
         baseColor: Colors.grey[800]!,
         highlightColor: Colors.grey[600]!,

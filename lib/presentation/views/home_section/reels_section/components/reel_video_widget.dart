@@ -115,7 +115,6 @@ class _ReelVideoWidgetState extends ConsumerState<ReelVideoWidget> {
               ),
             ),
 
-          // Mute indicator
           if (isMuted)
             Positioned(
               top: 40,
