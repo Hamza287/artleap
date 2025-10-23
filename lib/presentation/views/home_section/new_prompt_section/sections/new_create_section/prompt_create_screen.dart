@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 import 'package:Artleap.ai/presentation/views/common/dialog_box/custom_credit_dialog.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
@@ -41,9 +43,7 @@ class PromptCreateScreenRedesign extends ConsumerStatefulWidget {
       _PromptCreateScreenRedesignState();
 }
 
-class _PromptCreateScreenRedesignState
-    extends ConsumerState<PromptCreateScreenRedesign>
-    with SingleTickerProviderStateMixin {
+class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenRedesign> with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -73,6 +73,15 @@ class _PromptCreateScreenRedesignState
     _scrollController.addListener(_handleScroll);
   }
 
+  Future<bool> _checkNetworkAvailability() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
   void _handleScroll() {
     if (_scrollController.position.userScrollDirection ==
         ScrollDirection.forward) {
@@ -99,6 +108,15 @@ class _PromptCreateScreenRedesignState
         "Oops!",
         "You have reached your daily limit. Thank you!",
         theme.colorScheme.primary,
+      );
+      return;
+    }
+    final isNetworkAvailable = await _checkNetworkAvailability();
+    if (!isNetworkAvailable) {
+      appSnackBar(
+        "No Internet Connection",
+        "Please check your network connection and try again",
+        theme.colorScheme.error,
       );
       return;
     }

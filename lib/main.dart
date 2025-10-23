@@ -87,7 +87,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
         final refreshedToken =
-            await ref.read(authprovider).ensureValidFirebaseToken();
+        await ref.read(authprovider).ensureValidFirebaseToken();
         if (refreshedToken != null) {
         } else {
           debugPrint('Token refresh skipped: No user signed in.');

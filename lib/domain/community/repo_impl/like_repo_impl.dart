@@ -20,7 +20,7 @@ class LikeRepoImpl extends LikeRepo {
   @override
   Future<ApiResponse> getLikes(String imageId, {int page = 1, int limit = 20}) async {
     try {
-      final path = AppApiPaths.likeImage.replaceFirst(':imageId', imageId);
+      final path = AppApiPaths.getImageLikes.replaceFirst(':imageId', imageId);
       final queryParams = {
         'page': page,
         'limit': limit,

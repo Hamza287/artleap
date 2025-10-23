@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/common/tutorial_screen.dart';
+import 'package:Artleap.ai/presentation/views/my_posts/my_posts_screen.dart';
 import 'package:Artleap.ai/presentation/views/personal_information/personal_info_screen.dart';
 import 'package:Artleap.ai/presentation/views/saved_images_screen/save_image_screen.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,8 @@ class RouteGenerator {
         return route(const CurrentPlanScreen());
       case FavouritesScreen.routeName:
         return route(const FavouritesScreen());
+      case MyPostsScreen.routeName:
+        return route(const MyPostsScreen());
       case SavedImagesScreen.routeName:
         return route(const SavedImagesScreen());
       case GooglePaymentScreen.routeName:
