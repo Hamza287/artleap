@@ -188,7 +188,6 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                   }
 
                   final image = displayedImages[index];
-                  if (image == null) return const SizedBox.shrink();
 
                   WidgetsBinding.instance.addPostFrameCallback((_) async {
                     final posts = ref.read(homeScreenProvider).communityImagesList;
