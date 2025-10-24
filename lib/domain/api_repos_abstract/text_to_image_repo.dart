@@ -5,3 +5,7 @@ abstract class FreepikAiGenRepo extends Base {
   Future<ApiResponse> generateImage(Map<String, dynamic> data,
       {bool enableLocalPersistence = false});
 }
+abstract class LeonardoAiGenRepo extends Base {
+  Future<ApiResponse> generateLeonardoImage(Map<String, dynamic> data,
+      {bool enableLocalPersistence = false});
+}

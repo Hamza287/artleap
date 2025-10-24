@@ -172,9 +172,21 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     ref.read(isLoadingProvider.notifier).state = true;
     _animationController.forward();
 
-    final success = isTextToImage
-        ? await ref.read(generateImageProvider.notifier).generateTextToImage()
-        : await ref.read(generateImageProvider.notifier).generateImgToImg();
+    // final success = isTextToImage
+    //     ? await ref.read(generateImageProvider.notifier).generateTextToImage()
+    //     : await ref.read(generateImageProvider.notifier).generateImgToImg();
+
+    bool success = false;
+
+    if(isTextToImage){
+      success = await ref.read(generateImageProvider.notifier).generateTextToImage();
+      if(!success){
+        success = await ref.read(generateImageProvider.notifier).generateLeonardoTxt2Image();
+      }
+    }else{
+      await ref.read(generateImageProvider.notifier).generateImgToImg();
+    }
+
 
     ref.read(isLoadingProvider.notifier).state = false;
     _animationController.reverse();

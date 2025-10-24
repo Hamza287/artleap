@@ -50,8 +50,7 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
 
   var uuid = const Uuid().v1();
   final List<txtToImg.Images?> _generatedTextToImageData = [];
-  List<txtToImg.Images?> get generatedTextToImageData =>
-      _generatedTextToImageData;
+  List<txtToImg.Images?> get generatedTextToImageData => _generatedTextToImageData;
   List<Uint8List> listOfImagesBytes = [];
   List<File> images = [];
 
@@ -148,6 +147,41 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
       };
 
       ApiResponse generateImageRes = await freePikRepo.generateImage(mapdata);
+      if (generateImageRes.status == Status.completed) {
+        var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
+        _generatedTextToImageData.addAll(generatedData.images);
+        setGenerateImageLoader(false);
+        notifyListeners();
+        return true;
+      } else {
+        setGenerateImageLoader(false);
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Image generation error: $e');
+      setGenerateImageLoader(false);
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> generateLeonardoTxt2Image() async {
+    print("Generate type TextToImage 1");
+    try {
+      setGenerateImageLoader(true);
+
+      Map<String, dynamic> mapdata = {
+        "prompt": _promptTextController.text,
+        "userId": UserData.ins.userId,
+        "username": UserData.ins.userName,
+        "creatorEmail": UserData.ins.userEmail,
+        "num_images": _selectedItem,
+        "generationType": 'prompt',
+        "privacy": _selectedPrivacy.name,
+      };
+
+      ApiResponse generateImageRes = await leonardoTxt2ImgRepo.generateLeonardoImage(mapdata);
       if (generateImageRes.status == Status.completed) {
         var generatedData = generateImageRes.data as txtToImg.TextToImageModel;
         _generatedTextToImageData.addAll(generatedData.images);

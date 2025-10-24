@@ -18,7 +18,7 @@ class AppApiPaths {
   // Image generation paths
   static const String generateImage = "freepikTxtToImg";
   static const String img2imgPath = "leonardoImgToImg";
-  static const String txt2imgPath = "leonardoTxtToImg";
+  static const String leonardoTxt2ImgPath = "leonardoTxtToImg";
   static const String getUsersCreations = "all-images?page=";
   static const String deleteImage = "images/delete/";
   static const String reportImage = "images/";

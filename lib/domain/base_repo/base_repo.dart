@@ -45,6 +45,8 @@ mixin BaseRepo {
   ImageActionsRepo get imageActionRepo => _imageActionRepo;
   final FreepikAiGenRepo _freePikRepo = FreepikAiGenImpl();
   FreepikAiGenRepo get freePikRepo => _freePikRepo;
+  final LeonardoAiGenRepo _leonardoTxt2ImgRepo = LeonardoAiGenImpl();
+  LeonardoAiGenRepo get leonardoTxt2ImgRepo => _leonardoTxt2ImgRepo;
   final UserProfileRepo _userFollowingRepo = UserProfileRepoImpl();
   UserProfileRepo get userFollowingRepo => _userFollowingRepo;
   final SubscriptionRepo _subscriptionRepo = SubscriptionRepoImpl();

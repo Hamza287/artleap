@@ -24,3 +24,24 @@ class FreepikAiGenImpl extends FreepikAiGenRepo {
     }
   }
 }
+
+class LeonardoAiGenImpl extends LeonardoAiGenRepo {
+  @override
+  Future<ApiResponse> generateLeonardoImage(Map<String, dynamic> data,
+      {bool enableLocalPersistence = false}) async {
+    print("Generate type TextToImage 2");
+    print(" ${AppApiPaths.leonardoTxt2ImgPath} ${data} ");
+    try {
+      Response res = await artleapApiService.postJson(AppApiPaths.leonardoTxt2ImgPath, data, enableLocalPersistence: enableLocalPersistence);
+      ApiResponse result = HandlingResponse.returnResponse(res);
+      if (result.status == Status.completed) {
+        TextToImageModel data = await Isolate.run(() => TextToImageModel.fromJson(res.data));
+        return ApiResponse.completed(data);
+      } else {
+        return result;
+      }
+    } on DioException catch (w) {
+      return HandlingResponse.returnException(w);
+    }
+  }
+}
