@@ -67,11 +67,14 @@ class SubscriptionPlanCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                plan.name,
-                style: AppTextstyle.interBold(
-                  fontSize: 22,
-                  color: theme.colorScheme.onPrimary,
+              Expanded(
+                child: Text(
+                  plan.name,
+                  style: AppTextstyle.interBold(
+                    fontSize: 22,
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Container(

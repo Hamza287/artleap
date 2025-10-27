@@ -164,13 +164,14 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
       final paymentService = ref.read(paymentServiceProvider(userId));
 
       if (paymentMethod == 'google_play') {
-        final productId = widget.plan.googleProductId;
+        final productId = widget.plan.type;
         final ProductDetailsResponse response =
         await InAppPurchase.instance.queryProductDetails({productId});
-
+        print(productId);
         if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
           _safeStateUpdate(() {
             appSnackBar('Error', 'Plan not available', Colors.red);
+            ref.read(paymentLoadingProvider.notifier).state = false;
           });
           return;
         }

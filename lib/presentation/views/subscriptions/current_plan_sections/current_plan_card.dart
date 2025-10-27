@@ -52,20 +52,20 @@ class CurrentPlanCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: isActive
+                  color:  isActive && subscription!.autoRenew
                       ? theme.colorScheme.primary.withOpacity(0.1)
                       : theme.colorScheme.error.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isActive ? theme.colorScheme.primary : theme.colorScheme.error,
+                    color:  isActive && subscription!.autoRenew ? theme.colorScheme.primary : theme.colorScheme.error,
                     width: 1,
                   ),
                 ),
                 child: Text(
-                  isActive && subscription!.autoRenew ? 'Active' : 'Active',
+                  isActive && subscription!.autoRenew ? 'Active' : 'InActive',
                   style: AppTextstyle.interMedium(
                     fontSize: 14,
-                    color: isActive ? theme.colorScheme.primary : theme.colorScheme.error,
+                    color:  isActive && subscription!.autoRenew ? theme.colorScheme.primary : theme.colorScheme.error,
                   ),
                 ),
               ),

@@ -26,7 +26,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (UserData.ins.userId != null) {
-        ref.refresh(currentSubscriptionProvider(UserData.ins.userId!));
+        ref.read(currentSubscriptionProvider(UserData.ins.userId!));
       }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
