@@ -42,11 +42,14 @@ class CurrentPlanCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                planName,
-                style: AppTextstyle.interBold(
-                  fontSize: 24,
-                  color: _getPlanColor(planName, theme),
+              Expanded(
+                child: Text(
+                  planName,
+                  style: AppTextstyle.interBold(
+                    fontSize: 24,
+                    color: _getPlanColor(planName, theme),
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Container(
