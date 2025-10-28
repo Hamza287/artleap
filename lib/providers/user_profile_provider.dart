@@ -82,7 +82,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       if (response.status == Status.completed) {
         _profilesCache[id] = response.data!;
       } else {
-        debugPrint("❌ Failed to load profile for $id: ${response.message}");
+        // debugPrint("❌ Failed to load profile for $id: ${response.message}");
       }
     }
     notifyListeners();

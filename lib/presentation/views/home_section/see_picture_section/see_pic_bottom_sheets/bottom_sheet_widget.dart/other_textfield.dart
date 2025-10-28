@@ -3,43 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
-class OthersTextfield extends ConsumerStatefulWidget {
+final textFieldFocusProvider = StateProvider<bool>((ref) => false);
+
+class OthersTextfield extends ConsumerWidget {
   const OthersTextfield({super.key});
 
   @override
-  ConsumerState<OthersTextfield> createState() => _OthersTextfieldState();
-}
-
-class _OthersTextfieldState extends ConsumerState<OthersTextfield> {
-  final FocusNode _focusNode = FocusNode();
-  bool _hasFocus = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(_onFocusChange);
-  }
-
-  void _onFocusChange() {
-    setState(() {
-      _hasFocus = _focusNode.hasFocus;
-    });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textController = ref.watch(imageActionsProvider).othersTextController;
     final textLength = textController.text.length;
     final isNearLimit = textLength > 450;
     final isAtLimit = textLength >= 500;
+    final hasFocus = ref.watch(textFieldFocusProvider);
 
     return Container(
       height: 200,
@@ -48,10 +24,10 @@ class _OthersTextfieldState extends ConsumerState<OthersTextfield> {
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: _hasFocus
+          color: hasFocus
               ? theme.colorScheme.primary
               : theme.colorScheme.outline.withOpacity(0.2),
-          width: _hasFocus ? 2 : 1.5,
+          width: hasFocus ? 2 : 1.5,
         ),
       ),
       child: Column(
@@ -59,7 +35,15 @@ class _OthersTextfieldState extends ConsumerState<OthersTextfield> {
           Expanded(
             child: TextField(
               controller: textController,
-              focusNode: _focusNode,
+              onChanged: (value) {
+                ref.read(imageActionsProvider.notifier).notifyListeners();
+              },
+              onTap: () {
+                ref.read(textFieldFocusProvider.notifier).state = true;
+              },
+              onTapOutside: (event) {
+                ref.read(textFieldFocusProvider.notifier).state = false;
+              },
               maxLines: null,
               expands: true,
               textAlignVertical: TextAlignVertical.top,

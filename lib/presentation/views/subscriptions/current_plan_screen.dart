@@ -30,7 +30,9 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
       }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+      ref
+          .read(userProfileProvider)
+          .getUserProfileData(UserData.ins.userId ?? "");
     });
   }
 
@@ -74,7 +76,9 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
       ),
       body: SafeArea(
         child: subscriptionAsync.when(
-          loading: () => Center(child: CircularProgressIndicator(color: theme.colorScheme.primary)),
+          loading: () => Center(
+              child:
+                  CircularProgressIndicator(color: theme.colorScheme.primary)),
           error: (error, stack) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -113,49 +117,10 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
             ),
           ),
           data: (subscription) {
-            if (subscription == null || subscription.cancelledAt != null || !subscription.isActive) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'You do not have an active subscription',
-                        style: AppTextstyle.interRegular(
-                          fontSize: 16,
-                          color: theme.colorScheme.error,
-                        ),
-                      ),
-                      10.spaceY,
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, ChoosePlanScreen.routeName);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: theme.colorScheme.primary,
-                            foregroundColor: theme.colorScheme.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            'Subscribe Now',
-                            style: AppTextstyle.interBold(
-                              fontSize: 16,
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+            if (subscription == null ||
+                subscription.cancelledAt != null ||
+                !subscription.isActive) {
+              return _buildNoSubscriptionUI(context, theme);
             }
 
             final planName = subscription.planSnapshot?.name ?? 'Free';
@@ -168,7 +133,8 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height - kToolbarHeight,
+                  minHeight:
+                      MediaQuery.of(context).size.height - kToolbarHeight,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -180,7 +146,9 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
                       userPersonalData: userPersonalData,
                     ),
                     const SizedBox(height: 30),
-                    UsageSection(subscription: subscription, userPersonalData: userPersonalData),
+                    UsageSection(
+                        subscription: subscription,
+                        userPersonalData: userPersonalData),
                     const SizedBox(height: 30),
                     BillingSection(subscription: subscription),
                     const SizedBox(height: 30),
@@ -195,6 +163,141 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildNoSubscriptionUI(BuildContext context, ThemeData theme) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.credit_card_outlined,
+                size: 60,
+                color: theme.colorScheme.primary.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'No Active Subscription',
+              style: AppTextstyle.interBold(
+                fontSize: 24,
+                color: theme.colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Unlock premium features and enhance your experience with our flexible subscription plans tailored to your needs.',
+              style: AppTextstyle.interRegular(
+                fontSize: 16,
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 40),
+            _buildBenefitsList(theme),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, ChoosePlanScreen.routeName);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 2,
+                  shadowColor: theme.colorScheme.primary.withOpacity(0.3),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.rocket_launch, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Explore Plans',
+                      style: AppTextstyle.interBold(
+                        fontSize: 16,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () {
+
+              },
+              child: Text(
+                'Need help choosing? Contact support',
+                style: AppTextstyle.interRegular(
+                  fontSize: 14,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBenefitsList(ThemeData theme) {
+    final benefits = [
+      {'icon': Icons.auto_awesome, 'text': 'Premium features'},
+      {'icon': Icons.speed, 'text': 'Faster processing'},
+      {'icon': Icons.storage, 'text': 'More storage'},
+      {'icon': Icons.support_agent, 'text': 'Priority support'},
+    ];
+
+    return Column(
+      children: benefits
+          .map((benefit) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        benefit['icon'] as IconData,
+                        size: 16,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      benefit['text'] as String,
+                      style: AppTextstyle.interRegular(
+                        fontSize: 14,
+                        color: theme.colorScheme.onSurface.withOpacity(0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+          .toList(),
     );
   }
 }

@@ -14,6 +14,7 @@ class ReportCommonButton extends ConsumerWidget {
   final Color? iconColor;
   final bool showShadow;
   final bool isDisabled;
+  final bool isLoading;
 
   const ReportCommonButton({
     super.key,
@@ -29,18 +30,19 @@ class ReportCommonButton extends ConsumerWidget {
     this.iconColor,
     this.showShadow = false,
     this.isDisabled = false,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final effectiveBackgroundColor = isDisabled
+    final effectiveBackgroundColor = isDisabled || isLoading
         ? theme.colorScheme.surfaceContainerHighest
         : backgroundColor ?? theme.colorScheme.primary;
-    final effectiveTextColor = isDisabled
+    final effectiveTextColor = isDisabled || isLoading
         ? theme.colorScheme.onSurfaceVariant
         : textColor ?? theme.colorScheme.onPrimary;
-    final effectiveIconColor = isDisabled
+    final effectiveIconColor = isDisabled || isLoading
         ? theme.colorScheme.onSurfaceVariant
         : iconColor ?? theme.colorScheme.onPrimary;
 
@@ -52,13 +54,13 @@ class ReportCommonButton extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         border: borderColor != null
             ? Border.all(
-          color: isDisabled
+          color: isDisabled || isLoading
               ? theme.colorScheme.outline.withOpacity(0.3)
               : borderColor!,
           width: 1.5,
         )
             : null,
-        boxShadow: showShadow && !isDisabled
+        boxShadow: showShadow && !isDisabled && !isLoading
             ? [
           BoxShadow(
             color: theme.colorScheme.primary.withOpacity(0.3),
@@ -71,21 +73,32 @@ class ReportCommonButton extends ConsumerWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: isDisabled ? null : onpress,
+          onTap: isDisabled || isLoading ? null : onpress,
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                if (isLoading) ...[
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(effectiveTextColor),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
                 Text(
-                  title,
+                  isLoading ? "Submitting..." : title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: effectiveTextColor,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                if (icon != null) ...[
+                if (icon != null && !isLoading) ...[
                   const SizedBox(width: 8),
                   Icon(
                     icon,

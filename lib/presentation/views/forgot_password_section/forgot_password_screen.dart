@@ -73,7 +73,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                       color: AppColors.indigo,
                       title: "Send",
                       onpress: () {
-                        ref.read(authprovider).forgotPassword();
+                        ref.read(authprovider).forgotPassword(context);
                       },
                     ),
               20.spaceY,

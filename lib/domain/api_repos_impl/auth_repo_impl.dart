@@ -7,7 +7,6 @@ import '../api_services/handling_response.dart';
 
 class AuthRepoImpl extends AuthRepo {
   @override
-  @override
   Future<ApiResponse> login({required Map<String, dynamic> body}) async {
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.login, body);
@@ -66,6 +65,21 @@ class AuthRepoImpl extends AuthRepo {
       ApiResponse result = HandlingResponse.returnResponse(res);
       if (result.status == Status.completed) {
         return ApiResponse.completed(res.data);
+      } else {
+        return result;
+      }
+    } on DioException catch (w) {
+      return HandlingResponse.returnException(w);
+    }
+  }
+
+  @override
+  Future<ApiResponse> forgotPassword({required Map<String, dynamic> body}) async {
+    try {
+      Response res = await artleapApiService.postJson(AppApiPaths.forgotPassword, body);
+      ApiResponse result = HandlingResponse.returnResponse(res);
+      if (result.status == Status.completed) {
+        return ApiResponse.completed('Success');
       } else {
         return result;
       }

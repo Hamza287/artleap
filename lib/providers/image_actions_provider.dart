@@ -12,14 +12,17 @@ enum ImageActionLoading {
 }
 
 final imageActionsProvider = ChangeNotifierProvider<ImageActionsProvider>(
-  (ref) => ImageActionsProvider(),
+      (ref) => ImageActionsProvider(),
 );
 
 class ImageActionsProvider extends ChangeNotifier with BaseRepo {
   ImageActionLoading loadingState = ImageActionLoading.none;
+  bool _shouldCloseSheets = false;
 
   bool get isDeleting => loadingState == ImageActionLoading.deleting;
   bool get isReporting => loadingState == ImageActionLoading.reporting;
+  bool get shouldCloseSheets => _shouldCloseSheets;
+
   final TextEditingController _othersTextController = TextEditingController();
   TextEditingController get othersTextController => _othersTextController;
   String? _reportReason;
@@ -34,6 +37,20 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
 
   set reportReasonId(String? val) {
     _reportReasonId = val;
+    notifyListeners();
+  }
+
+  void clearReportData() {
+    _reportReason = null;
+    _reportReasonId = null;
+    _othersTextController.clear();
+    loadingState = ImageActionLoading.none;
+    _shouldCloseSheets = false;
+    notifyListeners();
+  }
+
+  void setShouldCloseSheets(bool value) {
+    _shouldCloseSheets = value;
     notifyListeners();
   }
 
@@ -56,26 +73,36 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
     return false;
   }
 
-  Future<void> reportImage(
-    String imageId,
-    String creatorId,
-      BuildContext context,
-  ) async {
+  Future<bool> reportImage(
+      String imageId,
+      String creatorId,
+      ) async {
     loadingState = ImageActionLoading.reporting;
+    notifyListeners();
+
     try {
       Map<String, String> body = {
         "reporterId": creatorId,
         "reason": reportReason ?? _othersTextController.text,
       };
-      ApiResponse userRes =
-          await imageActionRepo.reportImage(body: body, imageId: imageId);
+
+      ApiResponse userRes = await imageActionRepo.reportImage(body: body, imageId: imageId);
+
       if (userRes.status == Status.completed) {
         appSnackBar("Success", "Image reported successfully", AppColors.green);
-        Navigator.pop(context);
+        _shouldCloseSheets = true;
+        clearReportData();
+        return true;
+      } else {
+        appSnackBar("Error", userRes.message ?? "Failed to report image", AppColors.redColor);
+        return false;
       }
+    } catch (e) {
+      appSnackBar('Error', e.toString(), AppColors.redColor);
+      return false;
     } finally {
       loadingState = ImageActionLoading.none;
+      notifyListeners();
     }
-    notifyListeners();
   }
 }

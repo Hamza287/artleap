@@ -5,6 +5,7 @@ class AppApiPaths {
   static const String googleLogin = "googleLogin";
   static const String appleLogin = "appleLogin";
   static const String deleteAccount = "delete/";
+  static const String forgotPassword = "forgot-password";
 
   // User paths
   static const getUsers = "getUsers";

@@ -188,8 +188,6 @@ class PictureOptionsWidget extends ConsumerWidget {
                         },
                       ),
                     ],
-                  if(!isCurrentUser)
-                    ...[
                       _buildActionButton(
                         icon: Icons.flag_rounded,
                         context: context,
@@ -210,7 +208,6 @@ class PictureOptionsWidget extends ConsumerWidget {
                         },
                       ),
                     ]
-                ],
               );
             },
           ),

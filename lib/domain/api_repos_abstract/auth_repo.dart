@@ -7,4 +7,5 @@ abstract class AuthRepo extends Base {
   Future<ApiResponse> signup({required Map<String, dynamic> body});
   Future<ApiResponse> googleLogin({required Map<String, dynamic> body});
   Future<ApiResponse> appleLogin({required Map<String, dynamic> body});
+  Future<ApiResponse> forgotPassword({required Map<String, dynamic> body});
 }

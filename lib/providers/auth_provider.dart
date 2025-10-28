@@ -276,7 +276,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     }
   }
 
-  Future<void> forgotPassword() async {
+  Future<void> forgotPassword(BuildContext context) async {
     try {
       startLoading(LoginMethod.forgotPassword);
       if (emailController.text.isEmpty) {
@@ -291,21 +291,37 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         return;
       }
 
-      await _authServices.forgotPassword(emailController.text);
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar(
-          'Success',
-          'Password reset email sent. Check your inbox.',
-          AppColors.green,
-        );
-      });
+      Map<String, String> body = {
+        "email": emailController.text,
+      };
+      ApiResponse userRes = await authRepo.forgotPassword(body: body);
+      if (userRes.status == Status.completed &&
+          (userRes.data == 'Success' || userRes.data == 'Sucesss')) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar(
+            'Success',
+            'Password reset email sent. Check your inbox.',
+            AppColors.green,
+          );
+        });
+        Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+      } else {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          appSnackBar(
+            'Error',
+            userRes.message ?? 'Something went wrong. Please try again.',
+            AppColors.red,
+          );
+        });
+      }
+
     } catch (e) {
       debugPrint('Forgot password error: $e');
       authError = UserAuthResult(
         authResultState: AuthResultStatus.error,
         message: e is FirebaseAuthException
             ? AuthExceptionHandler.generateExceptionMessage(
-                AuthExceptionHandler.handleException(e))
+            AuthExceptionHandler.handleException(e))
             : 'Failed to send password reset email.',
       );
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -524,7 +540,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         });
       }
     } catch (e) {
-      debugPrint('Backend signup error: $e');
       authError = UserAuthResult(
         authResultState: AuthResultStatus.error,
         message: 'Failed to connect to backend. Please try again.',
