@@ -98,6 +98,11 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     super.dispose();
   }
 
+  bool _isValidPrompt(String prompt) {
+    final trimmedPrompt = prompt.trim();
+    return trimmedPrompt.isNotEmpty && trimmedPrompt.length >= 2;
+  }
+
   void _handleGenerate() async {
     final theme = Theme.of(context);
     final userProfile = ref.watch(userProfileProvider).userProfileData;
@@ -133,7 +138,6 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     FocusScope.of(context).unfocus();
     ref.read(keyboardVisibleProvider.notifier).state = false;
 
-    // Validation
     if (generateImageProviderState.selectedImageNumber == null &&
         generateImageProviderState.images.isEmpty) {
       appSnackBar(
@@ -144,16 +148,16 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       return;
     }
 
-    if (generateImageProviderState.promptTextController.text.isEmpty) {
+    final promptText = generateImageProviderState.promptTextController.text;
+    if (!_isValidPrompt(promptText)) {
       appSnackBar(
         "Error",
-        "Please write your prompt",
+        "Please write a meaningful prompt",
         theme.colorScheme.error,
       );
       return;
     }
 
-    // Credit validation
     final isTextToImage = generateImageProviderState.images.isEmpty;
     final requiredCredits = generateImageProviderState.selectedImageNumber! *
         (isTextToImage ? 2 : 24);
@@ -172,10 +176,6 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     ref.read(isLoadingProvider.notifier).state = true;
     _animationController.forward();
 
-    // final success = isTextToImage
-    //     ? await ref.read(generateImageProvider.notifier).generateTextToImage()
-    //     : await ref.read(generateImageProvider.notifier).generateImgToImg();
-
     bool success = false;
 
     if(isTextToImage){
@@ -186,7 +186,6 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     }else{
       await ref.read(generateImageProvider.notifier).generateImgToImg();
     }
-
 
     ref.read(isLoadingProvider.notifier).state = false;
     _animationController.reverse();
@@ -219,11 +218,11 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     }
 
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 16.0
         : 24.0;
     final topPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 16.0
         : 24.0;
 
@@ -238,65 +237,65 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
         }
       },
       child: Stack(
-          children: [
-            AppBackgroundWidget(
-              widget: GestureDetector(
-                onTap: () {
-                  ref.read(isDropdownExpandedProvider.notifier).state = false;
-                  if (isKeyboardVisible) {
-                    ref.read(keyboardControllerProvider).hideKeyboard(context);
-                  }
-                  FocusScope.of(context).unfocus();
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    top: topPadding,
-                  ),
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PromptInputRedesign(),
-                        const SizedBox(height: 16),
-                        PrivacySelectionSection(
-                          isPremiumUser: !isFreePlan,
-                        ),
-                        const SizedBox(height: 16),
-                        ImageControlsRedesign(
-                          onImageSelected: () {
-                            AnalyticsService.instance.logButtonClick(
-                              buttonName:
-                                  'picking image from gallery button event',
-                            );
-                          },
-                          isPremiumUser: !isFreePlan,
-                        ),
-                        SizedBox(
-                            height: screenSize == ScreenSizeCategory.small ||
-                                    screenSize == ScreenSizeCategory.extraSmall
-                                ? 100.0
-                                : 120.0),
-                      ],
-                    ),
+        children: [
+          AppBackgroundWidget(
+            widget: GestureDetector(
+              onTap: () {
+                ref.read(isDropdownExpandedProvider.notifier).state = false;
+                if (isKeyboardVisible) {
+                  ref.read(keyboardControllerProvider).hideKeyboard(context);
+                }
+                FocusScope.of(context).unfocus();
+              },
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                  top: topPadding,
+                ),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PromptInputRedesign(),
+                      const SizedBox(height: 16),
+                      PrivacySelectionSection(
+                        isPremiumUser: !isFreePlan,
+                      ),
+                      const SizedBox(height: 16),
+                      ImageControlsRedesign(
+                        onImageSelected: () {
+                          AnalyticsService.instance.logButtonClick(
+                            buttonName:
+                            'picking image from gallery button event',
+                          );
+                        },
+                        isPremiumUser: !isFreePlan,
+                      ),
+                      SizedBox(
+                          height: screenSize == ScreenSizeCategory.small ||
+                              screenSize == ScreenSizeCategory.extraSmall
+                              ? 100.0
+                              : 120.0),
+                    ],
                   ),
                 ),
               ),
             ),
-            GenerationFooterRedesign(
-              onGenerate: _handleGenerate,
-              isLoading: isLoading,
+          ),
+          GenerationFooterRedesign(
+            onGenerate: _handleGenerate,
+            isLoading: isLoading,
+          ),
+          if (isLoading)
+            LoadingOverlayRedesign(
+              animationController: _animationController,
+              fadeAnimation: _fadeAnimation,
             ),
-            if (isLoading)
-              LoadingOverlayRedesign(
-                animationController: _animationController,
-                fadeAnimation: _fadeAnimation,
-              ),
-          ],
-        ),
+        ],
+      ),
     );
   }
 }
