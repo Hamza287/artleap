@@ -22,7 +22,7 @@ enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 enum LoginMethod { email, signup, google, facebook, apple, forgotPassword }
 
 final authprovider =
-    ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref));
+ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref));
 
 class AuthProvider extends ChangeNotifier with BaseRepo {
   final AuthServices _authServices = AuthServices();
@@ -33,7 +33,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
   final TextEditingController _passwordController = TextEditingController();
   TextEditingController get passwordController => _passwordController;
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   TextEditingController get confirmPasswordController =>
       _confirmPasswordController;
 
@@ -66,36 +66,50 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  UserAuthResult? authError;
+  UserAuthResult? _authError;
+  UserAuthResult? get authError => _authError;
+
   void clearError() {
-    authError = null;
+    _authError = null;
     notifyListeners();
+  }
+
+  void _setError(String message, AuthResultStatus status) {
+    _authError = UserAuthResult(
+      authResultState: status,
+      message: message,
+    );
+    notifyListeners();
+  }
+
+  void _showErrorSnackBar(String message) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      appSnackBar('Error', message, AppColors.red);
+    });
+  }
+
+  void _showSuccessSnackBar(String message) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      appSnackBar("Success", message, AppColors.green);
+    });
   }
 
   Future<void> storeFirebaseAuthToken({bool forceRefresh = false}) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        debugPrint('No user signed in. Skipping token storage.');
         return;
       }
       final idToken = await user.getIdToken(forceRefresh);
       if (idToken != null) {
         AppData.instance.setToken(idToken);
-      } else {
-        debugPrint('Failed to obtain ID token.');
       }
     } catch (e) {
-      debugPrint('Error storing Firebase token: $e');
       if (e is FirebaseAuthException) {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: AuthExceptionHandler.generateExceptionMessage(
-              AuthExceptionHandler.handleException(e)),
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        final status = AuthExceptionHandler.handleException(e);
+        final message = AuthExceptionHandler.generateExceptionMessage(status);
+        _setError(message, AuthResultStatus.error);
+        _showErrorSnackBar(message);
       }
     }
   }
@@ -104,36 +118,26 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        debugPrint('No user signed in. Skipping token refresh.');
         SchedulerBinding.instance.addPostFrameCallback((_) {
           Navigation.pushNamed(LoginScreen.routeName);
         });
         return null;
       }
 
-      // 👇 Ensure user reloaded, then force a new ID token
       await user.reload();
-      final idToken = await user.getIdToken(true); // forceRefresh = true
+      final idToken = await user.getIdToken(true);
       if (idToken != null) {
         AppData.instance.setToken(idToken);
-        debugPrint('✅ Firebase token refreshed (forced).');
         return idToken;
-      } else {
-        debugPrint('Failed to obtain ID token.');
-        return null;
       }
+      return null;
     } catch (e) {
-      debugPrint(
-          'Error fetching Firebase token: $e (Code: ${e is FirebaseAuthException ? e.code : 'unknown'})');
       if (e is FirebaseAuthException) {
         final status = AuthExceptionHandler.handleException(e);
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: AuthExceptionHandler.generateExceptionMessage(status),
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        final message = AuthExceptionHandler.generateExceptionMessage(status);
+        _setError(message, AuthResultStatus.error);
+        _showErrorSnackBar(message);
+
         if (status == AuthResultStatus.userNotFound ||
             status == AuthResultStatus.undefined ||
             e.code == 'invalid-user-token') {
@@ -144,40 +148,24 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           });
         }
       } else {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: 'Failed to refresh token. Please try again.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError('Failed to refresh token. Please try again.', AuthResultStatus.error);
+        _showErrorSnackBar('Failed to refresh token. Please try again.');
       }
-      notifyListeners();
       return null;
     }
   }
 
   Future<void> signUpWithEmail() async {
     try {
-      if (userNameController.text.isEmpty || emailController.text.isEmpty) {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: "Please fill all the fields",
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
-        notifyListeners();
+      if (userNameController.text.isEmpty ||
+          emailController.text.isEmpty ||
+          passwordController.text.isEmpty) {
+        _setError("Please fill all the fields", AuthResultStatus.error);
+        _showErrorSnackBar("Please fill all the fields");
         return;
       } else if (_passwordController.text != _confirmPasswordController.text) {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: "Passwords are not matching",
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
-        notifyListeners();
+        _setError("Passwords are not matching", AuthResultStatus.error);
+        _showErrorSnackBar("Passwords are not matching");
         return;
       }
 
@@ -188,10 +176,8 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       );
 
       if (user.authResultState == AuthResultStatus.error) {
-        authError = user;
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError(user.message!, user.authResultState);
+        _showErrorSnackBar(user.message!);
       } else if (isNotNull(user)) {
         clearError();
         await userSignup(
@@ -201,78 +187,54 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         );
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar("Success", "Sign up successful", AppColors.green);
-          Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-        });
+        _showSuccessSnackBar("Sign up successful");
+        Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
       }
     } catch (e) {
-      debugPrint('Sign-up error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: e is FirebaseAuthException
-            ? AuthExceptionHandler.generateExceptionMessage(
-                AuthExceptionHandler.handleException(e))
-            : 'An unexpected error occurred during sign-up.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      final errorMessage = e is FirebaseAuthException
+          ? AuthExceptionHandler.generateExceptionMessage(
+          AuthExceptionHandler.handleException(e))
+          : 'An unexpected error occurred during sign-up.';
+      _setError(errorMessage, AuthResultStatus.error);
+      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.signup);
-      notifyListeners();
     }
   }
 
   Future<void> signInWithEmail() async {
     try {
-      startLoading(LoginMethod.email);
       if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: "Please fill all the fields",
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError("Please fill all the fields", AuthResultStatus.error);
+        _showErrorSnackBar("Please fill all the fields");
         stopLoading(LoginMethod.email);
-        notifyListeners();
         return;
       }
 
+      startLoading(LoginMethod.email);
       UserAuthResult user = await _authServices.signInWithEmail(
         _emailController.text,
         _passwordController.text,
       );
 
       if (user.authResultState == AuthResultStatus.error) {
-        authError = user;
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError(user.message!, user.authResultState);
+        _showErrorSnackBar(user.message!);
       } else if (isNotNull(user)) {
         await userLogin(emailController.text, passwordController.text);
         await storeFirebaseAuthToken();
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar("Success", "Sign in successful", AppColors.green);
-        });
+        _showSuccessSnackBar("Sign in successful");
         clearControllers();
       }
     } catch (e) {
-      debugPrint('Sign-in error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: e is FirebaseAuthException
-            ? AuthExceptionHandler.generateExceptionMessage(
-                AuthExceptionHandler.handleException(e))
-            : 'An unexpected error occurred during sign-in.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      final errorMessage = e is FirebaseAuthException
+          ? AuthExceptionHandler.generateExceptionMessage(
+          AuthExceptionHandler.handleException(e))
+          : 'An unexpected error occurred during sign-in.';
+      _setError(errorMessage, AuthResultStatus.error);
+      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.email);
-      notifyListeners();
     }
   }
 
@@ -280,14 +242,8 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     try {
       startLoading(LoginMethod.forgotPassword);
       if (emailController.text.isEmpty) {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: "Please enter your email address",
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
-        notifyListeners();
+        _setError("Please enter your email address", AuthResultStatus.error);
+        _showErrorSnackBar("Please enter your email address");
         return;
       }
 
@@ -297,46 +253,28 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       ApiResponse userRes = await authRepo.forgotPassword(body: body);
       if (userRes.status == Status.completed &&
           (userRes.data == 'Success' || userRes.data == 'Sucesss')) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar(
-            'Success',
-            'Password reset email sent. Check your inbox.',
-            AppColors.green,
-          );
-        });
+        _showSuccessSnackBar('Password reset email sent. Check your inbox.');
         Navigator.pushReplacementNamed(context, LoginScreen.routeName);
       } else {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar(
-            'Error',
-            userRes.message ?? 'Something went wrong. Please try again.',
-            AppColors.red,
-          );
-        });
+        _setError(userRes.message ?? 'Something went wrong. Please try again.', AuthResultStatus.error);
+        _showErrorSnackBar(userRes.message ?? 'Something went wrong. Please try again.');
       }
-
     } catch (e) {
-      debugPrint('Forgot password error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: e is FirebaseAuthException
-            ? AuthExceptionHandler.generateExceptionMessage(
-            AuthExceptionHandler.handleException(e))
-            : 'Failed to send password reset email.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      final errorMessage = e is FirebaseAuthException
+          ? AuthExceptionHandler.generateExceptionMessage(
+          AuthExceptionHandler.handleException(e))
+          : 'Failed to send password reset email.';
+      _setError(errorMessage, AuthResultStatus.error);
+      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.forgotPassword);
-      notifyListeners();
     }
   }
 
-  // REPLACE your signInWithGoogle() body where noted
   Future<void> signInWithGoogle() async {
     try {
       startLoading(LoginMethod.google);
+      await _authServices.signOutGoogle();
 
       AuthResult? userCred = await _authServices.signInWithGoogle();
       if (userCred != null &&
@@ -352,11 +290,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
               message: 'Unable to fetch ID token after Google sign-in.');
         }
 
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar("Success", "Sign in successful!",
-              const Color.fromARGB(255, 113, 235, 117));
-        });
-
+        _showSuccessSnackBar("Sign in successful!");
         await googleLogin(
           user.displayName ?? 'User',
           user.email ?? '',
@@ -364,29 +298,18 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           user.photoURL ?? '',
         );
       } else {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: 'Google sign-in failed. Please try again.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError('Google sign-in failed. Please try again.', AuthResultStatus.error);
+        _showErrorSnackBar('Google sign-in failed. Please try again.');
       }
     } catch (e) {
-      debugPrint('Google sign-in error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: e is FirebaseAuthException
-            ? AuthExceptionHandler.generateExceptionMessage(
-                AuthExceptionHandler.handleException(e))
-            : 'An unexpected error occurred during Google sign-in.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      final errorMessage = e is FirebaseAuthException
+          ? AuthExceptionHandler.generateExceptionMessage(
+          AuthExceptionHandler.handleException(e))
+          : 'An unexpected error occurred during Google sign-in.';
+      _setError(errorMessage, AuthResultStatus.error);
+      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.google);
-      notifyListeners();
     }
   }
 
@@ -397,13 +320,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       if (isNotNull(userCred)) {
         final user = userCred!.user!;
         await storeFirebaseAuthToken();
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar(
-            "Success",
-            "Sign in successful!",
-            const Color.fromARGB(255, 113, 235, 117),
-          );
-        });
+        _showSuccessSnackBar("Sign in successful!");
         await appleLogin(
           user.displayName ?? 'User',
           user.email ?? '',
@@ -411,34 +328,24 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           user.photoURL ?? '',
         );
       } else {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: 'Apple sign-in failed. Please try again.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError('Apple sign-in failed. Please try again.', AuthResultStatus.error);
+        _showErrorSnackBar('Apple sign-in failed. Please try again.');
       }
     } catch (e) {
-      debugPrint('Apple sign-in error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: e is FirebaseAuthException
-            ? AuthExceptionHandler.generateExceptionMessage(
-                AuthExceptionHandler.handleException(e))
-            : 'An unexpected error occurred during Apple sign-in.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      final errorMessage = e is FirebaseAuthException
+          ? AuthExceptionHandler.generateExceptionMessage(
+          AuthExceptionHandler.handleException(e))
+          : 'An unexpected error occurred during Apple sign-in.';
+      _setError(errorMessage, AuthResultStatus.error);
+      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.apple);
-      notifyListeners();
     }
   }
 
   Future<void> signOut() async {
     try {
+      await _authServices.signOutGoogle();
       await FirebaseAuth.instance.signOut();
       AppData.instance.clearToken();
       await AppLocal.ins.clearUserData();
@@ -448,22 +355,16 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
       });
     } catch (e) {
-      debugPrint('Sign-out error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: 'Failed to sign out. Please try again.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      _setError('Failed to sign out. Please try again.', AuthResultStatus.error);
+      _showErrorSnackBar('Failed to sign out. Please try again.');
     }
-    notifyListeners();
   }
 
   void clearControllers() {
     emailController.clear();
     passwordController.clear();
     confirmPasswordController.clear();
+    userNameController.clear();
     notifyListeners();
   }
 
@@ -500,25 +401,13 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
         });
       } else {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: userRes.message ?? 'Failed to log in to backend.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError(userRes.message ?? 'Failed to log in to backend.', AuthResultStatus.error);
+        _showErrorSnackBar(userRes.message ?? 'Failed to log in to backend.');
       }
     } catch (e) {
-      debugPrint('Backend login error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: 'Failed to connect to backend. Please try again.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
+      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
-    notifyListeners();
   }
 
   Future<void> userSignup(
@@ -531,24 +420,13 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       };
       ApiResponse userRes = await authRepo.signup(body: body);
       if (userRes.status != Status.completed) {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: userRes.message ?? 'Failed to sign up to backend.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError(userRes.message ?? 'Failed to sign up to backend.', AuthResultStatus.error);
+        _showErrorSnackBar(userRes.message ?? 'Failed to sign up to backend.');
       }
     } catch (e) {
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: 'Failed to connect to backend. Please try again.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
+      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
-    notifyListeners();
   }
 
   Future<void> googleLogin(
@@ -561,20 +439,18 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         "profilePic": profilePic,
       };
       ApiResponse userRes = await authRepo.googleLogin(body: body);
-      debugPrint("🔎 Google login raw response: ${userRes.data}");
       if (userRes.status == Status.completed) {
         final raw = userRes.data;
         final Map user = (raw is Map && raw['user'] is Map)
             ? raw['user'] as Map
             : (raw as Map);
 
-        // Normalize keys & types
         final String userId =
-            (user['userId'] ?? user['id'] ?? '').toString().trim();
+        (user['userId'] ?? user['id'] ?? '').toString().trim();
         final String username = (user['username'] ?? userName).toString();
         final String userEmail = (user['email'] ?? email).toString();
         final String userPic =
-            (user['profilePic'] ?? profilePic ?? '').toString();
+        (user['profilePic'] ?? profilePic ?? '').toString();
 
         if (userId.isEmpty) {
           throw Exception('userId missing in backend response');
@@ -596,25 +472,13 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
         });
       } else {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: userRes.message ?? 'Failed to log in with Google.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError(userRes.message ?? 'Failed to log in with Google.', AuthResultStatus.error);
+        _showErrorSnackBar(userRes.message ?? 'Failed to log in with Google.');
       }
     } catch (e) {
-      debugPrint('Google backend login error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: 'Failed to connect to backend. Please try again.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
+      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
-    notifyListeners();
   }
 
   Future<void> appleLogin(
@@ -645,24 +509,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
         });
       } else {
-        authError = UserAuthResult(
-          authResultState: AuthResultStatus.error,
-          message: userRes.message ?? 'Failed to log in with Apple.',
-        );
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          appSnackBar('Error', authError!.message!, AppColors.red);
-        });
+        _setError(userRes.message ?? 'Failed to log in with Apple.', AuthResultStatus.error);
+        _showErrorSnackBar(userRes.message ?? 'Failed to log in with Apple.');
       }
     } catch (e) {
-      debugPrint('Apple backend login error: $e');
-      authError = UserAuthResult(
-        authResultState: AuthResultStatus.error,
-        message: 'Failed to connect to backend. Please try again.',
-      );
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        appSnackBar('Error', authError!.message!, AppColors.red);
-      });
+      _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
+      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
-    notifyListeners();
   }
 }

@@ -12,12 +12,25 @@ import 'package:Artleap.ai/shared/shared.dart';
 import '../../global_widgets/error_widget.dart';
 import 'login_screen_widgets/or_widget.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   static const String routeName = "login_screen";
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authprovider).clearError();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return RegistrationBackgroundWidget(
       widget: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -33,21 +46,21 @@ class LoginScreen extends ConsumerWidget {
           const RememberMeForgotPassWidget(),
           20.spaceY,
           CustomErrorWidget(
-              isShow: true,
+              isShow: ref.watch(authprovider).authError != null,
               message: ref.watch(authprovider).authError?.message,
               authResultState:
-                  ref.watch(authprovider).authError?.authResultState),
+              ref.watch(authprovider).authError?.authResultState),
           ref.watch(authprovider).isLoading(LoginMethod.email)
               ? const CircularProgressIndicator(
-                  color: AppColors.indigo,
-                )
+            color: AppColors.indigo,
+          )
               : CommonButton(
-                  title: "Log In",
-                  color: AppColors.indigo,
-                  onpress: () {
-                    ref.read(authprovider).signInWithEmail();
-                  },
-                ),
+            title: "Log In",
+            color: AppColors.indigo,
+            onpress: () {
+              ref.read(authprovider).signInWithEmail();
+            },
+          ),
           20.spaceY,
           ORwidget(),
           20.spaceY,
