@@ -97,8 +97,10 @@ class AuthServices {
 
       return AuthResult(userCredential: userCredential);
     } on FirebaseAuthException catch (e) {
+      print(e);
       rethrow;
     } catch (e) {
+      print(e);
       throw FirebaseAuthException(
         code: 'unknown-error',
         message: 'An unexpected error occurred during Google sign-in: $e',

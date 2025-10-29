@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "53715181958-gktpd6i5oeqiej7a4i0v34p048trqcp9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.XrDIgital.ImaginaryVerse",
-            "certificate_hash": "cbd857397c9fc78b2e1f17b3390148bffa0e5e82"
-          }
-        },
-        {
           "client_id": "53715181958-qa1dm07qrolafb76hi0lhg9majrbchme.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
