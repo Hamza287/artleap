@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'domain/connectivity/connectivity_aware_wrapper.dart';
 import 'domain/notification_services/notification_service.dart';
 import 'main/app_initialization.dart';
 import 'main/purchase_handler.dart';
@@ -30,7 +31,11 @@ void main() {
           notificationServiceProvider
               .overrideWith((ref) => NotificationService(ref)),
         ],
-        child: AppKeyboardListener(child: const MyApp()),
+        child: AppKeyboardListener(
+          child: ConnectivityAwareWrapper(
+            child: const MyApp(),
+          ),
+        ),
       ),
     );
   }, (error, stack) {

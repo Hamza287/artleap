@@ -76,5 +76,8 @@
 	</array>
 		<key>MinimumOSVersion</key>
     	<string>15.0</string>
+
+	<key>NSLocalNetworkUsageDescription</key>
+    <string>This app needs network connectivity to function properly</string>
 </dict>
 </plist>

@@ -42,7 +42,6 @@ class ApplePaymentService {
   Future<bool> purchaseSubscription(SubscriptionPlanModel plan, BuildContext context) async {
     try {
       if (userId.isEmpty) {
-        appSnackBar('Error', 'User not authenticated', Colors.red);
         return false;
       }
 
@@ -59,11 +58,7 @@ class ApplePaymentService {
       final ProductDetailsResponse response =
       await InAppPurchase.instance.queryProductDetails({plan.appleProductId});
 
-      // Debugging logs
-      debugPrint("🔍 IAP Debugging:");
-      debugPrint("  Requested ID: ${plan.appleProductId}");
-      debugPrint("  Not found IDs: ${response.notFoundIDs}");
-      debugPrint("  Product details count: ${response.productDetails.length}");
+
       for (final product in response.productDetails) {
         debugPrint("  ✅ Found product: "
             "id=${product.id}, "

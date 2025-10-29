@@ -87,7 +87,6 @@ class PostImage extends ConsumerWidget {
                 info.visibleBounds.bottom + bufferZone > 0;
 
         if (isInBufferZone && !homeProvider.visibleImages.contains(image.imageUrl)) {
-          // Add to visible images to trigger loading
           ref.read(homeScreenProvider).visibilityInfo(info, image.imageUrl);
         }
       },

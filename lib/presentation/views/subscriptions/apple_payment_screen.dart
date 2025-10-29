@@ -52,9 +52,6 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
   Future<void> _initializeApplePayment() async {
     final userId = UserData.ins.userId;
     if (userId == null) {
-      _safeStateUpdate(() {
-        appSnackBar('Error', 'User not authenticated', Colors.red);
-      });
       return;
     }
     final applePaymentService = ref.read(applePaymentServiceProvider(userId));
@@ -77,7 +74,6 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
     final userId = UserData.ins.userId;
 
     if (userId == null) {
-      appSnackBar('Error', 'User not authenticated', Colors.red);
       _safeStateUpdate(() {
         ref.read(paymentLoadingProvider.notifier).state = false;
       });

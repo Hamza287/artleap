@@ -142,7 +142,6 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
     final userId = UserData.ins.userId;
 
     if (userId == null) {
-      appSnackBar('Error', 'User not authenticated', Colors.red);
       return;
     }
 

@@ -24,7 +24,6 @@ class PurchaseHandler {
 
     if (userId == null) {
       debugPrint('User ID not found');
-      appSnackBar('Error', 'User not authenticated', Colors.red);
       for (final purchaseDetails in purchaseDetailsList) {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
       }
@@ -45,7 +44,6 @@ class PurchaseHandler {
     switch (purchaseDetails.status) {
       case PurchaseStatus.pending:
         debugPrint('Purchase pending: ${purchaseDetails.productID}');
-        // appSnackBar('Info', 'Purchase is pending', Colors.yellow);
         break;
 
       case PurchaseStatus.purchased:
@@ -63,7 +61,6 @@ class PurchaseHandler {
         break;
 
       case PurchaseStatus.canceled:
-      // appSnackBar('Info', 'Purchase canceled', Colors.yellow);
         ref.read(paymentLoadingProvider.notifier).state = false;
         break;
     }
@@ -102,9 +99,9 @@ class PurchaseHandler {
         navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
       } else {
         if (!success) {
-          appSnackBar('Info', 'Subscription already active (restored)', Colors.blue);
+          debugPrint('Info Subscription already active (restored)');
         } else {
-          appSnackBar('Error', 'Subscription failed', Colors.red);
+          debugPrint('Error Subscription failed');
         }
         ref.read(paymentLoadingProvider.notifier).state = false;
       }

@@ -45,8 +45,6 @@ class ImageControlsRedesign extends ConsumerWidget {
           16.spaceY,
         ],
         _buildControlsGrid(context, ref, theme),
-        20.spaceY,
-        _buildStyleSelection(context, ref, theme),
       ],
     );
   }
@@ -86,6 +84,7 @@ class ImageControlsRedesign extends ConsumerWidget {
               ),
             ],
           ),
+          _buildStyleSelection(context, ref, theme),
           16.spaceY,
           _buildNumberSelection(ref, theme,context),
           16.spaceY,
@@ -183,18 +182,9 @@ class ImageControlsRedesign extends ConsumerWidget {
     final displayedStyles = _reorderStylesWithSelectedFirst(styles, selectedStyle!).take(4);
 
     return Container(
-      height: 180,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      height: 150,
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.2),
-            offset: const Offset(0, 2),
-            blurRadius: 4,
-          ),
-        ],
+        color: Colors.transparent,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
