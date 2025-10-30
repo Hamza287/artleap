@@ -24,73 +24,43 @@ class ConnectivityState {
       lastChecked: lastChecked ?? this.lastChecked,
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ConnectivityState &&
-        other.isConnected == isConnected &&
-        other.isChecking == isChecking;
-  }
-
-  @override
-  int get hashCode => Object.hash(isConnected, isChecking);
 }
 
+final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
+  final svc = ConnectivityService();
+  ref.onDispose(() => svc.dispose());
+  return svc;
+});
+
 class ConnectivityNotifier extends Notifier<ConnectivityState> {
-  StreamSubscription<bool>? _connectivitySubscription;
+  StreamSubscription<bool>? _sub;
 
   @override
   ConnectivityState build() {
-    _startListening();
-    return const ConnectivityState(
-      isConnected: true,
-      isChecking: false,
-    );
-  }
-
-  void _startListening() {
-    _connectivitySubscription?.cancel();
-    _connectivitySubscription = ref
-        .watch(connectivityServiceProvider)
-        .connectionStream
-        .distinct()
-        .listen(_onConnectivityChanged);
-  }
-
-  void _onConnectivityChanged(bool isConnected) {
-    if (state.isConnected != isConnected) {
+    state = const ConnectivityState(isConnected: true, isChecking: false);
+    _sub?.cancel();
+    _sub = ref.read(connectivityServiceProvider).connectionStream.distinct().listen((online) {
       state = state.copyWith(
-        isConnected: isConnected,
+        isConnected: online,
+        isChecking: false,
         lastChecked: DateTime.now(),
       );
-    }
+    });
+    ref.onDispose(() => _sub?.cancel());
+    Future.microtask(checkConnection);
+    return state;
   }
 
   Future<void> checkConnection() async {
     state = state.copyWith(isChecking: true);
-    try {
-      final isConnected = await ref.read(connectivityServiceProvider).checkConnection();
-      state = state.copyWith(
-        isConnected: isConnected,
-        isChecking: false,
-        lastChecked: DateTime.now(),
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isConnected: false,
-        isChecking: false,
-        lastChecked: DateTime.now(),
-      );
-    }
+    final ok = await ref.read(connectivityServiceProvider).checkConnection();
+    state = state.copyWith(
+      isConnected: ok,
+      isChecking: false,
+      lastChecked: DateTime.now(),
+    );
   }
 }
-
-final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
-  final service = ConnectivityService();
-  ref.onDispose(() => service.dispose());
-  return service;
-});
 
 final connectivityNotifierProvider =
 NotifierProvider<ConnectivityNotifier, ConnectivityState>(
@@ -98,5 +68,5 @@ NotifierProvider<ConnectivityNotifier, ConnectivityState>(
 );
 
 final isConnectedProvider = Provider<bool>((ref) {
-  return ref.watch(connectivityNotifierProvider.select((state) => state.isConnected));
+  return ref.watch(connectivityNotifierProvider.select((s) => s.isConnected));
 });

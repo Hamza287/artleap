@@ -4,10 +4,10 @@ import 'reel_model.dart';
 final mockReels = [
   ReelModel(
     id: '1',
-    videoUrl: 'https://example.com/reel1.mp4',
-    thumbnailUrl: 'https://example.com/thumb1.jpg',
+    videoUrl: '',
+    thumbnailUrl: '',
     creatorName: 'Creative Artist',
-    creatorAvatar: 'https://example.com/avatar1.jpg',
+    creatorAvatar: '',
     caption: 'Amazing AI generated art process! 🎨✨',
     likes: 2543,
     comments: 142,
@@ -17,10 +17,10 @@ final mockReels = [
   ),
   ReelModel(
     id: '2',
-    videoUrl: 'https://example.com/reel2.mp4',
-    thumbnailUrl: 'https://example.com/thumb2.jpg',
+    videoUrl: '',
+    thumbnailUrl: '',
     creatorName: 'Digital Designer',
-    creatorAvatar: 'https://example.com/avatar2.jpg',
+    creatorAvatar: '',
     caption: 'Transforming ideas into digital masterpieces 🖌️',
     likes: 1876,
     comments: 93,

@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'domain/connectivity/connectivity_aware_wrapper.dart';
+import 'domain/connectivity/connectivity_overlay.dart';
 import 'domain/notification_services/notification_service.dart';
 import 'main/app_initialization.dart';
 import 'main/purchase_handler.dart';
@@ -28,12 +28,9 @@ void main() {
     runApp(
       ProviderScope(
         overrides: [
-          notificationServiceProvider
-              .overrideWith((ref) => NotificationService(ref)),
+          notificationServiceProvider.overrideWith((ref) => NotificationService(ref)),
         ],
-        child: AppKeyboardListener(
-          child: const MyApp(),
-        ),
+        child: AppKeyboardListener(child: const MyApp()),
       ),
     );
   }, (error, stack) {
@@ -58,8 +55,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     _purchaseHandler = PurchaseHandler(ref);
 
-    final Stream<List<PurchaseDetails>> purchaseUpdated =
-        InAppPurchase.instance.purchaseStream;
+    final Stream<List<PurchaseDetails>> purchaseUpdated = InAppPurchase.instance.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _purchaseHandler.handlePurchaseUpdates(purchaseDetailsList);
     }, onError: (error) {
@@ -84,15 +80,15 @@ class _MyAppState extends ConsumerState<MyApp> {
 
       if (token == null) {
         navigatorKey.currentState?.pushNamedAndRemoveUntil(
-            SplashScreen.routeName, (Route<dynamic> route) => false);
+          SplashScreen.routeName,
+              (Route<dynamic> route) => false,
+        );
         return;
       }
 
       _refreshTokenTimer = Timer.periodic(const Duration(hours: 1), (_) async {
-        final refreshedToken =
-        await ref.read(authprovider).ensureValidFirebaseToken();
-        if (refreshedToken != null) {
-        } else {
+        final refreshedToken = await ref.read(authprovider).ensureValidFirebaseToken();
+        if (refreshedToken == null) {
           debugPrint('Token refresh skipped: No user signed in.');
         }
       });
@@ -111,24 +107,25 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.watch(systemThemeMonitorProvider);
     final effectiveThemeMode = ref.watch(effectiveThemeModeProvider);
 
-    return ConnectivityAwareWrapper(
-      child: MaterialApp(
-        title: 'Artleap.ai',
-        debugShowCheckedModeBanner: false,
-        supportedLocales: AppLocalization.supportedLocales,
-        locale: ref.watch(localizationProvider),
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: effectiveThemeMode,
-        localizationsDelegates: const [
-          AppLocalization.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        navigatorKey: navigatorKey,
-        onGenerateRoute: RouteGenerator.generateRoute,
-        initialRoute: SplashScreen.routeName,
+    return MaterialApp(
+      title: 'Artleap.ai',
+      debugShowCheckedModeBanner: false,
+      supportedLocales: AppLocalization.supportedLocales,
+      locale: ref.watch(localizationProvider),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: effectiveThemeMode,
+      localizationsDelegates: const [
+        AppLocalization.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      navigatorKey: navigatorKey,
+      onGenerateRoute: RouteGenerator.generateRoute,
+      initialRoute: SplashScreen.routeName,
+      builder: (context, child) => ConnectivityOverlay(
+        child: child ?? const SizedBox.shrink(),
       ),
     );
   }
