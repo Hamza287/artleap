@@ -15,37 +15,49 @@ class ConnectivityOverlay extends ConsumerStatefulWidget {
 }
 
 class _ConnectivityOverlayState extends ConsumerState<ConnectivityOverlay> {
-  bool _showDialog = false;
+  bool _isDialogShowing = false;
+  DateTime? _lastConnectionChange;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeConnectivity();
+      _initializeConnectivityListener();
     });
   }
 
-  void _initializeConnectivity() {
+  void _initializeConnectivityListener() {
     ref.listen<ConnectivityState>(
       connectivityNotifierProvider,
           (previous, current) {
-        print('Connectivity state changed: ${current.isConnected}');
-
-        if (!current.isConnected && !_showDialog) {
-          print('Showing no internet dialog');
-          _showNoInternetDialog();
-        } else if (current.isConnected && _showDialog) {
-          print('Hiding no internet dialog');
-          _hideNoInternetDialog();
-        }
+        _handleConnectivityChange(previous, current);
       },
     );
   }
 
-  void _showNoInternetDialog() {
-    if (_showDialog) return;
+  void _handleConnectivityChange(ConnectivityState? previous, ConnectivityState current) {
+    final now = DateTime.now();
 
-    _showDialog = true;
+    if (_lastConnectionChange != null &&
+        now.difference(_lastConnectionChange!) < const Duration(seconds: 1)) {
+      return;
+    }
+
+    _lastConnectionChange = now;
+
+    if (!current.isConnected && !_isDialogShowing) {
+      print('No internet - showing dialog');
+      _showNoInternetDialog();
+    } else if (current.isConnected && _isDialogShowing) {
+      print('Internet restored - hiding dialog');
+      _hideNoInternetDialog();
+    }
+  }
+
+  void _showNoInternetDialog() {
+    if (_isDialogShowing) return;
+
+    _isDialogShowing = true;
 
     showDialog(
       context: context,
@@ -58,26 +70,25 @@ class _ConnectivityOverlayState extends ConsumerState<ConnectivityOverlay> {
         ),
       ),
     ).then((_) {
-      _showDialog = false;
+      _isDialogShowing = false;
     });
   }
 
   void _hideNoInternetDialog() {
-    if (!_showDialog) return;
+    if (!_isDialogShowing) return;
 
     if (Navigator.of(context, rootNavigator: true).canPop()) {
       Navigator.of(context, rootNavigator: true).pop();
     }
-    _showDialog = false;
+    _isDialogShowing = false;
   }
 
   Future<void> _onRetryPressed() async {
     try {
       await ref.read(connectivityNotifierProvider.notifier).checkConnection();
       final currentState = ref.read(connectivityNotifierProvider);
-      if (currentState.isConnected) {
-        _hideNoInternetDialog();
-      } else {
+
+      if (!currentState.isConnected) {
         _showRetryError();
       }
     } catch (e) {
@@ -133,7 +144,6 @@ class _NoInternetDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Icon
             Container(
               width: 80,
               height: 80,
@@ -147,7 +157,6 @@ class _NoInternetDialog extends StatelessWidget {
                 color: Colors.orange,
               ),
             ),
-
             const SizedBox(height: 20),
             Text(
               'No Internet Connection',

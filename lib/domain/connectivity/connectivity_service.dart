@@ -1,63 +1,52 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ConnectivityService {
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<List<ConnectivityResult>>? _subscription;
+  final StreamController<bool> _connectionController = StreamController<bool>.broadcast();
 
-  Stream<bool> get connectivityStream => _connectivity.onConnectivityChanged
-      .map((results) => results.any(_isConnected));
+  Stream<bool> get connectionStream => _connectionController.stream;
+
+  ConnectivityService() {
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    try {
+      final initialResult = await _connectivity.checkConnectivity();
+      final initialConnected = initialResult.any(_isConnected);
+      _connectionController.add(initialConnected);
+
+      _subscription = _connectivity.onConnectivityChanged.listen((results) {
+        final isConnected = results.any(_isConnected);
+        print('Connectivity changed: $isConnected');
+        _connectionController.add(isConnected);
+      });
+    } catch (e) {
+      print('Connectivity service error: $e');
+      _connectionController.add(false);
+    }
+  }
 
   bool _isConnected(ConnectivityResult result) {
     return result != ConnectivityResult.none;
   }
 
   Future<bool> checkConnection() async {
-    final results = await _connectivity.checkConnectivity();
-    return results.any(_isConnected);
+    try {
+      final results = await _connectivity.checkConnectivity();
+      final isConnected = results.any(_isConnected);
+      _connectionController.add(isConnected);
+      return isConnected;
+    } catch (e) {
+      _connectionController.add(false);
+      return false;
+    }
   }
 
-  void dispose() {
-    _subscription?.cancel();
-  }
-}
-
-// Providers
-final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
-  final service = ConnectivityService();
-  ref.onDispose(() => service.dispose());
-  return service;
-});
-
-final connectivityStateProvider = StreamProvider<bool>((ref) {
-  final connectivityService = ref.watch(connectivityServiceProvider);
-  return connectivityService.connectivityStream;
-});
-
-final initialConnectionCheckProvider = FutureProvider<bool>((ref) {
-  final connectivityService = ref.read(connectivityServiceProvider);
-  return connectivityService.checkConnection();
-});
-
-final internetConnectivityProvider = Provider<InternetConnectivityNotifier>((ref) {
-  return InternetConnectivityNotifier(ref);
-});
-
-class InternetConnectivityNotifier {
-  final Ref ref;
-
-  InternetConnectivityNotifier(this.ref);
-
-  bool? get currentStatus => ref.read(connectivityStateProvider).value;
-
-  Stream<bool> get connectivityStream => ref.read(connectivityStateProvider.stream);
-
-  Future<bool> checkConnection() async {
-    return await ref.read(connectivityServiceProvider).checkConnection();
-  }
-
-  Future<void> retryConnection() async {
-    ref.invalidate(initialConnectionCheckProvider);
+  Future<void> dispose() async {
+    await _subscription?.cancel();
+    await _connectionController.close();
   }
 }

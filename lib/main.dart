@@ -32,9 +32,7 @@ void main() {
               .overrideWith((ref) => NotificationService(ref)),
         ],
         child: AppKeyboardListener(
-          child: ConnectivityAwareWrapper(
-            child: const MyApp(),
-          ),
+          child: const MyApp(),
         ),
       ),
     );
@@ -113,23 +111,25 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.watch(systemThemeMonitorProvider);
     final effectiveThemeMode = ref.watch(effectiveThemeModeProvider);
 
-    return MaterialApp(
-      title: 'Artleap.ai',
-      debugShowCheckedModeBanner: false,
-      supportedLocales: AppLocalization.supportedLocales,
-      locale: ref.watch(localizationProvider),
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: effectiveThemeMode,
-      localizationsDelegates: const [
-        AppLocalization.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      navigatorKey: navigatorKey,
-      onGenerateRoute: RouteGenerator.generateRoute,
-      initialRoute: SplashScreen.routeName,
+    return ConnectivityAwareWrapper(
+      child: MaterialApp(
+        title: 'Artleap.ai',
+        debugShowCheckedModeBanner: false,
+        supportedLocales: AppLocalization.supportedLocales,
+        locale: ref.watch(localizationProvider),
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: effectiveThemeMode,
+        localizationsDelegates: const [
+          AppLocalization.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        navigatorKey: navigatorKey,
+        onGenerateRoute: RouteGenerator.generateRoute,
+        initialRoute: SplashScreen.routeName,
+      ),
     );
   }
 }

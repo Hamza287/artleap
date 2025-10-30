@@ -1,65 +1,68 @@
 import 'dart:async';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'connectivity_service.dart';
 
-class ConnectivityService {
-  final Connectivity _connectivity = Connectivity();
-  StreamSubscription<List<ConnectivityResult>>? _subscription;
+class ConnectivityState {
+  final bool isConnected;
+  final bool isChecking;
+  final DateTime? lastChecked;
 
-  Stream<bool> get connectivityStream {
-    return _connectivity.onConnectivityChanged.map((results) {
-      return results.any(_isConnected);
-    });
+  const ConnectivityState({
+    required this.isConnected,
+    required this.isChecking,
+    this.lastChecked,
+  });
+
+  ConnectivityState copyWith({
+    bool? isConnected,
+    bool? isChecking,
+    DateTime? lastChecked,
+  }) {
+    return ConnectivityState(
+      isConnected: isConnected ?? this.isConnected,
+      isChecking: isChecking ?? this.isChecking,
+      lastChecked: lastChecked ?? this.lastChecked,
+    );
   }
 
-  bool _isConnected(ConnectivityResult result) {
-    return result != ConnectivityResult.none;
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ConnectivityState &&
+        other.isConnected == isConnected &&
+        other.isChecking == isChecking;
   }
 
-  Future<bool> checkConnection() async {
-    try {
-      final results = await _connectivity.checkConnectivity();
-      return results.any(_isConnected);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void dispose() {
-    _subscription?.cancel();
-  }
+  @override
+  int get hashCode => Object.hash(isConnected, isChecking);
 }
 
 class ConnectivityNotifier extends Notifier<ConnectivityState> {
-  late ConnectivityService _connectivityService;
+  StreamSubscription<bool>? _connectivitySubscription;
 
   @override
   ConnectivityState build() {
-    _connectivityService = ConnectivityService();
     _startListening();
-    _checkInitialConnection();
-
-    return ConnectivityState(
+    return const ConnectivityState(
       isConnected: true,
       isChecking: false,
     );
   }
 
   void _startListening() {
+    _connectivitySubscription?.cancel();
+    _connectivitySubscription = ref
+        .watch(connectivityServiceProvider)
+        .connectionStream
+        .distinct()
+        .listen(_onConnectivityChanged);
   }
 
-  Future<void> _checkInitialConnection() async {
-    state = state.copyWith(isChecking: true);
-    try {
-      final isConnected = await _connectivityService.checkConnection();
+  void _onConnectivityChanged(bool isConnected) {
+    if (state.isConnected != isConnected) {
       state = state.copyWith(
         isConnected: isConnected,
-        isChecking: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isConnected: false,
-        isChecking: false,
+        lastChecked: DateTime.now(),
       );
     }
   }
@@ -67,42 +70,26 @@ class ConnectivityNotifier extends Notifier<ConnectivityState> {
   Future<void> checkConnection() async {
     state = state.copyWith(isChecking: true);
     try {
-      final isConnected = await _connectivityService.checkConnection();
+      final isConnected = await ref.read(connectivityServiceProvider).checkConnection();
       state = state.copyWith(
         isConnected: isConnected,
         isChecking: false,
+        lastChecked: DateTime.now(),
       );
     } catch (e) {
       state = state.copyWith(
         isConnected: false,
         isChecking: false,
+        lastChecked: DateTime.now(),
       );
     }
   }
 }
 
-class ConnectivityState {
-  final bool isConnected;
-  final bool isChecking;
-
-  ConnectivityState({
-    required this.isConnected,
-    required this.isChecking,
-  });
-
-  ConnectivityState copyWith({
-    bool? isConnected,
-    bool? isChecking,
-  }) {
-    return ConnectivityState(
-      isConnected: isConnected ?? this.isConnected,
-      isChecking: isChecking ?? this.isChecking,
-    );
-  }
-}
-
 final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
-  return ConnectivityService();
+  final service = ConnectivityService();
+  ref.onDispose(() => service.dispose());
+  return service;
 });
 
 final connectivityNotifierProvider =
@@ -111,5 +98,5 @@ NotifierProvider<ConnectivityNotifier, ConnectivityState>(
 );
 
 final isConnectedProvider = Provider<bool>((ref) {
-  return ref.watch(connectivityNotifierProvider).isConnected;
+  return ref.watch(connectivityNotifierProvider.select((state) => state.isConnected));
 });
