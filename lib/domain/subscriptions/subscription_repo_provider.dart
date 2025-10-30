@@ -7,26 +7,21 @@ import '../../providers/watermark_provider.dart';
 import '../base_repo/base.dart';
 import '../payment/payment_service.dart';
 
-// Provider for Base class (to access artleapApiService)
 final baseProvider = Provider<Base>((ref) => Base());
 
-// Provider for SubscriptionRepoImpl
 final subscriptionRepoProvider = Provider<SubscriptionRepoImpl>((ref) => SubscriptionRepoImpl());
 
-// Provider for SubscriptionService
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
   final repo = ref.read(subscriptionRepoProvider);
   return SubscriptionService(repo);
 });
 
-// Provider for PaymentService
 final paymentServiceProvider = Provider.family<PaymentService, String>((ref, userId) {
   final subscriptionService = ref.read(subscriptionServiceProvider);
   final base = ref.read(baseProvider);
   return PaymentService(subscriptionService, base, userId);
 });
 
-// Provider for fetching subscription plans
 final subscriptionPlansProvider = FutureProvider<List<SubscriptionPlanModel>>((ref) async {
   final service = ref.read(subscriptionServiceProvider);
   final response = await service.getSubscriptionPlans();
@@ -36,7 +31,6 @@ final subscriptionPlansProvider = FutureProvider<List<SubscriptionPlanModel>>((r
   throw Exception(response.message ?? 'Failed to fetch subscription plans');
 });
 
-// Provider for fetching the current subscription
 final currentSubscriptionProvider = FutureProvider.family<UserSubscriptionModel?, String>((ref, userId) async {
   final service = ref.read(subscriptionServiceProvider);
   final response = await service.getCurrentSubscription(userId);
@@ -47,7 +41,6 @@ final currentSubscriptionProvider = FutureProvider.family<UserSubscriptionModel?
   return null;
 });
 
-// Provider for fetching generation limits
 final generationLimitsProvider = FutureProvider.family<GenerationLimitsModel, Map<String, String>>((ref, params) async {
   final service = ref.read(subscriptionServiceProvider);
   final response = await service.checkGenerationLimits(params['userId']!, params['generationType']!);

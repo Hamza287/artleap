@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
@@ -9,7 +10,6 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/subscriptions/plan_provider.dart';
 import '../presentation/views/subscriptions/google_payment_screen.dart';
-
 
 class PurchaseHandler {
   final WidgetRef ref;
@@ -23,7 +23,6 @@ class PurchaseHandler {
     final userId = UserData.ins.userId;
 
     if (userId == null) {
-      debugPrint('User ID not found');
       for (final purchaseDetails in purchaseDetailsList) {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
       }
@@ -43,16 +42,14 @@ class PurchaseHandler {
       ) async {
     switch (purchaseDetails.status) {
       case PurchaseStatus.pending:
-        debugPrint('Purchase pending: ${purchaseDetails.productID}');
         break;
 
       case PurchaseStatus.purchased:
-        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, success: true);
+        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, true);
         break;
 
       case PurchaseStatus.restored:
-        debugPrint('Purchase restored: ${purchaseDetails.productID}');
-        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, success: false);
+        await _handleSuccessfulPurchase(purchaseDetails, basePlanId, paymentMethod, userId, false);
         break;
 
       case PurchaseStatus.error:
@@ -71,59 +68,110 @@ class PurchaseHandler {
       String? basePlanId,
       String? paymentMethod,
       String userId,
-      {required bool success}
-      ) async {
+      bool success) async {
     final subscriptionService = ref.read(subscriptionServiceProvider);
 
     try {
+      String planId = '';
+      if (!success) {
+        planId = await _findPlanIdByProductId(purchaseDetails.productID) ?? '';
+      } else {
+        final selectedPlan = ref.read(selectedPlanProvider);
+        planId = selectedPlan?.id ?? '';
+      }
+
+      if (planId.isEmpty) {
+        appSnackBar('Error', 'Could not find subscription plan', Colors.red);
+        ref.read(paymentLoadingProvider.notifier).state = false;
+        await _completePurchase(purchaseDetails);
+        return;
+      }
+
+      final selectedPlan = ref.read(selectedPlanProvider);
       final verificationData = _createVerificationData(
         purchaseDetails,
         basePlanId,
         paymentMethod,
+        selectedPlan,
       );
 
       verificationData['success'] = success;
 
       final response = await subscriptionService.subscribe(
         userId,
-        ref.read(selectedPlanProvider)?.id ?? '',
+        planId,
         paymentMethod ?? '',
         verificationData: verificationData,
       );
 
-      if (response.status == Status.completed && success) {
-        appSnackBar('Success', 'Subscription created successfully', Colors.green);
+      if (response.status == Status.completed) {
+        if (success) {
+          appSnackBar('Success', 'Subscription created successfully', Colors.green);
+          ref.read(paymentLoadingProvider.notifier).state = false;
+          if (navigatorKey.currentState?.mounted == true) {
+            navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
+          }
+        } else {
+          appSnackBar('Success', 'Subscription restored successfully', Colors.green);
+        }
         await _completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
-        ref.read(paymentLoadingProvider.notifier).state = false;
-        navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
       } else {
-        if (!success) {
-          debugPrint('Info Subscription already active (restored)');
-        } else {
-          debugPrint('Error Subscription failed');
-        }
+        appSnackBar('Error', 'Subscription failed: ${response.message}', Colors.red);
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
     } catch (e) {
-      appSnackBar('Error', 'Purchase error', Colors.red);
+      appSnackBar('Error', 'Purchase processing failed', Colors.red);
       ref.read(paymentLoadingProvider.notifier).state = false;
+      await _completePurchase(purchaseDetails);
     }
   }
 
+  Future<String?> _findPlanIdByProductId(String productId) async {
+    try {
+      final subscriptionService = ref.read(subscriptionServiceProvider);
+      final response = await subscriptionService.getSubscriptionPlans();
+
+      if (response.status == Status.completed && response.data != null) {
+        final plans = response.data as List<dynamic>;
+        for (final plan in plans) {
+          if (plan['appleProductId'] == productId || plan['googleProductId'] == productId) {
+            return plan['id'];
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   Map<String, dynamic> _createVerificationData(
       PurchaseDetails purchaseDetails,
       String? basePlanId,
       String? paymentMethod,
+      selectedPlan,
       ) {
     if (paymentMethod == 'apple') {
-      return {
+      final receiptData = purchaseDetails.verificationData.serverVerificationData;
+      Map<String, dynamic> appleData = {
         'productId': purchaseDetails.productID,
-        'receiptData': purchaseDetails.verificationData.serverVerificationData,
+        'receiptData': receiptData,
         'platform': 'ios',
-        'amount': ref.read(selectedPlanProvider)?.price.toString() ?? '0',
+        'amount': selectedPlan?.price.toString() ?? '0',
       };
+
+      try {
+        final decodedReceipt = _decodeAppleReceipt(receiptData);
+        if (decodedReceipt['originalTransactionId'] != null) {
+          appleData['originalTransactionId'] = decodedReceipt['originalTransactionId'];
+          appleData['transactionId'] = decodedReceipt['transactionId'];
+        }
+      } catch (e) {
+        appleData['transactionId'] = purchaseDetails.purchaseID;
+      }
+
+      return appleData;
     } else {
       return {
         'productId': purchaseDetails.productID,
@@ -134,6 +182,26 @@ class PurchaseHandler {
         'amount': _extractAndroidPurchaseAmount(purchaseDetails),
       };
     }
+  }
+
+  Map<String, dynamic> _decodeAppleReceipt(String receiptData) {
+    try {
+      // For JWT format receipts (iOS 7+)
+      if (receiptData.startsWith("eyJ")) {
+        final parts = receiptData.split(".");
+        if (parts.length == 3) {
+          final payload = utf8.decode(base64.decode(parts[1]));
+          final decoded = json.decode(payload);
+          return {
+            'transactionId': decoded['transactionId'],
+            'originalTransactionId': decoded['originalTransactionId'],
+          };
+        }
+      }
+    } catch (e) {
+      print('Error decoding Apple receipt: $e');
+    }
+    return {};
   }
 
   String _extractAndroidPurchaseAmount(PurchaseDetails purchaseDetails) {
@@ -147,16 +215,15 @@ class PurchaseHandler {
             .toString();
       }
     } catch (e) {
-      debugPrint('Error extracting Android purchase amount: $e');
     }
-    return '0';
+    final selectedPlan = ref.read(selectedPlanProvider);
+    return selectedPlan?.price.toString() ?? '0';
   }
 
   Future<void> _completePurchase(PurchaseDetails purchaseDetails) async {
     try {
       await InAppPurchase.instance.completePurchase(purchaseDetails);
     } catch (e) {
-      debugPrint("Error completing purchase");
       ref.read(paymentLoadingProvider.notifier).state = false;
     }
   }
