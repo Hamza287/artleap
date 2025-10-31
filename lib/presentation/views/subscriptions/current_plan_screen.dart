@@ -117,7 +117,11 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
             ),
           ),
           data: (subscription) {
-            if (subscription == null || subscription.cancelledAt != null || !subscription.isActive || !subscription.autoRenew) {
+            if (subscription!.paymentMethod!.toLowerCase() != 'stripe' &&
+                (subscription.cancelledAt != null ||
+                    !subscription.isActive ||
+                    !subscription.autoRenew
+                )) {
               return _buildNoSubscriptionUI(context, theme);
             }
 

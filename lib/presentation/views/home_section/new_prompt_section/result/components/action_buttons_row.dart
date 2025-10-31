@@ -1,5 +1,6 @@
 import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_alert_dialog.dart';
 import 'package:Artleap.ai/presentation/views/common/dialog_box/set_privacy_dialog.dart';
+import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart'
     hide ImagePrivacy;
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
@@ -22,10 +23,12 @@ class ActionButtonsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final generatedImages = ref.watch(generateImageProvider).generatedImage;
-    final generatedTextToImageData = ref.watch(generateImageProvider).generatedTextToImageData;
+    final generatedTextToImageData =
+        ref.watch(generateImageProvider).generatedTextToImageData;
     final isLoading = ref.watch(generateImageProvider).isGenerateImageLoading;
 
-    final currentImageData = _getCurrentImageData(generatedImages, generatedTextToImageData);
+    final currentImageData =
+        _getCurrentImageData(generatedImages, generatedTextToImageData);
 
     if (isLoading || currentImageData == null) {
       return _buildLoadingButtons(theme);
@@ -100,6 +103,7 @@ class ActionButtonsRow extends ConsumerWidget {
       _buildFavoriteButton(context, ref, imageId, theme),
       _buildDownloadButton(context, ref, imageUrl, theme),
       _buildShareButton(context, ref, imageUrl, theme),
+      _buildReportButton(context, ref, imageId, theme)
     ];
 
     if (isCurrentUser) {
@@ -245,6 +249,31 @@ class ActionButtonsRow extends ConsumerWidget {
       },
     );
   }
+
+  Widget _buildReportButton(BuildContext context, WidgetRef ref, String imageId, ThemeData theme) {
+
+    return _buildActionButton(
+      icon: Icons.flag_rounded,
+      label: 'Report',
+      color: Colors.orange,
+      theme: theme,
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) {
+            return ReportImageBottomSheet(
+              imageId: imageId,
+              creatorId: UserData.ins.userId,
+            );
+          },
+        );
+      },
+    );
+  }
+  
+  
 
   Widget _buildActionButton({
     required IconData icon,
