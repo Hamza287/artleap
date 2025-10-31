@@ -23,7 +23,7 @@ class AboutArtleapScreen extends StatelessWidget {
             children: [
               const AboutArtleapHeroSection(),
               const AboutArtleapMissionSection(),
-              const AboutArtleapTeamSection(),
+              // const AboutArtleapTeamSection(),
               const AboutArtleapTechnologySection(),
               const AboutArtleapContactSection(),
               const AboutArtleapFooter(),
