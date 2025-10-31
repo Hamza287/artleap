@@ -48,30 +48,30 @@ class ActionButtons extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (isActive && subscription!.planSnapshot?.name != 'Free' && subscription!.autoRenew == true)
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton(
-                  onPressed: () {
-                    CancelSubscriptionDialog.show(context, ref, subscription!);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: theme.colorScheme.error,
-                    side: BorderSide(color: theme.colorScheme.error),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(
-                    'Cancel Subscription',
-                    style: AppTextstyle.interBold(
-                      fontSize: 16,
-                      color: theme.colorScheme.error,
-                    ),
-                  ),
-                ),
-              ),
+            // if (isActive && subscription!.planSnapshot?.type != 'free' && subscription!.autoRenew == true)
+            //   SizedBox(
+            //     width: double.infinity,
+            //     height: 50,
+            //     child: OutlinedButton(
+            //       onPressed: () {
+            //         CancelSubscriptionDialog.show(context, ref, subscription!);
+            //       },
+            //       style: OutlinedButton.styleFrom(
+            //         foregroundColor: theme.colorScheme.error,
+            //         side: BorderSide(color: theme.colorScheme.error),
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(12),
+            //         ),
+            //       ),
+            //       child: Text(
+            //         'Cancel Subscription',
+            //         style: AppTextstyle.interBold(
+            //           fontSize: 16,
+            //           color: theme.colorScheme.error,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
           ],
         );
       },

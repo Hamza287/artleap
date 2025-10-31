@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "53715181958-tlsqm5s4adtkg944ji1hp27fr5llbbsd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.XrDIgital.ImaginaryVerse",
+            "certificate_hash": "e5a85324403b6fec3bf137a2f678117b025cb2ed"
+          }
+        },
+        {
+          "client_id": "53715181958-u1qu9cbm638cbtj52ogoo58q48fkcknb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.XrDIgital.ImaginaryVerse",
+            "certificate_hash": "f923b6dbcd3a15a7ae3ce6712956970fdec75092"
+          }
+        },
+        {
           "client_id": "53715181958-06bvu6ies0pmocsb69c5m1091fuomsku.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -47,7 +63,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-9762893813732933~8813099092"
     }
   ],
   "configuration_version": "1"

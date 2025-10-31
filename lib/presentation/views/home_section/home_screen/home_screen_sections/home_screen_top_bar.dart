@@ -15,9 +15,18 @@ class HomeScreenTopBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
-    ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
+    final userSubscriptionAsync = ref.watch(currentSubscriptionProvider(UserData.ins.userId!));
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
-    final isFreePlan = planName.toLowerCase() == 'free';
+
+    bool isFreePlan = true;
+
+    userSubscriptionAsync.whenData((subscription) {
+      if (subscription != null && subscription.planSnapshot!.type != 'free' && (subscription.cancelledAt == null)) {
+        isFreePlan = false;
+      } else {
+        isFreePlan = true;
+      }
+    });
 
 
     return Column(
