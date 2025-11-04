@@ -18,26 +18,19 @@ class LoadingOverlayRedesign extends StatelessWidget {
       animation: fadeAnimation,
       builder: (context, child) {
         return Opacity(
-          opacity: fadeAnimation.value, // Fixed: changed _fadeAnimation to fadeAnimation
+          opacity: fadeAnimation.value,
           child: Container(
-            color: Colors.black.withOpacity(0.85),
+            color: theme.colorScheme.surface,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Animated AI Icon
                   _buildAnimatedAIIcon(theme),
                   const SizedBox(height: 32),
-
-                  // Loading Text
                   _buildLoadingText(theme),
                   const SizedBox(height: 16),
-
-                  // Progress Indicator
                   _buildProgressIndicator(theme),
                   const SizedBox(height: 24),
-
-                  // Tips
                   _buildLoadingTips(theme),
                 ],
               ),

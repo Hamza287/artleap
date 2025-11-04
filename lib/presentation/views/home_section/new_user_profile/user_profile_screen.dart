@@ -1,14 +1,14 @@
+import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import 'package:Artleap.ai/presentation/views/Notifications/notification_screen.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
+import 'package:Artleap.ai/providers/notification_provider.dart';
+import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../providers/bottom_nav_bar_provider.dart';
-import '../../../../providers/notification_provider.dart';
-import '../../../../providers/user_profile_provider.dart';
-import '../../../../shared/constants/app_assets.dart';
-import '../../../../shared/constants/app_textstyle.dart';
-import '../../../../shared/constants/user_data.dart';
-import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import '../../Notifications/notification_screen.dart';
-import '../../login_and_signup_section/login_section/login_screen.dart';
 import '../profile_screen/profile_screen_widgets/my_creations_widget.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
@@ -16,7 +16,8 @@ class UserProfileScreen extends ConsumerStatefulWidget {
   static const String routeName = "user_profile_screen";
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _UserProfileScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
@@ -80,28 +81,37 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                               final userId = UserData.ins.userId;
                               if (userId == null) return const SizedBox();
 
-                              final notifications = ref.watch(notificationProvider(userId));
+                              final notifications =
+                                  ref.watch(notificationProvider(userId));
                               final unreadCount = notifications.maybeWhen(
-                                data: (notifs) => notifs.where((n) => !n.isRead).length,
+                                data: (notifs) =>
+                                    notifs.where((n) => !n.isRead).length,
                                 orElse: () => 0,
                               );
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.save, color: theme.colorScheme.onPrimary),
-                                    onPressed: (){
-                                      Navigator.of(context).pushNamed('saved-images-screens');
+                                    icon: Icon(Icons.save,
+                                        color: theme.colorScheme.onPrimary),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pushNamed('saved-images-screens');
                                     },
                                     tooltip: "Saved Images",
                                   ),
                                   IconButton(
                                     icon: Badge(
-                                      label: unreadCount > 0 ? Text(unreadCount.toString()) : null,
-                                      child: Icon(Icons.notifications, color: theme.colorScheme.onPrimary, size: 30),
+                                      label: unreadCount > 0
+                                          ? Text(unreadCount.toString())
+                                          : null,
+                                      child: Icon(Icons.notifications,
+                                          color: theme.colorScheme.onPrimary,
+                                          size: 30),
                                     ),
                                     onPressed: () {
-                                      Navigator.pushNamed(context, NotificationScreen.routeName);
+                                      Navigator.pushNamed(context,
+                                          NotificationScreen.routeName);
                                     },
                                   ),
                                 ],
@@ -115,11 +125,14 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   SliverToBoxAdapter(
                     child: Container(
                       constraints: BoxConstraints(
-                        minHeight: screenHeight - (screenHeight * 0.2) - MediaQuery.of(context).padding.top,
+                        minHeight: screenHeight -
+                            (screenHeight * 0.2) -
+                            MediaQuery.of(context).padding.top,
                       ),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surface,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(20)),
                         boxShadow: [
                           BoxShadow(
                             color: theme.colorScheme.shadow.withOpacity(0.1),
@@ -150,23 +163,28 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       height: 100,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: theme.colorScheme.surface, width: 4),
+                                        border: Border.all(
+                                            color: theme.colorScheme.surface,
+                                            width: 4),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: theme.colorScheme.shadow.withOpacity(0.1),
+                                            color: theme.colorScheme.shadow
+                                                .withOpacity(0.1),
                                             blurRadius: 8,
                                             spreadRadius: 2,
                                           ),
                                         ],
-                                        image: profilePic != null && profilePic.isNotEmpty
+                                        image: profilePic != null &&
+                                                profilePic.isNotEmpty
                                             ? DecorationImage(
-                                          image: NetworkImage(profilePic),
-                                          fit: BoxFit.cover,
-                                        )
+                                                image: NetworkImage(profilePic),
+                                                fit: BoxFit.cover,
+                                              )
                                             : const DecorationImage(
-                                          image: AssetImage(AppAssets.artstyle1),
-                                          fit: BoxFit.cover,
-                                        ),
+                                                image: AssetImage(
+                                                    AppAssets.artstyle1),
+                                                fit: BoxFit.cover,
+                                              ),
                                       ),
                                     ),
                                     const SizedBox(height: 10),
@@ -182,7 +200,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       '@${user.email}',
                                       style: AppTextstyle.interMedium(
                                         fontSize: 16,
-                                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                        color: theme.colorScheme.onSurface
+                                            .withOpacity(0.6),
                                       ),
                                     ),
                                     const SizedBox(height: 8),
@@ -195,17 +214,21 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     ),
                                     const SizedBox(height: 16),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         _buildStatColumn(
-                                          userPersonalData.user.followers.length.toString(),
+                                          userPersonalData.user.followers.length
+                                              .toString(),
                                           'Followers',
                                           theme,
                                         ),
                                         const SizedBox(width: 30),
                                         _buildStatColumn(
-                                          userPersonalData.user.following.length.toString(),
+                                          userPersonalData.user.following.length
+                                              .toString(),
                                           'Following',
                                           theme,
                                         ),
@@ -214,7 +237,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     const SizedBox(height: 16),
                                     Row(
                                       children: [
-                                        Icon(Icons.auto_awesome, color: theme.colorScheme.primary),
+                                        Icon(Icons.auto_awesome,
+                                            color: theme.colorScheme.primary),
                                         const SizedBox(width: 10),
                                         Text(
                                           '${userPersonalData.user.images.length.toString()} Generations',
@@ -256,7 +280,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           value,
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: theme.colorScheme.onBackground,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(width: 10),
