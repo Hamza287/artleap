@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "com.XrDIgital.ImaginaryVerse"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 23
         targetSdk 36
         versionCode 39
         versionName "2.0.1"
