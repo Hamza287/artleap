@@ -1,5 +1,7 @@
 import 'package:Artleap.ai/domain/community/models/comment_model.dart';
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
@@ -41,26 +43,9 @@ class _CommentsSectionState extends ConsumerState<CommentsSection> {
       _commentController.clear();
       _commentFocusNode.unfocus();
 
-      // Show success feedback
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Comment posted successfully'),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          behavior: SnackBarBehavior.floating,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      appSnackBar('success', 'Comment posted successfully',backgroundColor: AppColors.success);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to post comment: $e'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      appSnackBar('failed', 'Failed to Comment Post',backgroundColor: AppColors.red);
     }
   }
 

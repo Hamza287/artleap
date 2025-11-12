@@ -1,4 +1,6 @@
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -117,13 +119,7 @@ class _LikeButton extends ConsumerWidget {
       await ref.read(likeProvider(imageId).notifier).toggleLike();
       ref.invalidate(likeCountProvider(imageId));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update like: $e'),
-          backgroundColor: theme.colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      appSnackBar('Error', 'Failed to update like: $e', backgroundColor:AppColors.red);
     }
   }
 
@@ -147,8 +143,8 @@ class _LikeButton extends ConsumerWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.colorScheme.surfaceVariant.withOpacity(0.9),
-              theme.colorScheme.surfaceVariant.withOpacity(0.7),
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.9),
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.7),
             ],
           ),
           borderRadius: BorderRadius.circular(14),
@@ -239,8 +235,8 @@ class _CommentButton extends ConsumerWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.colorScheme.surfaceVariant.withOpacity(0.9),
-              theme.colorScheme.surfaceVariant.withOpacity(0.7),
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.9),
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.7),
             ],
           ),
           borderRadius: BorderRadius.circular(14),
@@ -297,24 +293,9 @@ class _SaveButton extends ConsumerWidget {
   void _toggleSave(WidgetRef ref) async {
     try {
       await ref.read(saveProvider.notifier).toggleSave(imageId);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(isSaved ? 'Removed from saved collection' : 'Saved to your collection'),
-          backgroundColor: theme.colorScheme.primary,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-
+     appSnackBar('Alert', "${isSaved ? 'Removed from saved collection' : 'Saved to your collection'}");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update save: $e'),
-          backgroundColor: theme.colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      appSnackBar('Error', "Failed to update save: $e");
     }
   }
 

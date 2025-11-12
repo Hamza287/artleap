@@ -1,4 +1,6 @@
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -289,12 +291,7 @@ class NotificationDetailScreen extends ConsumerWidget {
           }
         } catch (e) {
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Failed to delete notification: ${e.toString()}'),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
+            appSnackBar('Error', 'Failed to delete Notification',backgroundColor: AppColors.red);
           }
         }
       },

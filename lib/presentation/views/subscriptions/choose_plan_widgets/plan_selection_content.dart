@@ -1,14 +1,14 @@
 import 'dart:io';
+import 'package:Artleap.ai/widgets/state_widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../shared/constants/app_textstyle.dart';
 import '../../../../domain/subscriptions/subscription_repo_provider.dart';
 import '../../../../providers/user_profile_provider.dart';
 import '../../../../shared/constants/user_data.dart';
+import '../../../../widgets/state_widgets/error_state.dart';
+import '../../../../widgets/state_widgets/loading_state.dart';
 import 'plan_list_content.dart';
-import 'loading_state.dart';
-import 'error_state.dart';
-import '../../../../shared/notification_utils/empty_state.dart';
 
 final currentTabIndexProvider = StateProvider<int>((ref) => 0);
 
@@ -37,16 +37,25 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
     final screenSize = MediaQuery.of(context).size;
 
     return plansAsync.when(
-      loading: () => const LoadingState(),
-      error: (e, s) => ErrorState(e),
+      loading: () => const LoadingState(
+        useShimmer: true,
+        shimmerItemCount: 3,
+      ),
+      error: (e, s) => ErrorState(
+        message: _getErrorMessage(e),
+        onRetry: () => ref.invalidate(subscriptionPlansProvider),
+        icon: Icons.credit_card_off,
+      ),
       data: (plans) {
         if (plans.isEmpty) {
-          return const EmptyState(
-            icon: Icons.error,
-            title: 'No Plans',
-            subtitle: 'No active plans were found.',
+          return EmptyState(
+            icon: Icons.credit_card_off,
+            title: 'No Subscription Plans',
+            subtitle: 'We couldn\'t find any available subscription plans at the moment.',
+            iconColor: Theme.of(context).colorScheme.primary,
           );
         }
+
         final filteredPlans = plans.where((plan) {
           if (Platform.isIOS) return plan.appleProductId.isNotEmpty;
           if (Platform.isAndroid) return plan.googleProductId.isNotEmpty;
@@ -54,12 +63,14 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
         }).toList();
 
         if (filteredPlans.isEmpty) {
-          return const EmptyState(
-            icon: Icons.error,
-            title: 'No Plans Available',
-            subtitle: 'No valid subscription plans for this platform',
+          return EmptyState(
+            icon: Icons.smartphone_outlined,
+            title: 'Platform Not Supported',
+            subtitle: 'No subscription plans available for your device platform.',
+            iconColor: Theme.of(context).colorScheme.error,
           );
         }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -69,7 +80,7 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFB58F48), // warm/golden
+                  color: const Color(0xFFB58F48),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -111,5 +122,15 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
         );
       },
     );
+  }
+
+  String _getErrorMessage(dynamic error) {
+    if (error.toString().contains('network') || error.toString().contains('connection')) {
+      return 'Network error - Please check your connection';
+    } else if (error.toString().contains('unauthorized') || error.toString().contains('401')) {
+      return 'Authentication failed - Please login again';
+    } else {
+      return 'Failed to load subscription plans';
+    }
   }
 }

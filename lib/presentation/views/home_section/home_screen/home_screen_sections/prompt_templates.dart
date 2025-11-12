@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
@@ -133,14 +134,7 @@ class PromptTemplates extends StatelessWidget {
   Widget _buildTemplateCard(_PromptTemplate template, ThemeData theme, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Using template: ${template.name}'),
-            duration: const Duration(seconds: 1),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: theme.colorScheme.primary,
-          ),
-        );
+        appSnackBar('Template', 'Using template: ${template.name}');
       },
       child: Container(
         width: 140,

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-
-import '../../../../../shared/constants/app_colors.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
 import '../../../global_widgets/app_common_textfield.dart';
 

@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
@@ -47,7 +48,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (response.status == Status.completed) {
       await getUserProfileData(uid);
     } else {
-      appSnackBar("Error", response.message ?? "Failed to follow/unfollow user", AppColors.redColor);
+      appSnackBar("Error", response.message ?? "Failed to follow/unfollow user", backgroundColor:AppColors.redColor);
     }
     setLoader(false);
     notifyListeners();
@@ -56,7 +57,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   Future<void> getUserProfileData(String uid) async {
     final id = uid.trim();
     if (id.isEmpty) {
-      appSnackBar("Error", "User ID is empty", AppColors.redColor);
+      appSnackBar("Error", "User ID is empty", backgroundColor:AppColors.redColor);
       return;
     }
 
@@ -68,7 +69,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       _userProfileData = response.data;
       _dailyCredits = _userProfileData?.user.totalCredits ?? 0;
     } else {
-      appSnackBar("Error", response.message ?? "Failed to fetch user profile", AppColors.redColor);
+      appSnackBar("Error", response.message ?? "Failed to fetch user profile",backgroundColor: AppColors.redColor);
       debugPrint('❌ Profile failed for "$id": ${response.message}');
     }
     setLoader(false);
@@ -77,12 +78,11 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
 
   Future<void> getProfilesForUserIds(List<String> ids) async {
     for (final id in ids) {
-      if (_profilesCache.containsKey(id)) continue; // skip if already fetched
+      if (_profilesCache.containsKey(id)) continue;
       final response = await userFollowingRepo.getOtherUserProfileData(id);
       if (response.status == Status.completed) {
         _profilesCache[id] = response.data!;
       } else {
-        // debugPrint("❌ Failed to load profile for $id: ${response.message}");
       }
     }
     notifyListeners();
@@ -95,7 +95,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (response.status == Status.completed) {
       _otherUserProfileData = response.data;
     } else {
-      appSnackBar("Error", response.message ?? "Failed to fetch other user profile", AppColors.redColor);
+      appSnackBar("Error", response.message ?? "Failed to fetch other user profile", backgroundColor:AppColors.redColor);
     }
     setLoader(false);
     if (hasListeners) {
@@ -124,9 +124,9 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (response.status == Status.completed) {
       AppLocal.ins.clearUSerData(Hivekey.userId);
       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-      appSnackBar("Success", "Your account has been deleted successfully", AppColors.green);
+      appSnackBar("Success", "Your account has been deleted successfully", backgroundColor:AppColors.green);
     } else {
-      appSnackBar("Error", response.message ?? "Something went wrong, please try again", AppColors.redColor);
+      appSnackBar("Error", response.message ?? "Something went wrong, please try again", backgroundColor:AppColors.redColor);
     }
     setLoader(false);
     if (hasListeners) {
@@ -140,7 +140,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      appSnackBar("Error", "Could not launch $url", AppColors.redColor);
+      appSnackBar("Error", "Could not launch $url", backgroundColor:AppColors.redColor);
     }
   }
 }

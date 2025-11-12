@@ -115,7 +115,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Oops!",
         "You have reached your daily limit. Thank you!",
-        theme.colorScheme.primary,
+        backgroundColor:theme.colorScheme.primary,
       );
       return;
     }
@@ -124,7 +124,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "No Internet Connection",
         "Please check your network connection and try again",
-        theme.colorScheme.error,
+        backgroundColor:theme.colorScheme.error,
       );
       return;
     }
@@ -133,7 +133,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Warning!",
         "Your prompt contains sexual words.",
-        theme.colorScheme.error,
+        backgroundColor:theme.colorScheme.error,
       );
       return;
     }
@@ -146,7 +146,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Error",
         "Please select number of images",
-        theme.colorScheme.error,
+        backgroundColor:theme.colorScheme.error,
       );
       return;
     }
@@ -156,7 +156,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Error",
         "Please write a meaningful prompt",
-        theme.colorScheme.error,
+        backgroundColor:theme.colorScheme.error,
       );
       return;
     }
@@ -169,7 +169,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Insufficient Credits",
         "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} ${isTextToImage ? 'images' : 'variations'}",
-        theme.colorScheme.error,
+        backgroundColor:theme.colorScheme.error,
       );
       return;
     }
@@ -199,7 +199,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Error",
         "Failed to Generate Image",
-        theme.colorScheme.error,
+        backgroundColor:theme.colorScheme.error,
       );
     }
   }

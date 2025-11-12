@@ -3,7 +3,9 @@ import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_an
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/image_privacy_provider.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,13 +93,21 @@ class PictureOptionsWidget extends ConsumerWidget {
                     label: "Favorite",
                     color: Colors.red,
                     context: context,
-                    isLiked: ref.watch(favouriteProvider).usersFavourites != null
-                        ? ref.watch(favouriteProvider).usersFavourites!.favorites.any((img) => img.id == imageId)
-                        : false,
+                    isLiked:
+                        ref.watch(favouriteProvider).usersFavourites != null
+                            ? ref
+                                .watch(favouriteProvider)
+                                .usersFavourites!
+                                .favorites
+                                .any((img) => img.id == imageId)
+                            : false,
                     onTap: () async {
-                      AnalyticsService.instance.logButtonClick(buttonName: 'Favorite button event');
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'Favorite button event');
                       try {
-                        await ref.read(favouriteProvider).addToFavourite(currentUserId!, imageId!);
+                        await ref
+                            .read(favouriteProvider)
+                            .addToFavourite(currentUserId!, imageId!);
                       } catch (e) {}
                     },
                     isLikeButton: true,
@@ -110,9 +120,11 @@ class PictureOptionsWidget extends ConsumerWidget {
                     isLoading: ref.watch(favProvider).isDownloading == true,
                     onTap: () {
                       uint8ListImage != null
-                          ? ref.read(favProvider).downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
+                          ? ref.read(favProvider).downloadImage(imageUrl!,
+                              uint8ListObject: uint8ListImage)
                           : ref.read(favProvider).downloadImage(imageUrl!);
-                      AnalyticsService.instance.logButtonClick(buttonName: 'download button event');
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'download button event');
                     },
                   ),
                   _buildActionButton(
@@ -122,7 +134,8 @@ class PictureOptionsWidget extends ConsumerWidget {
                     context: context,
                     onTap: () async {
                       await Share.shareUri(Uri.parse(imageUrl!));
-                      AnalyticsService.instance.logButtonClick(buttonName: 'share button event');
+                      AnalyticsService.instance
+                          .logButtonClick(buttonName: 'share button event');
                     },
                   ),
                   if (isCurrentUser) ...[
@@ -140,12 +153,24 @@ class PictureOptionsWidget extends ConsumerWidget {
                           );
                           return;
                         }
-                        await DialogService.showPrivacyDialog(
+
+                        await Future.delayed(const Duration(milliseconds: 100));
+
+                        final result = await DialogService.showPrivacyDialog(
                           context: context,
                           imageId: imageId!,
                           userId: currentUserId!,
                           initialPrivacy: _privacyFromString(privacy),
                         );
+
+                        if (result != null) {
+                          ref.read(imagePrivacyProvider.notifier).refresh();
+                          ref
+                              .read(imagePrivacyProvider.notifier)
+                              .cachePrivacy(imageId!, result);
+                          appSnackBar('Success', 'Privacy settings updated',
+                              backgroundColor: AppColors.green);
+                        }
                       },
                     ),
                     _buildActionButton(
@@ -155,25 +180,25 @@ class PictureOptionsWidget extends ConsumerWidget {
                       isLoading: ref.watch(imageActionsProvider).isDeleting,
                       context: context,
                       onTap: () {
-                        AnalyticsService.instance.logButtonClick(buttonName: 'delete button event');
+                        AnalyticsService.instance
+                            .logButtonClick(buttonName: 'delete button event');
                         DialogService.confirmDelete(
                           context: context,
                           itemName: 'image',
                           onDelete: () async {
-                            final success = await ref.read(imageActionsProvider).deleteImage(imageId!);
+                            final success = await ref
+                                .read(imageActionsProvider)
+                                .deleteImage(imageId!);
                             if (success) {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) => const BottomNavBar()),
+                                MaterialPageRoute(
+                                    builder: (_) => const BottomNavBar()),
                               );
                             } else {
                               Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Failed to delete image"),
-                                  backgroundColor: Theme.of(context).colorScheme.error,
-                                ),
-                              );
+                              appSnackBar('Error', 'Failed to delete image',
+                                  backgroundColor: AppColors.red);
                             }
                           },
                         );
@@ -258,40 +283,44 @@ class PictureOptionsWidget extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(16),
                       child: isLoading
                           ? Center(
-                        child: LoadingAnimationWidget.threeArchedCircle(
-                          color: color,
-                          size: 24,
-                        ),
-                      )
+                              child: LoadingAnimationWidget.threeArchedCircle(
+                                color: color,
+                                size: 24,
+                              ),
+                            )
                           : isLikeButton
-                          ? Center(
-                        child: LikeButton(
-                          size: 28,
-                          isLiked: isLiked,
-                          likeBuilder: (bool isLiked) {
-                            return Icon(
-                              isLiked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                              color: isLiked ? color : color.withOpacity(0.6),
-                              size: 28,
-                            );
-                          },
-                          bubblesColor: BubblesColor(
-                            dotPrimaryColor: color,
-                            dotSecondaryColor: color,
-                          ),
-                          onTap: (isLiked) async {
-                            onTap();
-                            return !isLiked;
-                          },
-                        ),
-                      )
-                          : Center(
-                        child: Icon(
-                          icon,
-                          color: color,
-                          size: 28,
-                        ),
-                      ),
+                              ? Center(
+                                  child: LikeButton(
+                                    size: 28,
+                                    isLiked: isLiked,
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        isLiked
+                                            ? Icons.favorite_rounded
+                                            : Icons.favorite_border_rounded,
+                                        color: isLiked
+                                            ? color
+                                            : color.withOpacity(0.6),
+                                        size: 28,
+                                      );
+                                    },
+                                    bubblesColor: BubblesColor(
+                                      dotPrimaryColor: color,
+                                      dotSecondaryColor: color,
+                                    ),
+                                    onTap: (isLiked) async {
+                                      onTap();
+                                      return !isLiked;
+                                    },
+                                  ),
+                                )
+                              : Center(
+                                  child: Icon(
+                                    icon,
+                                    color: color,
+                                    size: 28,
+                                  ),
+                                ),
                     ),
                   ),
                 ),

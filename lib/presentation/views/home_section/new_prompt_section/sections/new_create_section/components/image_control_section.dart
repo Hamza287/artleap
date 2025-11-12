@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/utilities/photo_permission_helper.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
@@ -273,9 +274,7 @@ class ImageControlsRedesign extends ConsumerWidget {
 
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick image: ${e.toString()}')),
-        );
+        appSnackBar('Error', 'Failed to pick image: ${e.toString()}');
       }
     }
   }

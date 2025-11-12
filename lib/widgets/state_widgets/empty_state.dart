@@ -6,6 +6,8 @@ class EmptyState extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color? iconColor;
+  final VoidCallback? onAction;
+  final String? actionText;
 
   const EmptyState({
     super.key,
@@ -13,6 +15,8 @@ class EmptyState extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.iconColor,
+    this.onAction,
+    this.actionText,
   });
 
   @override
@@ -22,15 +26,9 @@ class EmptyState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.1,
-          vertical: size.height * 0.05,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.06,
-            vertical: size.height * 0.05,
-          ),
+          padding: EdgeInsets.all(size.width * 0.06),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: LinearGradient(
@@ -56,7 +54,6 @@ class EmptyState extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon inside glowing circle
               Container(
                 width: size.width * 0.22,
                 height: size.width * 0.22,
@@ -80,8 +77,6 @@ class EmptyState extends StatelessWidget {
                 ),
               ),
               SizedBox(height: size.height * 0.025),
-
-              // Title
               Text(
                 title,
                 textAlign: TextAlign.center,
@@ -91,8 +86,6 @@ class EmptyState extends StatelessWidget {
                 ),
               ),
               SizedBox(height: size.height * 0.012),
-
-              // Subtitle
               Text(
                 subtitle,
                 textAlign: TextAlign.center,
@@ -101,6 +94,30 @@ class EmptyState extends StatelessWidget {
                   fontSize: size.width * 0.038,
                 ),
               ),
+              if (onAction != null && actionText != null) ...[
+                SizedBox(height: size.height * 0.03),
+                ElevatedButton(
+                  onPressed: onAction,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: theme.colorScheme.onPrimary,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size.width * 0.06,
+                      vertical: size.height * 0.02,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: Text(
+                    actionText!,
+                    style: AppTextstyle.interMedium(
+                      fontSize: size.width * 0.038,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

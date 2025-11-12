@@ -5,7 +5,6 @@ export 'app_snack_bar.dart';
 
 export 'constants/app_api_paths.dart';
 export 'constants/app_assets.dart';
-export 'constants/app_colors.dart';
 export 'constants/app_constants.dart';
 export 'constants/app_textstyle.dart';
 export 'constants/lang_constants.dart';

@@ -1,18 +1,20 @@
 import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
+import 'package:Artleap.ai/providers/generate_image_provider.dart' as generate_provider;
+import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/picture_options_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/profile_name_follow_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_widgets/prompt_text_widget.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import '../../../../shared/constants/app_textstyle.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import 'full_image_viewer_screen.dart';
+import 'see_picture_widgets/picture_options_widget.dart';
+import 'see_picture_widgets/profile_name_follow_widget.dart';
+import 'see_picture_widgets/prompt_text_widget.dart';
 
 class SeePictureScreen extends ConsumerStatefulWidget {
   static const routeName = "see_picture_screen";
@@ -26,7 +28,6 @@ class SeePictureScreen extends ConsumerStatefulWidget {
 
 class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   @override
-  @override
   void initState() {
     super.initState();
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
@@ -35,13 +36,16 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
       final userProfile = ref.read(userProfileProvider).userProfileData;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
         DialogService.showPremiumUpgrade(
-          context: context,
-          featureName: 'Generate More Images',
+            context: context,
+            featureName: 'Generate More Images',
             onConfirm: (){
               Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
             }
         );
       }
+
+      final currentPrivacy = _privacyFromString(widget.params!.privacy);
+      ref.read(imagePrivacyProvider.notifier).cachePrivacy(widget.params!.imageId!, currentPrivacy);
     });
   }
 
@@ -52,6 +56,8 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     final isDark = theme.brightness == Brightness.dark;
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
+    final cachedPrivacy = ref.watch(imagePrivacyForImageProvider(widget.params!.imageId ?? ''));
+    final currentPrivacy = cachedPrivacy ?? _privacyFromString(widget.params!.privacy);
 
     return Scaffold(
       backgroundColor: isDark ? Color(0xFF0A0A0A) : Color(0xFFF8F9FA),
@@ -103,7 +109,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       index: widget.params!.index,
                       creatorEmail: widget.params!.creatorEmail,
                       otherUserId: widget.params!.userId,
-                      privacy: widget.params!.privacy,
+                      privacy: _privacyToString(currentPrivacy),
                       isPremiumUser: !isFreePlan,
                     ),
 
@@ -112,9 +118,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                       prompt: widget.params!.prompt,
                     ),
                     const SizedBox(height: 28),
-                    // PictureInfoWidget(
-                    //   styleName: widget.params!.modelName,
-                    // ),
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -160,7 +163,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
               ),
             ),
 
-            // Title
             Expanded(
               child: Center(
                 child: Text(
@@ -298,7 +300,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
                 ),
               ),
 
-              // View Fullscreen Hint
               Positioned(
                 bottom: 16,
                 right: 16,
@@ -337,5 +338,33 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         ),
       ),
     );
+  }
+
+  String _privacyToString(ImagePrivacy privacy) {
+    switch (privacy) {
+      case ImagePrivacy.public:
+        return 'public';
+      case ImagePrivacy.private:
+        return 'private';
+      case ImagePrivacy.followers:
+        return 'followers';
+      case ImagePrivacy.personal:
+        return 'personal';
+    }
+  }
+
+  ImagePrivacy _privacyFromString(String privacy) {
+    switch (privacy.toLowerCase()) {
+      case 'public':
+        return ImagePrivacy.public;
+      case 'private':
+        return ImagePrivacy.private;
+      case 'followers':
+        return ImagePrivacy.followers;
+      case 'personal':
+        return ImagePrivacy.personal;
+      default:
+        return ImagePrivacy.public;
+    }
   }
 }

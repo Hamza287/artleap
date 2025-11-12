@@ -1,3 +1,5 @@
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,9 +7,9 @@ import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/providers/notification_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
-import '../../../shared/notification_utils/empty_state.dart';
-import '../../../shared/notification_utils/error_state.dart';
-import '../../../shared/notification_utils/loading_indicator.dart';
+import '../../../widgets/state_widgets/empty_state.dart';
+import '../../../widgets/state_widgets/error_state.dart';
+import '../../../widgets/state_widgets/loading_state.dart';
 import 'notification_card.dart';
 import 'notification_details_screen.dart';
 
@@ -74,7 +76,10 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     final theme = Theme.of(context);
     final userId = UserData.ins.userId;
     if (userId == null) {
-      return const ErrorState(message: 'Please login to view notifications');
+      return ErrorState(
+        message: 'Please login to view notifications',
+        icon: Icons.login,
+      );
     }
 
     final notificationsAsync = ref.watch(notificationProvider(userId));
@@ -126,19 +131,21 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           _buildFilterTabs(currentFilter, theme),
           Expanded(
             child: notificationsAsync.when(
-              loading: () => const LoadingIndicator(),
+              loading: () => const LoadingState(
+                useShimmer: true,
+                shimmerItemCount: 5,
+              ),
               error: (error, stack) => ErrorState(
                 message: 'Failed to load notifications',
                 onRetry: _loadNotifications,
+                icon: Icons.notifications_none,
               ),
               data: (allNotifications) {
                 if (filteredNotifications.isEmpty) {
                   return EmptyState(
-                    icon: Icons.filter_alt_outlined,
-                    title: 'No ${currentFilter.displayName} Notifications',
-                    subtitle: currentFilter == NotificationFilter.all
-                        ? 'When we have something to show, it will appear here'
-                        : 'No ${currentFilter.displayName.toLowerCase()} notifications found',
+                    icon: _getEmptyStateIcon(currentFilter),
+                    title: _getEmptyStateTitle(currentFilter),
+                    subtitle: _getEmptyStateSubtitle(currentFilter),
                     iconColor: theme.colorScheme.primary,
                   );
                 }
@@ -213,6 +220,51 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     );
   }
 
+  IconData _getEmptyStateIcon(NotificationFilter filter) {
+    switch (filter) {
+      case NotificationFilter.like:
+        return Icons.favorite_border;
+      case NotificationFilter.comment:
+        return Icons.comment_outlined;
+      case NotificationFilter.follow:
+        return Icons.person_add_outlined;
+      case NotificationFilter.alert:
+        return Icons.notifications_none;
+      default:
+        return Icons.notifications_active_outlined;
+    }
+  }
+
+  String _getEmptyStateTitle(NotificationFilter filter) {
+    switch (filter) {
+      case NotificationFilter.like:
+        return 'No Like Notifications';
+      case NotificationFilter.comment:
+        return 'No Comment Notifications';
+      case NotificationFilter.follow:
+        return 'No Follow Notifications';
+      case NotificationFilter.alert:
+        return 'No Alert Notifications';
+      default:
+        return 'No Notifications Yet';
+    }
+  }
+
+  String _getEmptyStateSubtitle(NotificationFilter filter) {
+    switch (filter) {
+      case NotificationFilter.like:
+        return 'When someone likes your content, it will appear here';
+      case NotificationFilter.comment:
+        return 'Comments on your posts will show up here';
+      case NotificationFilter.follow:
+        return 'New followers will be displayed here';
+      case NotificationFilter.alert:
+        return 'Important alerts and updates will appear here';
+      default:
+        return 'When you receive notifications, they will appear here';
+    }
+  }
+
   void _debugPrintNotificationTypes(AsyncValue<List<AppNotification>> notificationsAsync) {
     notificationsAsync.whenData((notifications) {
       final dataTypes = notifications
@@ -265,12 +317,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               .deleteNotification(notificationId, UserData.ins.userId!);
         } catch (e) {
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Failed to delete notification: ${e.toString()}'),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
+            appSnackBar("Error", 'Failed to delete notification: ${e.toString()}', backgroundColor:AppColors.green);
           }
         }
       },

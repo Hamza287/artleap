@@ -1,7 +1,8 @@
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
+import 'package:Artleap.ai/widgets/state_widgets/error_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
-import '../../shared/notification_utils/error_handler.dart';
+import 'package:flutter/material.dart';
 import 'user_preferences_repository.dart';
 
 class UserPreferencesService {
@@ -24,11 +25,11 @@ class UserPreferencesService {
       return true;
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return false;
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return false;
     }
   }
@@ -49,11 +50,11 @@ class UserPreferencesService {
       return true;
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return false;
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return false;
     }
   }
@@ -66,11 +67,11 @@ class UserPreferencesService {
       return user;
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return null;
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return null;
     }
   }
@@ -83,11 +84,11 @@ class UserPreferencesService {
       return status;
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return null;
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('User Preferences Error: $error');
       return null;
     }
   }

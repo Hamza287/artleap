@@ -60,7 +60,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _purchaseHandler.handlePurchaseUpdates(purchaseDetailsList);
     }, onError: (error) {
-      appSnackBar('Error', 'Failed to process purchase stream', Colors.red);
+      appSnackBar('Error', 'Failed to process purchase stream',backgroundColor: Colors.red);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

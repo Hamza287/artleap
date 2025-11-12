@@ -1,5 +1,7 @@
 import 'package:Artleap.ai/domain/user_preferences/user_preferences_service.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,23 +38,13 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
         }
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to accept privacy policy. Please try again.'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          appSnackBar('Error', 'Failed to accept privacy policy. Please try again.',backgroundColor: AppColors.red);
         }
       }
     } catch (e) {
       print(e);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An error occurred. Please try again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        appSnackBar('Error', 'An error occurred. Please try again.',backgroundColor: AppColors.red);
       }
     } finally {
       if (context.mounted) {

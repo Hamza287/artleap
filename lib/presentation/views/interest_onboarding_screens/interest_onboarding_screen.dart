@@ -1,7 +1,9 @@
 import 'package:Artleap.ai/domain/user_preferences/user_preferences_service.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/providers/interest_onboarding_provider.dart';
+import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/shared/utilities/progress_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
@@ -21,12 +23,7 @@ class InterestOnboardingScreen extends ConsumerWidget {
 
     if (userId == null || userId.isEmpty) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('User not found. Please login again.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        appSnackBar('Error', 'User not found. Please login again.',backgroundColor: AppColors.red);
       }
       return;
     }
@@ -50,12 +47,7 @@ class InterestOnboardingScreen extends ConsumerWidget {
       );
 
       if (!success && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to save interests.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        appSnackBar('Error', 'Failed to save interests.',backgroundColor: AppColors.red);
       }
     }
   }

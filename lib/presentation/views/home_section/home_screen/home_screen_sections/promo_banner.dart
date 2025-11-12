@@ -1,6 +1,6 @@
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../shared/constants/app_colors.dart';
 
 class PromoBanner extends StatelessWidget {
   const PromoBanner({super.key});

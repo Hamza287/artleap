@@ -1,12 +1,12 @@
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
 import 'package:Artleap.ai/shared/constants/app_api_paths.dart';
+import 'package:Artleap.ai/widgets/state_widgets/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api_services/dio_core.dart';
 import '../../providers/dio_core_provider.dart';
 import '../../shared/app_persistance/app_data.dart';
 import '../../shared/constants/app_constants.dart';
-import '../../shared/notification_utils/error_handler.dart';
 
 class UserPreferencesRepository {
   final DioCore dioCore;

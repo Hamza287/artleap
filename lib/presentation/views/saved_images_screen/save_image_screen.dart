@@ -1,12 +1,12 @@
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/state_widgets/empty_state.dart';
+import 'package:Artleap.ai/widgets/state_widgets/error_state.dart';
+import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
-import 'components/empty_saved_state.dart';
-import 'components/loading_state.dart';
 import 'components/saved_image_grid.dart';
 import 'components/saved_images_header.dart';
-import 'components/savedimage_error_state.dart';
 
 class SavedImagesScreen extends ConsumerStatefulWidget {
   static const String routeName = 'saved-images-screens';
@@ -39,9 +39,9 @@ class _SavedImagesScreenState extends ConsumerState<SavedImagesScreen> {
   void _unsaveImage(String imageId) async {
     try {
       await ref.read(saveProvider.notifier).toggleSave(imageId);
-      appSnackBar('Removed', 'Removed from saved', Colors.green);
+      appSnackBar('Removed', 'Removed from saved', backgroundColor:Colors.green);
     } catch (e) {
-      appSnackBar('Error', 'Failed to Remove Image', Colors.redAccent);
+      appSnackBar('Error', 'Failed to Remove Image', backgroundColor:Colors.redAccent);
     }
   }
 
@@ -75,16 +75,16 @@ class _SavedImagesScreenState extends ConsumerState<SavedImagesScreen> {
                     Text(
                       'Your Collection',
                       style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                      Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'All the images you\'ve saved for later',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
-                          ),
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      ),
                     ),
                     const SizedBox(height: 24),
                   ],
@@ -99,8 +99,15 @@ class _SavedImagesScreenState extends ConsumerState<SavedImagesScreen> {
                     .toList();
 
                 if (savedImageIds.isEmpty) {
-                  return const SliverFillRemaining(
-                    child: EmptySavedState(),
+                  return SliverFillRemaining(
+                    child: EmptyState(
+                      icon: Icons.bookmark_border_rounded,
+                      title: 'No Saved Images Yet',
+                      subtitle: 'Start building your collection by saving your favorite AI-generated artworks. They\'ll appear here for easy access.',
+                      iconColor: theme.colorScheme.primary,
+                      actionText: 'Explore Artworks',
+                      onAction: () => Navigator.pop(context),
+                    ),
                   );
                 }
 
@@ -109,14 +116,16 @@ class _SavedImagesScreenState extends ConsumerState<SavedImagesScreen> {
                   onUnsave: _unsaveImage,
                 );
               },
-              loading: () => const SliverFillRemaining(
-                child: SavedImagesLoadingState(),
+              loading: () => SliverFillRemaining(
+                child: LoadingState(
+                  message: 'Loading your collection...',
+                ),
               ),
               error: (error, stack) => SliverFillRemaining(
-                child: SavedImagesErrorState(
-                  error: error,
-                  onRetry: () =>
-                      ref.read(saveProvider.notifier).refreshSavedStatus(),
+                child: ErrorState(
+                  message: 'We couldn\'t load your saved images. Please try again.',
+                  onRetry: () => ref.read(saveProvider.notifier).refreshSavedStatus(),
+                  icon: Icons.error_outline_rounded,
                 ),
               ),
             ),

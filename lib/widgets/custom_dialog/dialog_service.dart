@@ -30,11 +30,9 @@ class DialogService {
     Widget? customContent,
     Map<String, dynamic>? extraData,
   }) {
-    final theme = Theme.of(context);
-
     return showDialog<T>(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: type != DialogType.privacy,
       builder: (context) => BaseDialog(
         type: type,
         title: title,
@@ -126,14 +124,26 @@ class DialogService {
     required String userId,
     required ImagePrivacy initialPrivacy,
   }) {
-    return showAppDialog<ImagePrivacy>(
+    return showDialog<ImagePrivacy>(
       context: context,
-      type: DialogType.privacy,
-      title: 'Privacy Settings',
-      customContent: PrivacySettingsContent(
-        imageId: imageId,
-        userId: userId,
-        initialPrivacy: initialPrivacy,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          'Privacy Settings',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        content: PrivacySettingsContent(
+          imageId: imageId,
+          userId: userId,
+          initialPrivacy: initialPrivacy,
+        ),
       ),
     );
   }

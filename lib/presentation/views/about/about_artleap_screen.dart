@@ -4,7 +4,6 @@ import 'sections/about_artleap_contact.dart';
 import 'sections/about_artleap_footer.dart';
 import 'sections/about_artleap_hero.dart';
 import 'sections/about_artleap_mission.dart';
-import 'sections/about_artleap_team.dart';
 import 'sections/about_artleap_technology.dart';
 
 class AboutArtleapScreen extends StatelessWidget {
@@ -23,7 +22,6 @@ class AboutArtleapScreen extends StatelessWidget {
             children: [
               const AboutArtleapHeroSection(),
               const AboutArtleapMissionSection(),
-              // const AboutArtleapTeamSection(),
               const AboutArtleapTechnologySection(),
               const AboutArtleapContactSection(),
               const AboutArtleapFooter(),
