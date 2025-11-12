@@ -1,17 +1,17 @@
 import 'dart:ui';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
 import '../home_section/favourites_screen/favourites_screen.dart';
-import 'dialog_box/delete_account_dialog.dart';
 import 'drawer_components/separator_widget.dart';
 import 'drawer_components/glass_circle_button.dart';
 import 'drawer_components/profile_menu_item.dart';
 import 'drawer_components/theme_selector_menu_item.dart';
 import '../global_widgets/upgrade_plan_widget.dart';
-import 'dialog_box/logout_confirmation_dialog.dart';
 import 'social_media_bottom_sheet.dart';
 import '../../../shared/theme/theme_provider.dart';
 
@@ -172,7 +172,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                         ProfileMenuItem(
                           icon: AppAssets.currentPlan,
                           title: "You don't have an active subscription",
-                          onTap: ()=>Navigator.of(context).pushNamed("choose_plan_screen"),
+                          onTap: ()=> Navigator.of(context).pushNamed("choose_plan_screen"),
                           color: theme.colorScheme.error,
                           theme: theme,
                         ) : ProfileMenuItem(
@@ -260,9 +260,16 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                             icon: AppAssets.logouticon,
                             title: "Logout",
                             color: theme.colorScheme.error,
-                            onTap: () => showDialog(
+                            onTap: () => DialogService.showAppDialog(
                               context: context,
-                              builder: (context) => const LogoutConfirmationDialog(),
+                              type: DialogType.logout,
+                              title: 'Logout Account',
+                              message: 'You\'re about to logout from your account. Are you sure you want to continue?',
+                              confirmText: 'Logout',
+                              onConfirm: () {
+                                AppLocal.ins.clearUSerData(Hivekey.userId);
+                                Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+                              },
                             ),
                             theme: theme,
                           ),
@@ -270,9 +277,15 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
                             icon: AppAssets.deleteicon,
                             title: "Delete Account",
                             color: theme.colorScheme.error.withOpacity(0.9),
-                            onTap: () => showDialog(
+                            onTap: () => DialogService.showAppDialog(
                               context: context,
-                              builder: (context) => const DeleteAccountDialog(),
+                              type: DialogType.confirmDelete,
+                              title: 'Delete Account',
+                              message: 'Are you sure you want to permanently delete your account? This action cannot be undone and all your data will be lost.',
+                              confirmText: 'Delete Account',
+                              onConfirm: () {
+                                ref.read(userProfileProvider).deActivateAccount(UserData.ins.userId!);
+                              },
                             ),
                             theme: theme,
                           ),

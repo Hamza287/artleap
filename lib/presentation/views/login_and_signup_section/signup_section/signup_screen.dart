@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/widgets/scaffold_background.dart';
+import 'package:Artleap.ai/widgets/common/scaffold_background.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen_widgets/go_back_widget.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen_widgets/signup_textfields_section.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';

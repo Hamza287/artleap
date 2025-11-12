@@ -1,5 +1,5 @@
 import 'package:Artleap.ai/domain/community/providers/comment_provider.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_coment_dialog.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
@@ -92,12 +92,10 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
   }
 
   void _showDeleteDialog(String commentId, String commentText) {
-    showDialog(
+    DialogService.confirmDelete(
       context: context,
-      builder: (context) => DeleteCommentDialog(
-        commentId: commentId,
-        onDelete: () => _deleteComment(commentId),
-      ),
+      itemName: 'comment',
+      onDelete: () => _deleteComment(commentId),
     );
   }
 

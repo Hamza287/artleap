@@ -91,7 +91,6 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
   Widget _buildCurrentScreen(PromptNavItem navItem) {
     switch (navItem) {
       case PromptNavItem.create:
-        // return const PromptCreateScreen();
         return const PromptCreateScreenRedesign();
       case PromptNavItem.edit:
         return const PromptEditScreen();

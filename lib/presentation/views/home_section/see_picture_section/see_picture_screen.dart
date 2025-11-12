@@ -1,5 +1,6 @@
-import 'package:Artleap.ai/presentation/views/common/dialog_box/custom_credit_dialog.dart';
+import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,17 +26,25 @@ class SeePictureScreen extends ConsumerStatefulWidget {
 
 class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   @override
+  @override
   void initState() {
     super.initState();
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
-    final userProfile = ref.read(userProfileProvider).userProfileData;
-    if (userProfile != null && userProfile.user.totalCredits == 0) {
-      showDialog(
-        context: context,
-        builder: (context) => const CustomCreditDialog(),
-      );
-    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProfile = ref.read(userProfileProvider).userProfileData;
+      if (userProfile != null && userProfile.user.totalCredits == 0) {
+        DialogService.showPremiumUpgrade(
+          context: context,
+          featureName: 'Generate More Images',
+            onConfirm: (){
+              Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
+            }
+        );
+      }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {

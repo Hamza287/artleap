@@ -1,4 +1,4 @@
-import 'package:Artleap.ai/presentation/views/common/dialog_box/notification_delele_dialog.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
@@ -42,7 +42,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     }
   }
 
-  // Fixed filtering logic to check nested data for type
   List<AppNotification> _filterNotifications(
       List<AppNotification> notifications,
       NotificationFilter filter
@@ -50,11 +49,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     if (filter == NotificationFilter.all) return notifications;
 
     return notifications.where((notification) {
-      // Get type from nested data or fallback to main type
       final String? dataType = notification.data?['type']?.toString();
       final String mainType = notification.type;
 
-      // Use data type if available, otherwise use main type
       final String effectiveType = dataType ?? mainType;
 
       switch (filter) {
@@ -259,25 +256,24 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   }
 
   Future<void> _handleDelete(BuildContext context, WidgetRef ref, String notificationId) async {
-    final shouldDelete = await showDeleteConfirmationDialog(
-      context,
-      notificationId: notificationId,
-      userId: UserData.ins.userId!,
-    );
-    if (shouldDelete ?? false) {
-      try {
-        await ref.read(notificationProvider(UserData.ins.userId!).notifier)
-            .deleteNotification(notificationId, UserData.ins.userId!);
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to delete notification: ${e.toString()}'),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
+    DialogService.confirmDelete(
+      context: context,
+      itemName: 'notification',
+      onDelete: () async {
+        try {
+          await ref.read(notificationProvider(UserData.ins.userId!).notifier)
+              .deleteNotification(notificationId, UserData.ins.userId!);
+        } catch (e) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to delete notification: ${e.toString()}'),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
         }
-      }
-    }
+      },
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
-import '../shared/constants/app_assets.dart';
+import '../../shared/constants/app_assets.dart';
 
 class RegistrationBackgroundWidget extends ConsumerWidget {
   final Widget widget;

@@ -1,11 +1,10 @@
 import 'dart:typed_data';
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_alert_dialog.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/set_privacy_dialog.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:like_button/like_button.dart';
@@ -16,24 +15,23 @@ import 'package:Artleap.ai/providers/image_actions_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:share_plus/share_plus.dart';
 
-// ignore: must_be_immutable
 class PictureOptionsWidget extends ConsumerWidget {
-  String? imageUrl;
-  String? prompt;
-  String? modelName;
-  String? creatorName;
-  String? creatorEmail;
-  Uint8List? uint8ListImage;
-  bool? isGeneratedScreenNavigation;
-  bool? isRecentGeneration;
-  String? currentUserId;
-  String? otherUserId;
-  int? index;
-  String? imageId;
-  String privacy;
+  final String? imageUrl;
+  final String? prompt;
+  final String? modelName;
+  final String? creatorName;
+  final String? creatorEmail;
+  final Uint8List? uint8ListImage;
+  final bool? isGeneratedScreenNavigation;
+  final bool? isRecentGeneration;
+  final String? currentUserId;
+  final String? otherUserId;
+  final int? index;
+  final String? imageId;
+  final String privacy;
   final bool isPremiumUser;
 
-  PictureOptionsWidget({
+  const PictureOptionsWidget({
     super.key,
     this.imageUrl,
     this.prompt,
@@ -83,9 +81,6 @@ class PictureOptionsWidget extends ConsumerWidget {
           const SizedBox(height: 16),
           LayoutBuilder(
             builder: (context, constraints) {
-              final buttonWidth = 72.0;
-              final availableWidth = constraints.maxWidth;
-              (availableWidth / buttonWidth).floor();
               return Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 12,
@@ -97,19 +92,12 @@ class PictureOptionsWidget extends ConsumerWidget {
                     color: Colors.red,
                     context: context,
                     isLiked: ref.watch(favouriteProvider).usersFavourites != null
-                        ? ref
-                        .watch(favouriteProvider)
-                        .usersFavourites!
-                        .favorites
-                        .any((img) => img.id == imageId)
+                        ? ref.watch(favouriteProvider).usersFavourites!.favorites.any((img) => img.id == imageId)
                         : false,
                     onTap: () async {
-                      AnalyticsService.instance
-                          .logButtonClick(buttonName: 'Favorite button event');
+                      AnalyticsService.instance.logButtonClick(buttonName: 'Favorite button event');
                       try {
-                        await ref
-                            .read(favouriteProvider)
-                            .addToFavourite(currentUserId!, imageId!);
+                        await ref.read(favouriteProvider).addToFavourite(currentUserId!, imageId!);
                       } catch (e) {}
                     },
                     isLikeButton: true,
@@ -122,11 +110,9 @@ class PictureOptionsWidget extends ConsumerWidget {
                     isLoading: ref.watch(favProvider).isDownloading == true,
                     onTap: () {
                       uint8ListImage != null
-                          ? ref.read(favProvider).downloadImage(imageUrl!,
-                          uint8ListObject: uint8ListImage)
+                          ? ref.read(favProvider).downloadImage(imageUrl!, uint8ListObject: uint8ListImage)
                           : ref.read(favProvider).downloadImage(imageUrl!);
-                      AnalyticsService.instance
-                          .logButtonClick(buttonName: 'download button event');
+                      AnalyticsService.instance.logButtonClick(buttonName: 'download button event');
                     },
                   ),
                   _buildActionButton(
@@ -136,84 +122,105 @@ class PictureOptionsWidget extends ConsumerWidget {
                     context: context,
                     onTap: () async {
                       await Share.shareUri(Uri.parse(imageUrl!));
-                      AnalyticsService.instance
-                          .logButtonClick(buttonName: 'share button event');
+                      AnalyticsService.instance.logButtonClick(buttonName: 'share button event');
                     },
                   ),
-                  if (isCurrentUser)
-                    ...[
-                      _buildActionButton(
-                        icon: Icons.lock_rounded,
-                        label: "Privacy",
-                        color: Colors.purple,
-                        context: context,
-                        showPremiumIcon: !isPremiumUser,
-                        onTap: () async {
-                          if (!isPremiumUser) {
-                            PremiumUpgradeDialog.show(
-                              context: context,
-                              featureName: "Privacy Settings",
-                              customDescription: "Change image privacy settings to control who can see your images",
-                            );
-                            return;
-                          }
-
-                          await showDialog<ImagePrivacy>(
+                  if (isCurrentUser) ...[
+                    _buildActionButton(
+                      icon: Icons.lock_rounded,
+                      label: "Privacy",
+                      color: Colors.purple,
+                      context: context,
+                      showPremiumIcon: !isPremiumUser,
+                      onTap: () async {
+                        if (!isPremiumUser) {
+                          DialogService.showPremiumUpgrade(
                             context: context,
-                            builder: (context) => SetPrivacyDialog(
-                              imageId: imageId!,
-                              userId: currentUserId!,
-                              initialPrivacyString: privacy,
-                            ),
+                            featureName: "Privacy Settings",
                           );
-                        },
-                      ),
-                      _buildActionButton(
-                        icon: Icons.delete_rounded,
-                        label: "Delete",
-                        color: Colors.red,
-                        isLoading: ref.watch(imageActionsProvider).isDeleting,
-                        context: context,
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return DeleteAlertDialog(
-                                imageId: imageId,
+                          return;
+                        }
+                        await DialogService.showPrivacyDialog(
+                          context: context,
+                          imageId: imageId!,
+                          userId: currentUserId!,
+                          initialPrivacy: _privacyFromString(privacy),
+                        );
+                      },
+                    ),
+                    _buildActionButton(
+                      icon: Icons.delete_rounded,
+                      label: "Delete",
+                      color: Colors.red,
+                      isLoading: ref.watch(imageActionsProvider).isDeleting,
+                      context: context,
+                      onTap: () {
+                        AnalyticsService.instance.logButtonClick(buttonName: 'delete button event');
+                        DialogService.confirmDelete(
+                          context: context,
+                          itemName: 'image',
+                          onDelete: () async {
+                            final success = await ref.read(imageActionsProvider).deleteImage(imageId!);
+                            if (success) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => const BottomNavBar()),
                               );
-                            },
-                          );
-                          AnalyticsService.instance
-                              .logButtonClick(buttonName: 'delete button event');
-                        },
-                      ),
-                    ],
-                      _buildActionButton(
-                        icon: Icons.flag_rounded,
-                        context: context,
-                        label: "Report",
-                        color: Colors.orange,
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) {
-                              return ReportImageBottomSheet(
-                                imageId: imageId,
-                                creatorId: otherUserId,
+                            } else {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Failed to delete image"),
+                                  backgroundColor: Theme.of(context).colorScheme.error,
+                                ),
                               );
-                            },
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                  _buildActionButton(
+                    icon: Icons.flag_rounded,
+                    context: context,
+                    label: "Report",
+                    color: Colors.orange,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) {
+                          return ReportImageBottomSheet(
+                            imageId: imageId,
+                            creatorId: otherUserId,
                           );
                         },
-                      ),
-                    ]
+                      );
+                    },
+                  ),
+                ],
               );
             },
           ),
         ],
       ),
     );
+  }
+
+  ImagePrivacy _privacyFromString(String privacy) {
+    switch (privacy.toLowerCase()) {
+      case 'public':
+        return ImagePrivacy.public;
+      case 'private':
+        return ImagePrivacy.private;
+      case 'followers':
+        return ImagePrivacy.followers;
+      case 'personal':
+        return ImagePrivacy.personal;
+      default:
+        return ImagePrivacy.public;
+    }
   }
 
   Widget _buildActionButton({
@@ -263,12 +270,8 @@ class PictureOptionsWidget extends ConsumerWidget {
                           isLiked: isLiked,
                           likeBuilder: (bool isLiked) {
                             return Icon(
-                              isLiked
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_rounded,
-                              color: isLiked
-                                  ? color
-                                  : color.withOpacity(0.6),
+                              isLiked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                              color: isLiked ? color : color.withOpacity(0.6),
                               size: 28,
                             );
                           },
@@ -292,7 +295,6 @@ class PictureOptionsWidget extends ConsumerWidget {
                     ),
                   ),
                 ),
-                // Premium icon overlay
                 if (showPremiumIcon)
                   Positioned(
                     top: -4,

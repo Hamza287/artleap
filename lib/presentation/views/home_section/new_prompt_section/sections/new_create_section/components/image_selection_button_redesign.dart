@@ -1,4 +1,4 @@
-import 'package:Artleap.ai/widgets/custom_pro_icon_widget.dart';
+import 'package:Artleap.ai/widgets/common/custom_pro_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 

@@ -1,5 +1,4 @@
-import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_alert_dialog.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/set_privacy_dialog.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart'
     hide ImagePrivacy;
@@ -7,8 +6,8 @@ import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
 import 'package:Artleap.ai/providers/image_actions_provider.dart';
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:like_button/like_button.dart';
@@ -108,7 +107,6 @@ class ActionButtonsRow extends ConsumerWidget {
 
     if (isCurrentUser) {
       buttons.addAll([
-        // _buildPrivacyButton(context, ref, imageId, privacy, theme),
         _buildDeleteButton(context, ref, imageId, theme),
       ]);
     }
@@ -204,31 +202,6 @@ class ActionButtonsRow extends ConsumerWidget {
     );
   }
 
-  Widget _buildPrivacyButton(BuildContext context, WidgetRef ref,
-      String imageId, String privacy, ThemeData theme) {
-    return _buildActionButton(
-      icon: Icons.lock_rounded,
-      label: 'Privacy',
-      color: Colors.purple,
-      theme: theme,
-      onTap: () async {
-        AnalyticsService.instance
-            .logButtonClick(buttonName: 'privacy button event');
-        final currentUserId = UserData.ins.userId ?? '';
-        if (currentUserId.isNotEmpty) {
-          await showDialog<ImagePrivacy>(
-            context: context,
-            builder: (context) => SetPrivacyDialog(
-              imageId: imageId,
-              userId: currentUserId,
-              initialPrivacyString: privacy,
-            ),
-          );
-        }
-      },
-    );
-  }
-
   Widget _buildDeleteButton(
       BuildContext context, WidgetRef ref, String imageId, ThemeData theme) {
     final isLoading = ref.watch(imageActionsProvider).isDeleting;
@@ -242,16 +215,34 @@ class ActionButtonsRow extends ConsumerWidget {
       onTap: () {
         AnalyticsService.instance
             .logButtonClick(buttonName: 'delete button event');
-        showDialog(
+        DialogService.confirmDelete(
           context: context,
-          builder: (context) => DeleteAlertDialog(imageId: imageId),
+          itemName: 'image',
+          onDelete: () async {
+            final success =
+                await ref.read(imageActionsProvider).deleteImage(imageId);
+            if (success) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const BottomNavBar()),
+              );
+            } else {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Failed to delete image"),
+                  backgroundColor: theme.colorScheme.error,
+                ),
+              );
+            }
+          },
         );
       },
     );
   }
 
-  Widget _buildReportButton(BuildContext context, WidgetRef ref, String imageId, ThemeData theme) {
-
+  Widget _buildReportButton(
+      BuildContext context, WidgetRef ref, String imageId, ThemeData theme) {
     return _buildActionButton(
       icon: Icons.flag_rounded,
       label: 'Report',
@@ -272,8 +263,6 @@ class ActionButtonsRow extends ConsumerWidget {
       },
     );
   }
-  
-  
 
   Widget _buildActionButton({
     required IconData icon,

@@ -1,8 +1,7 @@
 import 'dart:io';
-
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/custom_credit_dialog.dart';
 import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
+import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
@@ -11,6 +10,7 @@ import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,9 +56,12 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
       final userProfile = ref.read(userProfileProvider).userProfileData;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
-        showDialog(
+        DialogService.showPremiumUpgrade(
           context: context,
-          builder: (context) => const CustomCreditDialog(),
+          featureName: 'Generate More Images',
+          onConfirm: (){
+            Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
+        }
         );
       }
     });
