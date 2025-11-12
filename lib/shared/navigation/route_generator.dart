@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/presentation/views/common/tutorial_screen.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/presentation/views/my_posts/my_posts_screen.dart';
 import 'package:Artleap.ai/presentation/views/personal_information/personal_info_screen.dart';
 import 'package:Artleap.ai/presentation/views/saved_images_screen/save_image_screen.dart';
@@ -10,7 +11,6 @@ import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_user_profile_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
 import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:Artleap.ai/presentation/views/onboarding_section/onboarding_screen.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import '../../domain/subscriptions/subscription_model.dart';
 import '../../presentation/views/Notifications/notification_details_screen.dart';
@@ -20,7 +20,6 @@ import '../../presentation/views/common/privacy_policy_accept.dart';
 import '../../presentation/views/home_section/favourites_screen/favourites_screen.dart';
 import '../../presentation/views/home_section/new_prompt_section/result/result_prompt_screen.dart';
 import '../../presentation/views/interest_onboarding_screens/interest_onboarding_screen.dart';
-import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
 import '../../presentation/views/policies_screens/help_screen.dart';
 import '../../presentation/views/policies_screens/privacy_policy_screen.dart';
@@ -70,8 +69,6 @@ class RouteGenerator {
         final args = settings.arguments as SubscriptionPlanModel;
         return MaterialPageRoute(builder: (_) => ApplePaymentScreen(plan: args));
 
-      case OnboardingScreen.routeName:
-        return route(const OnboardingScreen());
       case BottomNavBar.routeName:
         return route(const BottomNavBar());
       case ResultScreenRedesign.routeName:

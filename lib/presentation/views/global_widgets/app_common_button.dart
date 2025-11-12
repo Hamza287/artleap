@@ -18,19 +18,19 @@ class CommonButton extends StatelessWidget {
 
   const CommonButton(
       {super.key,
-      this.title,
-      this.onpress,
-      this.color,
-      this.gradient,
-      this.borderColor,
-      this.width,
-      this.height,
-      this.buttonTextColor,
-      this.icon,
-      this.imageicon,
-      this.titlefontsize,
-      this.iconsize,
-      this.iconColor});
+        this.title,
+        this.onpress,
+        this.color,
+        this.gradient,
+        this.borderColor,
+        this.width,
+        this.height,
+        this.buttonTextColor,
+        this.icon,
+        this.imageicon,
+        this.titlefontsize,
+        this.iconsize,
+        this.iconColor});
 
   @override
   Widget build(BuildContext context) {

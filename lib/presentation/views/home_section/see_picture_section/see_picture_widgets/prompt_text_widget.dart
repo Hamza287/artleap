@@ -20,7 +20,10 @@ class PromptTextWidget extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primaryContainer
+                ],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
@@ -28,7 +31,6 @@ class PromptTextWidget extends ConsumerWidget {
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
-
               boxShadow: [
                 BoxShadow(
                   color: theme.colorScheme.shadow.withOpacity(0.1),
@@ -42,7 +44,8 @@ class PromptTextWidget extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.text_fields_rounded, color: theme.colorScheme.onPrimary, size: 20),
+                    Icon(Icons.text_fields_rounded,
+                        color: theme.colorScheme.onPrimary, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       "AI Prompt Details",
@@ -60,13 +63,10 @@ class PromptTextWidget extends ConsumerWidget {
                   ),
                   child: IconButton(
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: prompt!)).whenComplete(
-                            () {
-                          appSnackBar("Copied", "Prompt copied to clipboard", theme.colorScheme.primary);
-                        },
-                      );
+                      Clipboard.setData(ClipboardData(text: prompt!));
                     },
-                    icon: Icon(Icons.copy_rounded, color: theme.colorScheme.onPrimary, size: 20),
+                    icon: Icon(Icons.copy_rounded,
+                        color: theme.colorScheme.onPrimary, size: 20),
                     style: IconButton.styleFrom(
                       padding: EdgeInsets.zero,
                       visualDensity: VisualDensity.compact,
@@ -83,7 +83,6 @@ class PromptTextWidget extends ConsumerWidget {
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
-
               boxShadow: [
                 BoxShadow(
                   color: theme.colorScheme.shadow.withOpacity(0.05),
@@ -91,13 +90,15 @@ class PromptTextWidget extends ConsumerWidget {
                   offset: const Offset(0, 8),
                 ),
               ],
-              border: Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
+              border:
+                  Border.all(color: theme.colorScheme.outline.withOpacity(0.1)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  constraints: const BoxConstraints(minHeight: 150, maxHeight: 250),
+                  constraints:
+                      const BoxConstraints(minHeight: 150, maxHeight: 250),
                   padding: const EdgeInsets.all(20),
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),

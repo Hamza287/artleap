@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import '../../presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import '../../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../../shared/constants/hive_keys.dart';
 import 'package:google_sign_in/google_sign_in.dart';

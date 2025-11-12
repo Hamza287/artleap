@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/interest_onboarding_controller.dart';
+import '../../providers/interest_onboarding_provider.dart';
 
 class ProgressBar extends ConsumerWidget {
   const ProgressBar({super.key});

@@ -10,10 +10,10 @@ class CustomErrorWidget extends StatelessWidget {
   final VoidCallback? onTap;
   const CustomErrorWidget(
       {super.key,
-      required this.isShow,
-      this.message,
-      required this.authResultState,
-      this.onTap});
+        required this.isShow,
+        this.message,
+        required this.authResultState,
+        this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,24 +21,24 @@ class CustomErrorWidget extends StatelessWidget {
         height: 40,
         child: isShow
             ? Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    message ?? '',
-                    style: AppTextstyle.interRegular(color: AppColors.redColor),
-                    maxLines: 2,
-                  ),
-                  if (authResultState == AuthResultStatus.emailNotVerified)
-                    InkWell(
-                        onTap: () => onTap!(),
-                        child: Text(
-                          " Resend Email",
-                          style:
-                              AppTextstyle.interRegular(color: AppColors.green),
-                        ))
-                ],
-              )
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              message ?? '',
+              style: AppTextstyle.interRegular(color: AppColors.redColor),
+              maxLines: 2,
+            ),
+            if (authResultState == AuthResultStatus.emailNotVerified)
+              InkWell(
+                  onTap: () => onTap!(),
+                  child: Text(
+                    " Resend Email",
+                    style:
+                    AppTextstyle.interRegular(color: AppColors.green),
+                  ))
+          ],
+        )
             : SizedBox());
   }
 }

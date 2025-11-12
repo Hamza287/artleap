@@ -29,7 +29,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-
         coreLibraryDesugaringEnabled true
     }
 
@@ -41,10 +40,12 @@ android {
         applicationId "com.XrDIgital.ImaginaryVerse"
         minSdkVersion 23
         targetSdk 36
-        versionCode 39
-        versionName "2.0.1"
+        versionCode 40
+        versionName "2.0.2"
+        multiDexEnabled true
+
         ndk {
-            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
     }
 
@@ -63,10 +64,24 @@ android {
             minifyEnabled false
             shrinkResources false
             ndk { debugSymbolLevel "FULL" }
-
         }
         debug {
             signingConfig signingConfigs.debug
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'arm64-v8a'
+            universalApk true
         }
     }
 }

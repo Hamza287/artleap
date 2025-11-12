@@ -56,6 +56,10 @@ class User {
   final bool watermarkEnabled;
   final int? v;
 
+  // New fields for privacy policy and interests
+  final PrivacyPolicyAcceptance? privacyPolicyAccepted;
+  final UserInterests? interests;
+
   User({
     required this.id,
     required this.username,
@@ -85,6 +89,8 @@ class User {
     required this.paymentMethods,
     required this.watermarkEnabled,
     this.v,
+    this.privacyPolicyAccepted,
+    this.interests,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -117,6 +123,13 @@ class User {
       paymentMethods: List.castFrom<dynamic, dynamic>(json['paymentMethods'] ?? []),
       watermarkEnabled: json['watermarkEnabled'] ?? true,
       v: json['__v'],
+      // New fields parsing
+      privacyPolicyAccepted: json['privacyPolicyAccepted'] != null
+          ? PrivacyPolicyAcceptance.fromJson(json['privacyPolicyAccepted'])
+          : null,
+      interests: json['interests'] != null
+          ? UserInterests.fromJson(json['interests'])
+          : null,
     );
   }
 
@@ -135,7 +148,7 @@ class User {
     data['following'] = following.map((e) => e.toJson()).toList();
     data['createdAt'] = createdAt;
     data['__v'] = V;
-    // New fields toJson
+
     if (lastCreditReset != null) {
       data['lastCreditReset'] = lastCreditReset!.toIso8601String();
     }
@@ -157,7 +170,54 @@ class User {
     if (v != null) {
       data['__v'] = v;
     }
+
+    // New fields toJson
+    if (privacyPolicyAccepted != null) {
+      data['privacyPolicyAccepted'] = privacyPolicyAccepted!.toJson();
+    }
+    if (interests != null) {
+      data['interests'] = interests!.toJson();
+    }
+
     return data;
+  }
+
+  User copyWith({
+    PrivacyPolicyAcceptance? privacyPolicyAccepted,
+    UserInterests? interests,
+  }) {
+    return User(
+      id: id,
+      username: username,
+      email: email,
+      password: password,
+      favorites: favorites,
+      profilePic: profilePic,
+      dailyCredits: dailyCredits,
+      isSubscribed: isSubscribed,
+      images: images,
+      followers: followers,
+      following: following,
+      createdAt: createdAt,
+      V: V,
+      lastCreditReset: lastCreditReset,
+      hiddenNotifications: hiddenNotifications,
+      currentSubscription: currentSubscription,
+      subscriptionStatus: subscriptionStatus,
+      planName: planName,
+      planType: planType,
+      totalCredits: totalCredits,
+      usedImageCredits: usedImageCredits,
+      usedPromptCredits: usedPromptCredits,
+      imageGenerationCredits: imageGenerationCredits,
+      promptGenerationCredits: promptGenerationCredits,
+      hasActiveTrial: hasActiveTrial,
+      paymentMethods: paymentMethods,
+      watermarkEnabled: watermarkEnabled,
+      v: v,
+      privacyPolicyAccepted: privacyPolicyAccepted ?? this.privacyPolicyAccepted,
+      interests: interests ?? this.interests,
+    );
   }
 }
 
@@ -282,5 +342,87 @@ class Following {
     data['createdAt'] = createdAt;
     data['__v'] = V;
     return data;
+  }
+}
+
+class PrivacyPolicyAcceptance {
+  final bool accepted;
+  final DateTime? acceptedAt;
+  final String version;
+
+  const PrivacyPolicyAcceptance({
+    required this.accepted,
+    this.acceptedAt,
+    this.version = "1.0",
+  });
+
+  factory PrivacyPolicyAcceptance.fromJson(Map<String, dynamic> json) {
+    return PrivacyPolicyAcceptance(
+      accepted: json['accepted'] ?? false,
+      acceptedAt: json['acceptedAt'] != null ? DateTime.parse(json['acceptedAt']) : null,
+      version: json['version'] ?? "1.0",
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'accepted': accepted,
+      'acceptedAt': acceptedAt?.toIso8601String(),
+      'version': version,
+    };
+  }
+
+  PrivacyPolicyAcceptance copyWith({
+    bool? accepted,
+    DateTime? acceptedAt,
+    String? version,
+  }) {
+    return PrivacyPolicyAcceptance(
+      accepted: accepted ?? this.accepted,
+      acceptedAt: acceptedAt ?? this.acceptedAt,
+      version: version ?? this.version,
+    );
+  }
+}
+
+class UserInterests {
+  final List<String> selected;
+  final List<String> categories;
+  final DateTime lastUpdated;
+
+  const UserInterests({
+    this.selected = const [],
+    this.categories = const [],
+    required this.lastUpdated,
+  });
+
+  factory UserInterests.fromJson(Map<String, dynamic> json) {
+    return UserInterests(
+      selected: List.castFrom<dynamic, String>(json['selected'] ?? []),
+      categories: List.castFrom<dynamic, String>(json['categories'] ?? []),
+      lastUpdated: json['lastUpdated'] != null
+          ? DateTime.parse(json['lastUpdated'])
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'selected': selected,
+      'categories': categories,
+      'lastUpdated': lastUpdated.toIso8601String(),
+    };
+  }
+
+  UserInterests copyWith({
+    List<String>? selected,
+    List<String>? categories,
+    DateTime? lastUpdated,
+  }) {
+    return UserInterests(
+      selected: selected ?? this.selected,
+      categories: categories ?? this.categories,
+      lastUpdated: lastUpdated ?? this.lastUpdated,
+    );
   }
 }

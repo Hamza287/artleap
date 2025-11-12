@@ -1,4 +1,7 @@
-import 'package:Artleap.ai/providers/interest_onboarding_controller.dart';
+import 'package:Artleap.ai/domain/user_preferences/user_preferences_service.dart';
+import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/providers/interest_onboarding_provider.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/utilities/progress_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
@@ -10,6 +13,65 @@ import 'components/onboarding_step_content.dart';
 class InterestOnboardingScreen extends ConsumerWidget {
   const InterestOnboardingScreen({super.key});
   static const String routeName = "interest_onboarding_screen";
+
+  Future<void> _saveUserInterests(WidgetRef ref, BuildContext context) async {
+    final selectedOptions = ref.read(selectedOptionsProvider);
+    final onboardingData = ref.read(onboardingDataProvider);
+    final userId = UserData.ins.userId;
+
+    if (userId == null || userId.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('User not found. Please login again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
+    List<String> selectedInterests = [];
+    List<String> categories = [];
+
+    for (int i = 0; i < selectedOptions.length; i++) {
+      final selectedIndex = selectedOptions[i];
+      if (selectedIndex != null && onboardingData[i].options.length > selectedIndex) {
+        selectedInterests.add(onboardingData[i].options[selectedIndex]);
+        categories.add('category_$i');
+      }
+    }
+
+    if (selectedInterests.isNotEmpty) {
+      final success = await ref.read(userPreferencesServiceProvider).updateUserInterests(
+        userId: userId,
+        selected: selectedInterests,
+        categories: categories,
+      );
+
+      if (!success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save interests.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _handleContinue(WidgetRef ref, BuildContext context) {
+    final currentStep = ref.read(interestOnboardingStepProvider);
+    final onboardingData = ref.read(onboardingDataProvider);
+
+    if (currentStep < onboardingData.length - 1) {
+      ref.read(interestOnboardingStepProvider.notifier).state++;
+    } else {
+      _saveUserInterests(ref, context).then((_) {
+        Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +103,7 @@ class InterestOnboardingScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+              Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
             },
             child: Text(
               'Skip',
@@ -74,13 +136,7 @@ class InterestOnboardingScreen extends ConsumerWidget {
                     updatedSelections[currentStep] = index;
                     ref.read(selectedOptionsProvider.notifier).state = updatedSelections;
                   },
-                  onContinue: () {
-                    if (currentStep < onboardingData.length - 1) {
-                      ref.read(interestOnboardingStepProvider.notifier).state++;
-                    } else {
-                      Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-                    }
-                  },
+                  onContinue: () => _handleContinue(ref, context),
                   isLastStep: currentStep == onboardingData.length - 1,
                 ),
               ),

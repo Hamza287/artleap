@@ -1,3 +1,5 @@
+import 'package:Artleap.ai/domain/user_preferences/user_preferences_service.dart';
+import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,9 +7,59 @@ import '../../../shared/navigation/navigation.dart';
 import '../../../shared/theme/custom_theme_extension.dart';
 import '../interest_onboarding_screens/interest_onboarding_screen.dart';
 
+final privacyPolicyLoadingProvider = StateProvider<bool>((ref) => false);
+
 class AcceptPrivacyPolicyScreen extends ConsumerWidget {
   const AcceptPrivacyPolicyScreen({super.key});
   static const String routeName = "accept_privacy_policy";
+
+  Future<void> _acceptPrivacyPolicy(WidgetRef ref, BuildContext context) async {
+    final isLoading = ref.read(privacyPolicyLoadingProvider);
+    if (isLoading) return;
+
+    ref.read(privacyPolicyLoadingProvider.notifier).state = true;
+
+    try {
+      final userId = UserData.ins.userId;
+      if (userId == null || userId.isEmpty) {
+        throw Exception('User ID not found');
+      }
+
+      final success = await ref.read(userPreferencesServiceProvider).acceptPrivacyPolicy(
+        userId: userId,
+        version: "1.0",
+      );
+
+      if (success) {
+        if (context.mounted) {
+          Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreen.routeName);
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to accept privacy policy. Please try again.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print(e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An error occurred. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (context.mounted) {
+        ref.read(privacyPolicyLoadingProvider.notifier).state = false;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,6 +68,7 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
+    final isLoading = ref.watch(privacyPolicyLoadingProvider);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -114,17 +167,20 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                onTap: () {
-                  Navigation.pushNamedAndRemoveUntil(
-                      InterestOnboardingScreen.routeName);
-                },
+                onTap: isLoading ? null : () => _acceptPrivacyPolicy(ref, context),
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 18),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    gradient: customTheme.buttonGradient,
-                    boxShadow: [
+                    gradient: isLoading
+                        ? LinearGradient(
+                      colors: [Colors.grey.shade400, Colors.grey.shade600],
+                    )
+                        : customTheme.buttonGradient,
+                    boxShadow: isLoading
+                        ? []
+                        : [
                       BoxShadow(
                         color: theme.colorScheme.primary.withOpacity(0.3),
                         blurRadius: 10,
@@ -133,7 +189,16 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
                     ],
                   ),
                   child: Center(
-                    child: Text(
+                    child: isLoading
+                        ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                        : Text(
                       'Accept and Continue',
                       style: TextStyle(
                         color: Colors.white,

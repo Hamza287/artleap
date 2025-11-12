@@ -18,6 +18,7 @@ import 'domain/connectivity/connectivity_overlay.dart';
 import 'domain/notification_services/notification_service.dart';
 import 'main/app_initialization.dart';
 import 'main/purchase_handler.dart';
+import 'remote_config/force_update/force_update_wrapper.dart';
 import 'shared/theme/theme_provider.dart';
 
 void main() {
@@ -65,7 +66,6 @@ class _MyAppState extends ConsumerState<MyApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(themeProvider.notifier).loadTheme();
     });
-
     _initializeApp();
   }
 
@@ -107,7 +107,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.watch(systemThemeMonitorProvider);
     final effectiveThemeMode = ref.watch(effectiveThemeModeProvider);
 
-    return MaterialApp(
+    final mainApp = MaterialApp(
       title: 'Artleap.ai',
       debugShowCheckedModeBanner: false,
       supportedLocales: AppLocalization.supportedLocales,
@@ -124,9 +124,13 @@ class _MyAppState extends ConsumerState<MyApp> {
       navigatorKey: navigatorKey,
       onGenerateRoute: RouteGenerator.generateRoute,
       initialRoute: SplashScreen.routeName,
-      builder: (context, child) => ConnectivityOverlay(
-        child: child ?? const SizedBox.shrink(),
-      ),
+      builder: (context, child) {
+        return ConnectivityOverlay(
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
+
+    return ForceUpdateWrapper(child: mainApp);
   }
 }
