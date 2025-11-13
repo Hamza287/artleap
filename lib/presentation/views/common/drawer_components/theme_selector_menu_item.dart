@@ -1,5 +1,5 @@
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,19 +39,20 @@ class ThemeSelectorMenuItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = theme.brightness == Brightness.dark;
-    final effectiveColor = isDark ? theme.colorScheme.onSurface : Colors.white.withOpacity(0.9);
+    final effectiveColor =
+        isDark ? theme.colorScheme.onSurface : Colors.white.withOpacity(0.9);
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.005),
+      margin: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.005),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Image.asset(
-                AppAssets.darkMode,
-                width: 24,
-                height: 24,
+              Icon(
+                FeatherIcons.moon,
+                size: 24,
                 color: effectiveColor,
               ),
               SizedBox(width: 12),
@@ -94,7 +95,8 @@ class ThemeSelectorMenuItem extends ConsumerWidget {
                 : Colors.grey.withOpacity(0.5),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+              color:
+                  isSelected ? theme.colorScheme.primary : Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -112,9 +114,8 @@ class ThemeSelectorMenuItem extends ConsumerWidget {
                 _getThemeName(themeMode),
                 style: AppTextstyle.interMedium(
                   fontSize: 12,
-                  color: isSelected
-                      ? Colors.white
-                      : theme.colorScheme.onSurface,
+                  color:
+                      isSelected ? Colors.white : theme.colorScheme.onSurface,
                 ),
               ),
             ],

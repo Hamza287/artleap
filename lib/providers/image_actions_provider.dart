@@ -1,9 +1,9 @@
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/base_repo/base_repo.dart';
 import 'package:flutter/material.dart';
-import '../shared/app_snack_bar.dart';
-import '../shared/constants/app_colors.dart';
+import '../widgets/common/app_snack_bar.dart';
 
 enum ImageActionLoading {
   none,
@@ -61,11 +61,11 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
     try {
       ApiResponse userRes = await imageActionRepo.deleteImage(imageId: imageId!);
       if (userRes.status == Status.completed) {
-        appSnackBar("Success", "Image deleted successfully", AppColors.green);
+        appSnackBar("Success", "Image deleted successfully", backgroundColor:AppColors.green);
         return true;
       }
     } catch (e) {
-      appSnackBar('Error', e.toString(), AppColors.redColor);
+      appSnackBar('Error', e.toString(), backgroundColor:AppColors.redColor);
     } finally {
       loadingState = ImageActionLoading.none;
       notifyListeners();
@@ -89,16 +89,16 @@ class ImageActionsProvider extends ChangeNotifier with BaseRepo {
       ApiResponse userRes = await imageActionRepo.reportImage(body: body, imageId: imageId);
 
       if (userRes.status == Status.completed) {
-        appSnackBar("Success", "Image reported successfully", AppColors.green);
+        appSnackBar("Success", "Image reported successfully", backgroundColor:AppColors.green);
         _shouldCloseSheets = true;
         clearReportData();
         return true;
       } else {
-        appSnackBar("Error", userRes.message ?? "Failed to report image", AppColors.redColor);
+        appSnackBar("Error", userRes.message ?? "Failed to report image", backgroundColor:AppColors.redColor);
         return false;
       }
     } catch (e) {
-      appSnackBar('Error', e.toString(), AppColors.redColor);
+      appSnackBar('Error', e.toString(), backgroundColor:AppColors.redColor);
       return false;
     } finally {
       loadingState = ImageActionLoading.none;

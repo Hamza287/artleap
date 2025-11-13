@@ -1,5 +1,6 @@
-import 'package:Artleap.ai/widgets/custom_pro_icon_widget.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/upgrade_info_dialog.dart';
+import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
+import 'package:Artleap.ai/widgets/common/custom_pro_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
@@ -41,10 +42,12 @@ class PrivacySelectionSection extends ConsumerWidget {
               if (!isPremiumFeature) {
                 ref.read(generateImageProvider.notifier).selectedPrivacy = privacy;
               } else {
-                PremiumUpgradeDialog.show(
+                DialogService.showPremiumUpgrade(
                   context: context,
                   featureName: "${privacy.title} Privacy",
-                  customDescription: "",
+                    onConfirm: (){
+                      Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
+                    }
                 );
               }
             },

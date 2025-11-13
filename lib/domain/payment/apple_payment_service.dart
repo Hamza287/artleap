@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-
 import '../../presentation/views/subscriptions/google_payment_screen.dart';
+import '../../shared/theme/app_colors.dart';
 import '../api_services/api_response.dart';
 
-// Provider for Apple payment service
+
 final applePaymentServiceProvider = Provider.family<ApplePaymentService, String>((ref, userId) {
   return ApplePaymentService(ref, userId);
 });
@@ -29,12 +29,12 @@ class ApplePaymentService {
     try {
       final bool available = await InAppPurchase.instance.isAvailable();
       if (!available) {
-        appSnackBar('Error', 'In-app purchases not available on iOS', Colors.red);
+        appSnackBar('Error', 'In-app purchases not available on iOS', backgroundColor:AppColors.red);
         return false;
       }
       return true;
     } catch (e) {
-      appSnackBar('Error', 'Failed to initialize App Store payment service: $e', Colors.red);
+      appSnackBar('Error', 'Failed to initialize App Store payment service: $e', backgroundColor:AppColors.red);
       return false;
     }
   }
@@ -46,7 +46,7 @@ class ApplePaymentService {
       }
 
       if (plan.appleProductId.isEmpty) {
-        appSnackBar('Error', 'Invalid App Store product ID', Colors.red);
+        appSnackBar('Error', 'Invalid App Store product ID', backgroundColor:AppColors.red);
         return false;
       }
 
@@ -73,7 +73,7 @@ class ApplePaymentService {
       }
 
       if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
-        appSnackBar('Error', 'Plan not available on App Store', Colors.red);
+        appSnackBar('Error', 'Plan not available on App Store', backgroundColor:AppColors.red);
         _purchaseCompleter?.complete(false);
         _cleanup();
         return false;
@@ -82,23 +82,19 @@ class ApplePaymentService {
       final ProductDetails productDetails = response.productDetails.first;
       final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
 
-      // Start listening to purchase updates before initiating purchase
       _listenToPurchaseUpdates();
 
       final bool purchaseInitiated = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
 
       if (!purchaseInitiated) {
-        // appSnackBar('Error', 'Failed to initiate App Store purchase', Colors.red);
         _purchaseCompleter?.complete(false);
         _cleanup();
         return false;
       }
 
-      // Wait for the purchase to complete (success or failure)
       final bool success = await _purchaseCompleter!.future;
       return success;
     } catch (e) {
-      // appSnackBar('Error', 'App Store purchase error: $e', Colors.red);
       _purchaseCompleter?.complete(false);
       _cleanup();
       return false;
@@ -117,7 +113,6 @@ class ApplePaymentService {
       },
       onError: (error) {
         ref.read(paymentLoadingProvider.notifier).state = false;
-        // appSnackBar('Error', 'App Store purchase stream error: $error', Colors.red);
         _purchaseCompleter?.complete(false);
         _cleanup();
       },
@@ -127,7 +122,7 @@ class ApplePaymentService {
   Future<void> _handlePurchaseUpdate(PurchaseDetails purchaseDetails) async {
     switch (purchaseDetails.status) {
       case PurchaseStatus.pending:
-        appSnackBar('Info', 'App Store purchase is pending', Colors.yellow);
+        appSnackBar('Info', 'App Store purchase is pending', backgroundColor:AppColors.red);
         break;
 
       case PurchaseStatus.purchased:
@@ -137,11 +132,6 @@ class ApplePaymentService {
 
       case PurchaseStatus.error:
         ref.read(paymentLoadingProvider.notifier).state = false;
-        // appSnackBar(
-        //   'Error',
-        //   'App Store purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
-        //   Colors.red,
-        // );
         await InAppPurchase.instance.completePurchase(purchaseDetails);
         _purchaseCompleter?.complete(false);
         _cleanup();
@@ -149,7 +139,6 @@ class ApplePaymentService {
 
       case PurchaseStatus.canceled:
         ref.read(paymentLoadingProvider.notifier).state = false;
-        // appSnackBar('Info', 'App Store purchase canceled', Colors.yellow);
         final subscriptionService = ref.read(subscriptionServiceProvider);
         await subscriptionService.subscribe(
           userId,
@@ -193,7 +182,7 @@ class ApplePaymentService {
       );
 
       if (response.status == Status.completed) {
-        appSnackBar('Success', 'Subscription created successfully', Colors.green);
+        appSnackBar('Success', 'Subscription created successfully', backgroundColor:AppColors.green);
         await InAppPurchase.instance.completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
         ref.read(paymentLoadingProvider.notifier).state = false;
@@ -209,7 +198,7 @@ class ApplePaymentService {
         _purchaseCompleter?.complete(false);
       }
     } catch (e) {
-      appSnackBar('Error', 'Error processing App Store purchase: $e', Colors.red);
+      appSnackBar('Error', 'Error processing App Store purchase: $e', backgroundColor:AppColors.red);
       await InAppPurchase.instance.completePurchase(purchaseDetails);
       ref.read(paymentLoadingProvider.notifier).state = false;
       _purchaseCompleter?.complete(false);

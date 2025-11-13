@@ -1,4 +1,4 @@
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';

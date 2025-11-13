@@ -1,4 +1,4 @@
-import 'package:Artleap.ai/shared/console.dart';
+import 'package:Artleap.ai/shared/utilities/console.dart';
 
 class AuthExceptionHandler {
   static AuthResultStatus handleException(e) {

@@ -4,6 +4,7 @@ import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart'
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -53,7 +54,7 @@ class PurchaseHandler {
         break;
 
       case PurchaseStatus.error:
-        appSnackBar('Error', 'Purchase failed: ${purchaseDetails.error?.message ?? "Unknown error"}', Colors.red);
+        appSnackBar('Error', 'Purchase failed: ${purchaseDetails.error?.message ?? "Unknown error"}', backgroundColor:AppColors.red);
         ref.read(paymentLoadingProvider.notifier).state = false;
         break;
 
@@ -81,7 +82,7 @@ class PurchaseHandler {
       }
 
       if (planId.isEmpty) {
-        appSnackBar('Error', 'Could not find subscription plan', Colors.red);
+        appSnackBar('Error', 'Could not find subscription plan', backgroundColor:AppColors.red);
         ref.read(paymentLoadingProvider.notifier).state = false;
         await _completePurchase(purchaseDetails);
         return;
@@ -106,22 +107,22 @@ class PurchaseHandler {
 
       if (response.status == Status.completed) {
         if (success) {
-          appSnackBar('Success', 'Subscription created successfully', Colors.green);
+          appSnackBar('Success', 'Subscription created successfully', backgroundColor:AppColors.green);
           ref.read(paymentLoadingProvider.notifier).state = false;
           if (navigatorKey.currentState?.mounted == true) {
             navigatorKey.currentState?.pushReplacementNamed(BottomNavBar.routeName);
           }
         } else {
-          appSnackBar('Success', 'Subscription restored successfully', Colors.green);
+          appSnackBar('Success', 'Subscription restored successfully', backgroundColor:AppColors.green);
         }
         await _completePurchase(purchaseDetails);
         ref.refresh(currentSubscriptionProvider(userId));
       } else {
-        appSnackBar('Error', 'Subscription failed: ${response.message}', Colors.red);
+        appSnackBar('Error', 'Subscription failed: ${response.message}', backgroundColor:AppColors.red);
         ref.read(paymentLoadingProvider.notifier).state = false;
       }
     } catch (e) {
-      appSnackBar('Error', 'Purchase processing failed', Colors.red);
+      appSnackBar('Error', 'Purchase processing failed', backgroundColor:AppColors.red);
       ref.read(paymentLoadingProvider.notifier).state = false;
       await _completePurchase(purchaseDetails);
     }

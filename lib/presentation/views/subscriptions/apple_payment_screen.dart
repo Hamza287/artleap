@@ -1,9 +1,9 @@
+import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
@@ -27,6 +27,7 @@ class ApplePaymentScreen extends ConsumerStatefulWidget {
 
 class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
   bool _isMounted = false;
+  bool _isDisposing = false;
 
   @override
   void initState() {
@@ -37,112 +38,167 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
 
   @override
   void dispose() {
+    _isDisposing = true;
     _isMounted = false;
     _cleanupApplePayment();
     super.dispose();
   }
 
-  // Safe state update method
   void _safeStateUpdate(VoidCallback callback) {
-    if (_isMounted) {
-      callback();
+    if (_isMounted && !_isDisposing) {
+      if (mounted) {
+        callback();
+      }
+    }
+  }
+
+  // Safe navigation method
+  void _safeNavigate(String routeName) {
+    if (_isMounted && !_isDisposing && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_isDisposing) {
+          Navigator.pushReplacementNamed(context, routeName);
+        }
+      });
+    }
+  }
+
+  void _safeSnackBar(String title, String message, {Color backgroundColor = AppColors.red}) {
+    if (_isMounted && !_isDisposing && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !_isDisposing) {
+          appSnackBar(title, message, backgroundColor: backgroundColor);
+        }
+      });
     }
   }
 
   Future<void> _initializeApplePayment() async {
-    final userId = UserData.ins.userId;
-    if (userId == null) {
-      return;
-    }
-    final applePaymentService = ref.read(applePaymentServiceProvider(userId));
-    final initialized = await applePaymentService.initialize();
-    if (initialized && _isMounted) {
-      ref.read(inAppPurchaseInitializedProvider.notifier).state = true;
+    try {
+      final userId = UserData.ins.userId;
+      if (userId == null) return;
+
+      final applePaymentService = ref.read(applePaymentServiceProvider(userId));
+      final initialized = await applePaymentService.initialize();
+
+      if (initialized && _isMounted && !_isDisposing) {
+        _safeStateUpdate(() {
+          ref.read(inAppPurchaseInitializedProvider.notifier).state = true;
+        });
+      }
+    } catch (e) {
+      // Silent fail - initialization errors are handled in purchase flow
     }
   }
 
   void _cleanupApplePayment() {
     final userId = UserData.ins.userId;
     if (userId != null) {
-      final applePaymentService = ref.read(applePaymentServiceProvider(userId));
-      applePaymentService.dispose();
+      try {
+        final applePaymentService = ref.read(applePaymentServiceProvider(userId));
+        applePaymentService.dispose();
+      } catch (e) {
+        // Ignore errors during cleanup
+      }
     }
   }
 
   Future<void> _handleSubscription() async {
+    if (ref.read(paymentLoadingProvider)) return;
+
     final paymentMethod = ref.read(selectedPaymentMethodProvider);
     final userId = UserData.ins.userId;
 
     if (userId == null) {
-      _safeStateUpdate(() {
-        ref.read(paymentLoadingProvider.notifier).state = false;
-      });
+      _safeSnackBar('Error', 'User not found');
       return;
     }
 
     if (paymentMethod == 'apple' && !ref.read(inAppPurchaseInitializedProvider)) {
-      appSnackBar('Error', 'App Store payment service not initialized', Colors.red);
-      _safeStateUpdate(() {
-        ref.read(paymentLoadingProvider.notifier).state = false;
-      });
+      _safeSnackBar('Error', 'App Store payment service not initialized');
       return;
     }
 
     if (!ref.read(termsAcceptedProvider)) {
-      appSnackBar('Error', 'Please accept the terms and conditions', Colors.red);
-      _safeStateUpdate(() {
-        ref.read(paymentLoadingProvider.notifier).state = false;
-      });
+      _safeSnackBar('Error', 'Please accept the terms and conditions');
       return;
     }
 
-    ref.read(paymentLoadingProvider.notifier).state = true;
-    final paymentService = ref.read(paymentServiceProvider(userId));
+    _safeStateUpdate(() {
+      ref.read(paymentLoadingProvider.notifier).state = true;
+    });
 
-    if (paymentMethod == 'apple') {
-      final applePaymentService = ref.read(applePaymentServiceProvider(userId));
-      final success = await applePaymentService.purchaseSubscription(widget.plan, context);
-
-      if (!success) {
-        _safeStateUpdate(() {
-          ref.read(paymentLoadingProvider.notifier).state = false;
-        });
-      }
-    } else if (paymentMethod == 'stripe') {
-      final amount = (widget.plan.price * 100).toInt();
-      final response = await paymentService.purchaseStripeSubscription(
-        planId: widget.plan.id,
-        amount: amount,
-        currency: 'usd',
-        context: context,
-        ref: ref,
-      );
-
-      if (response.status == Status.completed) {
-        _safeStateUpdate(() {
-          appSnackBar('Success', 'Subscription created successfully', Colors.green);
-          ref.read(paymentLoadingProvider.notifier).state = false;
-          Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
-        });
+    try {
+      if (paymentMethod == 'apple') {
+        await _handleApplePayment(userId);
+      } else if (paymentMethod == 'stripe') {
+        await _handleStripePayment(userId);
       } else {
         _safeStateUpdate(() {
           ref.read(paymentLoadingProvider.notifier).state = false;
-          appSnackBar('Error', response.message ?? 'Stripe purchase failed', Colors.red);
         });
+        _safeSnackBar('Error', 'Select Payment Method First');
       }
-    } else {
+    } catch (e) {
       _safeStateUpdate(() {
         ref.read(paymentLoadingProvider.notifier).state = false;
-        appSnackBar('Error', 'Select Payment Method First', Colors.red);
+      });
+      _safeSnackBar('Error', 'An unexpected error occurred');
+    }
+  }
+
+  Future<void> _handleApplePayment(String userId) async {
+    final applePaymentService = ref.read(applePaymentServiceProvider(userId));
+    final success = await applePaymentService.purchaseSubscription(widget.plan, context);
+
+    if (!success && _isMounted && !_isDisposing) {
+      _safeStateUpdate(() {
+        ref.read(paymentLoadingProvider.notifier).state = false;
       });
     }
   }
 
+  Future<void> _handleStripePayment(String userId) async {
+    final paymentService = ref.read(paymentServiceProvider(userId));
+    final amount = (widget.plan.price * 100).toInt();
+
+    final response = await paymentService.purchaseStripeSubscription(
+      planId: widget.plan.id,
+      amount: amount,
+      currency: 'usd',
+      context: context,
+      ref: ref,
+    );
+
+    if (response.status == Status.completed) {
+      _safeSnackBar('Success', 'Subscription created successfully', backgroundColor: AppColors.green);
+
+      _safeStateUpdate(() {
+        ref.read(paymentLoadingProvider.notifier).state = false;
+      });
+
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _safeNavigate(BottomNavBar.routeName);
+      });
+    } else {
+      _safeStateUpdate(() {
+        ref.read(paymentLoadingProvider.notifier).state = false;
+      });
+      _safeSnackBar('Error', response.message ?? 'Stripe purchase failed');
+    }
+  }
+
   Future<bool> _onWillPop() async {
-    final userId = UserData.ins.userId;
-    if (userId != null) {
-      final applePaymentService = ref.read(applePaymentServiceProvider(userId));
-      applePaymentService.cancelPurchase();
+    if (!_isDisposing) {
+      final userId = UserData.ins.userId;
+      if (userId != null) {
+        try {
+          final applePaymentService = ref.read(applePaymentServiceProvider(userId));
+          applePaymentService.cancelPurchase();
+        } catch (e) {
+
+        }
+      }
     }
     return true;
   }
@@ -171,8 +227,10 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                 const SizedBox(height: 24),
                 TermsAndConditions(
                   onTermsChanged: (value) {
-                    if (value != null && _isMounted) {
-                      ref.read(termsAcceptedProvider.notifier).state = value;
+                    if (value != null && _isMounted && !_isDisposing) {
+                      _safeStateUpdate(() {
+                        ref.read(termsAcceptedProvider.notifier).state = value;
+                      });
                     }
                   },
                   isAccepted: ref.watch(termsAcceptedProvider),
@@ -180,7 +238,7 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                 const SizedBox(height: 32),
                 SubscribeButton(
                   isLoading: isLoading,
-                  isEnabled: ref.read(termsAcceptedProvider),
+                  isEnabled: ref.watch(termsAcceptedProvider),
                   onPressed: _handleSubscription,
                 ),
                 const SizedBox(height: 16),
@@ -188,12 +246,11 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                   CancelPurchaseButton(
                     onCancel: () {
                       final userId = UserData.ins.userId;
-                      if (userId != null) {
+                      if (userId != null && _isMounted && !_isDisposing) {
                         final applePaymentService = ref.read(applePaymentServiceProvider(userId));
                         applePaymentService.cancelPurchase();
                         _safeStateUpdate(() {
                           ref.read(paymentLoadingProvider.notifier).state = false;
-                          appSnackBar('Info', 'Purchase canceled', Colors.yellow);
                         });
                       }
                     },
@@ -219,11 +276,9 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
         onPressed: () {
-          _onWillPop().then((canPop) {
-            if (canPop && _isMounted) {
-              Navigator.of(context).pop();
-            }
-          });
+          if (_isMounted && !_isDisposing) {
+            Navigator.of(context).pop();
+          }
         },
       ),
     );
@@ -249,8 +304,10 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
                 title: 'App Store',
                 isSelected: selectedPaymentMethod == 'apple',
                 onTap: () {
-                  if (_isMounted) {
-                    ref.read(selectedPaymentMethodProvider.notifier).state = 'apple';
+                  if (_isMounted && !_isDisposing) {
+                    _safeStateUpdate(() {
+                      ref.read(selectedPaymentMethodProvider.notifier).state = 'apple';
+                    });
                   }
                 },
               ),
@@ -260,8 +317,10 @@ class _ApplePaymentScreenState extends ConsumerState<ApplePaymentScreen> {
               title: 'Credit/Debit Card',
               isSelected: selectedPaymentMethod == 'stripe',
               onTap: () {
-                if (_isMounted) {
-                  ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
+                if (_isMounted && !_isDisposing) {
+                  _safeStateUpdate(() {
+                    ref.read(selectedPaymentMethodProvider.notifier).state = 'stripe';
+                  });
                 }
               },
             ),

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
-
-import '../../../../../shared/constants/app_colors.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import '../../../../../shared/constants/app_textstyle.dart';
-import '../../../global_widgets/app_common_textfield.dart';
+import '../../../../../widgets/common/app_common_textfield.dart';
 
 class SignupTextfieldSection extends ConsumerWidget {
   const SignupTextfieldSection({super.key});

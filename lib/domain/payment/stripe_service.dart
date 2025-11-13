@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_service.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_api_paths.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_services/handling_response.dart';
+import '../../shared/theme/app_colors.dart';
 import '../base_repo/base.dart';
 
 class StripeService {
@@ -62,7 +63,7 @@ class StripeService {
       );
       print(clientSecretResponse);
       if (clientSecretResponse.status != Status.completed || clientSecretResponse.data == null) {
-        appSnackBar('Error','Failed to initialize payment', Colors.red);
+        appSnackBar('Error','Failed to initialize payment', backgroundColor:AppColors.red);
         return ApiResponse.error(clientSecretResponse.message ?? 'Failed to initialize payment');
       }
 
@@ -79,7 +80,6 @@ class StripeService {
         ),
       );
 
-      // Present Payment Sheet
       await Stripe.instance.presentPaymentSheet();
       final paymentIntentId = clientSecret!.split('_secret_')[0];
 
@@ -98,9 +98,9 @@ class StripeService {
       );
 
       if (response.status == Status.completed) {
-        appSnackBar('Success', 'Subscription purchased successfully', Colors.green);
+        appSnackBar('Success', 'Subscription purchased successfully', backgroundColor:AppColors.green);
       } else {
-        appSnackBar('Error', 'Failed to create subscription', Colors.red);
+        appSnackBar('Error', 'Failed to create subscription', backgroundColor:AppColors.red);
       }
 
       return response;
@@ -108,10 +108,11 @@ class StripeService {
       if (e.error.code == FailureCode.Canceled) {
         return ApiResponse.error('User canceled the purchase');
       } else {
-        appSnackBar('Error', 'Stripe error', Colors.red);
+        appSnackBar('Error', 'Stripe error', backgroundColor:AppColors.red);
         return ApiResponse.error('Stripe error');
       }
     } catch (e) {
+      appSnackBar('Error', 'Purchase error', backgroundColor:AppColors.red);
       return ApiResponse.error('Purchase error');
     }
   }

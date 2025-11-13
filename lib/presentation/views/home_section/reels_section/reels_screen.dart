@@ -2,8 +2,6 @@ import 'package:Artleap.ai/domain/reels/reel_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'components/reel_actions_widget.dart';
-import 'components/reel_progress_widget.dart';
-import 'components/reel_shimmer_effect.dart';
 import 'components/reel_video_widget.dart';
 
 class ReelsScreen extends ConsumerStatefulWidget {

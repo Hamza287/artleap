@@ -1,15 +1,15 @@
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
+import 'package:Artleap.ai/widgets/state_widgets/custom_error_state.dart';
+import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/widgets/scaffold_background.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen_widgets/go_back_widget.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/signup_section/signup_screen_widgets/signup_textfields_section.dart';
+import 'package:Artleap.ai/widgets/common/scaffold_background.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import '../../../../shared/constants/app_colors.dart';
-import '../../global_widgets/app_common_button.dart';
-import '../../global_widgets/error_widget.dart';
+import '../../../../widgets/common/app_common_button.dart';
 import 'signup_screen_widgets/already_have_account_text.dart';
+import 'signup_screen_widgets/signup_textfields_section.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   static const String routeName = 'signup_screen';
@@ -31,6 +31,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme;
+    final authState = ref.watch(authprovider);
+    final isLoading = authState.isLoading(LoginMethod.signup);
+    final authError = authState.authError;
+
     return RegistrationBackgroundWidget(
         widget: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -50,38 +54,47 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     30.spaceY,
                     Row(
                       children: [
-                        GestureDetector(
-                            onTap: () {
-                              ref.read(authprovider).clearError();
-                              Navigation.pop();
-                            },
-                            child: GoBackWidget()),
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_ios_rounded, color: theme.onSurface),
+                          onPressed: () {
+                            ref.read(authprovider).clearError();
+                            Navigation.pop();
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                          tooltip: 'Go back',
+                        ),
                       ],
                     ),
                     30.spaceY,
-                    SignupTextfieldSection(),
+                    const SignupTextfieldSection(),
                     20.spaceY,
-                    CustomErrorWidget(
-                        isShow: ref.watch(authprovider).authError != null,
-                        message: ref.watch(authprovider).authError?.message,
-                        authResultState:
-                        ref.watch(authprovider).authError?.authResultState),
-                    ref.watch(authprovider).isLoading(LoginMethod.signup)
-                        ? const CircularProgressIndicator(
-                      color: AppColors.indigo,
-                    )
-                        : CommonButton(
-                      title: "Sign Up",
-                      color: AppColors.indigo,
-                      onpress: () {
-                        ref.read(authprovider).signUpWithEmail();
-                      },
-                    ),
+                    if (authError != null)
+                      CompactErrorState(
+                        message: authError.message ?? 'Sign up failed',
+                        onRetry: () {
+                          ref.read(authprovider).clearError();
+                          ref.read(authprovider).signUpWithEmail();
+                        },
+                        icon: Icons.person_add_disabled,
+                      ),
+                    if (isLoading)
+                      const LoadingState(
+                        message: 'Creating account...',
+                      )
+                    else
+                      CommonButton(
+                        title: "Sign Up",
+                        color: AppColors.indigo,
+                        onpress: () {
+                          ref.read(authprovider).signUpWithEmail();
+                        },
+                      ),
                     20.spaceY,
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const AlreadyHaveAccountText(),
+                        AlreadyHaveAccountText(),
                       ],
                     ),
                   ],

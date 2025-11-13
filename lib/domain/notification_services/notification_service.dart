@@ -1,10 +1,9 @@
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
+import 'package:Artleap.ai/widgets/state_widgets/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
-import '../../shared/notification_utils/error_handler.dart';
 import '../notifications_repo/notification_repository.dart';
-
 
 final navigatorKeyProvider = Provider<GlobalKey<NavigatorState>>((ref) {
   return GlobalKey<NavigatorState>();
@@ -27,11 +26,11 @@ class NotificationService {
       return notifications;
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
       return [];
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
       return [];
     }
   }
@@ -42,10 +41,10 @@ class NotificationService {
       await _repository.markAsRead(notificationId);
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     }
   }
 
@@ -58,10 +57,10 @@ class NotificationService {
       await _repository.markAllAsRead(notificationIds);
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     }
   }
 
@@ -71,10 +70,10 @@ class NotificationService {
       await _repository.deleteNotification(notificationId: notificationId,userId: userId);
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     }
   }
 
@@ -98,10 +97,10 @@ class NotificationService {
       );
     } on DioException catch (e) {
       final error = ErrorHandler.handleDioError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     }
   }
 
@@ -113,7 +112,7 @@ class NotificationService {
   //     Navigator.of(context).pushNamed(routeName, arguments: arguments);
   //   } catch (e) {
   //     final error = ErrorHandler.handleError(e);
-  //     ErrorHandler.showError(error);
+  //     debugPrint('Notification Error: $error');
   //   }
   // }
 
@@ -122,7 +121,7 @@ class NotificationService {
       // Your interaction setup logic here
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     }
   }
 
@@ -131,7 +130,7 @@ class NotificationService {
       _setupInteractions();
     } catch (e) {
       final error = ErrorHandler.handleError(e);
-      ErrorHandler.showError(error);
+      debugPrint('Notification Error: $error');
     }
   }
 }

@@ -83,6 +83,9 @@ dependencies:
   video_player: ^2.10.0
   feather_icons: ^1.2.0
   internet_connection_checker_plus: ^2.9.0
+  firebase_remote_config: ^5.5.0
+  package_info_plus: ^9.0.0
+  google_fonts: ^6.3.2
 
 dev_dependencies:
   flutter_test:

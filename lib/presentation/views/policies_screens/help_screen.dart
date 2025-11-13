@@ -1,8 +1,10 @@
+import 'package:Artleap.ai/providers/help_screen_provider.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../../../providers/help_screen_provider.dart';
 
 class HelpScreen extends ConsumerWidget {
   const HelpScreen({super.key});
@@ -134,12 +136,11 @@ class HelpScreen extends ConsumerWidget {
       }
     } catch (e) {
       if (!context.mounted) return;
-
-      _showErrorSnackBar(
-        context,
+      appSnackBar(
+        'Error',
         'Failed to open email. Please ensure you have an email app installed.',
+        backgroundColor: AppColors.red,
       );
-      debugPrint('Email launch error: $e');
     } finally {
       if (context.mounted) {
         notifier.setLoading(false);
@@ -147,24 +148,6 @@ class HelpScreen extends ConsumerWidget {
     }
   }
 
-  void _showErrorSnackBar(BuildContext context, String message) {
-    final theme = Theme.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: AppTextstyle.interRegular(color: theme.colorScheme.onError),
-        ),
-        backgroundColor: theme.colorScheme.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: const EdgeInsets.all(20),
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
 
   Widget _buildSectionHeader(String text, ThemeData theme) {
     return Text(

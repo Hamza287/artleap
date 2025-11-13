@@ -3,7 +3,7 @@ import 'package:Artleap.ai/main/app_keyboard_listener.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/providers/localization_provider.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/localization/app_localization.dart';
 import 'package:Artleap.ai/shared/navigation/navigator_key.dart';
 import 'package:Artleap.ai/shared/navigation/route_generator.dart';
@@ -18,6 +18,7 @@ import 'domain/connectivity/connectivity_overlay.dart';
 import 'domain/notification_services/notification_service.dart';
 import 'main/app_initialization.dart';
 import 'main/purchase_handler.dart';
+import 'remote_config/force_update/force_update_wrapper.dart';
 import 'shared/theme/theme_provider.dart';
 
 void main() {
@@ -59,13 +60,12 @@ class _MyAppState extends ConsumerState<MyApp> {
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _purchaseHandler.handlePurchaseUpdates(purchaseDetailsList);
     }, onError: (error) {
-      appSnackBar('Error', 'Failed to process purchase stream', Colors.red);
+      appSnackBar('Error', 'Failed to process purchase stream',backgroundColor: Colors.red);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(themeProvider.notifier).loadTheme();
     });
-
     _initializeApp();
   }
 
@@ -107,7 +107,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.watch(systemThemeMonitorProvider);
     final effectiveThemeMode = ref.watch(effectiveThemeModeProvider);
 
-    return MaterialApp(
+    final mainApp = MaterialApp(
       title: 'Artleap.ai',
       debugShowCheckedModeBanner: false,
       supportedLocales: AppLocalization.supportedLocales,
@@ -124,9 +124,13 @@ class _MyAppState extends ConsumerState<MyApp> {
       navigatorKey: navigatorKey,
       onGenerateRoute: RouteGenerator.generateRoute,
       initialRoute: SplashScreen.routeName,
-      builder: (context, child) => ConnectivityOverlay(
-        child: child ?? const SizedBox.shrink(),
-      ),
+      builder: (context, child) {
+        return ConnectivityOverlay(
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
+
+    return ForceUpdateWrapper(child: mainApp);
   }
 }

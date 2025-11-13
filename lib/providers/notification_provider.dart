@@ -120,3 +120,61 @@ enum NotificationFilter {
 final notificationFilterProvider = StateProvider<NotificationFilter>(
       (ref) => NotificationFilter.all,
 );
+
+final notificationSelectionProvider = StateNotifierProvider<NotificationSelectionNotifier, NotificationSelectionState>((ref) {
+  return NotificationSelectionNotifier();
+});
+
+class NotificationSelectionState {
+  final Set<String> selectedIds;
+  final bool isSelectionMode;
+
+  const NotificationSelectionState({
+    this.selectedIds = const {},
+    this.isSelectionMode = false,
+  });
+
+  NotificationSelectionState copyWith({
+    Set<String>? selectedIds,
+    bool? isSelectionMode,
+  }) {
+    return NotificationSelectionState(
+      selectedIds: selectedIds ?? this.selectedIds,
+      isSelectionMode: isSelectionMode ?? this.isSelectionMode,
+    );
+  }
+}
+
+class NotificationSelectionNotifier extends StateNotifier<NotificationSelectionState> {
+  NotificationSelectionNotifier() : super(const NotificationSelectionState());
+
+  void toggleSelection(String notificationId) {
+    final newSelectedIds = Set<String>.from(state.selectedIds);
+
+    if (newSelectedIds.contains(notificationId)) {
+      newSelectedIds.remove(notificationId);
+    } else {
+      newSelectedIds.add(notificationId);
+    }
+
+    state = state.copyWith(
+      selectedIds: newSelectedIds,
+      isSelectionMode: newSelectedIds.isNotEmpty,
+    );
+  }
+
+  void selectAll(List<String> allNotificationIds) {
+    state = state.copyWith(
+      selectedIds: Set<String>.from(allNotificationIds),
+      isSelectionMode: true,
+    );
+  }
+
+  void clearSelection() {
+    state = const NotificationSelectionState();
+  }
+
+  void setSelectionMode(bool mode) {
+    state = state.copyWith(isSelectionMode: mode);
+  }
+}

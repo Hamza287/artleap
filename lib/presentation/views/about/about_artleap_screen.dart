@@ -1,10 +1,9 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'sections/about_artleap_contact.dart';
 import 'sections/about_artleap_footer.dart';
 import 'sections/about_artleap_hero.dart';
 import 'sections/about_artleap_mission.dart';
-import 'sections/about_artleap_team.dart';
 import 'sections/about_artleap_technology.dart';
 
 class AboutArtleapScreen extends StatelessWidget {
@@ -23,7 +22,6 @@ class AboutArtleapScreen extends StatelessWidget {
             children: [
               const AboutArtleapHeroSection(),
               const AboutArtleapMissionSection(),
-              // const AboutArtleapTeamSection(),
               const AboutArtleapTechnologySection(),
               const AboutArtleapContactSection(),
               const AboutArtleapFooter(),
@@ -36,12 +34,10 @@ class AboutArtleapScreen extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
-      title: Text(
+      title: AppText(
         'About Artleap',
-        style: AppTextstyle.interBold(
-          fontSize: 20,
+          size: 20,
           color: theme.colorScheme.onPrimary,
-        ),
       ),
       centerTitle: true,
       backgroundColor: theme.colorScheme.primary,

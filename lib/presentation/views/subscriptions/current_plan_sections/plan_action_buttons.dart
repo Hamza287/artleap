@@ -1,10 +1,9 @@
-import 'package:Artleap.ai/presentation/views/common/dialog_box/payment_method_guide_dialog.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../../domain/subscriptions/subscription_model.dart';
 import '../choose_plan_screen.dart';
-import 'cancel_subscription_dialog.dart';
 
 class ActionButtons extends StatelessWidget {
   final bool isActive;
@@ -20,38 +19,79 @@ class ActionButtons extends StatelessWidget {
     final paymentMethod = subscription?.paymentMethod?.toLowerCase() ?? '';
 
     if (paymentMethod == 'stripe') {
-      CancelSubscriptionDialog.show(context, ref, subscription!);
-    } else if (paymentMethod == 'google_play' || paymentMethod == 'google_pay') {
-      PaymentMethodGuideDialog.show(
-        context: context,
-        title: 'Cancel Google Play Subscription',
-        message: 'To cancel your subscription, please visit the Google Play Store:\n\n'
+      _showStripeCancelDialog(context, ref);
+    } else {
+      _showPlatformCancelGuide(paymentMethod,context);
+    }
+  }
+
+  void _showStripeCancelDialog(BuildContext context, WidgetRef ref) {
+    DialogService.showAppDialog(
+      context: context,
+      type: DialogType.confirmDelete,
+      title: 'Cancel Subscription?',
+      message: 'We\'re sorry to see you go. Your subscription will remain active until the end of your billing period.',
+      confirmText: 'Cancel Plan',
+      cancelText: 'Keep Subscription',
+      icon: Icons.warning_rounded,
+      onConfirm: () => _showCancellationSuccess(context),
+      extraData: {
+        'planName': subscription?.planSnapshot?.name ?? 'Unknown Plan',
+      },
+    );
+  }
+
+  void _showPlatformCancelGuide(String paymentMethod,BuildContext context) {
+    final (title, message) = _getPlatformCancelConfig(paymentMethod);
+
+    DialogService.showAppDialog(
+      context: context,
+      type: DialogType.warning,
+      title: title,
+      message: message,
+      confirmText: 'Got It',
+      cancelText: '',
+      icon: Icons.payment,
+    );
+  }
+
+  (String, String) _getPlatformCancelConfig(String paymentMethod) {
+    switch (paymentMethod) {
+      case 'google_play':
+      case 'google_pay':
+        return (
+        'Cancel Google Play Subscription',
+        'To cancel your subscription, please visit the Google Play Store:\n\n'
             '1. Open Google Play Store\n'
             '2. Tap your profile icon\n'
             '3. Go to "Payments & subscriptions" → "Subscriptions"\n'
-            '4. Find "Artleap.ai" and cancel your subscription',
-        paymentMethod: 'google_play',
-      );
-    } else if (paymentMethod == 'apple' || paymentMethod == 'appstore') {
-      PaymentMethodGuideDialog.show(
-        context: context,
-        title: 'Cancel Apple App Store Subscription',
-        message: 'To cancel your subscription, please visit the App Store:\n\n'
+            '4. Find "Artleap.ai" and cancel your subscription'
+        );
+      case 'apple':
+      case 'appstore':
+        return (
+        'Cancel Apple App Store Subscription',
+        'To cancel your subscription, please visit the App Store:\n\n'
             '1. Open Settings app\n'
             '2. Tap your name\n'
             '3. Go to "Subscriptions"\n'
-            '4. Find "Artleap.ai" and cancel your subscription',
-        paymentMethod: 'apple',
-      );
-    } else {
-      PaymentMethodGuideDialog.show(
-        context: context,
-        title: 'Cancel Subscription',
-        message: 'Please contact our support team or visit the platform '
-            'where you originally purchased the subscription to cancel.',
-        paymentMethod: 'other',
-      );
+            '4. Find "Artleap.ai" and cancel your subscription'
+        );
+      default:
+        return (
+        'Cancel Subscription',
+        'Please contact our support team or visit the platform '
+            'where you originally purchased the subscription to cancel.'
+        );
     }
+  }
+
+  void _showCancellationSuccess(BuildContext context) {
+    DialogService.showSuccess(
+      context: context,
+      title: 'Subscription Cancelled',
+      message: 'Your subscription has been successfully cancelled.',
+    );
   }
 
   bool get _shouldShowCancelButton {

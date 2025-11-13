@@ -1,16 +1,16 @@
 import 'dart:async';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_model.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/domain/subscriptions/plan_provider.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
-
 import 'payment_components/payment_method_card.dart';
 import 'payment_components/subscribe_button.dart';
 import 'payment_components/subscription_plan_card.dart';
@@ -61,14 +61,14 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
       final bool available = await InAppPurchase.instance.isAvailable();
       if (!available) {
         _safeStateUpdate(() {
-          appSnackBar('Error', 'In-app purchases not available', Colors.red);
+          appSnackBar('Error', 'In-app purchases not available', backgroundColor:AppColors.red);
         });
         return;
       }
       ref.read(inAppPurchaseInitializedProvider.notifier).state = true;
     } catch (e) {
       _safeStateUpdate(() {
-        appSnackBar('Error', 'Failed to initialize payment service: $e', Colors.red);
+        appSnackBar('Error', 'Failed to initialize payment service: $e', backgroundColor:AppColors.red);
       });
     }
   }
@@ -81,6 +81,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
       onError: (error) {
         _safeStateUpdate(() {
           ref.read(paymentLoadingProvider.notifier).state = false;
+          appSnackBar('Error', 'Purchase error: $error', backgroundColor:AppColors.red);
         });
       },
     );
@@ -102,6 +103,10 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
         case PurchaseStatus.error:
           _safeStateUpdate(() {
             ref.read(paymentLoadingProvider.notifier).state = false;
+            appSnackBar(
+              'Error',
+              'Purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
+                backgroundColor:AppColors.red);
           });
           break;
 
@@ -119,7 +124,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
 
             _safeStateUpdate(() {
               ref.read(paymentLoadingProvider.notifier).state = false;
-              appSnackBar('Success', 'Subscription activated', Colors.green);
+              appSnackBar('Success', 'Subscription activated', backgroundColor:AppColors.green);
             });
           } catch (e) {
             _safeStateUpdate(() {
@@ -141,12 +146,12 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
 
     if (paymentMethod == 'google_play' &&
         !ref.read(inAppPurchaseInitializedProvider)) {
-      appSnackBar('Error', 'Payment service not initialized', Colors.red);
+      appSnackBar('Error', 'Payment service not initialized',backgroundColor:AppColors.red);
       return;
     }
 
     if (!ref.read(termsAcceptedProvider)) {
-      appSnackBar('Error', 'Please accept the terms and conditions', Colors.red);
+      appSnackBar('Error', 'Please accept the terms and conditions', backgroundColor:AppColors.red);
       return;
     }
 
@@ -163,7 +168,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
         print(productId);
         if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
           _safeStateUpdate(() {
-            appSnackBar('Error', 'Plan not available', Colors.red);
+            appSnackBar('Error', 'Plan not available', backgroundColor:AppColors.red);
             ref.read(paymentLoadingProvider.notifier).state = false;
           });
           return;
@@ -176,7 +181,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
 
         if (!purchaseInitiated) {
           _safeStateUpdate(() {
-            appSnackBar('Error', 'Failed to initiate purchase', Colors.red);
+            appSnackBar('Error', 'Failed to initiate purchase', backgroundColor:AppColors.red);
           });
         }
       } else if (paymentMethod == 'stripe') {
@@ -191,7 +196,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
 
         if (response.status == Status.completed) {
           _safeStateUpdate(() {
-            appSnackBar('Success', 'Subscription created successfully', Colors.green);
+            appSnackBar('Success', 'Subscription created successfully', backgroundColor:AppColors.red);
             ref.refresh(currentSubscriptionProvider(userId));
             ref.read(paymentLoadingProvider.notifier).state = false;
             Navigator.pushReplacementNamed(context, BottomNavBar.routeName);
@@ -223,7 +228,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
     final isInitialized = ref.watch(inAppPurchaseInitializedProvider);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       appBar: _buildAppBar(theme),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -260,12 +265,12 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
     return AppBar(
       title: Text(
         'Confirm Your Subscription',
-        style: AppTextstyle.interBold(fontSize: 16, color: theme.colorScheme.onBackground),
+        style: AppTextstyle.interBold(fontSize: 16, color: theme.colorScheme.onSurface),
       ),
       centerTitle: true,
       elevation: 0,
-      backgroundColor: theme.colorScheme.background,
-      iconTheme: IconThemeData(color: theme.colorScheme.onBackground),
+      backgroundColor: theme.colorScheme.surface,
+      iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
         onPressed: () => Navigator.of(context).pop(),
@@ -281,7 +286,7 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
           'Payment Method',
           style: AppTextstyle.interBold(
             fontSize: 18,
-            color: theme.colorScheme.onBackground,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 16),

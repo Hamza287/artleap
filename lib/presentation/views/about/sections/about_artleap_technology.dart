@@ -1,5 +1,5 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class AboutArtleapTechnologySection extends StatelessWidget {
   const AboutArtleapTechnologySection({super.key});
@@ -12,12 +12,10 @@ class AboutArtleapTechnologySection extends StatelessWidget {
       color: theme.colorScheme.background,
       child: Column(
         children: [
-          Text(
+          AppText(
             'Our Technology',
-            style: AppTextstyle.interBold(
-              fontSize: 24,
-              color: theme.colorScheme.onBackground,
-            ),
+            size: 24,
+            color: theme.colorScheme.onSurface,
           ),
           const SizedBox(height: 24),
           _buildTechItem(
@@ -68,20 +66,16 @@ class AboutArtleapTechnologySection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AppText(
                   title,
-                  style: AppTextstyle.interBold(
-                    fontSize: 18,
-                    color: theme.colorScheme.onSurface,
-                  ),
+                  size: 18,
+                  color: theme.colorScheme.onSurface,
                 ),
                 const SizedBox(height: 8),
-                Text(
+                AppText(
                   description,
-                  style: AppTextstyle.interRegular(
-                    fontSize: 15,
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  ),
+                  size: 15,
+                  color: theme.colorScheme.onSurface.withOpacity(0.7),
                 ),
               ],
             ),

@@ -1,16 +1,5 @@
 import 'package:Artleap.ai/shared/constants/app_assets.dart';
 
-List<Map> onboardingImagesList = [
-  {
-    "image": AppAssets.Onboarding3,
-    "text": "Unleash your Creativity with Image reference "
-  },
-  {
-    "image": AppAssets.Onboarding2,
-    "text": "Create Realistic High Quality Imagery "
-  },
-  {"image": AppAssets.Onboarding1, "text": "Bring your Ideas to Life with AI"},
-];
 
 List<Map> artsStyleImagesLIst = [
   {"image": "", "id": "0"},

@@ -1,12 +1,14 @@
 import 'package:Artleap.ai/domain/community/providers/comment_provider.dart';
-import 'package:Artleap.ai/presentation/views/common/dialog_box/delete_coment_dialog.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
+import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
+import 'package:Artleap.ai/widgets/state_widgets/empty_state.dart';
+import 'package:Artleap.ai/widgets/state_widgets/error_state.dart';
+import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../bottom_sheet_components/comment_tile.dart';
-import '../bottom_sheet_components/empty_comment_widget.dart';
-import '../bottom_sheet_components/error_coment_state.dart';
-import '../bottom_sheet_components/loading_coment_state.dart';
 
 class CommentsBottomSheet extends ConsumerStatefulWidget {
   final String imageId;
@@ -45,59 +47,26 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Comment posted successfully'),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      appSnackBar("success", "Comment posted successfully",backgroundColor: AppColors.success);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to post comment: $e'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      appSnackBar("Error", "Failed to post comment: $e",backgroundColor: AppColors.red);
     }
   }
 
   void _deleteComment(String commentId) async {
     try {
       await ref.read(commentProvider(widget.imageId).notifier).deleteComment(commentId);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Comment deleted successfully'),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      appSnackBar("success", "Comment deleted successfully",backgroundColor: AppColors.success);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to delete comment: $e'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      appSnackBar("Error", "Failed to delete comment: $e",backgroundColor: AppColors.red);
     }
   }
 
   void _showDeleteDialog(String commentId, String commentText) {
-    showDialog(
+    DialogService.confirmDelete(
       context: context,
-      builder: (context) => DeleteCommentDialog(
-        commentId: commentId,
-        onDelete: () => _deleteComment(commentId),
-      ),
+      itemName: 'comment',
+      onDelete: () => _deleteComment(commentId),
     );
   }
 
@@ -158,7 +127,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.surfaceContainerHighest,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
@@ -234,7 +203,12 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
               child: commentsAsync.when(
                 data: (comments) {
                   if (comments.isEmpty) {
-                    return const EmptyCommentsState();
+                    return EmptyState(
+                      icon: Icons.mode_comment_outlined,
+                      title: 'No Comments Yet',
+                      subtitle: 'Be the first to share your thoughts on this post!',
+                      iconColor: theme.colorScheme.primary,
+                    );
                   }
 
                   return RefreshIndicator(
@@ -258,10 +232,14 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                     ),
                   );
                 },
-                loading: () => const LoadingState(),
+                loading: () => const LoadingState(
+                  useShimmer: true,
+                  shimmerItemCount: 5,
+                ),
                 error: (error, stack) => ErrorState(
-                  error: error,
+                  message: 'Failed to load comments',
                   onRetry: () => ref.read(commentProvider(widget.imageId).notifier).refreshComments(),
+                  icon: Icons.comment_bank_outlined,
                 ),
               ),
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:Artleap.ai/providers/prompt_edit_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 
 class FeatureButtonsRow extends ConsumerWidget {
   final bool isSmallScreen;
@@ -21,7 +21,7 @@ class FeatureButtonsRow extends ConsumerWidget {
         children: [
           _FeatureButton(
             label: "Add Object",
-            icon: AppAssets.pencil,
+            icon: FeatherIcons.plus,
             isActive: activeFeature == EditFeature.addObject,
             isSmallScreen: isSmallScreen,
             onTap: () => ref.read(promptEditProvider.notifier)
@@ -30,7 +30,7 @@ class FeatureButtonsRow extends ConsumerWidget {
           ),
           _FeatureButton(
             label: "Remove Object",
-            icon: AppAssets.editObject,
+            icon: FeatherIcons.minus,
             isActive: activeFeature == EditFeature.removeObject,
             isSmallScreen: isSmallScreen,
             onTap: () => ref.read(promptEditProvider.notifier)
@@ -39,7 +39,7 @@ class FeatureButtonsRow extends ConsumerWidget {
           ),
           _FeatureButton(
             label: "Remove Background",
-            icon: AppAssets.removeBackground,
+            icon: FeatherIcons.image,
             isActive: activeFeature == EditFeature.removeBackground,
             isSmallScreen: isSmallScreen,
             onTap: () => ref.read(promptEditProvider.notifier)
@@ -54,7 +54,7 @@ class FeatureButtonsRow extends ConsumerWidget {
 
 class _FeatureButton extends StatelessWidget {
   final String label;
-  final String icon;
+  final IconData icon;
   final bool isActive;
   final bool isSmallScreen;
   final VoidCallback onTap;
@@ -77,9 +77,8 @@ class _FeatureButton extends StatelessWidget {
 
     return GestureDetector(
       onTap: null,
-      // onTap: onTap,
       child: Container(
-        width: buttonWidth+12,
+        width: buttonWidth + 12,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -103,12 +102,12 @@ class _FeatureButton extends StatelessWidget {
                         : theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Image.asset(
+                  child: Icon(
                     icon,
                     color: isActive
                         ? theme.colorScheme.primary
                         : theme.colorScheme.onSurfaceVariant,
-                    height: buttonSize * 0.5,
+                    size: buttonSize * 0.5,
                   ),
                 ),
               ),

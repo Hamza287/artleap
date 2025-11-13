@@ -1,8 +1,8 @@
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 
 class HeaderText extends ConsumerWidget {
   const HeaderText({super.key});

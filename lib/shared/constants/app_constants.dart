@@ -1,7 +1,7 @@
 class AppConstants {
-
-  static const String artleapBaseUrl = "http://192.168.11.197:8000/api/";
-  // static const String artleapBaseUrl = "http://43.205.54.198:8000/api/";
+  // Base URLs
+  // static const String artleapBaseUrl = "http://169.254.64.69:8000/api/";
+  static const String artleapBaseUrl = "http://43.205.54.198:8000/api/";
   static const String otherBaseUrl = "https://jsonplaceholder1.typicode.com";
   static const String reqresBaseUrl = "https://reqres.in/api/";
 

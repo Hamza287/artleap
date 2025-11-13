@@ -1,21 +1,21 @@
 import 'package:Artleap.ai/main/app_initialization.dart';
+import 'package:Artleap.ai/presentation/views/common/privacy_policy_accept.dart';
+import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
+import 'package:Artleap.ai/shared/utilities/navigation_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
 import '../shared/app_persistance/app_data.dart';
-import '../shared/app_snack_bar.dart';
 import '../shared/auth_exception_handler/auth_exception_handler.dart';
-import '../shared/constants/app_colors.dart';
-import '../shared/general_methods.dart';
+import '../shared/utilities/general_methods.dart';
 import '../shared/navigation/navigation.dart';
+import '../shared/navigation/navigator_key.dart';
 
 enum ObsecureText { loginPassword, signupPassword, confirmPassword }
 
@@ -82,18 +82,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     notifyListeners();
   }
 
-  void _showErrorSnackBar(String message) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      appSnackBar('Error', message, AppColors.red);
-    });
-  }
-
-  void _showSuccessSnackBar(String message) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      appSnackBar("Success", message, AppColors.green);
-    });
-  }
-
   Future<void> storeFirebaseAuthToken({bool forceRefresh = false}) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -109,7 +97,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         final status = AuthExceptionHandler.handleException(e);
         final message = AuthExceptionHandler.generateExceptionMessage(status);
         _setError(message, AuthResultStatus.error);
-        _showErrorSnackBar(message);
       }
     }
   }
@@ -136,7 +123,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         final status = AuthExceptionHandler.handleException(e);
         final message = AuthExceptionHandler.generateExceptionMessage(status);
         _setError(message, AuthResultStatus.error);
-        _showErrorSnackBar(message);
 
         if (status == AuthResultStatus.userNotFound ||
             status == AuthResultStatus.undefined ||
@@ -149,7 +135,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         }
       } else {
         _setError('Failed to refresh token. Please try again.', AuthResultStatus.error);
-        _showErrorSnackBar('Failed to refresh token. Please try again.');
       }
       return null;
     }
@@ -161,11 +146,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           emailController.text.isEmpty ||
           passwordController.text.isEmpty) {
         _setError("Please fill all the fields", AuthResultStatus.error);
-        _showErrorSnackBar("Please fill all the fields");
         return;
       } else if (_passwordController.text != _confirmPasswordController.text) {
         _setError("Passwords are not matching", AuthResultStatus.error);
-        _showErrorSnackBar("Passwords are not matching");
         return;
       }
 
@@ -177,7 +160,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
 
       if (user.authResultState == AuthResultStatus.error) {
         _setError(user.message!, user.authResultState);
-        _showErrorSnackBar(user.message!);
       } else if (isNotNull(user)) {
         clearError();
         await userSignup(
@@ -187,7 +169,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         );
         AppLocal.ins.setUserData(Hivekey.userName, _userNameController.text);
         AppLocal.ins.setUserData(Hivekey.userEmail, _emailController.text);
-        _showSuccessSnackBar("Sign up successful");
         Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
       }
     } catch (e) {
@@ -196,7 +177,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           AuthExceptionHandler.handleException(e))
           : 'An unexpected error occurred during sign-up.';
       _setError(errorMessage, AuthResultStatus.error);
-      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.signup);
     }
@@ -206,7 +186,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
     try {
       if (emailController.text.isEmpty || passwordController.text.isEmpty) {
         _setError("Please fill all the fields", AuthResultStatus.error);
-        _showErrorSnackBar("Please fill all the fields");
         stopLoading(LoginMethod.email);
         return;
       }
@@ -219,11 +198,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
 
       if (user.authResultState == AuthResultStatus.error) {
         _setError(user.message!, user.authResultState);
-        _showErrorSnackBar(user.message!);
       } else if (isNotNull(user)) {
         await userLogin(emailController.text, passwordController.text);
         await storeFirebaseAuthToken();
-        _showSuccessSnackBar("Sign in successful");
         clearControllers();
       }
     } catch (e) {
@@ -232,7 +209,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           AuthExceptionHandler.handleException(e))
           : 'An unexpected error occurred during sign-in.';
       _setError(errorMessage, AuthResultStatus.error);
-      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.email);
     }
@@ -243,7 +219,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       startLoading(LoginMethod.forgotPassword);
       if (emailController.text.isEmpty) {
         _setError("Please enter your email address", AuthResultStatus.error);
-        _showErrorSnackBar("Please enter your email address");
         return;
       }
 
@@ -253,11 +228,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       ApiResponse userRes = await authRepo.forgotPassword(body: body);
       if (userRes.status == Status.completed &&
           (userRes.data == 'Success' || userRes.data == 'Sucesss')) {
-        _showSuccessSnackBar('Password reset email sent. Check your inbox.');
         Navigator.pushReplacementNamed(context, LoginScreen.routeName);
       } else {
         _setError(userRes.message ?? 'Something went wrong. Please try again.', AuthResultStatus.error);
-        _showErrorSnackBar(userRes.message ?? 'Something went wrong. Please try again.');
       }
     } catch (e) {
       final errorMessage = e is FirebaseAuthException
@@ -265,7 +238,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           AuthExceptionHandler.handleException(e))
           : 'Failed to send password reset email.';
       _setError(errorMessage, AuthResultStatus.error);
-      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.forgotPassword);
     }
@@ -290,7 +262,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
               message: 'Unable to fetch ID token after Google sign-in.');
         }
 
-        _showSuccessSnackBar("Sign in successful!");
         await googleLogin(
           user.displayName ?? 'User',
           user.email ?? '',
@@ -299,7 +270,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         );
       } else {
         _setError('Google sign-in failed. Please try again.', AuthResultStatus.error);
-        _showErrorSnackBar('Google sign-in failed. Please try again.');
       }
     } catch (e) {
       final errorMessage = e is FirebaseAuthException
@@ -307,7 +277,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           AuthExceptionHandler.handleException(e))
           : 'An unexpected error occurred during Google sign-in.';
       _setError(errorMessage, AuthResultStatus.error);
-      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.google);
     }
@@ -320,7 +289,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       if (isNotNull(userCred)) {
         final user = userCred!.user!;
         await storeFirebaseAuthToken();
-        _showSuccessSnackBar("Sign in successful!");
         await appleLogin(
           user.displayName ?? 'User',
           user.email ?? '',
@@ -329,7 +297,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         );
       } else {
         _setError('Apple sign-in failed. Please try again.', AuthResultStatus.error);
-        _showErrorSnackBar('Apple sign-in failed. Please try again.');
       }
     } catch (e) {
       final errorMessage = e is FirebaseAuthException
@@ -337,7 +304,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
           AuthExceptionHandler.handleException(e))
           : 'An unexpected error occurred during Apple sign-in.';
       _setError(errorMessage, AuthResultStatus.error);
-      _showErrorSnackBar(errorMessage);
     } finally {
       stopLoading(LoginMethod.apple);
     }
@@ -356,7 +322,6 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       });
     } catch (e) {
       _setError('Failed to sign out. Please try again.', AuthResultStatus.error);
-      _showErrorSnackBar('Failed to sign out. Please try again.');
     }
   }
 
@@ -391,22 +356,23 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       };
       ApiResponse userRes = await authRepo.login(body: body);
       if (userRes.status == Status.completed) {
-        reference.read(userProfileProvider).getUserProfileData(userRes.data["user"]['userId']);
-        AppLocal.ins.setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-        AppLocal.ins.setUserData(Hivekey.userName, userRes.data["user"]['username']);
+        final userId = userRes.data["user"]['userId'];
+        final userName = userRes.data["user"]['username'];
+        final userEmail = userRes.data["user"]['email'];
+
+        reference.read(userProfileProvider).getUserProfileData(userId);
+        AppLocal.ins.setUserData(Hivekey.userId, userId);
+        AppLocal.ins.setUserData(Hivekey.userName, userName);
+        AppLocal.ins.setUserData(Hivekey.userEmail, userEmail);
 
         await AppInitialization.registerUserDeviceToken(reference);
 
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-        });
+        await _navigateAfterSuccessfulLogin();
       } else {
         _setError(userRes.message ?? 'Failed to log in to backend.', AuthResultStatus.error);
-        _showErrorSnackBar(userRes.message ?? 'Failed to log in to backend.');
       }
     } catch (e) {
       _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
-      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
   }
 
@@ -421,11 +387,9 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       ApiResponse userRes = await authRepo.signup(body: body);
       if (userRes.status != Status.completed) {
         _setError(userRes.message ?? 'Failed to sign up to backend.', AuthResultStatus.error);
-        _showErrorSnackBar(userRes.message ?? 'Failed to sign up to backend.');
       }
     } catch (e) {
       _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
-      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
   }
 
@@ -445,12 +409,10 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
             ? raw['user'] as Map
             : (raw as Map);
 
-        final String userId =
-        (user['userId'] ?? user['id'] ?? '').toString().trim();
+        final String userId = (user['userId'] ?? user['id'] ?? '').toString().trim();
         final String username = (user['username'] ?? userName).toString();
         final String userEmail = (user['email'] ?? email).toString();
-        final String userPic =
-        (user['profilePic'] ?? profilePic ?? '').toString();
+        final String userPic = (user['profilePic'] ?? profilePic ?? '').toString();
 
         if (userId.isEmpty) {
           throw Exception('userId missing in backend response');
@@ -468,16 +430,12 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
 
         await AppInitialization.registerUserDeviceToken(reference);
 
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-        });
+        await _navigateAfterSuccessfulLogin();
       } else {
         _setError(userRes.message ?? 'Failed to log in with Google.', AuthResultStatus.error);
-        _showErrorSnackBar(userRes.message ?? 'Failed to log in with Google.');
       }
     } catch (e) {
       _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
-      _showErrorSnackBar('Failed to connect to backend. Please try again.');
     }
   }
 
@@ -492,29 +450,59 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
       };
       ApiResponse userRes = await authRepo.appleLogin(body: body);
       if (userRes.status == Status.completed) {
-        reference
-            .read(userProfileProvider)
-            .getUserProfileData(userRes.data["user"]['userId']);
-        AppLocal.ins
-            .setUserData(Hivekey.userId, userRes.data["user"]['userId']);
-        AppLocal.ins
-            .setUserData(Hivekey.userName, userRes.data["user"]['username']);
-        AppLocal.ins
-            .setUserData(Hivekey.userEmail, userRes.data["user"]['email']);
-        AppLocal.ins.setUserData(
-            Hivekey.userProfielPic, userRes.data["user"]['profilePic']);
+        final userId = userRes.data["user"]['userId'];
+        final username = userRes.data["user"]['username'];
+        final userEmail = userRes.data["user"]['email'];
+        final userPic = userRes.data["user"]['profilePic'] ?? profilePic;
+
+        reference.read(userProfileProvider).getUserProfileData(userId);
+        AppLocal.ins.setUserData(Hivekey.userId, userId);
+        AppLocal.ins.setUserData(Hivekey.userName, username);
+        AppLocal.ins.setUserData(Hivekey.userEmail, userEmail);
+        if (userPic.isNotEmpty) {
+          AppLocal.ins.setUserData(Hivekey.userProfielPic, userPic);
+        }
 
         await AppInitialization.registerUserDeviceToken(reference);
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigation.pushNamedAndRemoveUntil(BottomNavBar.routeName);
-        });
+
+        await _navigateAfterSuccessfulLogin();
       } else {
         _setError(userRes.message ?? 'Failed to log in with Apple.', AuthResultStatus.error);
-        _showErrorSnackBar(userRes.message ?? 'Failed to log in with Apple.');
       }
     } catch (e) {
       _setError('Failed to connect to backend. Please try again.', AuthResultStatus.error);
-      _showErrorSnackBar('Failed to connect to backend. Please try again.');
+    }
+  }
+
+  Future<void> _navigateAfterSuccessfulLogin() async {
+    await Future.delayed(Duration(milliseconds: 500));
+
+    try {
+      final navigatorContext = navigatorKey.currentContext;
+      if (navigatorContext != null && navigatorContext.mounted) {
+        // Get user data from local storage
+        final userId = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
+        final userName = AppLocal.ins.getUSerData(Hivekey.userName) ?? "";
+        final userEmail = AppLocal.ins.getUSerData(Hivekey.userEmail) ?? "";
+        final userProfilePicture = AppLocal.ins.getUSerData(Hivekey.userProfielPic) ?? "";
+
+        await ArtleapNavigationManager.navigateBasedOnUserStatusWithRef(
+          context: navigatorContext,
+          ref: reference,
+          userId: userId,
+          userName: userName,
+          userProfilePicture: userProfilePicture,
+          userEmail: userEmail,
+          hasSeenTutorial: await ArtleapNavigationManager.getTutorialStatusWithRef(reference),
+        );
+      } else {
+        // Fallback navigation
+        Navigation.pushNamedAndRemoveUntil(AcceptPrivacyPolicyScreen.routeName);
+      }
+    } catch (e) {
+      print('Navigation error: $e');
+      // Fallback to privacy policy screen on error
+      Navigation.pushNamedAndRemoveUntil(AcceptPrivacyPolicyScreen.routeName);
     }
   }
 }

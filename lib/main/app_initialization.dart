@@ -3,6 +3,7 @@ import 'package:Artleap.ai/domain/notification_services/firebase_notification_se
 import 'package:Artleap.ai/domain/notifications_repo/notification_repository.dart';
 import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
+import 'package:Artleap.ai/remote_config/remote_config_service.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -41,6 +42,9 @@ class AppInitialization {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    await RemoteConfigService.instance.initialize();
+    await RemoteConfigService.instance.fetchAndActivate();
 
     await AppLocal.ins.initStorage();
     await DI.initDI();

@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../console.dart';
+import 'console.dart';
 
 class Pickers {
   static final ins = Pickers._internal();
@@ -19,7 +19,6 @@ class Pickers {
           preferredCameraDevice: preferredCameraDevice);
       return file?.path;
     } catch (e) {
-      console(e.toString());
       return null;
     }
   }
@@ -33,7 +32,6 @@ class Pickers {
       }
       return paths;
     } catch (e) {
-      console(e.toString());
       return [];
     }
   }
@@ -64,7 +62,6 @@ class Pickers {
           allowCompression: allowCompression,
           allowMultiple: allowMultiple);
     } catch (e) {
-      console(e.toString());
       return null;
     }
   }

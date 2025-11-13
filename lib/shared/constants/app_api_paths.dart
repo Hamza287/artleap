@@ -64,4 +64,10 @@ class AppApiPaths {
   static const String getUserSavedImages = "users/saved";
   static const String checkUserSave = "${savedBasePath}:imageId/save/check";
   static const String getSavedCount = "users/saved/count";
+
+  static const String userPreferencesBase = "user-preferences/";
+  static const String acceptPrivacyPolicy = "${userPreferencesBase}privacy-policy/accept";
+  static const String updateInterests = "${userPreferencesBase}interests/update";
+  static const String getUserPreferences = "${userPreferencesBase}preferences/";
+  static const String checkPrivacyPolicyStatus = "${userPreferencesBase}privacy-policy/status/";
 }

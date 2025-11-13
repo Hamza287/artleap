@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_colors.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:Artleap.ai/providers/watermark_provider.dart';
 import '../../../../providers/full_image_state_provider.dart';

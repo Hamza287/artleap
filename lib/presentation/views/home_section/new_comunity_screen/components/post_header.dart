@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
+import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -125,18 +127,8 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
     final theme = Theme.of(context);
     final downloadUrl = _filteredImageUrl;
     final downloadUint8List = widget.uint8ListImage;
-    ref
-        .read(favProvider)
-        .downloadImage(downloadUrl!, uint8ListObject: downloadUint8List);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Downloading image...'),
-        backgroundColor: theme.colorScheme.primary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
+    ref.read(favProvider).downloadImage(downloadUrl!, uint8ListObject: downloadUint8List);
+    appSnackBar('Downloading', 'Downloading image...',backgroundColor: theme.colorScheme.primary);
   }
 
   void _handleShare(BuildContext context) async {
@@ -146,15 +138,7 @@ class _PostHeaderState extends ConsumerState<PostHeader> {
     if (shareUrl != null) {
       await Share.shareUri(Uri.parse(shareUrl));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Unable to share image'),
-          backgroundColor: theme.colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      appSnackBar('Error', 'Unable to share image',backgroundColor: AppColors.red);
     }
   }
 

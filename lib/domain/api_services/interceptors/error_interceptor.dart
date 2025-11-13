@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
 import '../../../shared/constants/app_constants.dart';
-import '../../../shared/general_methods.dart';
+import '../../../shared/utilities/general_methods.dart';
 
 class ErrorInterceptor extends Interceptor {
   @override
