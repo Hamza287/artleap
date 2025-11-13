@@ -81,7 +81,6 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
       onError: (error) {
         _safeStateUpdate(() {
           ref.read(paymentLoadingProvider.notifier).state = false;
-          appSnackBar('Error', 'Purchase error: $error', Colors.red);
         });
       },
     );
@@ -103,11 +102,6 @@ class _GooglePaymentScreenState extends ConsumerState<GooglePaymentScreen> {
         case PurchaseStatus.error:
           _safeStateUpdate(() {
             ref.read(paymentLoadingProvider.notifier).state = false;
-            appSnackBar(
-              'Error',
-              'Purchase error: ${purchaseDetails.error?.message ?? "Unknown error"}',
-              Colors.red,
-            );
           });
           break;
 

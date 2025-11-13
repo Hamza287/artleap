@@ -82,7 +82,6 @@ class PaymentService {
       return ApiResponse.processing('Purchase initiated');
     } catch (e) {
       _purchaseSubscription?.cancel();
-      appSnackBar('Error', 'Purchase error', Colors.red);
       return ApiResponse.error(e.toString());
     }
   }
@@ -156,13 +155,10 @@ class PaymentService {
             appSnackBar('Error', 'Error processing purchase', Colors.red);
           }
           break;
-
         case PurchaseStatus.error:
-          appSnackBar('Error', 'Purchase error', Colors.red);
           break;
 
         case PurchaseStatus.canceled:
-          // appSnackBar('Info', 'Purchase canceled', Colors.yellow);
           break;
       }
     }

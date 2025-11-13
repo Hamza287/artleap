@@ -112,7 +112,6 @@ class StripeService {
         return ApiResponse.error('Stripe error');
       }
     } catch (e) {
-      appSnackBar('Error', 'Purchase error', Colors.red);
       return ApiResponse.error('Purchase error');
     }
   }
