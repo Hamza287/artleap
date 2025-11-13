@@ -7,7 +7,7 @@ import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/domain/subscriptions/subscription_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import '../../shared/theme/app_colors.dart';
 import '../base_repo/base.dart';
 

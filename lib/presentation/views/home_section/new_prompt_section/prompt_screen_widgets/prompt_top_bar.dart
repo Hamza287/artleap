@@ -1,8 +1,8 @@
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/providers/prompt_nav_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../providers/prompt_nav_provider.dart';
+import 'package:feather_icons/feather_icons.dart';
 
 final isDropdownExpandedProvider = StateProvider<bool>((ref) => false);
 
@@ -59,22 +59,22 @@ class PromptTopBar extends ConsumerWidget {
 
     final options = [
       _DropdownOption(
-        icon: AppAssets.create,
+        icon: FeatherIcons.plusSquare,
         label: "Create",
         value: PromptNavItem.create,
       ),
       _DropdownOption(
-        icon: AppAssets.enhance,
+        icon: FeatherIcons.edit,
         label: "Edit Object",
         value: PromptNavItem.edit,
       ),
       _DropdownOption(
-        icon: AppAssets.animate,
+        icon: FeatherIcons.playCircle,
         label: "Animate",
         value: PromptNavItem.animate,
       ),
       _DropdownOption(
-        icon: AppAssets.editObject,
+        icon: FeatherIcons.zap,
         label: "Enhance",
         value: PromptNavItem.enhance,
       ),
@@ -104,7 +104,7 @@ class PromptTopBar extends ConsumerWidget {
             child: InkWell(
               onTap: () {
                 ref.read(isDropdownExpandedProvider.notifier).state =
-                    !isExpanded;
+                !isExpanded;
                 if (isExpanded) {
                   animationController.reverse();
                 } else {
@@ -114,7 +114,7 @@ class PromptTopBar extends ConsumerWidget {
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding:
-                    EdgeInsets.symmetric(horizontal: padding, vertical: 10),
+                EdgeInsets.symmetric(horizontal: padding, vertical: 10),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -133,15 +133,14 @@ class PromptTopBar extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
-                        child: Image.asset(
+                        child: Icon(
                           currentOption.icon,
-                          height: iconSize * 0.5,
+                          size: iconSize * 0.5,
                           color: theme.colorScheme.primary,
                         ),
                       ),
                     ),
                     SizedBox(width: padding * 0.8),
-                    // Text
                     Expanded(
                       child: Text(
                         currentOption.label,
@@ -158,7 +157,7 @@ class PromptTopBar extends ConsumerWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant,
+                        color: theme.colorScheme.surfaceContainerHighest,
                         shape: BoxShape.circle,
                       ),
                       child: RotationTransition(
@@ -219,7 +218,7 @@ class PromptTopBar extends ConsumerWidget {
                               .read(promptNavProvider.notifier)
                               .setNavItem(option.value);
                           ref.read(isDropdownExpandedProvider.notifier).state =
-                              false;
+                          false;
                           animationController.reverse();
                         },
                         child: Container(
@@ -230,15 +229,14 @@ class PromptTopBar extends ConsumerWidget {
                               bottom: options.last == option
                                   ? BorderSide.none
                                   : BorderSide(
-                                      color: theme.colorScheme.outline
-                                          .withOpacity(0.1),
-                                      width: 1,
-                                    ),
+                                color: theme.colorScheme.outline
+                                    .withOpacity(0.1),
+                                width: 1,
+                              ),
                             ),
                           ),
                           child: Row(
                             children: [
-                              // Option Icon
                               Container(
                                 width: iconSize,
                                 height: iconSize,
@@ -247,15 +245,14 @@ class PromptTopBar extends ConsumerWidget {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Center(
-                                  child: Image.asset(
+                                  child: Icon(
                                     option.icon,
-                                    height: iconSize * 0.45,
+                                    size: iconSize * 0.45,
                                     color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
                               SizedBox(width: padding * 0.8),
-                              // Option Text
                               Expanded(
                                 child: Text(
                                   option.label,
@@ -267,7 +264,6 @@ class PromptTopBar extends ConsumerWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              // Chevron Icon
                               Icon(
                                 Icons.chevron_right_rounded,
                                 color: theme.colorScheme.onSurface
@@ -329,7 +325,6 @@ class PromptTopBar extends ConsumerWidget {
   }
 }
 
-// Provider for AnimationController
 final _animationControllerProvider = Provider<AnimationController>((ref) {
   final controller = AnimationController(
     vsync: _TickerProvider(),
@@ -345,7 +340,7 @@ class _TickerProvider extends TickerProvider {
 }
 
 class _DropdownOption {
-  final String icon;
+  final IconData icon;
   final String label;
   final PromptNavItem value;
 

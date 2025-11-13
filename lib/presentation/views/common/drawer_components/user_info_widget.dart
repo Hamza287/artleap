@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:feather_icons/feather_icons.dart';
 
 class IconWithTextTile extends ConsumerWidget {
-  final String? imageIcon;
+  final IconData? imageIcon;
   final String? title;
   final Color? titleColor;
-  const IconWithTextTile(
-      {super.key, this.imageIcon, this.title, this.titleColor});
+  const IconWithTextTile({
+    super.key,
+    this.imageIcon,
+    this.title,
+    this.titleColor
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,16 +22,19 @@ class IconWithTextTile extends ConsumerWidget {
       children: [
         Container(
           width: 25,
-          child: Image.asset(
+          child: Icon(
             imageIcon!,
-            scale: 1,
+            size: 20,
+            color: titleColor ?? AppColors.white,
           ),
         ),
         12.spaceX,
         Text(
           title!,
           style: AppTextstyle.interMedium(
-              fontSize: 13, color: titleColor ?? AppColors.white),
+              fontSize: 13,
+              color: titleColor ?? AppColors.white
+          ),
         ),
       ],
     );

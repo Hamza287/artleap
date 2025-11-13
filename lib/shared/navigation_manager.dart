@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ArtleapNavigationManager {
-  // Version for WidgetRef (used in widgets)
   static Future<void> navigateBasedOnUserStatus({
     required BuildContext context,
     required WidgetRef ref,
@@ -33,7 +32,6 @@ class ArtleapNavigationManager {
     );
   }
 
-  // Version for Ref (used in providers)
   static Future<void> navigateBasedOnUserStatusWithRef({
     required BuildContext context,
     required Ref ref,
@@ -55,7 +53,6 @@ class ArtleapNavigationManager {
     );
   }
 
-  // Common implementation
   static Future<void> _navigateBasedOnUserStatusImpl({
     required BuildContext context,
     required String userId,
@@ -99,14 +96,12 @@ class ArtleapNavigationManager {
     }
   }
 
-  // Version for WidgetRef
   static Future<bool> getTutorialStatus(WidgetRef ref) async {
     final tutorialStorage = ref.read(tutorialStorageServiceProvider);
     await tutorialStorage.init();
     return tutorialStorage.hasSeenTutorial();
   }
 
-  // Version for Ref
   static Future<bool> getTutorialStatusWithRef(Ref ref) async {
     final tutorialStorage = ref.read(tutorialStorageServiceProvider);
     await tutorialStorage.init();

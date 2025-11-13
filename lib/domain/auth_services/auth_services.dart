@@ -4,7 +4,7 @@ import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Artleap.ai/shared/app_persistance/app_local.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../shared/auth_exception_handler/auth_exception_handler.dart';
 import '../../shared/constants/hive_keys.dart';

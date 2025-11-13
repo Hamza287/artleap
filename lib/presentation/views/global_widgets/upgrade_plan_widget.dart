@@ -53,7 +53,7 @@ class UpgradeToProBanner extends StatelessWidget {
                       scale: 1.3,
                       child: Image.asset(
                         AppAssets.upgrade,
-                        height: 40, // actual image size
+                        height: 40,
                         width: 40,
                         fit: BoxFit.contain,
                       ),

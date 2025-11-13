@@ -1,9 +1,10 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:feather_icons/feather_icons.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../shared/constants/user_data.dart';
@@ -33,7 +34,6 @@ class ProfileDrawer extends ConsumerStatefulWidget {
 }
 
 class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
-
   @override
   void initState() {
     super.initState();
@@ -46,256 +46,259 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final iconSize = screenWidth * 0.06;
+    final screenSize = MediaQuery.of(context).size;
+    final iconSize = screenSize.width * 0.06;
 
     final profileProvider = ref.watch(userProfileProvider);
     final user = profileProvider.userProfileData?.user;
+    final isFreePlan = user?.planName.toLowerCase() == 'free';
 
     return Drawer(
-      width: screenWidth * 0.9,
+      width: screenSize.width * 0.9,
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       child: SafeArea(
         child: Stack(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: isDark
-                      ? [
-                    theme.colorScheme.surface.withOpacity(0.9),
-                    theme.colorScheme.surface.withOpacity(0.8),
-                  ]
-                      : [
-                    Color(0x5F0A0025),
-                    Color(0x5E0A0025),
-                  ],
-                ),
-              ),
-            ),
+            _buildBackground(theme, isDark),
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 7.0, sigmaY: 7.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                ),
+              child: Container(color: Colors.transparent),
+            ),
+            _buildContent(context, theme, isDark, screenSize, iconSize, isFreePlan),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackground(ThemeData theme, bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+            theme.colorScheme.surface.withOpacity(0.9),
+            theme.colorScheme.surface.withOpacity(0.8),
+          ]
+              : [
+            const Color(0x5F0A0025),
+            const Color(0x5E0A0025),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, ThemeData theme, bool isDark, Size screenSize, double iconSize, bool isFreePlan) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildCloseButton(context, iconSize, theme),
+          _buildProfileHeader(context, theme, isDark, screenSize),
+          if (isFreePlan) _buildUpgradeBanner(screenSize),
+          10.spaceY,
+          _buildGeneralSection(context, theme, screenSize, isFreePlan),
+          10.spaceY,
+          _buildAboutSection(context, theme, screenSize),
+          _buildBottomSection(context, theme, isDark, screenSize),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCloseButton(BuildContext context, double iconSize, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, right: 16),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: GlassCircleButton(
+          icon: FeatherIcons.x,
+          size: iconSize,
+          onPressed: () => Navigator.pop(context),
+          theme: theme,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader(BuildContext context, ThemeData theme, bool isDark, Size screenSize) {
+    return Padding(
+      padding: EdgeInsets.only(left: screenSize.width * 0.05, top: 16, right: 16),
+      child: Row(
+        children: [
+          Container(
+            width: screenSize.width * 0.18,
+            height: screenSize.width * 0.18,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isDark ? theme.colorScheme.onSurface.withOpacity(0.3) : AppColors.white.withOpacity(0.3),
+                width: 1.5,
+              ),
+              image: DecorationImage(
+                image: widget.profileImage.isEmpty
+                    ? const AssetImage(AppAssets.profilepic) as ImageProvider
+                    : NetworkImage(widget.profileImage),
+                fit: BoxFit.cover,
               ),
             ),
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 16, right: 16),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: GlassCircleButton(
-                        icon: Icons.close,
-                        size: iconSize,
-                        onPressed: () => Navigator.pop(context),
-                        theme: theme,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: screenWidth * 0.18,
-                          height: screenWidth * 0.18,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isDark
-                                  ? theme.colorScheme.onSurface.withOpacity(0.3)
-                                  : AppColors.white.withOpacity(0.3),
-                              width: 1.5,
-                            ),
-                            image: DecorationImage(
-                              image: widget.profileImage.isEmpty
-                                  ? const AssetImage(AppAssets.profilepic) as ImageProvider
-                                  : NetworkImage(widget.profileImage),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: screenWidth * 0.04),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.userName,
-                              style: AppTextstyle.interMedium(
-                                color: isDark ? theme.colorScheme.onSurface : AppColors.white,
-                                fontSize: screenWidth * 0.04,
-                              ),
-                            ),
-                            SizedBox(height: screenHeight * 0.01),
-                            Text(
-                              widget.userEmail,
-                              style: AppTextstyle.interMedium(
-                                color: isDark
-                                    ? theme.colorScheme.onSurface.withOpacity(0.8)
-                                    : AppColors.white.withOpacity(0.8),
-                                fontSize: screenWidth * 0.035,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  user?.planName.toLowerCase() == 'free' ?
-                  Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16, right: 16),
-                    child: UpgradeToProBanner(),
-                  ) : Container(),
-                  10.spaceY,
-                  Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
-                    child: _buildSection(
-                      context,
-                      title: "General",
-                      items: [
-                        ProfileMenuItem(
-                          icon: AppAssets.userinfoicon,
-                          title: "Personal Information",
-                          onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
-                          theme: theme,
-                        ),
-                        user?.planName.toLowerCase() == 'free' ?
-                        ProfileMenuItem(
-                          icon: AppAssets.currentPlan,
-                          title: "You don't have an active subscription",
-                          onTap: ()=> Navigator.of(context).pushNamed("choose_plan_screen"),
-                          color: theme.colorScheme.error,
-                          theme: theme,
-                        ) : ProfileMenuItem(
-                          icon: AppAssets.currentPlan,
-                          title: "Current Plan",
-                          onTap: () => _navigateTo(context, '/subscription-status'),
-                          theme: theme,
-                        ) ,
-                        ProfileMenuItem(
-                          icon: AppAssets.privacyicon,
-                          title: "Privacy Policy",
-                          onTap: () => _navigateTo(context, '/privacy-policy'),
-                          theme: theme,
-                        ),
-                        ProfileMenuItem(
-                          icon: AppAssets.payment,
-                          title: "Subscription Plans",
-                          onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
-                          theme: theme,
-                        ),
-                        ProfileMenuItem(
-                          icon: AppAssets.saveicon,
-                          title: "Favourites",
-                          onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
-                          theme: theme,
-                        ),
-                        ThemeSelectorMenuItem(
-                          theme: theme,
-                          currentTheme: ref.watch(themeProvider),
-                          onThemeChanged: (ThemeMode newTheme) {
-                            ref.read(themeProvider.notifier).setTheme(newTheme);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  10.spaceY,
-                  Padding(
-                    padding: EdgeInsets.only(left: screenWidth * 0.05, top: 16),
-                    child: _buildSection(
-                      context,
-                      title: "About",
-                      items: [
-                        ProfileMenuItem(
-                          icon: AppAssets.follow,
-                          title: "Follow us on Social Media",
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                              ),
-                              isScrollControlled: true,
-                              builder: (context) => const SocialMediaBottomSheet(),
-                            );
-                          },
-                          theme: theme,
-                        ),
-                        ProfileMenuItem(
-                          icon: AppAssets.helpCenter,
-                          title: "Help Center",
-                          onTap: () => _navigateTo(context, '/help-screen'),
-                          theme: theme,
-                        ),
-                        ProfileMenuItem(
-                          icon: AppAssets.abouticon,
-                          title: "About Artleap",
-                          onTap: () => _navigateTo(context, '/about-artleap'),
-                          theme: theme,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? theme.colorScheme.surface.withOpacity(0.5)
-                          : Color(0x991D0751),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: screenWidth * 0.05, top: 10, bottom: 20),
-                      child: Column(
-                        children: [
-                          ProfileMenuItem(
-                            icon: AppAssets.logouticon,
-                            title: "Logout",
-                            color: theme.colorScheme.error,
-                            onTap: () => DialogService.showAppDialog(
-                              context: context,
-                              type: DialogType.logout,
-                              title: 'Logout Account',
-                              message: 'You\'re about to logout from your account. Are you sure you want to continue?',
-                              confirmText: 'Logout',
-                              onConfirm: () {
-                                AppLocal.ins.clearUSerData(Hivekey.userId);
-                                Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
-                              },
-                            ),
-                            theme: theme,
-                          ),
-                          ProfileMenuItem(
-                            icon: AppAssets.deleteicon,
-                            title: "Delete Account",
-                            color: theme.colorScheme.error.withOpacity(0.9),
-                            onTap: () => DialogService.showAppDialog(
-                              context: context,
-                              type: DialogType.confirmDelete,
-                              title: 'Delete Account',
-                              message: 'Are you sure you want to permanently delete your account? This action cannot be undone and all your data will be lost.',
-                              confirmText: 'Delete Account',
-                              onConfirm: () {
-                                ref.read(userProfileProvider).deActivateAccount(UserData.ins.userId!);
-                              },
-                            ),
-                            theme: theme,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
+          ),
+          SizedBox(width: screenSize.width * 0.04),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.userName,
+                style: AppTextstyle.interMedium(
+                  color: isDark ? theme.colorScheme.onSurface : AppColors.white,
+                  fontSize: screenSize.width * 0.04,
+                ),
               ),
+              SizedBox(height: screenSize.height * 0.01),
+              Text(
+                widget.userEmail,
+                style: AppTextstyle.interMedium(
+                  color: isDark ? theme.colorScheme.onSurface.withOpacity(0.8) : AppColors.white.withOpacity(0.8),
+                  fontSize: screenSize.width * 0.035,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpgradeBanner(Size screenSize) {
+    return Padding(
+      padding: EdgeInsets.only(left: screenSize.width * 0.05, top: 16, right: 16),
+      child: UpgradeToProBanner(),
+    );
+  }
+
+  Widget _buildGeneralSection(BuildContext context, ThemeData theme, Size screenSize, bool isFreePlan) {
+    return Padding(
+      padding: EdgeInsets.only(left: screenSize.width * 0.05, top: 16),
+      child: _buildSection(
+        context,
+        title: "General",
+        items: [
+          ProfileMenuItem(
+            icon: FeatherIcons.user,
+            title: "Personal Information",
+            onTap: () => Navigator.of(context).pushNamed("personal_info_screen"),
+            theme: theme,
+          ),
+          isFreePlan
+              ? ProfileMenuItem(
+            icon: FeatherIcons.creditCard,
+            title: "You don't have an active subscription",
+            onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
+            color: theme.colorScheme.error,
+            theme: theme,
+          )
+              : ProfileMenuItem(
+            icon: FeatherIcons.creditCard,
+            title: "Current Plan",
+            onTap: () => _navigateTo(context, '/subscription-status'),
+            theme: theme,
+          ),
+          ProfileMenuItem(
+            icon: FeatherIcons.shield,
+            title: "Privacy Policy",
+            onTap: () => _navigateTo(context, '/privacy-policy'),
+            theme: theme,
+          ),
+          ProfileMenuItem(
+            icon: FeatherIcons.dollarSign,
+            title: "Subscription Plans",
+            onTap: () => Navigator.of(context).pushNamed("choose_plan_screen"),
+            theme: theme,
+          ),
+          ProfileMenuItem(
+            icon: FeatherIcons.heart,
+            title: "Favourites",
+            onTap: () => Navigator.pushNamed(context, FavouritesScreen.routeName),
+            theme: theme,
+          ),
+          ThemeSelectorMenuItem(
+            theme: theme,
+            currentTheme: ref.watch(themeProvider),
+            onThemeChanged: (ThemeMode newTheme) {
+              ref.read(themeProvider.notifier).setTheme(newTheme);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAboutSection(BuildContext context, ThemeData theme, Size screenSize) {
+    return Padding(
+      padding: EdgeInsets.only(left: screenSize.width * 0.05, top: 16),
+      child: _buildSection(
+        context,
+        title: "About",
+        items: [
+          ProfileMenuItem(
+            icon: FeatherIcons.users,
+            title: "Follow us on Social Media",
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                isScrollControlled: true,
+                builder: (context) => const SocialMediaBottomSheet(),
+              );
+            },
+            theme: theme,
+          ),
+          ProfileMenuItem(
+            icon: FeatherIcons.helpCircle,
+            title: "Help Center",
+            onTap: () => _navigateTo(context, '/help-screen'),
+            theme: theme,
+          ),
+          ProfileMenuItem(
+            icon: FeatherIcons.info,
+            title: "About Artleap",
+            onTap: () => _navigateTo(context, '/about-artleap'),
+            theme: theme,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomSection(BuildContext context, ThemeData theme, bool isDark, Size screenSize) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? theme.colorScheme.surface.withOpacity(0.5) : const Color(0x991D0751),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: screenSize.width * 0.05, top: 10, bottom: 20),
+        child: Column(
+          children: [
+            ProfileMenuItem(
+              icon: FeatherIcons.logOut,
+              title: "Logout",
+              color: theme.colorScheme.error,
+              onTap: () => _showLogoutDialog(context),
+              theme: theme,
+            ),
+            ProfileMenuItem(
+              icon: FeatherIcons.trash2,
+              title: "Delete Account",
+              color: theme.colorScheme.error.withOpacity(0.9),
+              onTap: () => _showDeleteAccountDialog(context),
+              theme: theme,
             ),
           ],
         ),
@@ -307,13 +310,9 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SeparatorWidget(
-          title: title,
-        ),
-        SizedBox(height: 10),
-        Column(
-          children: items,
-        ),
+        SeparatorWidget(title: title),
+        const SizedBox(height: 10),
+        Column(children: items),
       ],
     );
   }
@@ -322,8 +321,31 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     Navigator.pop(context);
     Navigator.pushNamed(context, routeName);
   }
+
+  void _showLogoutDialog(BuildContext context) {
+    DialogService.showAppDialog(
+      context: context,
+      type: DialogType.logout,
+      title: 'Logout Account',
+      message: 'You\'re about to logout from your account. Are you sure you want to continue?',
+      confirmText: 'Logout',
+      onConfirm: () {
+        AppLocal.ins.clearUSerData(Hivekey.userId);
+        Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
+      },
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    DialogService.showAppDialog(
+      context: context,
+      type: DialogType.confirmDelete,
+      title: 'Delete Account',
+      message: 'Are you sure you want to permanently delete your account? This action cannot be undone and all your data will be lost.',
+      confirmText: 'Delete Account',
+      onConfirm: () {
+        ref.read(userProfileProvider).deActivateAccount(UserData.ins.userId!);
+      },
+    );
+  }
 }
-
-
-
-

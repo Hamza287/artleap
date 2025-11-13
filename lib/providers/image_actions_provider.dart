@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/base_repo/base_repo.dart';
 import 'package:flutter/material.dart';
-import '../shared/app_snack_bar.dart';
+import '../widgets/common/app_snack_bar.dart';
 
 enum ImageActionLoading {
   none,

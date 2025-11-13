@@ -1,6 +1,6 @@
 export 'general_methods.dart';
 export 'console.dart';
-export 'app_snack_bar.dart';
+export '../widgets/common/app_snack_bar.dart';
 
 
 export 'constants/app_api_paths.dart';

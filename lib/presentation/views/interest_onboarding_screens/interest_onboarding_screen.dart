@@ -1,7 +1,7 @@
 import 'package:Artleap.ai/domain/user_preferences/user_preferences_service.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/providers/interest_onboarding_provider.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/shared/utilities/progress_bar.dart';

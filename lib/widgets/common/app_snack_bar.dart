@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'navigation/navigator_key.dart';
+import '../../shared/navigation/navigator_key.dart';
 
 void appSnackBar(
     String title,

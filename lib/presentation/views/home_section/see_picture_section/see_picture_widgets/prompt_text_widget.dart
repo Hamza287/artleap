@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../../../shared/app_snack_bar.dart';
+import '../../../../../widgets/common/app_snack_bar.dart';
 
 class PromptTextWidget extends ConsumerWidget {
   final String? prompt;

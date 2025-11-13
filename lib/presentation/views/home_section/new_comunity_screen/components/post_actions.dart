@@ -1,5 +1,5 @@
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
 import 'package:flutter/material.dart';

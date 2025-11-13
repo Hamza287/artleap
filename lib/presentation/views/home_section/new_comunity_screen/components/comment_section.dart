@@ -1,6 +1,6 @@
 import 'package:Artleap.ai/domain/community/models/comment_model.dart';
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

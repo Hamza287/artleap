@@ -3,7 +3,7 @@ import 'package:Artleap.ai/main/app_keyboard_listener.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/providers/localization_provider.dart';
 import 'package:Artleap.ai/presentation/splash_screen.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/localization/app_localization.dart';
 import 'package:Artleap.ai/shared/navigation/navigator_key.dart';
 import 'package:Artleap.ai/shared/navigation/route_generator.dart';

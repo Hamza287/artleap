@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:Artleap.ai/providers/favrourite_provider.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';

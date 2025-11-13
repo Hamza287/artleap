@@ -1,4 +1,4 @@
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/widgets/state_widgets/empty_state.dart';
 import 'package:Artleap.ai/widgets/state_widgets/error_state.dart';
 import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';

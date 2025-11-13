@@ -1,5 +1,5 @@
 import 'package:Artleap.ai/domain/community/providers/comment_provider.dart';
-import 'package:Artleap.ai/shared/app_snack_bar.dart';
+import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:Artleap.ai/widgets/state_widgets/empty_state.dart';
