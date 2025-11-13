@@ -1,5 +1,5 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class ProIconBadge extends StatelessWidget {
   final double size;
@@ -52,12 +52,11 @@ class ProIconBadge extends StatelessWidget {
           ),
           if (withText) ...[
             const SizedBox(width: 4),
-            Text(
+            AppText(
               'PRO',
-              style: AppTextstyle.interMedium(
-                fontSize: size - 6,
-                color: Colors.white,
-              ),
+              size: size - 6,
+              weight: FontWeight.w600,
+              color: Colors.white,
             ),
           ],
         ],

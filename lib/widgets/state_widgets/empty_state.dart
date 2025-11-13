@@ -1,5 +1,5 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class EmptyState extends StatelessWidget {
   final IconData icon;
@@ -77,22 +77,20 @@ class EmptyState extends StatelessWidget {
                 ),
               ),
               SizedBox(height: size.height * 0.025),
-              Text(
+              AppText(
                 title,
-                textAlign: TextAlign.center,
-                style: AppTextstyle.interMedium(
-                  color: theme.colorScheme.onSurface,
-                  fontSize: size.width * 0.05,
-                ),
+                size: size.width * 0.05,
+                weight: FontWeight.w500,
+                color: theme.colorScheme.onSurface,
+                align: TextAlign.center,
               ),
               SizedBox(height: size.height * 0.012),
-              Text(
+              AppText(
                 subtitle,
-                textAlign: TextAlign.center,
-                style: AppTextstyle.interRegular(
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  fontSize: size.width * 0.038,
-                ),
+                size: size.width * 0.038,
+                weight: FontWeight.w400,
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                align: TextAlign.center,
               ),
               if (onAction != null && actionText != null) ...[
                 SizedBox(height: size.height * 0.03),
@@ -109,12 +107,11 @@ class EmptyState extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text(
+                  child: AppText(
                     actionText!,
-                    style: AppTextstyle.interMedium(
-                      fontSize: size.width * 0.038,
-                      color: theme.colorScheme.onPrimary,
-                    ),
+                    size: size.width * 0.038,
+                    weight: FontWeight.w500,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ],

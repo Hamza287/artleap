@@ -1,4 +1,5 @@
 import 'package:Artleap.ai/shared/utilities/privacy_settings_content.dart';
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import '../../providers/image_privacy_provider.dart';
 import 'base_dialog.dart';
@@ -131,13 +132,11 @@ class DialogService {
         backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
+        title: AppText(
           'Privacy Settings',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          size: 18,
+          weight: FontWeight.w600,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
         content: PrivacySettingsContent(
           imageId: imageId,

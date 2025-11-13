@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'sections/about_artleap_contact.dart';
@@ -34,12 +35,10 @@ class AboutArtleapScreen extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
-      title: Text(
+      title: AppText(
         'About Artleap',
-        style: AppTextstyle.interBold(
-          fontSize: 20,
+          size: 20,
           color: theme.colorScheme.onPrimary,
-        ),
       ),
       centerTitle: true,
       backgroundColor: theme.colorScheme.primary,

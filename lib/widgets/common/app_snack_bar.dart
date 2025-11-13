@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -9,7 +10,7 @@ void appSnackBar(
       Color backgroundColor = Colors.green,
       Color textColor = Colors.white,
       Color titleColor = Colors.white,
-      Duration duration = const Duration(seconds: 4),
+      Duration duration = const Duration(seconds: 2),
       FlushbarPosition position = FlushbarPosition.BOTTOM,
       bool showProgressIndicator = false,
       FlushbarStyle flushbarStyle = FlushbarStyle.FLOATING,
@@ -29,21 +30,17 @@ void appSnackBar(
     }
 
     Flushbar(
-      titleText: Text(
+      titleText: AppText(
         title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-          color: titleColor,
-        ),
+        size: 16,
+        weight: FontWeight.w600,
+        color: titleColor,
       ),
-      messageText: Text(
+      messageText: AppText(
         message,
-        style: TextStyle(
-          fontWeight: FontWeight.w400,
-          fontSize: 14,
-          color: textColor,
-        ),
+        size: 14,
+        weight: FontWeight.w400,
+        color: textColor,
       ),
       flushbarPosition: position,
       backgroundColor: backgroundColor,
@@ -64,15 +61,12 @@ void appSnackBar(
       mainButton: isDismissible
           ? TextButton(
         onPressed: () {
-          // Dismiss button will automatically close the flushbar
         },
-        child: Text(
+        child: AppText(
           'DISMISS',
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+          size: 12,
+          weight: FontWeight.bold,
+          color: textColor,
         ),
       )
           : null,

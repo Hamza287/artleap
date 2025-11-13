@@ -1,5 +1,5 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class ErrorState extends StatelessWidget {
   final String message;
@@ -62,22 +62,20 @@ class ErrorState extends StatelessWidget {
                 ),
               ),
               SizedBox(height: size.height * 0.025),
-              Text(
+              AppText(
                 'Something went wrong',
-                textAlign: TextAlign.center,
-                style: AppTextstyle.interMedium(
-                  color: theme.colorScheme.onErrorContainer,
-                  fontSize: size.width * 0.045,
-                ),
+                size: size.width * 0.045,
+                weight: FontWeight.w500,
+                color: theme.colorScheme.onErrorContainer,
+                align: TextAlign.center,
               ),
               SizedBox(height: size.height * 0.012),
-              Text(
+              AppText(
                 message,
-                textAlign: TextAlign.center,
-                style: AppTextstyle.interRegular(
-                  color: theme.colorScheme.onErrorContainer.withOpacity(0.7),
-                  fontSize: size.width * 0.035,
-                ),
+                size: size.width * 0.035,
+                weight: FontWeight.w400,
+                color: theme.colorScheme.onErrorContainer.withOpacity(0.7),
+                align: TextAlign.center,
               ),
               if (onRetry != null) ...[
                 SizedBox(height: size.height * 0.03),
@@ -94,12 +92,11 @@ class ErrorState extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: Text(
+                  child: AppText(
                     'Try Again',
-                    style: AppTextstyle.interMedium(
-                      fontSize: size.width * 0.035,
-                      color: theme.colorScheme.onError,
-                    ),
+                    size: size.width * 0.035,
+                    weight: FontWeight.w500,
+                    color: theme.colorScheme.onError,
                   ),
                 ),
               ],

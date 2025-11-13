@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
@@ -21,12 +22,10 @@ class AboutArtleapContactSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
+          AppText(
             'Get In Touch',
-            style: AppTextstyle.interBold(
-              fontSize: 24,
+              size: 24,
               color: theme.colorScheme.onSurface,
-            ),
           ),
           const SizedBox(height: 24),
           _buildContactMethod(
@@ -74,19 +73,15 @@ class AboutArtleapContactSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AppText(
                   title,
-                  style: AppTextstyle.interRegular(
-                    fontSize: 14,
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
-                  ),
+                  size: 14,
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
-                Text(
+                AppText(
                   value,
-                  style: AppTextstyle.interBold(
-                    fontSize: 16,
-                    color: theme.colorScheme.onSurface,
-                  ),
+                  size: 16,
+                  color: theme.colorScheme.onSurface,
                 ),
               ],
             ),

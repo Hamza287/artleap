@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
@@ -44,20 +45,18 @@ class CompactErrorState extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  AppText(
                     'Authentication Error',
-                    style: AppTextstyle.interMedium(
-                      color: theme.colorScheme.onErrorContainer,
-                      fontSize: 14,
-                    ),
+                    size: 14,
+                    weight: FontWeight.w500,
+                    color: theme.colorScheme.onErrorContainer,
                   ),
                   const SizedBox(height: 4),
-                  Text(
+                  AppText(
                     message,
-                    style: AppTextstyle.interRegular(
-                      color: theme.colorScheme.onErrorContainer.withOpacity(0.8),
-                      fontSize: 13,
-                    ),
+                    size: 13,
+                    weight: FontWeight.w400,
+                    color: theme.colorScheme.onErrorContainer.withOpacity(0.8),
                   ),
                   // if (onRetry != null) ...[
                   //   const SizedBox(height: 8),
@@ -73,12 +72,11 @@ class CompactErrorState extends StatelessWidget {
                   //           borderRadius: BorderRadius.circular(8),
                   //         ),
                   //       ),
-                  //       child: Text(
+                  //       child: AppText( // ← Changed from Text to AppText
                   //         'Try Again',
-                  //         style: AppTextstyle.interMedium(
-                  //           fontSize: 12,
-                  //           color: theme.colorScheme.onError,
-                  //         ),
+                  //         size: 12,
+                  //         weight: FontWeight.w500,
+                  //         color: theme.colorScheme.onError,
                   //       ),
                   //     ),
                   //   ),

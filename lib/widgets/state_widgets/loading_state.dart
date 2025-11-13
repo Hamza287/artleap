@@ -1,5 +1,5 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class LoadingState extends StatelessWidget {
   final String? message;
@@ -35,12 +35,11 @@ class LoadingState extends StatelessWidget {
             ),
           ),
           SizedBox(height: size.height * 0.025),
-          Text(
+          AppText(
             message ?? 'Loading...',
-            style: AppTextstyle.interRegular(
-              fontSize: size.width * 0.04,
-              color: theme.colorScheme.onSurface.withOpacity(0.7),
-            ),
+            size: size.width * 0.04,
+            weight: FontWeight.w400,
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
@@ -26,22 +27,18 @@ class AboutArtleapHeroSection extends StatelessWidget {
             height: 120,
           ),
           const SizedBox(height: 24),
-          Text(
+          AppText(
             'Where Creativity Meets AI',
-            style: AppTextstyle.interBold(
-              fontSize: 28,
-              color: theme.colorScheme.onPrimary,
-            ),
-            textAlign: TextAlign.center,
+            size: 28,
+            color: theme.colorScheme.onPrimary,
+            align: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          Text(
+          AppText(
             'Artleap is revolutionizing digital art creation by combining human creativity with cutting-edge artificial intelligence.',
-            style: AppTextstyle.interRegular(
-              fontSize: 16,
-              color: theme.colorScheme.onPrimary.withOpacity(0.8),
-            ),
-            textAlign: TextAlign.center,
+            size: 16,
+            color: theme.colorScheme.onPrimary.withOpacity(0.8),
+            align: TextAlign.center,
           ),
         ],
       ),
