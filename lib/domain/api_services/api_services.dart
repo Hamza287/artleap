@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../shared/constants/app_constants.dart';
-import '../../shared/general_methods.dart';
+import '../../shared/utilities/general_methods.dart';
 import 'dio_core.dart';
 
 class ApiServices extends DioCore {

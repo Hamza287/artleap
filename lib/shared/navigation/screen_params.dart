@@ -1,11 +1,5 @@
 import 'dart:typed_data';
 
-class DummyScreenArgs {
-  final String? firstName;
-  final String? lastName;
-  DummyScreenArgs({this.firstName, this.lastName});
-}
-
 class SeePictureParams {
   String? imageId;
   final String? userId;

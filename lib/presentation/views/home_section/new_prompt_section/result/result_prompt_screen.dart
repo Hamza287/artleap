@@ -6,9 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'components/action_buttons_row.dart';
-import 'components/feature_buttons.dart';
 import 'components/image_results_grid.dart';
-import 'components/prompt_section.dart';
 import 'components/result_header.dart';
 
 class ResultScreenRedesign extends ConsumerStatefulWidget {

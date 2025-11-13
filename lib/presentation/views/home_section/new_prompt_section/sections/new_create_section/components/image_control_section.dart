@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'styles_bottom_sheet.dart';
 import 'style_selection_card.dart';

@@ -13,7 +13,7 @@ import 'drawer_components/separator_widget.dart';
 import 'drawer_components/glass_circle_button.dart';
 import 'drawer_components/profile_menu_item.dart';
 import 'drawer_components/theme_selector_menu_item.dart';
-import '../global_widgets/upgrade_plan_widget.dart';
+import '../../../widgets/common/upgrade_plan_widget.dart';
 import 'social_media_bottom_sheet.dart';
 import '../../../shared/theme/theme_provider.dart';
 

@@ -1,9 +1,7 @@
 import 'package:Artleap.ai/main/app_initialization.dart';
 import 'package:Artleap.ai/presentation/views/common/privacy_policy_accept.dart';
-import 'package:Artleap.ai/presentation/views/common/tutorial_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
 import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:Artleap.ai/shared/navigation_manager.dart';
+import 'package:Artleap.ai/shared/utilities/navigation_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -15,7 +13,7 @@ import '../domain/api_services/api_response.dart';
 import '../domain/auth_services/auth_services.dart';
 import '../shared/app_persistance/app_data.dart';
 import '../shared/auth_exception_handler/auth_exception_handler.dart';
-import '../shared/general_methods.dart';
+import '../shared/utilities/general_methods.dart';
 import '../shared/navigation/navigation.dart';
 import '../shared/navigation/navigator_key.dart';
 

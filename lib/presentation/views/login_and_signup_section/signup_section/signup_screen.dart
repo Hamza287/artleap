@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/widgets/common/scaffold_background.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import '../../global_widgets/app_common_button.dart';
+import '../../../../widgets/common/app_common_button.dart';
 import 'signup_screen_widgets/already_have_account_text.dart';
-import 'signup_screen_widgets/go_back_widget.dart';
 import 'signup_screen_widgets/signup_textfields_section.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -55,12 +54,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     30.spaceY,
                     Row(
                       children: [
-                        GestureDetector(
-                            onTap: () {
-                              ref.read(authprovider).clearError();
-                              Navigation.pop();
-                            },
-                            child: GoBackWidget()),
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_ios_rounded, color: theme.onSurface),
+                          onPressed: () {
+                            ref.read(authprovider).clearError();
+                            Navigation.pop();
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                          tooltip: 'Go back',
+                        ),
                       ],
                     ),
                     30.spaceY,

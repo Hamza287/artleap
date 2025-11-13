@@ -6,10 +6,6 @@ class AppAssets {
 
   //onboarding
   static const backgroundImage = "${imagesDir}Onboarding.png";
-  // static const Onboarding1 = "${imagesDir}onboarding1.png";
-  // static const Onboarding2 = "${imagesDir}onboarding2.png";
-  // static const Onboarding3 = "${imagesDir}onboarding3.png";
-  // static const appHomeBg = "${imagesDir}apphomebg.png";
   static const artstyle1 = "${imagesDir}artstyle1.png";
   static const artstyle2 = "${imagesDir}artstyle2.png";
   static const artstyle3 = "${imagesDir}artstyle3.png";
@@ -58,7 +54,6 @@ class AppAssets {
   static const generateicon = "${iconsdir}generateicon.png";
   static const upgrade = "${iconsdir}upgrade_pro.png";
   static const googlelogin = "${iconsdir}googlelogin.png";
-  static const gobackicon = "${iconsdir}gobackicon.png";
   static const selecticon = "${iconsdir}selecticon.png";
   static const cross = "${iconsdir}cross.png";
   static const trendingicon = "${iconsdir}trendingicon.png";
@@ -78,24 +73,4 @@ class AppAssets {
   static const one = "${iconsdir}one.png";
   static const two = "${iconsdir}two.png";
   static const sixteen = "${iconsdir}sixteen.png";
-
-  //new icons
-  // static const logouticon = "${iconsdir}logout.png";
-  // static const userinfoicon = "${iconsdir}userinfo.png";
-  // static const abouticon = "${iconsdir}abouticon.png";
-  // static const privacyicon = "${iconsdir}privacyicon.png";
-  // static const deleteicon = "${iconsdir}deleteicon.png";
-  // static const saveicon = "${iconsdir}saveicon.png";
-  // static const animate = "${iconsdir}animate.png";
-  // static const enhance = "${iconsdir}edit_object.png";
-  // static const editObject = "${iconsdir}enhance.png";
-  // static const pencil = "${iconsdir}Pencil.png";
-  // static const removeBackground = "${iconsdir}background_remover.png";
-  // static const currentPlan = "${iconsdir}current_plan.png";
-  // static const payment = "${iconsdir}payment.png";
-  // static const darkMode = "${iconsdir}dark_mode.png";
-  // static const follow = "${iconsdir}follow_social.png";
-  // static const helpCenter = "${iconsdir}help_center.png";
-  // static const proBtn = "${iconsdir}pro_btn.png";
-  // static const create = "${iconsdir}create.png";
 }

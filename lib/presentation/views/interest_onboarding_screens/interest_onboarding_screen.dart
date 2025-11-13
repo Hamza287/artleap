@@ -4,12 +4,11 @@ import 'package:Artleap.ai/providers/interest_onboarding_provider.dart';
 import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/constants/user_data.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/shared/utilities/progress_bar.dart';
+import 'package:Artleap.ai/widgets/common/progress_bar.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../login_and_signup_section/login_section/login_screen.dart';
 import 'components/onboarding_step_content.dart';
 
 class InterestOnboardingScreen extends ConsumerWidget {

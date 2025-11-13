@@ -1,5 +1,5 @@
-export 'general_methods.dart';
-export 'console.dart';
+export 'utilities/general_methods.dart';
+export 'utilities/console.dart';
 export '../widgets/common/app_snack_bar.dart';
 
 
@@ -8,9 +8,7 @@ export 'constants/app_assets.dart';
 export 'constants/app_constants.dart';
 export 'constants/app_textstyle.dart';
 export 'constants/lang_constants.dart';
-export 'extensions/custom_overlay.dart';
-export 'extensions/sized_box.dart';
-export 'extensions/string.dart';
+export '../widgets/common/sized_box.dart';
 
 export 'app_persistance/app_data.dart';
 export 'app_persistance/app_local.dart';

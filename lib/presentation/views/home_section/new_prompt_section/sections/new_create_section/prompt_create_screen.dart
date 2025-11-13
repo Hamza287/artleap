@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/presentation/views/global_widgets/app_background_widget.dart';
+import 'package:Artleap.ai/widgets/common/app_background_widget.dart';
 import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';

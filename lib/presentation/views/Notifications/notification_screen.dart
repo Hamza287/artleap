@@ -1,6 +1,6 @@
 import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
+import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
@@ -13,163 +13,160 @@ import '../../../widgets/state_widgets/loading_state.dart';
 import 'notification_card.dart';
 import 'notification_details_screen.dart';
 
-class NotificationScreen extends ConsumerStatefulWidget {
+class NotificationScreen extends ConsumerWidget {
   static const routeName = '/notifications_repo';
   const NotificationScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<NotificationScreen> createState() => _NotificationScreenState();
-}
-
-class _NotificationScreenState extends ConsumerState<NotificationScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadNotifications();
-    });
-  }
-
-  Future<void> _loadNotifications() async {
-    final userId = UserData.ins.userId;
-    if (userId != null) {
-      await ref.read(notificationProvider(userId).notifier).loadNotifications();
-    }
-  }
-
-  Future<void> _markAllAsRead() async {
-    final userId = UserData.ins.userId;
-    if (userId != null) {
-      await ref.read(notificationProvider(userId).notifier).markAllAsRead();
-    }
-  }
-
-  List<AppNotification> _filterNotifications(
-      List<AppNotification> notifications,
-      NotificationFilter filter
-      ) {
-    if (filter == NotificationFilter.all) return notifications;
-
-    return notifications.where((notification) {
-      final String? dataType = notification.data?['type']?.toString();
-      final String mainType = notification.type;
-
-      final String effectiveType = dataType ?? mainType;
-
-      switch (filter) {
-        case NotificationFilter.like:
-          return effectiveType == 'like';
-        case NotificationFilter.comment:
-          return effectiveType == 'comment';
-        case NotificationFilter.follow:
-          return effectiveType == 'follow';
-        case NotificationFilter.alert:
-          return effectiveType == 'alert';
-        default:
-          return true;
-      }
-    }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final userId = UserData.ins.userId;
+
     if (userId == null) {
       return ErrorState(
         message: 'Please login to view notifications',
-        icon: Icons.login,
+        icon: Icons.login_rounded,
       );
     }
 
+    final selectionState = ref.watch(notificationSelectionProvider);
     final notificationsAsync = ref.watch(notificationProvider(userId));
     final currentFilter = ref.watch(notificationFilterProvider);
-    final filteredNotifications = notificationsAsync.maybeWhen(
-      data: (notifications) => _filterNotifications(notifications, currentFilter),
-      orElse: () => <AppNotification>[],
+
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      appBar: _buildAppBar(ref, selectionState, notificationsAsync, theme),
+      body: Column(
+        children: [
+          if (!selectionState.isSelectionMode)
+            _buildFilterTabs(currentFilter, theme, ref),
+          if (selectionState.isSelectionMode)
+            _buildSelectionActions(ref, selectionState, userId, theme),
+          Expanded(
+            child: _buildNotificationList(ref, selectionState, notificationsAsync, currentFilter, userId, theme),
+          ),
+        ],
+      ),
     );
+  }
 
-    _debugPrintNotificationTypes(notificationsAsync);
-
+  AppBar _buildAppBar(
+      WidgetRef ref,
+      NotificationSelectionState selectionState,
+      AsyncValue<List<AppNotification>> notificationsAsync,
+      ThemeData theme,
+      ) {
     final unreadCount = notificationsAsync.maybeWhen(
       data: (notifications) => notifications.where((n) => !n.isRead).length,
       orElse: () => 0,
     );
 
-    final filteredUnreadCount = filteredNotifications.where((n) => !n.isRead).length;
-
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          'Notifications${unreadCount > 0 ? ' ($unreadCount)' : ''}',
-          style: AppTextstyle.interBold(
-            fontSize: 20,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: theme.colorScheme.surface,
-        elevation: 0,
-        foregroundColor: theme.colorScheme.onSurface,
-        actions: [
-          if (filteredUnreadCount > 0)
-            IconButton(
-              icon: Icon(Icons.done_all, color: theme.colorScheme.primary),
-              onPressed: _markAllAsRead,
-              tooltip: 'Mark all as read',
-            ),
-          IconButton(
-            icon: Icon(Icons.refresh, color: theme.colorScheme.primary),
-            onPressed: _loadNotifications,
-            tooltip: 'Refresh',
-          ),
-        ],
+    return AppBar(
+      title: selectionState.isSelectionMode
+          ? AppText(
+        '${selectionState.selectedIds.length} selected',
+        size: 18,
+        weight: FontWeight.w600,
+        color: theme.colorScheme.onSurface,
+      )
+          : AppText(
+        'Notifications${unreadCount > 0 ? ' ($unreadCount)' : ''}',
+        size: 20,
+        weight: FontWeight.w600,
+        color: theme.colorScheme.onSurface,
       ),
-      body: Column(
-        children: [
-          _buildFilterTabs(currentFilter, theme),
-          Expanded(
-            child: notificationsAsync.when(
-              loading: () => const LoadingState(
-                useShimmer: true,
-                shimmerItemCount: 5,
-              ),
-              error: (error, stack) => ErrorState(
-                message: 'Failed to load notifications',
-                onRetry: _loadNotifications,
-                icon: Icons.notifications_none,
-              ),
-              data: (allNotifications) {
-                if (filteredNotifications.isEmpty) {
-                  return EmptyState(
-                    icon: _getEmptyStateIcon(currentFilter),
-                    title: _getEmptyStateTitle(currentFilter),
-                    subtitle: _getEmptyStateSubtitle(currentFilter),
-                    iconColor: theme.colorScheme.primary,
-                  );
-                }
+      centerTitle: true,
+      backgroundColor: theme.colorScheme.surface,
+      elevation: 0,
+      foregroundColor: theme.colorScheme.onSurface,
+      leading: selectionState.isSelectionMode
+          ? IconButton(
+        icon: Icon(Icons.close_rounded, color: theme.colorScheme.onSurface),
+        onPressed: () => ref.read(notificationSelectionProvider.notifier).clearSelection(),
+      )
+          : null,
+      actions: _buildAppBarActions(ref, selectionState, notificationsAsync, theme),
+    );
+  }
 
-                return RefreshIndicator(
-                  backgroundColor: theme.colorScheme.primary,
-                  color: theme.colorScheme.onPrimary,
-                  onRefresh: _loadNotifications,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: filteredNotifications.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final notification = filteredNotifications[index];
-                      return NotificationCard(
-                        notification: notification,
-                        onTap: () => _handleNotificationTap(notification, userId),
-                        onMarkAsRead: () => _markAsRead(notification.id, userId),
-                        onDelete: _handleDelete,
-                      );
-                    },
-                  ),
-                );
-              },
+  List<Widget> _buildAppBarActions(
+      WidgetRef ref,
+      NotificationSelectionState selectionState,
+      AsyncValue<List<AppNotification>> notificationsAsync,
+      ThemeData theme,
+      ) {
+    if (selectionState.isSelectionMode) {
+      return [
+        IconButton(
+          icon: Icon(Icons.checklist_rounded, color: theme.colorScheme.primary),
+          onPressed: () => _selectAll(ref, notificationsAsync),
+          tooltip: 'Select all',
+        ),
+        IconButton(
+          icon: Icon(Icons.mark_email_read_rounded, color: theme.colorScheme.primary),
+          onPressed: () => _markSelectedAsRead(ref, selectionState),
+          tooltip: 'Mark selected as read',
+        ),
+        IconButton(
+          icon: Icon(Icons.delete_rounded, color: theme.colorScheme.error),
+          onPressed: () => _deleteSelected(ref, selectionState),
+          tooltip: 'Delete selected',
+        ),
+      ];
+    }
+
+    final filteredUnreadCount = notificationsAsync.maybeWhen(
+      data: (notifications) => _filterNotifications(notifications, ref.read(notificationFilterProvider))
+          .where((n) => !n.isRead)
+          .length,
+      orElse: () => 0,
+    );
+
+    return [
+      if (filteredUnreadCount > 0)
+        IconButton(
+          icon: Icon(Icons.done_all_rounded, color: theme.colorScheme.primary),
+          onPressed: () => _markAllAsRead(ref),
+          tooltip: 'Mark all as read',
+        ),
+      IconButton(
+        icon: Icon(Icons.refresh_rounded, color: theme.colorScheme.primary),
+        onPressed: () => _loadNotifications(ref),
+        tooltip: 'Refresh notifications',
+      ),
+    ];
+  }
+
+  Widget _buildSelectionActions(
+      WidgetRef ref,
+      NotificationSelectionState selectionState,
+      String userId,
+      ThemeData theme,
+      ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          TextButton.icon(
+            onPressed: () => _markSelectedAsRead(ref, selectionState),
+            icon: Icon(Icons.mark_email_read_rounded, color: theme.colorScheme.primary),
+            label: AppText(
+              'Mark Read',
+              size: 14,
+              weight: FontWeight.w500,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () => _deleteSelected(ref, selectionState),
+            icon: Icon(Icons.delete_rounded, color: theme.colorScheme.error),
+            label: AppText(
+              'Delete',
+              size: 14,
+              weight: FontWeight.w500,
+              color: theme.colorScheme.error,
             ),
           ),
         ],
@@ -177,7 +174,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     );
   }
 
-  Widget _buildFilterTabs(NotificationFilter currentFilter, ThemeData theme) {
+  Widget _buildFilterTabs(NotificationFilter currentFilter, ThemeData theme, WidgetRef ref) {
     return Container(
       height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -188,20 +185,17 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FilterChip(
-              label: Text(
+              label: AppText(
                 filter.displayName,
-                style: AppTextstyle.interMedium(
-                  fontSize: 14,
-                  color: isSelected
-                      ? theme.colorScheme.onPrimary
-                      : theme.colorScheme.onSurface,
-                ),
+                size: 14,
+                weight: FontWeight.w500,
+                color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
               ),
               selected: isSelected,
               onSelected: (selected) {
                 ref.read(notificationFilterProvider.notifier).state = filter;
               },
-              backgroundColor: theme.colorScheme.surfaceVariant,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
               selectedColor: theme.colorScheme.primary,
               checkmarkColor: theme.colorScheme.onPrimary,
               shape: RoundedRectangleBorder(
@@ -220,107 +214,180 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     );
   }
 
+  Widget _buildNotificationList(
+      WidgetRef ref,
+      NotificationSelectionState selectionState,
+      AsyncValue<List<AppNotification>> notificationsAsync,
+      NotificationFilter currentFilter,
+      String userId,
+      ThemeData theme,
+      ) {
+    return notificationsAsync.when(
+      loading: () => const LoadingState(useShimmer: true, shimmerItemCount: 5),
+      error: (error, stack) => ErrorState(
+        message: 'Failed to load notifications',
+        onRetry: () => _loadNotifications(ref),
+        icon: Icons.notifications_off_rounded,
+      ),
+      data: (allNotifications) {
+        final filteredNotifications = _filterNotifications(allNotifications, currentFilter);
+
+        if (filteredNotifications.isEmpty) {
+          return EmptyState(
+            icon: _getEmptyStateIcon(currentFilter),
+            title: _getEmptyStateTitle(currentFilter),
+            subtitle: _getEmptyStateSubtitle(currentFilter),
+            iconColor: theme.colorScheme.primary,
+          );
+        }
+
+        return RefreshIndicator(
+          backgroundColor: theme.colorScheme.primary,
+          color: theme.colorScheme.onPrimary,
+          onRefresh: () => _loadNotifications(ref),
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: filteredNotifications.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final notification = filteredNotifications[index];
+              return NotificationCard(
+                notification: notification,
+                isSelected: selectionState.selectedIds.contains(notification.id),
+                isSelectionMode: selectionState.isSelectionMode,
+                onTap: () => _handleNotificationTap(ref, notification, userId,context),
+                onLongPress: () => _toggleSelection(ref, notification.id),
+                onMarkAsRead: () => _markAsRead(ref, notification.id, userId),
+                onDelete: () => _deleteNotification(ref, notification.id, userId),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  List<AppNotification> _filterNotifications(List<AppNotification> notifications, NotificationFilter filter) {
+    if (filter == NotificationFilter.all) return notifications;
+
+    return notifications.where((notification) {
+      final String? dataType = notification.data?['type']?.toString();
+      final String mainType = notification.type;
+      final String effectiveType = dataType ?? mainType;
+
+      switch (filter) {
+        case NotificationFilter.like: return effectiveType == 'like';
+        case NotificationFilter.comment: return effectiveType == 'comment';
+        case NotificationFilter.follow: return effectiveType == 'follow';
+        case NotificationFilter.alert: return effectiveType == 'alert';
+        default: return true;
+      }
+    }).toList();
+  }
+
+  Future<void> _loadNotifications(WidgetRef ref) async {
+    final userId = UserData.ins.userId;
+    if (userId != null) {
+      await ref.read(notificationProvider(userId).notifier).loadNotifications();
+    }
+  }
+
+  Future<void> _markAllAsRead(WidgetRef ref) async {
+    final userId = UserData.ins.userId;
+    if (userId != null) {
+      await ref.read(notificationProvider(userId).notifier).markAllAsRead();
+    }
+  }
+
+  void _selectAll(WidgetRef ref, AsyncValue<List<AppNotification>> notificationsAsync) {
+    notificationsAsync.whenData((notifications) {
+      final allIds = notifications.map((n) => n.id).toList();
+      ref.read(notificationSelectionProvider.notifier).selectAll(allIds);
+    });
+  }
+
+  Future<void> _markSelectedAsRead(WidgetRef ref, NotificationSelectionState selectionState) async {
+    final userId = UserData.ins.userId;
+    if (userId == null || selectionState.selectedIds.isEmpty) return;
+
+    for (final id in selectionState.selectedIds) {
+      await ref.read(notificationProvider(userId).notifier).markAsRead(id);
+    }
+
+    ref.read(notificationSelectionProvider.notifier).clearSelection();
+  }
+
+  Future<void> _deleteSelected(WidgetRef ref, NotificationSelectionState selectionState) async {
+    final userId = UserData.ins.userId;
+    if (userId == null || selectionState.selectedIds.isEmpty) return;
+
+    for (final id in selectionState.selectedIds) {
+      await _deleteNotification(ref, id, userId);
+    }
+
+    ref.read(notificationSelectionProvider.notifier).clearSelection();
+  }
+
+  Future<void> _deleteNotification(WidgetRef ref, String notificationId, String userId) async {
+    try {
+      await ref.read(notificationProvider(userId).notifier).deleteNotification(notificationId, userId);
+    } catch (e) {
+      appErrorSnackBar('Error', 'Failed to delete notification');
+    }
+  }
+
+  void _toggleSelection(WidgetRef ref, String notificationId) {
+    ref.read(notificationSelectionProvider.notifier).toggleSelection(notificationId);
+  }
+
+  void _handleNotificationTap(WidgetRef ref, AppNotification notification, String userId,BuildContext context) {
+    final selectionState = ref.read(notificationSelectionProvider);
+
+    if (selectionState.isSelectionMode) {
+      _toggleSelection(ref, notification.id);
+    } else {
+      if (!notification.isRead) {
+        _markAsRead(ref, notification.id, userId);
+      }
+      Navigator.pushNamed(
+        context,
+        NotificationDetailScreen.routeName,
+        arguments: notification,
+      );
+    }
+  }
+
+  void _markAsRead(WidgetRef ref, String notificationId, String userId) {
+    ref.read(notificationProvider(userId).notifier).markAsRead(notificationId);
+  }
+
   IconData _getEmptyStateIcon(NotificationFilter filter) {
     switch (filter) {
-      case NotificationFilter.like:
-        return Icons.favorite_border;
-      case NotificationFilter.comment:
-        return Icons.comment_outlined;
-      case NotificationFilter.follow:
-        return Icons.person_add_outlined;
-      case NotificationFilter.alert:
-        return Icons.notifications_none;
-      default:
-        return Icons.notifications_active_outlined;
+      case NotificationFilter.like: return Icons.favorite_border_rounded;
+      case NotificationFilter.comment: return Icons.chat_bubble_outline_rounded;
+      case NotificationFilter.follow: return Icons.person_add_alt_1_rounded;
+      case NotificationFilter.alert: return Icons.warning_amber_rounded;
+      default: return Icons.notifications_none_rounded;
     }
   }
 
   String _getEmptyStateTitle(NotificationFilter filter) {
     switch (filter) {
-      case NotificationFilter.like:
-        return 'No Like Notifications';
-      case NotificationFilter.comment:
-        return 'No Comment Notifications';
-      case NotificationFilter.follow:
-        return 'No Follow Notifications';
-      case NotificationFilter.alert:
-        return 'No Alert Notifications';
-      default:
-        return 'No Notifications Yet';
+      case NotificationFilter.like: return 'No Like Notifications';
+      case NotificationFilter.comment: return 'No Comment Notifications';
+      case NotificationFilter.follow: return 'No Follow Notifications';
+      case NotificationFilter.alert: return 'No Alert Notifications';
+      default: return 'No Notifications Yet';
     }
   }
 
   String _getEmptyStateSubtitle(NotificationFilter filter) {
     switch (filter) {
-      case NotificationFilter.like:
-        return 'When someone likes your content, it will appear here';
-      case NotificationFilter.comment:
-        return 'Comments on your posts will show up here';
-      case NotificationFilter.follow:
-        return 'New followers will be displayed here';
-      case NotificationFilter.alert:
-        return 'Important alerts and updates will appear here';
-      default:
-        return 'When you receive notifications, they will appear here';
+      case NotificationFilter.like: return 'When someone likes your content, it will appear here';
+      case NotificationFilter.comment: return 'Comments on your posts will show up here';
+      case NotificationFilter.follow: return 'New followers will be displayed here';
+      case NotificationFilter.alert: return 'Important alerts and updates will appear here';
+      default: return 'When you receive notifications, they will appear here';
     }
-  }
-
-  void _debugPrintNotificationTypes(AsyncValue<List<AppNotification>> notificationsAsync) {
-    notificationsAsync.whenData((notifications) {
-      final dataTypes = notifications
-          .map((n) => n.data?['type']?.toString())
-          .where((type) => type != null)
-          .toSet()
-          .toList();
-
-      final mainTypes = notifications
-          .map((n) => n.type)
-          .toSet()
-          .toList();
-
-      if (dataTypes.isNotEmpty) {
-        debugPrint('Available data types: $dataTypes');
-      }
-      if (mainTypes.isNotEmpty) {
-        debugPrint('Available main types: $mainTypes');
-      }
-      if (notifications.isNotEmpty) {
-        debugPrint('First notification data: ${notifications.first.data}');
-        debugPrint('First notification type: ${notifications.first.type}');
-      }
-    });
-  }
-
-  void _handleNotificationTap(AppNotification notification, String userId) {
-    if (!notification.isRead) {
-      _markAsRead(notification.id, userId);
-    }
-    Navigator.pushNamed(
-      context,
-      NotificationDetailScreen.routeName,
-      arguments: notification,
-    );
-  }
-
-  void _markAsRead(String notificationId, String userId) {
-    ref.read(notificationProvider(userId).notifier)
-        .markAsRead(notificationId);
-  }
-
-  Future<void> _handleDelete(BuildContext context, WidgetRef ref, String notificationId) async {
-    DialogService.confirmDelete(
-      context: context,
-      itemName: 'notification',
-      onDelete: () async {
-        try {
-          await ref.read(notificationProvider(UserData.ins.userId!).notifier)
-              .deleteNotification(notificationId, UserData.ins.userId!);
-        } catch (e) {
-          if (context.mounted) {
-            appSnackBar("Error", 'Failed to delete notification: ${e.toString()}', backgroundColor:AppColors.green);
-          }
-        }
-      },
-    );
   }
 }

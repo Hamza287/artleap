@@ -1,7 +1,7 @@
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../providers/auth_provider.dart';
+import '../../providers/auth_provider.dart';
 
 class AppCommonTextfield extends ConsumerStatefulWidget {
   final String? hintText;

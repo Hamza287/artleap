@@ -6,7 +6,6 @@ import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/providers/notification_provider.dart';
 import '../../shared/constants/app_constants.dart';
 import '../../shared/constants/user_data.dart';
-import '../notifications_repo/notification_repository.dart';
 
 class FirebaseNotificationService {
   final Ref ref;

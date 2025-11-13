@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:feather_icons/feather_icons.dart';
 import 'user_info_widget.dart';
 
 class ProfileMenuItem extends StatelessWidget {

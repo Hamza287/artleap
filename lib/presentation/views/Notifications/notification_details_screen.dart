@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../../../providers/notification_provider.dart';
-import '../global_widgets/app_common_button.dart';
+import '../../../widgets/common/app_common_button.dart';
 
 class NotificationDetailScreen extends ConsumerWidget {
   static const routeName = '/notification-details';

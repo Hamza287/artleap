@@ -1,6 +1,5 @@
 import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 
 class CompactErrorState extends StatelessWidget {
   final String message;

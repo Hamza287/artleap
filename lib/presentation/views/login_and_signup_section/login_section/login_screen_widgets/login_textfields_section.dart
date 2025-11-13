@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/global_widgets/app_common_textfield.dart';
-import 'package:Artleap.ai/shared/extensions/sized_box.dart';
+import 'package:Artleap.ai/widgets/common/app_common_textfield.dart';
+import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import '../../../../../providers/auth_provider.dart';
 
 class LoginScreenTextfieldsSection extends ConsumerWidget {

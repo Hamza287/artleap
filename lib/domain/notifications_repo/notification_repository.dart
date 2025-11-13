@@ -23,7 +23,6 @@ class NotificationRepository {
           "fcmToken": token,
         },
       );
-      debugPrint("✅ FCM token sent successfully: ${response.data}");
     } catch (e) {
       debugPrint("❌ Error sending FCM token: $e");
     }
@@ -106,7 +105,6 @@ class NotificationRepository {
   List<AppNotification> _parseNotificationResponse(Response response) {
     if (response.statusCode == 200) {
       final List<dynamic> docs = response.data['data']['docs'];
-      print("🔔 Got ${docs.length} notifications_repo");
       return docs.map((json) => AppNotification.fromJson(json)).toList();
     } else {
       throw ErrorHandler.handleResponseError(response);
@@ -134,7 +132,6 @@ class NotificationRepository {
   }
 }
 
-// Provider for NotificationRepository
 final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
   final dioCore = ref.read(dioCoreProvider);
   return NotificationRepository(dioCore: dioCore, ref: ref);

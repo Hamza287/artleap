@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../console.dart';
+import 'console.dart';
 
 class Pickers {
   static final ins = Pickers._internal();

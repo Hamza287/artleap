@@ -1,6 +1,5 @@
 import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'sections/about_artleap_contact.dart';
 import 'sections/about_artleap_footer.dart';
 import 'sections/about_artleap_hero.dart';

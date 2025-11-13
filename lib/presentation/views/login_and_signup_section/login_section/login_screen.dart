@@ -4,7 +4,7 @@ import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/widgets/common/scaffold_background.dart';
-import 'package:Artleap.ai/presentation/views/global_widgets/app_common_button.dart';
+import 'package:Artleap.ai/widgets/common/app_common_button.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/shared/shared.dart';
 import 'login_screen_widgets/login_screen_text.dart';

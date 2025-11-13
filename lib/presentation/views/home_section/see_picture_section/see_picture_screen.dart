@@ -1,5 +1,4 @@
 import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart' as generate_provider;
 import 'package:Artleap.ai/providers/image_privacy_provider.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
 import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
