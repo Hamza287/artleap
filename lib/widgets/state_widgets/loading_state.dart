@@ -89,8 +89,6 @@ class LoadingState extends StatelessWidget {
         return _buildGridShimmer(theme, size, isSmallScreen);
       case LoadingType.card:
         return _buildCardShimmer(theme, size, isSmallScreen);
-      case LoadingType.profile:
-        return _buildProfileShimmer(theme, size, isSmallScreen);
       case LoadingType.comments:
         return _buildCommentsShimmer(theme, size, isSmallScreen);
       case LoadingType.reel:
@@ -100,7 +98,6 @@ class LoadingState extends StatelessWidget {
     }
   }
 
-  // NEW: Post Shimmer that matches exactly with your PostCard structure
   Widget _buildPostShimmer(ThemeData theme, Size size, bool isSmallScreen, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -117,15 +114,10 @@ class LoadingState extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Post Header Shimmer
           _buildPostHeaderShimmer(theme, size, isSmallScreen),
-          // Post Image Shimmer
           _buildPostImageShimmer(theme, size, isSmallScreen),
-          // Post Actions Shimmer
           _buildPostActionsShimmer(theme, size, isSmallScreen),
-          // Post Description Shimmer
           _buildPostDescriptionShimmer(theme, size, isSmallScreen),
-          // Comments Section Shimmer
           _buildCommentsSectionShimmer(theme, size, isSmallScreen),
         ],
       ),
@@ -147,7 +139,6 @@ class LoadingState extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          // User Info Shimmer
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +163,6 @@ class LoadingState extends StatelessWidget {
               ],
             ),
           ),
-          // More Options Button Shimmer
           Container(
             width: 36,
             height: 36,
@@ -207,13 +197,10 @@ class LoadingState extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Like Button Shimmer
               _buildActionButtonShimmer(theme, size, isSmallScreen),
               const SizedBox(width: 12),
-              // Comment Button Shimmer
               _buildActionButtonShimmer(theme, size, isSmallScreen),
               const Spacer(),
-              // Save Button Shimmer
               Container(
                 width: 44,
                 height: 44,
@@ -225,7 +212,6 @@ class LoadingState extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          // Like Count Shimmer
           Container(
             width: 80,
             height: 28,
@@ -375,7 +361,6 @@ class LoadingState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          // Comment Input Shimmer
           Row(
             children: [
               Container(
@@ -413,9 +398,7 @@ class LoadingState extends StatelessWidget {
     );
   }
 
-  // Keep all your existing shimmer methods...
   Widget _buildListShimmer(ThemeData theme, Size size, bool isSmallScreen) {
-    // ... (keep your existing implementation)
     return Container(
       margin: EdgeInsets.only(bottom: isSmallScreen ? 12 : size.height * 0.02),
       padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
@@ -478,7 +461,6 @@ class LoadingState extends StatelessWidget {
   }
 
   Widget _buildGridShimmer(ThemeData theme, Size size, bool isSmallScreen) {
-    // ... (keep your existing implementation)
     return Container(
       margin: EdgeInsets.all(isSmallScreen ? 4 : 6),
       decoration: BoxDecoration(
@@ -498,7 +480,6 @@ class LoadingState extends StatelessWidget {
   }
 
   Widget _buildCardShimmer(ThemeData theme, Size size, bool isSmallScreen) {
-    // ... (keep your existing implementation)
     return Container(
       margin: EdgeInsets.only(bottom: isSmallScreen ? 12 : 16),
       decoration: BoxDecoration(
@@ -561,80 +542,7 @@ class LoadingState extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileShimmer(ThemeData theme, Size size, bool isSmallScreen) {
-    // ... (keep your existing implementation)
-    return Container(
-      margin: EdgeInsets.only(bottom: isSmallScreen ? 12 : 16),
-      padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: isSmallScreen ? 60 : 80,
-                height: isSmallScreen ? 60 : 80,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              SizedBox(width: isSmallScreen ? 16 : 24),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(
-                    3,
-                        (index) => Column(
-                      children: [
-                        Container(
-                          width: isSmallScreen ? 24 : 30,
-                          height: isSmallScreen ? 16 : 20,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Container(
-                          width: isSmallScreen ? 40 : 50,
-                          height: isSmallScreen ? 12 : 14,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: isSmallScreen ? 16 : 20),
-          Container(
-            width: double.infinity,
-            height: isSmallScreen ? 14 : 16,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          SizedBox(height: isSmallScreen ? 8 : 10),
-          Container(
-            width: isSmallScreen ? size.width * 0.8 : size.width * 0.7,
-            height: isSmallScreen ? 14 : 16,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCommentsShimmer(ThemeData theme, Size size, bool isSmallScreen) {
-    // ... (keep your existing implementation)
     return Container(
       margin: EdgeInsets.only(bottom: isSmallScreen ? 12 : size.height * 0.02),
       child: Row(
@@ -716,7 +624,6 @@ class LoadingState extends StatelessWidget {
   }
 
   Widget _buildReelShimmer(ThemeData theme, Size size, bool isSmallScreen, BuildContext context) {
-    // ... (keep your existing implementation)
     return Stack(
       children: [
         Container(
@@ -987,8 +894,7 @@ enum LoadingType {
   list,
   grid,
   card,
-  profile,
   comments,
   reel,
-  post, // NEW: Added post type
+  post,
 }

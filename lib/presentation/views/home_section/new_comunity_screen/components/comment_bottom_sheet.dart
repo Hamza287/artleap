@@ -225,6 +225,7 @@ class _CommentsBottomSheetState extends ConsumerState<CommentsBottomSheet> {
                 loading: () => const LoadingState(
                   useShimmer: true,
                   shimmerItemCount: 5,
+                  loadingType: LoadingType.comments,
                 ),
                 error: (error, stack) => ErrorState(
                   message: 'Failed to load comments',

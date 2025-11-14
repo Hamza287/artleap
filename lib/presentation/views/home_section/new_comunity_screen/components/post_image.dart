@@ -27,7 +27,7 @@ class PostImage extends ConsumerWidget {
   Widget _buildImageShimmer(BuildContext context) {
     return const LoadingState(
       useShimmer: true,
-      loadingType: LoadingType.card,
+      loadingType: LoadingType.post,
       shimmerItemCount: 1,
     );
   }
