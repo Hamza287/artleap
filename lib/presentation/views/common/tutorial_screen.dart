@@ -1,5 +1,6 @@
 import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
 import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
+import 'package:Artleap.ai/shared/utilities/navigation_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/shared.dart';
@@ -47,20 +48,24 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
     }
   }
 
-  void _navigateToNextScreen() {
-    final userid = AppLocal.ins.getUSerData(Hivekey.userId) ?? "";
+  void _navigateToNextScreen() async {
+    final userData = ArtleapNavigationManager.getUserDataFromStorage();
+    final userId = userData['userId'] ?? "";
+    final userName = userData['userName'] ?? "";
+    final userProfilePicture = userData['userProfilePicture'] ?? "";
+    final userEmail = userData['userEmail'] ?? "";
 
-    if (userid.isNotEmpty) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        BottomNavBar.routeName,
-        (route) => false,
-      );
-    } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AcceptPrivacyPolicyScreen.routeName,
-        (route) => false,
-      );
-    }
+    final hasSeenTutorial = await ArtleapNavigationManager.getTutorialStatus(ref);
+
+    await ArtleapNavigationManager.navigateBasedOnUserStatus(
+      context: context,
+      ref: ref,
+      userId: userId,
+      userName: userName,
+      userProfilePicture: userProfilePicture,
+      userEmail: userEmail,
+      hasSeenTutorial: hasSeenTutorial,
+    );
   }
 
   void _onPageChanged(int page) {

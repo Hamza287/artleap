@@ -56,7 +56,6 @@ class User {
   final bool watermarkEnabled;
   final int? v;
 
-  // New fields for privacy policy and interests
   final PrivacyPolicyAcceptance? privacyPolicyAccepted;
   final UserInterests? interests;
 
