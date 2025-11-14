@@ -42,8 +42,8 @@ class EmptyState extends StatelessWidget {
                 theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
               ]
                   : [
-                theme.colorScheme.surfaceContainer.withOpacity(0.03),
-                theme.colorScheme.surfaceContainerHighest.withOpacity(0.1),
+                theme.colorScheme.surface,
+                theme.colorScheme.surface,
               ],
             ),
             border: Border.all(
