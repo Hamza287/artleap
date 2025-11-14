@@ -1,13 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/widgets/common/app_background_widget.dart';
-import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'widegts/community_feed_widget.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
   static const String routeName = 'community_screen';

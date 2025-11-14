@@ -1,9 +1,7 @@
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/image_actions_provider.dart';
 import 'bottom_sheet_widget.dart/row_buttons.dart';
 import 'others_bottom_sheet.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ReportImageBottomSheet extends ConsumerWidget {
   final String? imageId;

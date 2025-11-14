@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import 'info_row.dart';
 
 class SubscriptionCard extends StatelessWidget {

@@ -1,33 +1,4 @@
-import 'package:Artleap.ai/presentation/views/common/tutorial_screen.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:Artleap.ai/presentation/views/my_posts/my_posts_screen.dart';
-import 'package:Artleap.ai/presentation/views/personal_information/personal_info_screen.dart';
-import 'package:Artleap.ai/presentation/views/saved_images_screen/save_image_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
-import 'package:Artleap.ai/presentation/splash_screen.dart';
-import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/home_section/profile_screen/other_user_profile_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/full_image_viewer_screen.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-import '../../domain/subscriptions/subscription_model.dart';
-import '../../presentation/views/Notifications/notification_details_screen.dart';
-import '../../presentation/views/Notifications/notification_screen.dart';
-import '../../presentation/views/about/about_artleap_screen.dart';
-import '../../presentation/views/common/privacy_policy_accept.dart';
-import '../../presentation/views/home_section/favourites_screen/favourites_screen.dart';
-import '../../presentation/views/home_section/new_prompt_section/result/result_prompt_screen.dart';
-import '../../presentation/views/interest_onboarding_screens/interest_onboarding_screen.dart';
-import '../../presentation/views/login_and_signup_section/signup_section/signup_screen.dart';
-import '../../presentation/views/policies_screens/help_screen.dart';
-import '../../presentation/views/policies_screens/privacy_policy_screen.dart';
-import '../../presentation/views/subscriptions/apple_payment_screen.dart';
-import '../../presentation/views/subscriptions/choose_plan_screen.dart';
-import '../../presentation/views/subscriptions/current_plan_screen.dart';
-import '../../presentation/views/subscriptions/google_payment_screen.dart';
-
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class RouteGenerator {
   static Route generateRoute(RouteSettings settings) {

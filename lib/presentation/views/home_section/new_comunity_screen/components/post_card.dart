@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import 'comment_section.dart';
 import 'post_actions.dart';
 import 'post_description.dart';
 import 'post_header.dart';
 import 'post_image.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   final dynamic image;

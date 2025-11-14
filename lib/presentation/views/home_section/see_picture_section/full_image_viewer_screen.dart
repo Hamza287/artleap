@@ -1,10 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/navigation/screen_params.dart';
 import 'package:Artleap.ai/providers/watermark_provider.dart';
 import '../../../../providers/full_image_state_provider.dart';
-import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class FullImageViewerScreen extends ConsumerStatefulWidget {
   static const String routeName = "full_image_screen";

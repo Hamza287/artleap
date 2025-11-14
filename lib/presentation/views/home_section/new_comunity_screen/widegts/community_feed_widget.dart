@@ -1,11 +1,7 @@
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
 import '../components/communiry_header.dart';
 import '../components/post_card.dart';
 import 'no_image_widget.dart';
-import 'shimmer_loading.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class CommunityFeedWidget extends ConsumerStatefulWidget {
   const CommunityFeedWidget({super.key});
@@ -165,7 +161,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
         ),
         Expanded(
           child: homeProvider.usersData == null
-              ? const ShimmerLoading()
+              ? const LoadingState(useShimmer: true, shimmerItemCount: 3,loadingType: LoadingType.list,)
               : RefreshIndicator(
             onRefresh: () async {
               await ref.read(homeScreenProvider).refreshUserCreations();

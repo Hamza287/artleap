@@ -1,15 +1,7 @@
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/widgets/state_widgets/custom_error_state.dart';
-import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/widgets/common/scaffold_background.dart';
-import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import '../../../../widgets/common/app_common_button.dart';
 import 'signup_screen_widgets/already_have_account_text.dart';
 import 'signup_screen_widgets/signup_textfields_section.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
+
 
 class SignUpScreen extends ConsumerStatefulWidget {
   static const String routeName = 'signup_screen';

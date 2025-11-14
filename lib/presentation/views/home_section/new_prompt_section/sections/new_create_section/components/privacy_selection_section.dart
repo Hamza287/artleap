@@ -1,9 +1,5 @@
-import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:Artleap.ai/widgets/common/custom_pro_icon_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PrivacySelectionSection extends ConsumerWidget {
   final bool isPremiumUser;

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/comment_model.dart';
 import '../models/like_model.dart';
 import '../repo/comment_repository.dart';
@@ -7,9 +6,9 @@ import '../repo/save_repository.dart';
 import '../repo_impl/comment_repo_impl.dart';
 import '../repo_impl/like_repo_impl.dart';
 import '../repo_impl/save_repo_impl.dart';
-import 'comment_provider.dart';
 import 'like_provider.dart';
 import 'save_provider.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final commentRepoProvider = Provider<CommentRepo>((ref) {
   return CommentRepoImpl();

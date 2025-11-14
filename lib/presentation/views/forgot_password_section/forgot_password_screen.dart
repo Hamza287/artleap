@@ -1,13 +1,8 @@
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/widgets/common/scaffold_background.dart';
 import 'package:Artleap.ai/widgets/common/app_common_button.dart';
 import 'package:Artleap.ai/widgets/common/app_common_textfield.dart';
 import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ForgotPasswordScreen extends ConsumerWidget {
   static const String routeName = "forgot_password_screen";

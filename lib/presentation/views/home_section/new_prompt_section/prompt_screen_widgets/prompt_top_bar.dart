@@ -1,8 +1,5 @@
 import 'package:Artleap.ai/providers/prompt_nav_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:feather_icons/feather_icons.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final isDropdownExpandedProvider = StateProvider<bool>((ref) => false);
 

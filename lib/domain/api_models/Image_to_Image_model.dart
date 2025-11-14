@@ -1,3 +1,5 @@
+import 'image_model.dart';
+
 class ImageToImageModel {
   ImageToImageModel({
     required this.generationId,
@@ -27,52 +29,3 @@ class ImageToImageModel {
   }
 }
 
-class Images {
-  Images({
-    required this.id,
-    required this.userId,
-    required this.imageUrl,
-    required this.creatorEmail,
-    required this.username,
-    required this.presetStyle,
-    required this.prompt,
-    required this.createdAt,
-    this.privacy = 'public',
-  });
-  late final String id;
-  late final String userId;
-  late final String imageUrl;
-  late final String creatorEmail;
-  late final String username;
-  late final String presetStyle;
-  late final String prompt;
-  late final String createdAt;
-  late final String? privacy;
-
-  Images.fromJson(Map<String, dynamic> json) {
-    id = json['_id'] ?? "";
-    userId = json['userId'] ?? "";
-    imageUrl = json['imageUrl'];
-    creatorEmail = json['creatorEmail'];
-    username = json['username'];
-    presetStyle = json['presetStyle'];
-    prompt = json['prompt'];
-    createdAt = json['createdAt'];
-    privacy = json['privacy'];
-
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['_id'] = id;
-    data['userId'] = userId;
-    data['imageUrl'] = imageUrl;
-    data['creatorEmail'] = creatorEmail;
-    data['username'] = username;
-    data['presetStyle'] = presetStyle;
-    data['prompt'] = prompt;
-    data['createdAt'] = createdAt;
-    data['privacy'] = privacy;
-    return data;
-  }
-}

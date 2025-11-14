@@ -1,10 +1,4 @@
-import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
-import 'package:Artleap.ai/providers/splash_screen_provider.dart';
-import 'package:Artleap.ai/shared/utilities/navigation_manager.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottie/lottie.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const String routeName = "splash_screen";

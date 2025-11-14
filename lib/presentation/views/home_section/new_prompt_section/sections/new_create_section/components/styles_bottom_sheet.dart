@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_static_data.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'style_selection_card.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 void showStylesBottomSheet(BuildContext context, WidgetRef ref) {
   final theme = Theme.of(context);

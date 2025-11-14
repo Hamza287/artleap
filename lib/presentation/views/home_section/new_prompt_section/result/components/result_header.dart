@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ResultHeader extends ConsumerWidget {
   const ResultHeader({super.key});

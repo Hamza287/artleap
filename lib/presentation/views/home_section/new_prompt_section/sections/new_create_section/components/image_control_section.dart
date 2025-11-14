@@ -1,15 +1,8 @@
 import 'dart:io';
-import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'package:Artleap.ai/shared/utilities/photo_permission_helper.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'styles_bottom_sheet.dart';
 import 'style_selection_card.dart';
@@ -17,6 +10,7 @@ import 'image_preview_redesign.dart';
 import 'image_selection_button_redesign.dart';
 import 'inspiration_button_redesign.dart';
 import 'ratio_selection_redesign.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ImageControlsRedesign extends ConsumerWidget {
   final VoidCallback onImageSelected;

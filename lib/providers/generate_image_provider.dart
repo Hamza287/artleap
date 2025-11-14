@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:Artleap.ai/domain/api_models/image_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/api_models/generate_high_q_model.dart';
@@ -30,8 +31,8 @@ enum ImagePrivacy {
 class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   final TextEditingController _promptTextController = TextEditingController();
   TextEditingController get promptTextController => _promptTextController;
-  final List<ImgToImg.Images?> _generatedImage = [];
-  List<ImgToImg.Images?> get generatedImage => _generatedImage;
+  final List<Images?> _generatedImage = [];
+  List<Images?> get generatedImage => _generatedImage;
   GenerateHighQualityImageModel? _generatedHighQualityImage;
   GenerateHighQualityImageModel? get generatedHighQualityImage =>
       _generatedHighQualityImage;
@@ -49,8 +50,8 @@ class GenerateImageProvider extends ChangeNotifier with BaseRepo {
   List<int> get imageNumber => _dropdownItems;
 
   var uuid = const Uuid().v1();
-  final List<txtToImg.Images?> _generatedTextToImageData = [];
-  List<txtToImg.Images?> get generatedTextToImageData => _generatedTextToImageData;
+  final List<Images?> _generatedTextToImageData = [];
+  List<Images?> get generatedTextToImageData => _generatedTextToImageData;
   List<Uint8List> listOfImagesBytes = [];
   List<File> images = [];
 

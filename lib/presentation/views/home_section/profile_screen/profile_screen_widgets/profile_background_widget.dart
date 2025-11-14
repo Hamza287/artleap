@@ -1,6 +1,5 @@
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
+
 
 class ProfileBackgroundWidget extends ConsumerWidget {
   final Widget widget;

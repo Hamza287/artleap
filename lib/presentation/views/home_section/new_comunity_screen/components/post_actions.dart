@@ -1,12 +1,6 @@
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/shared/utilities/like_soud_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'comment_bottom_sheet.dart';
-import 'comment_section.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final likeAnimationProvider = StateProvider.family<bool, String>((ref, imageId) => false);
 
@@ -25,28 +19,24 @@ class PostActions extends ConsumerWidget {
     final likeCountAsync = ref.watch(likeCountProvider(imageId));
     final commentCountAsync = ref.watch(commentCountProvider(imageId));
 
-    final isLiked = likeStatus.when(
+    final isLiked = likeStatus.maybeWhen(
       data: (likeStatus) => likeStatus[imageId] ?? false,
-      loading: () => false,
-      error: (error, stack) => false,
+      orElse: () => false,
     );
 
-    final isSaved = saveStatus.when(
+    final isSaved = saveStatus.maybeWhen(
       data: (saveStatus) => saveStatus[imageId] ?? false,
-      loading: () => false,
-      error: (error, stack) => false,
+      orElse: () => false,
     );
 
-    final likeCount = likeCountAsync.when(
+    final likeCount = likeCountAsync.maybeWhen(
       data: (count) => count,
-      loading: () => 0,
-      error: (error, stack) => 0,
+      orElse: () => 0,
     );
 
-    final commentCount = commentCountAsync.when(
+    final commentCount = commentCountAsync.maybeWhen(
       data: (count) => count,
-      loading: () => 0,
-      error: (error, stack) => 0,
+      orElse: () => 0,
     );
 
     return Container(
@@ -63,7 +53,6 @@ class PostActions extends ConsumerWidget {
                 imageId: imageId,
                 isLiked: isLiked,
                 likeCount: likeCount,
-                context: context,
                 theme: theme,
               ),
               const SizedBox(width: 12),
@@ -78,7 +67,6 @@ class PostActions extends ConsumerWidget {
               _SaveButton(
                 imageId: imageId,
                 isSaved: isSaved,
-                context: context,
                 theme: theme,
               ),
             ],
@@ -97,98 +85,34 @@ class _LikeButton extends ConsumerWidget {
   final String imageId;
   final bool isLiked;
   final int likeCount;
-  final BuildContext context;
   final ThemeData theme;
 
   const _LikeButton({
     required this.imageId,
     required this.isLiked,
     required this.likeCount,
-    required this.context,
     required this.theme,
   });
 
   void _toggleLike(WidgetRef ref) async {
-    if (isLiked) {
-      SoundService.playUnlikeSound();
-    } else {
-      SoundService.playLikeSound();
-    }
-
     try {
       await ref.read(likeProvider(imageId).notifier).toggleLike();
       ref.invalidate(likeCountProvider(imageId));
     } catch (e) {
-      appSnackBar('Error', 'Failed to update like: $e', backgroundColor:AppColors.red);
+      appSnackBar('Error', 'Failed to update like: $e', backgroundColor: AppColors.red);
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
+    return _ActionButton(
       onTap: () => _toggleLike(ref),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          gradient: isLiked
-              ? LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.error.withOpacity(0.9),
-              theme.colorScheme.error.withOpacity(0.7),
-            ],
-          )
-              : LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.surfaceContainerHighest.withOpacity(0.9),
-              theme.colorScheme.surfaceContainerHighest.withOpacity(0.7),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            if (isLiked)
-              BoxShadow(
-                color: theme.colorScheme.error.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              )
-            else
-              BoxShadow(
-                color: theme.colorScheme.onSurface.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-              color: isLiked ? Colors.white : theme.colorScheme.onSurfaceVariant,
-              size: 18,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              _formatCount(likeCount),
-              style: AppTextstyle.interMedium(
-                fontSize: 13,
-                color: isLiked ? Colors.white : theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
+      isActive: isLiked,
+      activeColor: theme.colorScheme.error,
+      icon: isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+      count: likeCount,
+      theme: theme,
     );
-  }
-
-  String _formatCount(int count) {
-    if (count < 1000) return count.toString();
-    if (count < 1000000) return '${(count / 1000).toStringAsFixed(1)}K';
-    return '${(count / 1000000).toStringAsFixed(1)}M';
   }
 }
 
@@ -207,10 +131,6 @@ class _CommentButton extends ConsumerWidget {
     required this.image,
   });
 
-  void _focusCommentField(WidgetRef ref) {
-    ref.read(commentFocusProvider.notifier).state = true;
-  }
-
   void _showComments() {
     showModalBottomSheet(
       context: context,
@@ -223,77 +143,34 @@ class _CommentButton extends ConsumerWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () => _showComments(),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.surfaceContainerHighest.withOpacity(0.9),
-              theme.colorScheme.surfaceContainerHighest.withOpacity(0.7),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.onSurface.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.mode_comment_outlined,
-              color: theme.colorScheme.onSurfaceVariant,
-              size: 18,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              _formatCount(commentCount),
-              style: AppTextstyle.interMedium(
-                fontSize: 13,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return _ActionButton(
+      onTap: _showComments,
+      isActive: false,
+      activeColor: theme.colorScheme.primary,
+      icon: Icons.mode_comment_outlined,
+      count: commentCount,
+      theme: theme,
     );
-  }
-
-  String _formatCount(int count) {
-    if (count < 1000) return count.toString();
-    if (count < 1000000) return '${(count / 1000).toStringAsFixed(1)}K';
-    return '${(count / 1000000).toStringAsFixed(1)}M';
   }
 }
 
 class _SaveButton extends ConsumerWidget {
   final String imageId;
   final bool isSaved;
-  final BuildContext context;
   final ThemeData theme;
 
   const _SaveButton({
     required this.imageId,
     required this.isSaved,
-    required this.context,
     required this.theme,
   });
 
   void _toggleSave(WidgetRef ref) async {
     try {
       await ref.read(saveProvider.notifier).toggleSave(imageId);
-     appSnackBar('Alert', "${isSaved ? 'Removed from saved collection' : 'Saved to your collection'}");
+      appSnackBar('Alert', "${isSaved ? 'Removed from saved collection' : 'Saved to your collection'}");
     } catch (e) {
       appSnackBar('Error', "Failed to update save: $e");
     }
@@ -319,24 +196,17 @@ class _SaveButton extends ConsumerWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              theme.colorScheme.surfaceVariant.withOpacity(0.9),
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.9),
               theme.colorScheme.surfaceVariant.withOpacity(0.7),
             ],
           ),
           shape: BoxShape.circle,
           boxShadow: [
-            if (isSaved)
-              BoxShadow(
-                color: theme.colorScheme.primary.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              )
-            else
-              BoxShadow(
-                color: theme.colorScheme.onSurface.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
+            BoxShadow(
+              color: (isSaved ? theme.colorScheme.primary : theme.colorScheme.onSurface).withOpacity(0.3),
+              blurRadius: isSaved ? 10 : 8,
+              offset: Offset(0, isSaved ? 3 : 2),
+            ),
           ],
         ),
         child: Icon(
@@ -346,6 +216,85 @@ class _SaveButton extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool isActive;
+  final Color activeColor;
+  final IconData icon;
+  final int count;
+  final ThemeData theme;
+
+  const _ActionButton({
+    required this.onTap,
+    required this.isActive,
+    required this.activeColor,
+    required this.icon,
+    required this.count,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          gradient: isActive
+              ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              activeColor.withOpacity(0.9),
+              activeColor.withOpacity(0.7),
+            ],
+          )
+              : LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.9),
+              theme.colorScheme.surfaceContainerHighest.withOpacity(0.7),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: (isActive ? activeColor : theme.colorScheme.onSurface).withOpacity(0.3),
+              blurRadius: isActive ? 10 : 8,
+              offset: Offset(0, isActive ? 3 : 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isActive ? Colors.white : theme.colorScheme.onSurfaceVariant,
+              size: 18,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              _formatCount(count),
+              style: AppTextstyle.interMedium(
+                fontSize: 13,
+                color: isActive ? Colors.white : theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatCount(int count) {
+    if (count < 1000) return count.toString();
+    if (count < 1000000) return '${(count / 1000).toStringAsFixed(1)}K';
+    return '${(count / 1000000).toStringAsFixed(1)}M';
   }
 }
 
@@ -383,5 +332,4 @@ class _LikeCountText extends StatelessWidget {
       ),
     );
   }
-
 }

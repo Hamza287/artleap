@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/shared.dart';
-import '../../../../../providers/user_profile_provider.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ProfilePicAndInfoWidget extends ConsumerWidget {
   const ProfilePicAndInfoWidget({super.key});

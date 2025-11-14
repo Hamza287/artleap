@@ -1,10 +1,4 @@
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ProfileInfoWidget extends ConsumerWidget {
   final String? profileName;

@@ -1,26 +1,14 @@
 import 'dart:io';
-import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/widgets/common/app_background_widget.dart';
-import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
-import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
-import 'package:Artleap.ai/providers/refresh_provider.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../prompt_screen_widgets/prompt_top_bar.dart';
-import '../../result/result_prompt_screen.dart';
 import 'components/generation_footer_redesign.dart';
 import 'components/image_control_section.dart';
 import 'components/loading_overlay_redesign.dart';
 import 'components/prompt_input_section.dart';
 import 'components/privacy_selection_section.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 

@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import 'package:Artleap.ai/shared/utilities/safe_network_image.dart';
 
 class ImageResultsGrid extends ConsumerWidget {
@@ -45,43 +39,10 @@ class ImageResultsGrid extends ConsumerWidget {
   }
 
   Widget _buildLoadingGrid(ThemeData theme) {
-    return Column(
-      children: [
-        Shimmer.fromColors(
-          baseColor: theme.colorScheme.surfaceContainerHighest,
-          highlightColor: theme.colorScheme.surface,
-          child: Container(
-            height: 280,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            3,
-                (index) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Shimmer.fromColors(
-                baseColor: theme.colorScheme.surfaceContainerHighest,
-                highlightColor: theme.colorScheme.surface,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+    return const LoadingState(
+      useShimmer: true,
+      loadingType: LoadingType.grid,
+      shimmerItemCount: 4,
     );
   }
 
@@ -243,7 +204,6 @@ class ImageResultsGrid extends ConsumerWidget {
                   ),
                 ),
               ),
-              // Add a subtle overlay on hover/tap
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -312,7 +272,6 @@ class ImageResultsGrid extends ConsumerWidget {
     final isTextToImage =
         ref.watch(generateImageProvider).generatedTextToImageData.isNotEmpty;
 
-    // Use Navigator directly instead of Navigation.pushNamed to ensure it works
     Navigator.of(context).pushNamed(
       SeePictureScreen.routeName,
       arguments: SeePictureParams(

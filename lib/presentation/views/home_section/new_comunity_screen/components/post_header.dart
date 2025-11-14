@@ -1,15 +1,4 @@
-import 'dart:typed_data';
-import 'package:Artleap.ai/providers/favrourite_provider.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../profile_screen/other_user_profile_screen.dart';
-import '../../see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PostHeader extends ConsumerStatefulWidget {
   final dynamic image;

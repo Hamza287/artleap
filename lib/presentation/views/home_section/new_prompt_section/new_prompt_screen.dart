@@ -1,13 +1,9 @@
-import 'package:Artleap.ai/presentation/views/common/profile_drawer.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:Artleap.ai/providers/prompt_nav_provider.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../home_screen/home_screen_sections/home_screen_top_bar.dart';
 import 'prompt_screen_widgets/prompt_top_bar.dart';
 import 'sections/edit_section/prompt_edit_screen.dart';
 import 'sections/new_create_section/prompt_create_screen.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PromptScreen extends ConsumerStatefulWidget {
   const PromptScreen({super.key});

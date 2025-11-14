@@ -1,15 +1,5 @@
-import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/presentation/views/Notifications/notification_screen.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
-import 'package:Artleap.ai/providers/notification_provider.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../profile_screen/profile_screen_widgets/my_creations_widget.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   const UserProfileScreen({super.key});

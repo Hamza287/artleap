@@ -1,7 +1,5 @@
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
-import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../../domain/subscriptions/subscription_model.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class CurrentPlanCard extends StatelessWidget {
   final String planName;

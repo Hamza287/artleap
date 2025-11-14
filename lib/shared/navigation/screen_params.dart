@@ -9,7 +9,7 @@ class SeePictureParams {
   final String? modelName;
   final String? creatorEmail;
   final String? createdDate;
-  final String privacy;
+  final String? privacy;
   final Uint8List? uint8ListImage;
   final int? index;
 

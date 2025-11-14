@@ -1,8 +1,5 @@
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import 'choose_plan_widgets/plan_selection_content.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ChoosePlanScreen extends ConsumerWidget {
   const ChoosePlanScreen({super.key});
@@ -28,7 +25,7 @@ class ChoosePlanScreen extends ConsumerWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/subscription_bg.png',
+              AppAssets.subscriptionbg,
               fit: BoxFit.cover,
             ),
           ),

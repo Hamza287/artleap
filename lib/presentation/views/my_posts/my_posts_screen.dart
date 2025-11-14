@@ -1,14 +1,5 @@
-import 'package:Artleap.ai/domain/my_posts/my_posts_filter_provider.dart';
-import 'package:Artleap.ai/domain/my_posts/my_posts_provider.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'widgets/comments_list_widget.dart';
-import 'widgets/likes_list_widget.dart';
-import 'widgets/my_post_card.dart';
-import 'widgets/my_posts_shimmer.dart';
-import 'widgets/post_filter_chips.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
+
 
 final selectedPostProvider = StateProvider<Map<String, String?>>((ref) => {});
 
@@ -128,7 +119,7 @@ class _MyPostsScreenState extends ConsumerState<MyPostsScreen> {
                     ),
                   );
                 },
-                loading: () => const MyPostsShimmer(),
+                loading: () => const LoadingState(loadingType: LoadingType.list,),
                 error: (error, stack) => _buildErrorState(theme, ref),
               ),
             ),

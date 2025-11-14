@@ -1,23 +1,15 @@
 import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/domain/notifications_repo/notification_repository.dart';
-import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
-import 'package:Artleap.ai/providers/auth_provider.dart';
 import 'package:Artleap.ai/remote_config/remote_config_service.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/firebase_options.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import '../di/di.dart';
-import '../providers/notification_provider.dart';
 
 class AppInitialization {
   static Future<bool> checkNetworkConnectivity() async {

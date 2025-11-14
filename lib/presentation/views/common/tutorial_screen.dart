@@ -1,9 +1,4 @@
-import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/shared.dart';
-import 'privacy_policy_accept.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class TutorialScreen extends ConsumerStatefulWidget {
   static const String routeName = "tutorial_screen";

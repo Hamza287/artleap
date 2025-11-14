@@ -1,16 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:Artleap.ai/domain/subscriptions/subscription_repo_provider.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/shared.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import '../domain/api_services/api_response.dart';
 import '../domain/subscriptions/plan_provider.dart';
-import '../presentation/views/subscriptions/google_payment_screen.dart';
 
 class PurchaseHandler {
   final WidgetRef ref;
