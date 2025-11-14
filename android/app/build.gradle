@@ -36,6 +36,12 @@ android {
         jvmTarget = "17"
     }
 
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            incremental = false
+        }
+    }
+
     defaultConfig {
         applicationId "com.XrDIgital.ImaginaryVerse"
         minSdkVersion flutter.minSdkVersion

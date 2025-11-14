@@ -22,6 +22,7 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
     return Center(
@@ -31,23 +32,29 @@ class EmptyState extends StatelessWidget {
           padding: EdgeInsets.all(size.width * 0.06),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
+            color: theme.colorScheme.surface,
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
+              colors: isDark
+                  ? [
                 theme.colorScheme.surfaceContainer.withOpacity(0.06),
                 theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
+              ]
+                  : [
+                theme.colorScheme.surfaceContainer.withOpacity(0.03),
+                theme.colorScheme.surfaceContainerHighest.withOpacity(0.1),
               ],
             ),
             border: Border.all(
-              color: theme.colorScheme.outline.withOpacity(0.1),
-              width: 1.2,
+              color: theme.colorScheme.outline.withOpacity(isDark ? 0.1 : 0.08),
+              width: 1.0, // Slightly thinner for light theme
             ),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.shadow.withOpacity(0.4),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+                color: theme.colorScheme.shadow.withOpacity(isDark ? 0.4 : 0.1),
+                blurRadius: isDark ? 12 : 8,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -61,7 +68,7 @@ class EmptyState extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      (iconColor ?? theme.colorScheme.primary).withOpacity(0.25),
+                      (iconColor ?? theme.colorScheme.primary).withOpacity(isDark ? 0.25 : 0.15),
                       Colors.transparent,
                     ],
                     center: Alignment.center,
@@ -80,7 +87,7 @@ class EmptyState extends StatelessWidget {
               AppText(
                 title,
                 size: size.width * 0.05,
-                weight: FontWeight.w500,
+                weight: FontWeight.w600, // Slightly bolder for better readability
                 color: theme.colorScheme.onSurface,
                 align: TextAlign.center,
               ),
@@ -89,7 +96,7 @@ class EmptyState extends StatelessWidget {
                 subtitle,
                 size: size.width * 0.038,
                 weight: FontWeight.w400,
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurfaceVariant, // Use onSurfaceVariant for better contrast
                 align: TextAlign.center,
               ),
               if (onAction != null && actionText != null) ...[
@@ -99,6 +106,7 @@ class EmptyState extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.colorScheme.primary,
                     foregroundColor: theme.colorScheme.onPrimary,
+                    elevation: isDark ? 2 : 1, // Adjust elevation based on theme
                     padding: EdgeInsets.symmetric(
                       horizontal: size.width * 0.06,
                       vertical: size.height * 0.02,

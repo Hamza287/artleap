@@ -7,7 +7,8 @@ class CommunityFeedWidget extends ConsumerStatefulWidget {
   const CommunityFeedWidget({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CommunityFeedWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CommunityFeedWidgetState();
 }
 
 class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
@@ -37,12 +38,15 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     if (!_isScrollControllerAttached) return;
 
     final now = DateTime.now();
-    if (_lastScrollTime != null && now.difference(_lastScrollTime!) < _throttleDuration) {
+    if (_lastScrollTime != null &&
+        now.difference(_lastScrollTime!) < _throttleDuration) {
       return;
     }
     _lastScrollTime = now;
 
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300 && !ref.read(homeScreenProvider).isLoadingMore) {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 300 &&
+        !ref.read(homeScreenProvider).isLoadingMore) {
       ref.read(homeScreenProvider).loadMoreImages();
     }
   }
@@ -66,7 +70,9 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
           );
         }
       });
-    } else if (!isSearching && _shouldRestoreScrollPosition && _previousSearchQuery == null) {
+    } else if (!isSearching &&
+        _shouldRestoreScrollPosition &&
+        _previousSearchQuery == null) {
       _shouldRestoreScrollPosition = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_isScrollControllerAttached && _scrollController.hasClients) {
@@ -114,22 +120,22 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     }
   }
 
-  Widget _buildLoadMoreShimmer() {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Center(
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildLoadMoreShimmer() {
+  //   final theme = Theme.of(context);
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 16),
+  //     child: Center(
+  //       child: SizedBox(
+  //         width: 24,
+  //         height: 24,
+  //         child: CircularProgressIndicator(
+  //           strokeWidth: 2,
+  //           valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -161,67 +167,70 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
         ),
         Expanded(
           child: homeProvider.usersData == null
-              ? const LoadingState(useShimmer: true, shimmerItemCount: 3,loadingType: LoadingType.list,)
+              ? const LoadingState(
+                  useShimmer: true,
+                  shimmerItemCount: 3,
+                  loadingType: LoadingType.post,
+                )
               : RefreshIndicator(
-            onRefresh: () async {
-              await ref.read(homeScreenProvider).refreshUserCreations();
-            },
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollNotification) {
-                if (scrollNotification is ScrollStartNotification) {
-                  _isScrollControllerAttached = _scrollController.hasClients;
-                }
-                return false;
-              },
-              child: ListView.builder(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                cacheExtent: 1000,
-                itemCount: displayedImages.length + (homeProvider.isLoadingMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index >= displayedImages.length) {
-                    return _buildLoadMoreShimmer();
-                  }
+                  onRefresh: () async {
+                    await ref.read(homeScreenProvider).refreshUserCreations();
+                  },
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (scrollNotification) {
+                      if (scrollNotification is ScrollStartNotification) {
+                        _isScrollControllerAttached =
+                            _scrollController.hasClients;
+                      }
+                      return false;
+                    },
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      cacheExtent: 1000,
+                      itemCount: displayedImages.length +
+                          (homeProvider.isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index >= displayedImages.length) {
+                          return const LoadingState(
+                            useShimmer: true,
+                            shimmerItemCount: 3,
+                            loadingType: LoadingType.post,
+                          );
+                        }
 
-                  final image = displayedImages[index];
+                        final image = displayedImages[index];
 
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    final posts = ref.read(homeScreenProvider).communityImagesList;
-                    final ids = posts.map((p) => p.userId).whereType<String>().toSet().toList();
-                    await ref.read(userProfileProvider).getProfilesForUserIds(ids);
-                  });
+                        WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          final posts =
+                              ref.read(homeScreenProvider).communityImagesList;
+                          final ids = posts
+                              .map((p) => p.userId)
+                              .whereType<String>()
+                              .toSet()
+                              .toList();
+                          await ref
+                              .read(userProfileProvider)
+                              .getProfilesForUserIds(ids);
+                        });
 
-                  final profile = userProfileProviderWatch.getProfileById(image.userId);
-                  final profileImage = profile?.user.profilePic;
+                        final profile = userProfileProviderWatch
+                            .getProfileById(image.userId);
+                        final profileImage = profile?.user.profilePic;
 
-                  return PostCard(
-                    key: ValueKey('post_${image.id}_$index'),
-                    image: image,
-                    index: index,
-                    homeProvider: homeProvider,
-                    profileImage: profileImage,
-                  );
-                },
-              ),
-            ),
-          ),
+                        return PostCard(
+                          key: ValueKey('post_${image.id}_$index'),
+                          image: image,
+                          index: index,
+                          homeProvider: homeProvider,
+                          profileImage: profileImage,
+                        );
+                      },
+                    ),
+                  ),
+                ),
         ),
       ],
     );
-  }
-
-  Widget _buildEmptyState(bool hasActiveSearch, bool hasActiveFilter, HomeScreenProvider homeProvider) {
-    if (hasActiveSearch) {
-      return NoContentWidget.noSearchResults(query: homeProvider.searchQuery);
-    } else if (hasActiveFilter) {
-      return NoContentWidget.noImagesForFilter(
-        filterName: homeProvider.selectedStyleTitle,
-        onClearFilter: () {
-          ref.read(homeScreenProvider.notifier).clearFilteredList();
-        },
-      );
-    } else {
-      return NoContentWidget.noImages();
-    }
   }
 }
