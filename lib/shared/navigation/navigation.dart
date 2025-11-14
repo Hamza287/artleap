@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'navigator_key.dart';
+
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class Navigation {
   static void pushNamed(String routeName,

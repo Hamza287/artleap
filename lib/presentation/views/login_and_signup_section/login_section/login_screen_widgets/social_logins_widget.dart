@@ -1,10 +1,6 @@
-import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'dart:io';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class SocialLoginsWidget extends ConsumerWidget {
   const SocialLoginsWidget({super.key});

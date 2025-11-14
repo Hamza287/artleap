@@ -1,13 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_picture_screen.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PostImage extends ConsumerWidget {
   final dynamic image;
@@ -32,17 +25,10 @@ class PostImage extends ConsumerWidget {
   }
 
   Widget _buildImageShimmer(BuildContext context) {
-    final theme = Theme.of(context);
-    return Shimmer.fromColors(
-      baseColor: theme.colorScheme.surfaceContainerHighest,
-      highlightColor: theme.colorScheme.surface,
-      child: Container(
-        width: double.infinity,
-        height: 450,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
-        ),
-      ),
+    return const LoadingState(
+      useShimmer: true,
+      loadingType: LoadingType.card,
+      shimmerItemCount: 1,
     );
   }
 

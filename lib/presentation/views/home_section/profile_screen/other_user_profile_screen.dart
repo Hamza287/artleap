@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
 import 'other_userprofile_widgets/profile_info_widget.dart';
 import 'profile_screen_widgets/my_creations_widget.dart';

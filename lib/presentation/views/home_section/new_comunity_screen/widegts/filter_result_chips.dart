@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/shared/constants/app_static_data.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import '../../../../../providers/home_screen_provider.dart';
 
 class FilterResultChips extends ConsumerWidget {

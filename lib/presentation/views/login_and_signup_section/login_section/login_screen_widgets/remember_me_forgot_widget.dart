@@ -1,10 +1,4 @@
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/presentation/views/forgot_password_section/forgot_password_screen.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class RememberMeForgotPassWidget extends ConsumerWidget {
   const RememberMeForgotPassWidget({super.key});
@@ -26,12 +20,10 @@ class RememberMeForgotPassWidget extends ConsumerWidget {
                       scale: 0.8,
                       child: Checkbox(value: true, onChanged: (val) {}))),
               5.spaceX,
-              Text(
+              AppText(
                 "Remember me",
-                style: AppTextstyle.interMedium(
                   color: AppColors.white,
-                  fontSize: 12,
-                ),
+                  size: 12,
               ),
             ],
           )),
@@ -39,10 +31,9 @@ class RememberMeForgotPassWidget extends ConsumerWidget {
             onTap: () {
               Navigation.pushNamed(ForgotPasswordScreen.routeName);
             },
-            child: Text(
+            child: AppText(
               "Forgot Password ?",
-              style: AppTextstyle.interMedium(
-                  color: AppColors.white, fontSize: 12),
+               color: AppColors.white, size: 12,
             ),
           )
         ],

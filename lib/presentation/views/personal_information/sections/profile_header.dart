@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:Artleap.ai/shared/utilities/safe_network_image.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String? profilePic;

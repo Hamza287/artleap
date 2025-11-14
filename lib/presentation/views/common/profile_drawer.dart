@@ -1,21 +1,10 @@
 import 'dart:ui';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:feather_icons/feather_icons.dart';
-import 'package:Artleap.ai/presentation/views/login_and_signup_section/login_section/login_screen.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
-import 'package:Artleap.ai/shared/shared.dart';
-import '../../../providers/user_profile_provider.dart';
-import '../../../shared/constants/user_data.dart';
-import '../home_section/favourites_screen/favourites_screen.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import 'drawer_components/separator_widget.dart';
 import 'drawer_components/glass_circle_button.dart';
 import 'drawer_components/profile_menu_item.dart';
 import 'drawer_components/theme_selector_menu_item.dart';
-import '../../../widgets/common/upgrade_plan_widget.dart';
 import 'social_media_bottom_sheet.dart';
-import '../../../shared/theme/theme_provider.dart';
 
 class ProfileDrawer extends ConsumerStatefulWidget {
   final String profileImage;

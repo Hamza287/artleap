@@ -1,9 +1,6 @@
 import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/new_create_section/components/prompt_generate_button.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/providers/generate_image_provider.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_assets.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class GenerationFooterRedesign extends ConsumerWidget {
   final VoidCallback onGenerate;

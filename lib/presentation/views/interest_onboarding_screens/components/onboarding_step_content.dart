@@ -1,8 +1,7 @@
 import 'package:Artleap.ai/providers/interest_onboarding_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:flutter/material.dart';
 import 'contionus_button.dart';
 import 'option_card.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class OnboardingStepContent extends StatelessWidget {
   final OnboardingStepData stepData;

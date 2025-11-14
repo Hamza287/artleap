@@ -1,13 +1,4 @@
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
-import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/widgets/common/app_background_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/favourites_screen_widgets/result_container_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/favourites_screen/favourites_screen_widgets/results_text_dropdown_widget.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class FavouritesScreen extends ConsumerStatefulWidget {
   static const String routeName = 'favourite-screen';
@@ -26,13 +17,13 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.onSurface,
       appBar: AppBar(
         title: Text(
           'My Favorites',
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w700,
-            color: theme.colorScheme.onBackground,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         backgroundColor: theme.colorScheme.surface,
@@ -45,17 +36,6 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.search_rounded,
-        //       color: theme.colorScheme.onSurface,
-        //     ),
-        //     onPressed: () {
-        //       // Add search functionality
-        //     },
-        //   ),
-        // ],
       ),
       body: AppBackgroundWidget(
         widget: RefreshIndicator(
@@ -74,7 +54,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
               SliverToBoxAdapter(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -87,7 +67,7 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
               ),
               if (favouriteState.isLoading)
                 SliverToBoxAdapter(
-                  child: _buildShimmerLoading(size, theme),
+                  child: _buildLoadingState(size, theme),
                 )
               else if (favouriteState.usersFavourites == null ||
                   favouriteState.usersFavourites!.favorites.isEmpty)
@@ -142,8 +122,6 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
             ),
           ),
           const SizedBox(width: 16),
-
-          // Text Content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,44 +148,13 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
     );
   }
 
-  Widget _buildShimmerLoading(Size size, ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Shimmer.fromColors(
-        baseColor: theme.colorScheme.surfaceContainerHighest,
-        highlightColor: theme.colorScheme.surface,
-        child: Column(
-          children: [
-            Container(
-              height: 120,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            const SizedBox(height: 24),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12.0,
-                mainAxisSpacing: 12.0,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: theme.colorScheme.surface,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+  Widget _buildLoadingState(Size size, ThemeData theme) {
+    return const Padding(
+      padding: EdgeInsets.all(16),
+      child: LoadingState(
+        useShimmer: true,
+        loadingType: LoadingType.grid,
+        shimmerItemCount: 6,
       ),
     );
   }
@@ -218,7 +165,6 @@ class _FavouritesScreenState extends ConsumerState<FavouritesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Illustration
           Container(
             width: size.width * 0.6,
             height: size.width * 0.4,

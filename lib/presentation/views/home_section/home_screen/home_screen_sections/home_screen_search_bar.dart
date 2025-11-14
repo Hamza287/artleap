@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class HomeScreenSearchBar extends StatelessWidget {
   const HomeScreenSearchBar({super.key});

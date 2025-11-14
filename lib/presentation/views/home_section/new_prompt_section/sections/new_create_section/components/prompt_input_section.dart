@@ -1,9 +1,5 @@
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PromptInputRedesign extends ConsumerWidget {
   const PromptInputRedesign({super.key});

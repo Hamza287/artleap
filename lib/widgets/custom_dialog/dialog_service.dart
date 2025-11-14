@@ -1,8 +1,7 @@
 import 'package:Artleap.ai/shared/utilities/privacy_settings_content.dart';
-import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
-import 'package:flutter/material.dart';
-import '../../providers/image_privacy_provider.dart';
 import 'base_dialog.dart';
+
+import 'package:Artleap.ai/shared/route_export.dart';
 
 enum DialogType {
   confirmDelete,

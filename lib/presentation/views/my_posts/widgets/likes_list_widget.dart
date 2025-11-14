@@ -1,7 +1,4 @@
-import 'package:Artleap.ai/domain/my_posts/my_posts_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class LikesListWidget extends ConsumerWidget {
   final String imageId;

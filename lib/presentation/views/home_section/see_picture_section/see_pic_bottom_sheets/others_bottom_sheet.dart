@@ -1,8 +1,6 @@
-import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'bottom_sheet_widget.dart/common_button.dart';
 import 'bottom_sheet_widget.dart/other_textfield.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class OthersBottomSheet extends ConsumerWidget {
   final String? imageId;

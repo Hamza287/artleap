@@ -1,7 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/domain/notification_services/notification_service.dart';
-
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final notificationServiceProvider = Provider<NotificationService>((ref) {
   return NotificationService(ref);

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../../domain/subscriptions/subscription_model.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PlanCard extends StatelessWidget {
   final SubscriptionPlanModel plan;

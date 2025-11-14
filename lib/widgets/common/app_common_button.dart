@@ -1,6 +1,6 @@
 import 'package:Artleap.ai/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/shared.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class CommonButton extends StatelessWidget {
   final String? title;

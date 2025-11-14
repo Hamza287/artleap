@@ -1,8 +1,4 @@
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class ORwidget extends ConsumerWidget {
   const ORwidget({super.key});
@@ -18,10 +14,9 @@ class ORwidget extends ConsumerWidget {
           color: AppColors.white,
         ),
         5.spaceX,
-        Text(
+        AppText(
           "or login with",
-          style:
-              AppTextstyle.interRegular(color: AppColors.white, fontSize: 12),
+         color: AppColors.white, size: 12,
         ),
         5.spaceX,
         Container(

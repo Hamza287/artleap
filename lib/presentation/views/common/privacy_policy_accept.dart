@@ -1,13 +1,5 @@
-import 'package:Artleap.ai/domain/user_preferences/user_preferences_service.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../shared/navigation/navigation.dart';
-import '../../../shared/theme/custom_theme_extension.dart';
-import '../interest_onboarding_screens/interest_onboarding_screen.dart';
+import 'package:Artleap.ai/shared/theme/custom_theme_extension.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final privacyPolicyLoadingProvider = StateProvider<bool>((ref) => false);
 

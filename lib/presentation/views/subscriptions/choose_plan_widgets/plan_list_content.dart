@@ -1,13 +1,6 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../domain/subscriptions/subscription_model.dart';
-import '../apple_payment_screen.dart';
-import '../google_payment_screen.dart';
 import 'plan_card.dart';
-import '../../../../shared/constants/app_textstyle.dart';
-import '../../../../providers/user_profile_provider.dart';
-import '../../../../shared/constants/user_data.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final selectedPlanProvider = StateProvider<SubscriptionPlanModel?>((ref) => null);
 

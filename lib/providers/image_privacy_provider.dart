@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/api_repos_impl/image_privacy_repo.dart';
 import '../domain/api_services/api_response.dart';
-
-enum ImagePrivacy { public, private, followers, personal }
+import 'generate_image_provider.dart';
 
 final imagePrivacyRepositoryProvider = Provider<ImagePrivacyRepository>((ref) {
   return ImagePrivacyRepository();
@@ -112,27 +111,9 @@ class ImagePrivacyNotifier extends StateNotifier<ImagePrivacyState> {
         return 'public';
       case ImagePrivacy.private:
         return 'private';
-      case ImagePrivacy.followers:
-        return 'followers';
-      case ImagePrivacy.personal:
-        return 'personal';
     }
   }
 
-  ImagePrivacy _fromString(String privacy) {
-    switch (privacy.toLowerCase()) {
-      case 'public':
-        return ImagePrivacy.public;
-      case 'private':
-        return ImagePrivacy.private;
-      case 'followers':
-        return ImagePrivacy.followers;
-      case 'personal':
-        return ImagePrivacy.personal;
-      default:
-        return ImagePrivacy.public;
-    }
-  }
 }
 
 final imagePrivacyProvider =

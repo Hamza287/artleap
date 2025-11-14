@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class UserProfileMatricsWidget extends ConsumerWidget {
   final int followersCount;

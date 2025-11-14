@@ -1,17 +1,5 @@
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
-import 'package:Artleap.ai/providers/notification_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import '../../../widgets/state_widgets/empty_state.dart';
-import '../../../widgets/state_widgets/error_state.dart';
-import '../../../widgets/state_widgets/loading_state.dart';
 import 'notification_card.dart';
-import 'notification_details_screen.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class NotificationScreen extends ConsumerWidget {
   static const routeName = '/notifications_repo';

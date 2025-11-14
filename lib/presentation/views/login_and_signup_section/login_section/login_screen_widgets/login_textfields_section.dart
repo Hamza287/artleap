@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/widgets/common/app_common_textfield.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
-import '../../../../../providers/auth_provider.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class LoginScreenTextfieldsSection extends ConsumerWidget {
   const LoginScreenTextfieldsSection({super.key});

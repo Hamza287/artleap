@@ -1,22 +1,4 @@
-import 'dart:typed_data';
-import 'package:Artleap.ai/presentation/firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'package:Artleap.ai/presentation/views/home_section/bottom_nav_bar.dart';
-import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
-import 'package:Artleap.ai/providers/add_image_to_fav_provider.dart';
-import 'package:Artleap.ai/providers/image_privacy_provider.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:like_button/like_button.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:Artleap.ai/presentation/views/home_section/see_picture_section/see_pic_bottom_sheets/report_pic_bottom_sheet.dart';
-import 'package:Artleap.ai/providers/favrourite_provider.dart';
-import 'package:Artleap.ai/providers/image_actions_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PictureOptionsWidget extends ConsumerWidget {
   final String? imageUrl;
@@ -243,10 +225,6 @@ class PictureOptionsWidget extends ConsumerWidget {
         return ImagePrivacy.public;
       case 'private':
         return ImagePrivacy.private;
-      case 'followers':
-        return ImagePrivacy.followers;
-      case 'personal':
-        return ImagePrivacy.personal;
       default:
         return ImagePrivacy.public;
     }

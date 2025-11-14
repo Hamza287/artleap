@@ -1,6 +1,4 @@
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:flutter/material.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class PromptTemplates extends StatelessWidget {
   const PromptTemplates({super.key});

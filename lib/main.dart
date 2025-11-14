@@ -1,25 +1,7 @@
 import 'dart:async';
-import 'package:Artleap.ai/main/app_keyboard_listener.dart';
-import 'package:Artleap.ai/providers/auth_provider.dart';
-import 'package:Artleap.ai/providers/localization_provider.dart';
-import 'package:Artleap.ai/presentation/splash_screen.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/localization/app_localization.dart';
-import 'package:Artleap.ai/shared/navigation/navigator_key.dart';
-import 'package:Artleap.ai/shared/navigation/route_generator.dart';
 import 'package:Artleap.ai/shared/theme/app_theme.dart';
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
-import 'domain/connectivity/connectivity_overlay.dart';
-import 'domain/notification_services/notification_service.dart';
-import 'main/app_initialization.dart';
-import 'main/purchase_handler.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 import 'remote_config/force_update/force_update_wrapper.dart';
-import 'shared/theme/theme_provider.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {

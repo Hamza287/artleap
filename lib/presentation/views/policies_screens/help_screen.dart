@@ -1,10 +1,6 @@
 import 'package:Artleap.ai/providers/help_screen_provider.dart';
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class HelpScreen extends ConsumerWidget {
   const HelpScreen({super.key});

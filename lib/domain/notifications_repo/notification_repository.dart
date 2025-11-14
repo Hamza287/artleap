@@ -1,12 +1,8 @@
 import 'package:Artleap.ai/widgets/state_widgets/error_handler.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import '../api_services/dio_core.dart';
 import '../../providers/dio_core_provider.dart';
-import '../../shared/app_persistance/app_data.dart';
-import '../../shared/constants/app_constants.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class NotificationRepository {
   final DioCore dioCore;

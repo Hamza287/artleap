@@ -1,14 +1,5 @@
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import '../../../providers/notification_provider.dart';
-import '../../../widgets/common/app_common_button.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class NotificationDetailScreen extends ConsumerWidget {
   static const routeName = '/notification-details';

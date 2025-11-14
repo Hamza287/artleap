@@ -5,16 +5,16 @@ class AppAssets {
   static const jsondir = "assets/json/";
 
   //onboarding
-  static const backgroundImage = "${imagesDir}Onboarding.png";
-  static const artstyle1 = "${imagesDir}artstyle1.png";
-  static const artstyle2 = "${imagesDir}artstyle2.png";
-  static const artstyle3 = "${imagesDir}artstyle3.png";
-  static const artstyle4 = "${imagesDir}artstyle4.png";
-  static const profilepic = "${imagesDir}profilepic.png";
-  static const forgotbg = "${imagesDir}forgotbg.png";
+  static const backgroundImage = "${imagesDir}Onboarding.webp";
+  static const artstyle1 = "${imagesDir}artstyle1.jpg";
+  // static const artstyle2 = "${imagesDir}artstyle2.png";
+  // static const artstyle3 = "${imagesDir}artstyle3.png";
+  // static const artstyle4 = "${imagesDir}artstyle4.png";
+  static const profilepic = "${imagesDir}profilepic.jpg";
+  static const forgotbg = "${imagesDir}forgotbg.webp";
 
-  static const cartoon = "${imagesDir}cartoon.jpg";
-  static const anime = "${imagesDir}anime.jpg";
+  static const cartoon = "${imagesDir}cartoon.webp";
+  static const anime = "${imagesDir}anime.webp";
   static const threeD = "${imagesDir}threed.jpg";
   static const comic = "${imagesDir}comic.jpg";
   static const cyberpunk = "${imagesDir}cyberpunk.jpg";
@@ -34,21 +34,22 @@ class AppAssets {
   static const sketch = "${imagesDir}sketch.jpg";
   static const mockup = "${imagesDir}mockup.jpg";
   static const studio = "${imagesDir}studio.jpg";
-  static const leo_anime = "${imagesDir}leo_anime.png";
-  static const leo_bokeh = "${imagesDir}leo_bokeh.png";
-  static const leo_cinematic_closure = "${imagesDir}leo_cinematic_closure.png";
-  static const leo_cinematic = "${imagesDir}leo_cinematic.png";
-  static const leo_creative = "${imagesDir}leo_creative.png";
+  static const leo_anime = "${imagesDir}leo_anime.webp";
+  static const leo_bokeh = "${imagesDir}leo_bokeh.webp";
+  static const leo_cinematic_closure = "${imagesDir}leo_cinematic_closure.webp";
+  static const leo_cinematic = "${imagesDir}leo_cinematic.webp";
+  static const leo_creative = "${imagesDir}leo_creative.webp";
   static const leo_dynamic = "${imagesDir}leo_dynamic.png";
-  static const leo_environment = "${imagesDir}leo_environment.png";
-  static const leo_fashion = "${imagesDir}leo_fashion.png";
-  static const leo_film = "${imagesDir}leo_film.png";
-  static const leo_food = "${imagesDir}leo_food.png";
-  static const leo_hdr = "${imagesDir}leo_hdr.png";
-  static const leo_illustration = "${imagesDir}leo_illustration.png";
-  static const leo_monochrome = "${imagesDir}leo_monochrome.png";
-  static const leo_moody = "${imagesDir}leo_moody.png";
-  static const leo_sketch = "${imagesDir}leo_sketch.png";
+  static const leo_environment = "${imagesDir}leo_environment.webp";
+  static const leo_fashion = "${imagesDir}leo_fashion.webp";
+  static const leo_film = "${imagesDir}leo_film.webp";
+  static const leo_food = "${imagesDir}leo_food.webp";
+  static const leo_hdr = "${imagesDir}leo_hdr.webp";
+  static const leo_illustration = "${imagesDir}leo_illustration.webp";
+  static const leo_monochrome = "${imagesDir}leo_monochrome.webp";
+  static const leo_moody = "${imagesDir}leo_moody.webp";
+  static const leo_sketch = "${imagesDir}leo_sketch.webp";
+  static const subscriptionbg = "${imagesDir}subscription_bg.webp";
 
   ///icons
   static const generateicon = "${iconsdir}generateicon.png";

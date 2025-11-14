@@ -1,12 +1,7 @@
-import 'package:Artleap.ai/widgets/common/app_snack_bar.dart';
-import 'package:Artleap.ai/widgets/state_widgets/empty_state.dart';
-import 'package:Artleap.ai/widgets/state_widgets/error_state.dart';
-import 'package:Artleap.ai/widgets/state_widgets/loading_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Artleap.ai/domain/community/providers/providers_setup.dart';
 import 'components/saved_image_grid.dart';
 import 'components/saved_images_header.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class SavedImagesScreen extends ConsumerStatefulWidget {
   static const String routeName = 'saved-images-screens';

@@ -1,6 +1,4 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class TermsAndConditions extends StatefulWidget {
   final Function(bool?) onTermsChanged;

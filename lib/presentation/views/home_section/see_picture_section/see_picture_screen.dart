@@ -1,19 +1,5 @@
-import 'package:Artleap.ai/presentation/views/subscriptions/choose_plan_screen.dart';
-import 'package:Artleap.ai/providers/image_privacy_provider.dart';
-import 'package:Artleap.ai/providers/user_profile_provider.dart';
-import 'package:Artleap.ai/widgets/custom_dialog/dialog_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import 'package:Artleap.ai/shared/navigation/navigation.dart';
-import 'package:Artleap.ai/shared/navigation/screen_params.dart';
-import '../../../../shared/constants/app_textstyle.dart';
-import '../../../firebase_analyitcs_singleton/firebase_analtics_singleton.dart';
-import 'full_image_viewer_screen.dart';
-import 'see_picture_widgets/picture_options_widget.dart';
-import 'see_picture_widgets/profile_name_follow_widget.dart';
-import 'see_picture_widgets/prompt_text_widget.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class SeePictureScreen extends ConsumerStatefulWidget {
   static const routeName = "see_picture_screen";
@@ -43,7 +29,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         );
       }
 
-      final currentPrivacy = _privacyFromString(widget.params!.privacy);
+      final currentPrivacy = _privacyFromString(widget.params?.privacy ?? 'Public');
       ref.read(imagePrivacyProvider.notifier).cachePrivacy(widget.params!.imageId!, currentPrivacy);
     });
   }
@@ -56,7 +42,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
     final cachedPrivacy = ref.watch(imagePrivacyForImageProvider(widget.params!.imageId ?? ''));
-    final currentPrivacy = cachedPrivacy ?? _privacyFromString(widget.params!.privacy);
+    final currentPrivacy = cachedPrivacy ?? _privacyFromString(widget.params!.privacy ?? 'Public');
 
     return Scaffold(
       backgroundColor: isDark ? Color(0xFF0A0A0A) : Color(0xFFF8F9FA),
@@ -345,10 +331,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         return 'public';
       case ImagePrivacy.private:
         return 'private';
-      case ImagePrivacy.followers:
-        return 'followers';
-      case ImagePrivacy.personal:
-        return 'personal';
     }
   }
 
@@ -358,10 +340,6 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
         return ImagePrivacy.public;
       case 'private':
         return ImagePrivacy.private;
-      case 'followers':
-        return ImagePrivacy.followers;
-      case 'personal':
-        return ImagePrivacy.personal;
       default:
         return ImagePrivacy.public;
     }

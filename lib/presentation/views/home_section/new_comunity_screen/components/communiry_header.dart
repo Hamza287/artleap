@@ -1,9 +1,5 @@
-import 'package:feather_icons/feather_icons.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/providers/home_screen_provider.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
 import '../widegts/art_style_dialog.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class CommunityHeader extends ConsumerStatefulWidget {
   final Function(bool isSearching, String? searchQuery)? onSearchStateChanged;

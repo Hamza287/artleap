@@ -1,3 +1,5 @@
+import 'image_model.dart';
+
 class UserProfileModel {
   final bool success;
   final String message;
@@ -220,61 +222,6 @@ class User {
   }
 }
 
-class Images {
-  final String id;
-  final String userId;
-  final String username;
-  final String creatorEmail;
-  final String imageUrl;
-  final String createdAt;
-  final String modelName;
-  final String prompt;
-  final String privacy;
-  final int V;
-
-  Images({
-    required this.id,
-    required this.userId,
-    required this.username,
-    required this.creatorEmail,
-    required this.imageUrl,
-    required this.createdAt,
-    required this.modelName,
-    required this.prompt,
-    required this.V,
-    required this.privacy,
-  });
-
-  factory Images.fromJson(Map<String, dynamic> json) {
-    return Images(
-      id: json['_id'] ?? "",
-      userId: json['userId'] ?? "",
-      username: json['username'] is String ? json['username'] as String : "",
-      creatorEmail: json['creatorEmail'] ?? "",
-      imageUrl: json['imageUrl'] ?? "",
-      createdAt: json['createdAt'] ?? "",
-      modelName: json['modelName'] ?? "",
-      prompt: json['prompt'] ?? "",
-      V: json['__v'] ?? 0,
-      privacy: json['privacy'] ?? "public",
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['_id'] = id;
-    data['userId'] = userId;
-    data['username'] = username;
-    data['creatorEmail'] = creatorEmail;
-    data['imageUrl'] = imageUrl;
-    data['createdAt'] = createdAt;
-    data['modelName'] = modelName;
-    data['prompt'] = prompt;
-    data['__v'] = V;
-    data['privacy'] = privacy;
-    return data;
-  }
-}
 
 class Following {
   final String id;

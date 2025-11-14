@@ -1,14 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/constants/user_data.dart';
-import '../../../domain/subscriptions/subscription_repo_provider.dart';
-import '../../../providers/user_profile_provider.dart';
-import 'choose_plan_screen.dart';
 import 'current_plan_sections/billing_section.dart';
 import 'current_plan_sections/current_plan_card.dart';
 import 'current_plan_sections/plan_action_buttons.dart';
 import 'current_plan_sections/plan_usage_section.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
+
 
 class CurrentPlanScreen extends ConsumerStatefulWidget {
   static const String routeName = '/subscription-status';

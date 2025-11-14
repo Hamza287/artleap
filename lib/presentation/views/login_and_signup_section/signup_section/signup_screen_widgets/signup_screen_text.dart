@@ -1,8 +1,4 @@
-import 'package:Artleap.ai/shared/constants/app_textstyle.dart';
-import 'package:Artleap.ai/shared/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/widgets/common/sized_box.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class SignupScreenText extends ConsumerWidget {
   const SignupScreenText({super.key});
@@ -12,10 +8,9 @@ class SignupScreenText extends ConsumerWidget {
     return Column(
       children: [
         5.spaceY,
-        Text(
+        AppText(
           "Sign up to convert your imagination into reality",
-          style:
-              AppTextstyle.interRegular(color: AppColors.white, fontSize: 10),
+           color: AppColors.white, size: 10,
         )
       ],
     );

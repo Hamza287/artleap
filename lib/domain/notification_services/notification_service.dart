@@ -1,9 +1,7 @@
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
 import 'package:Artleap.ai/widgets/state_widgets/error_handler.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../notifications_repo/notification_repository.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 final navigatorKeyProvider = Provider<GlobalKey<NavigatorState>>((ref) {
   return GlobalKey<NavigatorState>();
@@ -136,7 +134,7 @@ class NotificationService {
 }
 
 // Provider for NotificationService
-final notificationServiceProvider = Provider<NotificationService>((ref) {
-  final navigatorKey = ref.read(navigatorKeyProvider);
-  return NotificationService(ref, navigatorKey: navigatorKey);
-});
+// final notificationServiceProvider = Provider<NotificationService>((ref) {
+//   final navigatorKey = ref.read(navigatorKeyProvider);
+//   return NotificationService(ref, navigatorKey: navigatorKey);
+// });

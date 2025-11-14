@@ -1,7 +1,5 @@
-import 'package:Artleap.ai/domain/notification_model/notification_model.dart';
-import 'package:Artleap.ai/widgets/custom_text/custom_text_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
 
 class NotificationCard extends StatelessWidget {
   final AppNotification notification;

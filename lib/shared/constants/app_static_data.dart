@@ -4,11 +4,11 @@ import 'package:Artleap.ai/shared/constants/app_assets.dart';
 List<Map> artsStyleImagesLIst = [
   {"image": "", "id": "0"},
   {"image": AppAssets.artstyle1, "id": "1"},
-  {"image": AppAssets.artstyle2, "id": "2"},
-  {"image": AppAssets.artstyle3, "id": "3"},
-  {"image": AppAssets.artstyle4, "id": "4"},
+  // {"image": AppAssets.artstyle2, "id": "2"},
+  // {"image": AppAssets.artstyle3, "id": "3"},
+  // {"image": AppAssets.artstyle4, "id": "4"},
   {"image": AppAssets.artstyle1, "id": "1"},
-  {"image": AppAssets.artstyle2, "id": "1"},
+  // {"image": AppAssets.artstyle2, "id": "1"},
 ];
 
 List<Map> filterResult = [
