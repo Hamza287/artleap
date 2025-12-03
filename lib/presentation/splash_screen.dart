@@ -20,6 +20,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     super.initState();
     _controller = AnimationController(vsync: this);
     _startTime = DateTime.now();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeApp();
     });
@@ -29,10 +30,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (_initialized) return;
     _initialized = true;
 
-    final tutorialStorage = ref.read(tutorialStorageServiceProvider);
-    await tutorialStorage.init();
+    try {
+      final tutorialStorage = ref.read(tutorialStorageServiceProvider);
+      await tutorialStorage.init();
 
-    await ref.read(splashStateProvider.notifier).initializeApp();
+      await ref.read(remoteConfigProvider).initialize();
+      await ref.read(remoteConfigProvider).fetchAndActivate();
+
+      await ref.read(splashStateProvider.notifier).initializeApp();
+    } catch (e) {
+      print('SplashScreen: Error in _initializeApp: $e');
+    }
   }
 
   @override
@@ -117,27 +125,58 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _navigateToNextScreen() async {
-    final elapsedTime = DateTime.now().difference(_startTime!);
-    final remainingTime = Duration(seconds: 4) - elapsedTime;
+    try {
+      final elapsedTime = DateTime.now().difference(_startTime!);
+      final remainingTime = Duration(seconds: 3) - elapsedTime;
 
-    if (remainingTime > Duration.zero) {
-      await Future.delayed(remainingTime);
+      if (remainingTime > Duration.zero) {
+        await Future.delayed(remainingTime);
+      }
+
+      if (!mounted) return;
+
+      await ref.read(remoteConfigProvider).fetchAndActivate();
+
+      final showAppOpenAds = ref.read(appOpenAdsEnabledProvider);
+      print('SplashScreen: showAppOpenAds from remote config: $showAppOpenAds');
+
+      if (showAppOpenAds) {
+        print('SplashScreen: Waiting for app open ad to load...');
+        final appOpenAdManager = ref.read(appOpenAdProvider);
+
+        await Future.delayed(const Duration(seconds: 1));
+
+        final adShown = await appOpenAdManager.showAppOpenAd(ref);
+        print('SplashScreen: App open ad shown result: $adShown');
+
+        if (adShown) {
+          await Future.delayed(const Duration(seconds: 1));
+        } else {
+          print('SplashScreen: App open ad not shown, continuing navigation');
+        }
+      }
+
+      final hasSeenTutorial =
+      await ArtleapNavigationManager.getTutorialStatus(ref);
+      final userData = ArtleapNavigationManager.getUserDataFromStorage();
+
+      await ArtleapNavigationManager.navigateBasedOnUserStatus(
+        context: context,
+        ref: ref,
+        userId: userData['userId'],
+        userName: userData['userName'],
+        userProfilePicture: userData['userProfilePicture'],
+        userEmail: userData['userEmail'],
+        hasSeenTutorial: hasSeenTutorial,
+      );
+    } catch (e) {
+      print('SplashScreen: Error in _navigateToNextScreen: $e');
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          LoginScreen.routeName,
+              (Route<dynamic> route) => false,
+        );
+      }
     }
-
-    if (!mounted) return;
-
-    final hasSeenTutorial =
-        await ArtleapNavigationManager.getTutorialStatus(ref);
-    final userData = ArtleapNavigationManager.getUserDataFromStorage();
-
-    await ArtleapNavigationManager.navigateBasedOnUserStatus(
-      context: context,
-      ref: ref,
-      userId: userData['userId'],
-      userName: userData['userName'],
-      userProfilePicture: userData['userProfilePicture'],
-      userEmail: userData['userEmail'],
-      hasSeenTutorial: hasSeenTutorial,
-    );
   }
 }

@@ -43,7 +43,7 @@ class _PostCardState extends ConsumerState<PostCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PostHeader(image: widget.image,profilePic: widget.profileImage,),
+          PostHeader(image: widget.image, profilePic: widget.profileImage),
           PostImage(
             image: widget.image,
             homeProvider: widget.homeProvider,

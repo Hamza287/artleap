@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/widgets/state_widgets/image_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
@@ -24,17 +25,18 @@ class PostImage extends ConsumerWidget {
     return 'Anonymous Artist';
   }
 
-  Widget _buildImageShimmer(BuildContext context) {
-    return const LoadingState(
-      useShimmer: true,
-      loadingType: LoadingType.post,
-      shimmerItemCount: 1,
+  Widget _buildImageLoading(BuildContext context) {
+    return const ImageLoadingEffect(
+      width: double.infinity,
+      height: 450,
     );
   }
 
   Widget _buildErrorPlaceholder(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
+      width: double.infinity,
+      height: 450,
       color: theme.colorScheme.surfaceContainerHighest,
       child: Center(
         child: Column(
@@ -105,13 +107,13 @@ class PostImage extends ConsumerWidget {
             imageUrl: image.imageUrl,
             fit: BoxFit.cover,
             fadeInDuration: Duration.zero,
-            placeholder: (context, url) => _buildImageShimmer(context),
+            placeholder: (context, url) => _buildImageLoading(context),
             errorWidget: (context, url, error) => _buildErrorPlaceholder(context),
             cacheKey: image.imageUrl,
             maxWidthDiskCache: 1080,
             maxHeightDiskCache: 1080,
             useOldImageOnUrlChange: true,
-          ) : _buildImageShimmer(context),
+          ) : _buildImageLoading(context),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/ads/ad_services/ad_provider.dart';
 import 'package:Artleap.ai/domain/api_models/user_profile_model.dart';
 import 'package:Artleap.ai/domain/tutorial/tutorial_provider.dart';
 import 'package:Artleap.ai/presentation/views/common/privacy_policy_accept.dart';
@@ -21,6 +22,9 @@ class ArtleapNavigationManager {
     required String userEmail,
     required bool hasSeenTutorial,
   }) async {
+    final appOpenAdManager = ref.read(appOpenAdProvider);
+    appOpenAdManager.disableForSession();
+
     await _navigateBasedOnUserStatusImpl(
       context: context,
       userId: userId,
@@ -31,6 +35,10 @@ class ArtleapNavigationManager {
       getUserProfile: () => ref.read(userProfileProvider).getUserProfileData(userId),
       getUserProfileData: () => ref.read(userProfileProvider).userProfileData,
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      appOpenAdManager.enableForSession();
+    });
   }
 
   static Future<void> navigateBasedOnUserStatusWithRef({
@@ -42,6 +50,9 @@ class ArtleapNavigationManager {
     required String userEmail,
     required bool hasSeenTutorial,
   }) async {
+    final appOpenAdManager = ref.read(appOpenAdProvider);
+    appOpenAdManager.disableForSession();
+
     await _navigateBasedOnUserStatusImpl(
       context: context,
       userId: userId,
@@ -52,6 +63,10 @@ class ArtleapNavigationManager {
       getUserProfile: () => ref.read(userProfileProvider).getUserProfileData(userId),
       getUserProfileData: () => ref.read(userProfileProvider).userProfileData,
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      appOpenAdManager.enableForSession();
+    });
   }
 
   static Future<void> _navigateBasedOnUserStatusImpl({

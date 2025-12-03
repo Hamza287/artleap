@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:Artleap.ai/domain/notification_services/firebase_notification_service.dart';
 import 'package:Artleap.ai/domain/notifications_repo/notification_repository.dart';
-import 'package:Artleap.ai/remote_config/remote_config_service.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';

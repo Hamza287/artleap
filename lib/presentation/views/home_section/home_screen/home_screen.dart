@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/ads/banner_ads/banner_ad_widget.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -10,6 +11,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const HomeScreenSearchBar(),
                     const SizedBox(height: 20),
                     const PortraitOptions(),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     AiFiltersGrid(),
                     const SizedBox(height: 24),
                     const TrendingStyles(),
@@ -64,6 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
+            const BannerAdWidget(),
           ],
         ),
       ),

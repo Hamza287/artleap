@@ -1,13 +1,26 @@
+import 'dart:async';
 import 'package:Artleap.ai/shared/theme/custom_theme_extension.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 final privacyPolicyLoadingProvider = StateProvider<bool>((ref) => false);
+final adCompletionProvider = StateProvider<bool>((ref) => false);
+final adDialogShownProvider = StateProvider<bool>((ref) => false);
 
-class AcceptPrivacyPolicyScreen extends ConsumerWidget {
+class AcceptPrivacyPolicyScreen extends ConsumerStatefulWidget {
   const AcceptPrivacyPolicyScreen({super.key});
   static const String routeName = "accept_privacy_policy";
 
-  Future<void> _acceptPrivacyPolicy(WidgetRef ref, BuildContext context) async {
+  @override
+  ConsumerState<AcceptPrivacyPolicyScreen> createState() =>
+      _AcceptPrivacyPolicyScreenState();
+}
+
+class _AcceptPrivacyPolicyScreenState
+    extends ConsumerState<AcceptPrivacyPolicyScreen> {
+  bool _navigationCompleted = false;
+  bool _shouldShowAd = false;
+
+  Future<void> _acceptPrivacyPolicy() async {
     final isLoading = ref.read(privacyPolicyLoadingProvider);
     if (isLoading) return;
 
@@ -16,43 +29,104 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
     try {
       final userId = UserData.ins.userId;
       if (userId == null || userId.isEmpty) {
-        throw Exception('User ID not found');
+        throw Exception("User ID not found");
       }
 
-      final success = await ref.read(userPreferencesServiceProvider).acceptPrivacyPolicy(
-        userId: userId,
-        version: "1.0",
-      );
+      final success = await ref
+          .read(userPreferencesServiceProvider)
+          .acceptPrivacyPolicy(userId: userId, version: "1.0");
 
-      if (success) {
-        if (context.mounted) {
-          Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreen.routeName);
+      if (!success) {
+        if (mounted) {
+          appSnackBar(
+            'Error',
+            'Failed to accept privacy policy. Please try again.',
+            backgroundColor: AppColors.red,
+          );
         }
+        return;
+      }
+
+      final remoteConfig = RemoteConfigService.instance;
+
+      if (remoteConfig.showNativeAds) {
+        _shouldShowAd = true;
+
+        final adNotifier = ref.read(nativeAdProvider.notifier);
+        adNotifier.disposeAd();
+        await adNotifier.loadNativeAd();
       } else {
-        if (context.mounted) {
-          appSnackBar('Error', 'Failed to accept privacy policy. Please try again.',backgroundColor: AppColors.red);
-        }
+        _navigateToInterestScreen();
       }
     } catch (e) {
-      print(e);
-      if (context.mounted) {
-        appSnackBar('Error', 'An error occurred. Please try again.',backgroundColor: AppColors.red);
+      if (mounted) {
+        appSnackBar(
+          'Error',
+          'An error occurred. Please try again.',
+          backgroundColor: AppColors.red,
+        );
       }
     } finally {
-      if (context.mounted) {
+      if (mounted) {
         ref.read(privacyPolicyLoadingProvider.notifier).state = false;
       }
     }
   }
 
+  void _navigateToInterestScreen() {
+    if (_navigationCompleted) return;
+
+    _navigationCompleted = true;
+
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigation.pushNamedAndRemoveUntil(
+            InterestOnboardingScreen.routeName);
+      });
+    }
+  }
+
+  void _showAdDialog() {
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.7),
+      builder: (context) {
+        return _AdDialogContent(
+          onClose: _navigateToInterestScreen,
+          onContinue: _navigateToInterestScreen,
+        );
+      },
+    ).then((_) {
+      if (!_navigationCompleted) {
+        _navigateToInterestScreen();
+      }
+    });
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final customTheme = theme.extension<CustomThemeExtension>()!;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
     final isLoading = ref.watch(privacyPolicyLoadingProvider);
+
+    // LISTEN TO NATIVE AD STATE HERE (correct Riverpod placement)
+    ref.listen<NativeAdState>(nativeAdProvider, (prev, next) {
+      if (!_navigationCompleted && next.isLoaded && _shouldShowAd) {
+        _showAdDialog();
+      }
+
+      if (!_navigationCompleted &&
+          next.errorMessage != null &&
+          _shouldShowAd) {
+        _navigateToInterestScreen();
+      }
+    });
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -74,7 +148,6 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
               const Spacer(flex: 1),
               Text(
                 'Ready to dive into a world of\nlimitless possibilities?',
-                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 20 : 22,
                   fontWeight: FontWeight.w600,
@@ -88,7 +161,6 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
                 },
                 child: Text(
                   'Take the leap,\nand we\'ll turn\nit into art!',
-                  textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: isSmallScreen ? 38 : 45,
                     fontWeight: FontWeight.bold,
@@ -100,7 +172,6 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
               SizedBox(height: screenHeight * 0.13),
               Text(
                 'With AI at your fingertips, every\nidea transforms into a stunning\nmasterpiece',
-                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: isSmallScreen ? 12 : 15,
                   fontWeight: FontWeight.w500,
@@ -128,10 +199,12 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.pushNamed(context, '/privacy-policy');
+                            Navigator.pushNamed(
+                                context, '/privacy-policy');
                           },
                       ),
-                      TextSpan(text: ' and acknowledged I have read the '),
+                      const TextSpan(
+                          text: ' and acknowledged I have read the '),
                       TextSpan(
                         text: 'Privacy Policy',
                         style: TextStyle(
@@ -141,7 +214,8 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.pushNamed(context, '/privacy-policy');
+                            Navigator.pushNamed(
+                                context, '/privacy-policy');
                           },
                       ),
                     ],
@@ -151,7 +225,7 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               GestureDetector(
-                onTap: isLoading ? null : () => _acceptPrivacyPolicy(ref, context),
+                onTap: isLoading ? null : _acceptPrivacyPolicy,
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 18),
@@ -159,14 +233,18 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                     gradient: isLoading
                         ? LinearGradient(
-                      colors: [Colors.grey.shade400, Colors.grey.shade600],
+                      colors: [
+                        Colors.grey.shade400,
+                        Colors.grey.shade600
+                      ],
                     )
                         : customTheme.buttonGradient,
                     boxShadow: isLoading
                         ? []
                         : [
                       BoxShadow(
-                        color: theme.colorScheme.primary.withOpacity(0.3),
+                        color: theme.colorScheme.primary
+                            .withOpacity(0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
@@ -179,14 +257,16 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
                       width: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     )
                         : Text(
                       'Accept and Continue',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: isSmallScreen ? 15 : 17,
+                        fontSize:
+                        isSmallScreen ? 15 : 17,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -196,6 +276,125 @@ class AcceptPrivacyPolicyScreen extends ConsumerWidget {
               const SizedBox(height: 20),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AdDialogContent extends ConsumerWidget {
+  final VoidCallback onClose;
+  final VoidCallback onContinue;
+
+  const _AdDialogContent({
+    required this.onClose,
+    required this.onContinue,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final adState = ref.watch(nativeAdProvider);
+
+    return AlertDialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(20),
+      contentPadding: EdgeInsets.zero,
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment:
+              MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(width: 40),
+                Text(
+                  'Advertisement',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color:
+                    Theme.of(context).colorScheme.onBackground,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: onClose,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey.shade200,
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 330,
+              child: adState.isLoaded && adState.nativeAd != null
+                  ? AdWidget(ad: adState.nativeAd!)
+                  : const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: onContinue,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary,
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    'Continue to App',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

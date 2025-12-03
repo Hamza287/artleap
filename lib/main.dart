@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Artleap.ai/ads/ad_services/ad_wrappers.dart';
 import 'package:Artleap.ai/shared/theme/app_theme.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 import 'remote_config/force_update/force_update_wrapper.dart';
@@ -13,7 +14,7 @@ void main() {
         overrides: [
           notificationServiceProvider.overrideWith((ref) => NotificationService(ref)),
         ],
-        child: AppKeyboardListener(child: const MyApp()),
+        child: AppKeyboardListener(child: const AdAppWrapper(child: MyApp()),),
       ),
     );
   }, (error, stack) {
