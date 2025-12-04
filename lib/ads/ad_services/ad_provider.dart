@@ -1,3 +1,4 @@
+import 'package:Artleap.ai/ads/interstitial_ads/interstitial_ad_provider.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 final remoteConfigProvider = Provider<RemoteConfigService>((ref) {
@@ -8,8 +9,8 @@ final adServiceProvider = Provider<AdService>((ref) {
   return AdService.instance;
 });
 
-final interstitialAdProvider = Provider<InterstitialAdManager>((ref) {
-  return InterstitialAdManager();
+final interstitialAdProvider = Provider<InterstitialAdNotifier>((ref) {
+  return InterstitialAdNotifier(ref);
 });
 
 final rewardedAdProvider = Provider<RewardedAdManager>((ref) {
@@ -23,7 +24,6 @@ final appOpenAdProvider = Provider<AppOpenAdManager>((ref) {
 final bannerAdManagerProvider = Provider<BannerAdManager>((ref) {
   return BannerAdManager();
 });
-
 
 final adInitializationProvider = FutureProvider<void>((ref) async {
   final adService = ref.read(adServiceProvider);

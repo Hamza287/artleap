@@ -2,8 +2,8 @@ import 'package:Artleap.ai/shared/route_export.dart';
 
 class AdHelper {
   static Future<void> showInterstitialAd(WidgetRef ref) async {
-    final interstitialManager = ref.read(interstitialAdProvider);
-    await interstitialManager.showInterstitialAd(ref);
+    final interstitialNotifier = ref.read(interstitialAdProvider);
+    await interstitialNotifier.showInterstitialAd();
   }
 
   static Future<bool> showRewardedAd({
@@ -50,12 +50,11 @@ class AdHelper {
     );
   }
 
-
   static Future<void> preloadAds(WidgetRef ref) async {
-    final interstitialManager = ref.read(interstitialAdProvider);
+    final interstitialNotifier = ref.read(interstitialAdProvider);
     final rewardedManager = ref.read(rewardedAdProvider);
 
-    await interstitialManager.loadInterstitialAd(ref);
+    await interstitialNotifier.loadInterstitialAd();
     await rewardedManager.loadRewardedAd(ref);
   }
 }

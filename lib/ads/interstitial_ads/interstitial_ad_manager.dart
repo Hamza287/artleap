@@ -1,95 +1,56 @@
+import 'package:Artleap.ai/ads/interstitial_ads/interstitial_ad_provider.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
+class InterstitialAdManager extends ConsumerStatefulWidget {
+  final Widget child;
+  final VoidCallback? onAdShown;
+  final VoidCallback? onAdDismissed;
+  final bool autoLoadOnInit;
 
+  const InterstitialAdManager({
+    super.key,
+    required this.child,
+    this.onAdShown,
+    this.onAdDismissed,
+    this.autoLoadOnInit = true,
+  });
 
-class InterstitialAdManager {
-  InterstitialAd? _interstitialAd;
-  bool _isLoading = false;
-  DateTime? _lastShownTime;
-  int _retryCount = 0;
+  @override
+  ConsumerState<InterstitialAdManager> createState() => _InterstitialAdManagerState();
+}
 
-  Future<void> loadInterstitialAd(WidgetRef ref) async {
-    if (!AdService.instance.isInitialized) {
-      await AdService.instance.initialize();
-    }
-
-    final showInterstitialAds = ref.read(interstitialAdsEnabledProvider);
-    if (!showInterstitialAds) {
-      return;
-    }
-
-    final maxRetryCount = ref.read(remoteConfigProvider).maxAdRetryCount;
-
-    if (_interstitialAd != null || _isLoading) return;
-
-    if (_retryCount >= maxRetryCount) {
-      _retryCount = 0;
-      return;
-    }
-
-    _isLoading = true;
-
-    final adUnitId = ref.read(remoteConfigProvider).interstitialAdUnit;
-
-    try {
-      await InterstitialAd.load(
-        adUnitId: adUnitId,
-        request: const AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            _interstitialAd = ad;
-            _isLoading = false;
-            _retryCount = 0;
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            _isLoading = false;
-            _interstitialAd = null;
-            _retryCount++;
-          },
-        ),
-      );
-    } catch (e) {
-      _isLoading = false;
-      _retryCount++;
+class _InterstitialAdManagerState extends ConsumerState<InterstitialAdManager> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.autoLoadOnInit) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(interstitialAdStateProvider.notifier).loadInterstitialAd();
+      });
     }
   }
 
-  Future<bool> showInterstitialAd(WidgetRef ref) async {
-    final showInterstitialAds = ref.read(interstitialAdsEnabledProvider);
-    if (!showInterstitialAds) {
-      return false;
-    }
-
-    if (_interstitialAd == null) {
-      await loadInterstitialAd(ref);
-      return false;
-    }
-
-    final now = DateTime.now();
-    if (_lastShownTime != null) {
-      final secondsSinceLastAd = now.difference(_lastShownTime!).inSeconds;
-      final interval = ref.read(interstitialIntervalProvider);
-      if (secondsSinceLastAd < interval) {
-        return false;
-      }
-    }
-
-    try {
-      await _interstitialAd!.show();
-      _lastShownTime = now;
-      _interstitialAd = null;
-      loadInterstitialAd(ref);
-      return true;
-    } catch (e) {
-      _interstitialAd = null;
-      loadInterstitialAd(ref);
-      return false;
-    }
-  }
-
+  @override
   void dispose() {
-    _interstitialAd?.dispose();
-    _interstitialAd = null;
-    _isLoading = false;
+    super.dispose();
+  }
+
+  Future<bool> showInterstitialAd() async {
+    final result = await ref.read(interstitialAdStateProvider.notifier).showInterstitialAd();
+    if (result && widget.onAdShown != null) {
+      widget.onAdShown!();
+    }
+    return result;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(interstitialAdStateProvider, (previous, next) {
+      if (previous?.isShowing == true && next.isShowing == false && widget.onAdDismissed != null) {
+        widget.onAdDismissed!();
+      }
+    });
+
+    return widget.child;
   }
 }
