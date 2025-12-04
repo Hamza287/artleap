@@ -31,7 +31,9 @@ class PromptCreateScreenRedesign extends ConsumerStatefulWidget {
       _PromptCreateScreenRedesignState();
 }
 
-class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenRedesign> with SingleTickerProviderStateMixin {
+class _PromptCreateScreenRedesignState
+    extends ConsumerState<PromptCreateScreenRedesign>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -45,12 +47,11 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       final userProfile = ref.read(userProfileProvider).userProfileData;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
         DialogService.showPremiumUpgrade(
-          context: context,
-          featureName: 'Generate More Images',
-          onConfirm: (){
-            Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
-        }
-        );
+            context: context,
+            featureName: 'Generate More Images',
+            onConfirm: () {
+              Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
+            });
       }
     });
 
@@ -103,7 +104,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Oops!",
         "You have reached your daily limit. Thank you!",
-        backgroundColor:theme.colorScheme.primary,
+        backgroundColor: theme.colorScheme.primary,
       );
       return;
     }
@@ -112,7 +113,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "No Internet Connection",
         "Please check your network connection and try again",
-        backgroundColor:theme.colorScheme.error,
+        backgroundColor: theme.colorScheme.error,
       );
       return;
     }
@@ -121,7 +122,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Warning!",
         "Your prompt contains sexual words.",
-        backgroundColor:theme.colorScheme.error,
+        backgroundColor: theme.colorScheme.error,
       );
       return;
     }
@@ -134,7 +135,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Error",
         "Please select number of images",
-        backgroundColor:theme.colorScheme.error,
+        backgroundColor: theme.colorScheme.error,
       );
       return;
     }
@@ -144,7 +145,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Error",
         "Please write a meaningful prompt",
-        backgroundColor:theme.colorScheme.error,
+        backgroundColor: theme.colorScheme.error,
       );
       return;
     }
@@ -157,7 +158,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Insufficient Credits",
         "You need $requiredCredits credits to generate ${generateImageProviderState.selectedImageNumber} ${isTextToImage ? 'images' : 'variations'}",
-        backgroundColor:theme.colorScheme.error,
+        backgroundColor: theme.colorScheme.error,
       );
       return;
     }
@@ -169,12 +170,15 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
 
     bool success = false;
 
-    if(isTextToImage){
-      success = await ref.read(generateImageProvider.notifier).generateTextToImage();
-      if(!success){
-        success = await ref.read(generateImageProvider.notifier).generateLeonardoTxt2Image();
+    if (isTextToImage) {
+      success =
+          await ref.read(generateImageProvider.notifier).generateTextToImage();
+      if (!success) {
+        success = await ref
+            .read(generateImageProvider.notifier)
+            .generateLeonardoTxt2Image();
       }
-    }else{
+    } else {
       await ref.read(generateImageProvider.notifier).generateImgToImg();
     }
 
@@ -187,7 +191,7 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
       appSnackBar(
         "Error",
         "Failed to Generate Image",
-        backgroundColor:theme.colorScheme.error,
+        backgroundColor: theme.colorScheme.error,
       );
     }
   }
@@ -198,7 +202,8 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     final shouldRefresh = ref.watch(refreshProvider);
     final isLoading = ref.watch(isLoadingProvider);
     final screenSize = getScreenSizeCategory(context);
-    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final planName =
+        ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
     final isKeyboardVisible = ref.watch(keyboardVisibleProvider);
 
@@ -209,11 +214,11 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
     }
 
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
+            screenSize == ScreenSizeCategory.extraSmall
         ? 16.0
         : 24.0;
     final topPadding = screenSize == ScreenSizeCategory.small ||
-        screenSize == ScreenSizeCategory.extraSmall
+            screenSize == ScreenSizeCategory.extraSmall
         ? 16.0
         : 24.0;
 
@@ -260,14 +265,14 @@ class _PromptCreateScreenRedesignState extends ConsumerState<PromptCreateScreenR
                         onImageSelected: () {
                           AnalyticsService.instance.logButtonClick(
                             buttonName:
-                            'picking image from gallery button event',
+                                'picking image from gallery button event',
                           );
                         },
                         isPremiumUser: !isFreePlan,
                       ),
                       SizedBox(
                           height: screenSize == ScreenSizeCategory.small ||
-                              screenSize == ScreenSizeCategory.extraSmall
+                                  screenSize == ScreenSizeCategory.extraSmall
                               ? 100.0
                               : 120.0),
                     ],

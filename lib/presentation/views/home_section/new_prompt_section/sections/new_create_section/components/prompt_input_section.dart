@@ -1,5 +1,7 @@
+import 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/prompt_screen_widgets/prompt_enhancer_button.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
+import 'package:Artleap.ai/providers/prompt_enhancer_provider.dart';
 
 class PromptInputRedesign extends ConsumerWidget {
   const PromptInputRedesign({super.key});
@@ -8,6 +10,7 @@ class PromptInputRedesign extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final screenSize = MediaQuery.of(context).size;
+    final enhancer = ref.watch(promptEnhancerProvider);
 
     final maxHeight = screenSize.height * 0.4;
     final minHeight = 140.0;
@@ -25,14 +28,13 @@ class PromptInputRedesign extends ConsumerWidget {
                 fontSize: 16,
               ),
             ),
-            _buildCharacterCounter(ref, theme),
+            _buildCharacterCounter(ref, theme, enhancer),
           ],
         ),
         12.spaceY,
         Container(
           constraints: BoxConstraints(
             minHeight: minHeight,
-            maxHeight: maxHeight,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
@@ -51,39 +53,71 @@ class PromptInputRedesign extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: TextField(
-              controller: ref.watch(generateImageProvider).promptTextController,
-              maxLines: null,
-              onChanged: (value) {
-                ref.watch(generateImageProvider).checkSexualWords(value);
-              },
-              onTap: () {
-                ref.read(keyboardControllerProvider).setVisible(true);
-              },
-              style: AppTextstyle.interMedium(
-                color: theme.colorScheme.onSurface,
-                fontSize: 13,
-              ),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(10),
-                border: InputBorder.none,
-                hintText: "Describe the image you want to generate..'",
-                hintStyle: AppTextstyle.interMedium(
-                  color: theme.colorScheme.onSurface.withOpacity(0.5),
-                  fontSize: 12,
+            child: Column(
+              children: [
+                TextField(
+                  controller: ref.watch(generateImageProvider).promptTextController,
+                  maxLines: null,
+                  onChanged: (value) {
+                    ref.watch(generateImageProvider).checkSexualWords(value);
+                    if (!enhancer.isEnhancedMode) {
+                      enhancer.setOriginalPrompt(value);
+                    }
+                  },
+                  onTap: () {
+                    ref.read(keyboardControllerProvider).setVisible(true);
+                  },
+                  style: AppTextstyle.interMedium(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 13,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(16),
+                    border: InputBorder.none,
+                    hintText: "Describe the image you want to generate..'",
+                    hintStyle: AppTextstyle.interMedium(
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      fontSize: 12,
+                    ),
+                    fillColor: Colors.transparent,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                    hintMaxLines: 5,
+                  ),
                 ),
-                fillColor: Colors.transparent,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: theme.colorScheme.outline.withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      PromptEnhancerButton(
+                        promptController: ref.watch(generateImageProvider).promptTextController,
+                        onEnhanced: () {
+                          // Optional callback
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                disabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                hintMaxLines: 5,
-              ),
+              ],
             ),
           ),
         ),
@@ -91,18 +125,42 @@ class PromptInputRedesign extends ConsumerWidget {
     );
   }
 
-  Widget _buildCharacterCounter(WidgetRef ref, ThemeData theme) {
-    final promptText = ref.watch(generateImageProvider).promptTextController.text;
-    final characterCount = promptText.length;
+  Widget _buildCharacterCounter(WidgetRef ref, ThemeData theme, PromptEnhancerProvider enhancer) {
+    final currentPrompt = enhancer.currentPrompt;
+    final characterCount = currentPrompt.length;
 
-    return Text(
-      "$characterCount/1000",
-      style: AppTextstyle.interMedium(
-        color: characterCount > 800
-            ? theme.colorScheme.error
-            : theme.colorScheme.onSurface.withOpacity(0.5),
-        fontSize: 12,
-      ),
+    return Row(
+      children: [
+        if (enhancer.isEnhancedMode)
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: theme.colorScheme.primary.withOpacity(0.3),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              'Enhanced',
+              style: AppTextstyle.interMedium(
+                color: theme.colorScheme.primary,
+                fontSize: 10,
+              ),
+            ),
+          ),
+        Text(
+          "$characterCount/1000",
+          style: AppTextstyle.interMedium(
+            color: characterCount > 800
+                ? theme.colorScheme.error
+                : theme.colorScheme.onSurface.withOpacity(0.5),
+            fontSize: 12,
+          ),
+        ),
+      ],
     );
   }
 }

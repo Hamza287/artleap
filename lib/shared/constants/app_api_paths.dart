@@ -70,4 +70,7 @@ class AppApiPaths {
   static const String updateInterests = "${userPreferencesBase}interests/update";
   static const String getUserPreferences = "${userPreferencesBase}preferences/";
   static const String checkPrivacyPolicyStatus = "${userPreferencesBase}privacy-policy/status/";
+
+
+  static const String enhancePrompt = "/enhance-prompt";
 }

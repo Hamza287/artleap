@@ -138,16 +138,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       await ref.read(remoteConfigProvider).fetchAndActivate();
 
       final showAppOpenAds = ref.read(appOpenAdsEnabledProvider);
-      print('SplashScreen: showAppOpenAds from remote config: $showAppOpenAds');
 
       if (showAppOpenAds) {
-        print('SplashScreen: Waiting for app open ad to load...');
         final appOpenAdManager = ref.read(appOpenAdProvider);
 
         await Future.delayed(const Duration(seconds: 1));
 
         final adShown = await appOpenAdManager.showAppOpenAd(ref);
-        print('SplashScreen: App open ad shown result: $adShown');
 
         if (adShown) {
           await Future.delayed(const Duration(seconds: 1));

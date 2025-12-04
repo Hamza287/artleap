@@ -140,3 +140,33 @@ export 'package:Artleap.ai/ads/native_ads/native_ad_manager.dart';
 export 'package:Artleap.ai/providers/interest_onboarding_provider.dart';
 export 'package:Artleap.ai/widgets/common/progress_bar.dart';
 export 'package:Artleap.ai/ads/native_ads/native_ads_state_provider.dart';
+
+// ABSTRACT REPOS
+export 'package:Artleap.ai/domain/api_repos_abstract/auth_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/favourite_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/image_actions_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/text_to_image_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/home_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/img2img_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/load_models_list_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/reqres_repo.dart';
+export 'package:Artleap.ai/domain/api_repos_abstract/user_profile_repo.dart';
+
+// IMPLEMENTATION REPOS
+export 'package:Artleap.ai/domain/api_repos_impl/auth_repo_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/favourite_repo_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/image_actions_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/text_to_image_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/home_repo_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/img2img_repo_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/load_models_list_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/reqres_repo_impl.dart';
+export 'package:Artleap.ai/domain/api_repos_impl/user_profile_repo_impl.dart';
+
+// ABSTRACT
+export 'package:Artleap.ai/domain/api_repos_abstract/add_to_fav_repo.dart';
+export 'package:Artleap.ai/domain/subscriptions/subscription_repo.dart';
+
+// IMPLEMENTATION
+export 'package:Artleap.ai/domain/api_repos_impl/add_to_fav_impl.dart';
+export 'package:Artleap.ai/domain/subscriptions/subscription_repo_impl.dart';

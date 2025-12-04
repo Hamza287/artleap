@@ -29,8 +29,6 @@ class LeonardoAiGenImpl extends LeonardoAiGenRepo {
   @override
   Future<ApiResponse> generateLeonardoImage(Map<String, dynamic> data,
       {bool enableLocalPersistence = false}) async {
-    print("Generate type TextToImage 2");
-    print(" ${AppApiPaths.leonardoTxt2ImgPath} ${data} ");
     try {
       Response res = await artleapApiService.postJson(AppApiPaths.leonardoTxt2ImgPath, data, enableLocalPersistence: enableLocalPersistence);
       ApiResponse result = HandlingResponse.returnResponse(res);
