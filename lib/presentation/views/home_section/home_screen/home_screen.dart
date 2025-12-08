@@ -14,8 +14,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userProfileProvider).updateUserCredits();
+    Future.microtask(() {
+      if (mounted) {
+        ref.read(userProfileProvider).updateUserCredits();
+      }
     });
   }
 
