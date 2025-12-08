@@ -1,5 +1,6 @@
 import '../components/communiry_header.dart';
 import '../components/post_card.dart';
+import 'no_image_widget.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 class CommunityFeedWidget extends ConsumerStatefulWidget {
@@ -20,7 +21,9 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
   String? _previousFilter;
   bool _shouldRestoreFilterPosition = false;
   bool _isScrollControllerAttached = false;
-  int _lastShownAdIndex = -1;
+  final Set<int> _shownAdPostIndexes = {};
+  int? _currentFirstVisibleIndex;
+  bool _isFirstBuild = true;
 
   @override
   void initState() {
@@ -47,6 +50,26 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
         _scrollController.position.maxScrollExtent - 300 &&
         !ref.read(homeScreenProvider).isLoadingMore) {
       ref.read(homeScreenProvider).loadMoreImages();
+    }
+    _checkAndShowAds();
+  }
+
+  void _checkAndShowAds() {
+    if (!_scrollController.hasClients || !_isScrollControllerAttached) return;
+
+    final firstVisibleIndex = _scrollController.position.pixels ~/ 400;
+    if (_currentFirstVisibleIndex == firstVisibleIndex) return;
+
+    _currentFirstVisibleIndex = firstVisibleIndex;
+    final homeProvider = ref.read(homeScreenProvider);
+    final displayedImages = homeProvider.getDisplayedImages();
+
+    for (int i = firstVisibleIndex; i < firstVisibleIndex + 3 && i < displayedImages.length; i++) {
+      if ((i + 1) % 3 == 0 && !_shownAdPostIndexes.contains(i)) {
+        _shownAdPostIndexes.add(i);
+        _showInterstitialAd();
+        break;
+      }
     }
   }
 
@@ -115,14 +138,11 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     }
   }
 
-  Future<void> _showInterstitialAdAfterPost(int postIndex) async {
-    if ((postIndex + 1) % 3 == 0 && postIndex != _lastShownAdIndex) {
-      _lastShownAdIndex = postIndex;
-      await Future.delayed(const Duration(milliseconds: 500));
-      final interstitialNotifier = ref.read(interstitialAdProvider);
-      await interstitialNotifier.showInterstitialAd();
-      interstitialNotifier.loadInterstitialAd();
-    }
+  Future<void> _showInterstitialAd() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final interstitialNotifier = ref.read(interstitialAdProvider);
+    await interstitialNotifier.showInterstitialAd();
+    interstitialNotifier.loadInterstitialAd();
   }
 
   @override
@@ -145,6 +165,14 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     } else if (!hasActiveFilter && _previousFilter != null) {
       _handleFilterStateChange(null);
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isScrollControllerAttached = _scrollController.hasClients;
+      if (_isFirstBuild && _scrollController.hasClients) {
+        _isFirstBuild = false;
+        _checkAndShowAds();
+      }
+    });
 
     return Column(
       children: [
@@ -205,10 +233,6 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                   final profile = userProfileProviderWatch
                       .getProfileById(image.userId);
                   final profileImage = profile?.user.profilePic;
-
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _showInterstitialAdAfterPost(index);
-                  });
 
                   return PostCard(
                     key: ValueKey('post_${image.id}_$index'),
