@@ -37,9 +37,20 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
   void setLoader(bool value) {
     _isLoading = value;
     if (hasListeners) {
-      notifyListeners();
+      safeNotify();
     }
   }
+
+  void safeNotify() {
+    if (hasListeners) {
+      try {
+        notifyListeners();
+      } catch (_) {
+        // prevented crash
+      }
+    }
+  }
+
 
   Future<void> followUnfollowUser(String uid, String followId) async {
     setLoader(true);
@@ -51,7 +62,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Error", response.message ?? "Failed to follow/unfollow user", backgroundColor:AppColors.redColor);
     }
     setLoader(false);
-    notifyListeners();
+    safeNotify();
   }
 
   Future<void> getUserProfileData(String uid) async {
@@ -73,7 +84,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       debugPrint('❌ Profile failed for "$id": ${response.message}');
     }
     setLoader(false);
-    if (hasListeners) notifyListeners();
+    safeNotify();
   }
 
   Future<void> getProfilesForUserIds(List<String> ids) async {
@@ -85,7 +96,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       } else {
       }
     }
-    notifyListeners();
+    safeNotify();
   }
 
 
@@ -98,9 +109,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Error", response.message ?? "Failed to fetch other user profile", backgroundColor:AppColors.redColor);
     }
     setLoader(false);
-    if (hasListeners) {
-      notifyListeners();
-    }
+      safeNotify();
   }
 
   Future<void> updateUserCredits() async {
@@ -113,9 +122,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       print("Failed to update credits");
     }
     setLoader(false);
-    if (hasListeners) {
-      notifyListeners();
-    }
+      safeNotify();
   }
 
   Future<void> deActivateAccount(String uid) async {
@@ -129,9 +136,7 @@ class UserProfileProvider extends ChangeNotifier with BaseRepo {
       appSnackBar("Error", response.message ?? "Something went wrong, please try again", backgroundColor:AppColors.redColor);
     }
     setLoader(false);
-    if (hasListeners) {
-      notifyListeners();
-    }
+      safeNotify();
   }
 
   Future<void> launchAnyUrl(String? url) async {

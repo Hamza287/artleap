@@ -1,10 +1,9 @@
 import 'dart:async';
+import 'package:Artleap.ai/ads/interstitial_ads/interstitial_ad_provider.dart';
 import 'package:Artleap.ai/shared/theme/custom_theme_extension.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 final privacyPolicyLoadingProvider = StateProvider<bool>((ref) => false);
-final adCompletionProvider = StateProvider<bool>((ref) => false);
-final adDialogShownProvider = StateProvider<bool>((ref) => false);
 
 class AcceptPrivacyPolicyScreen extends ConsumerStatefulWidget {
   const AcceptPrivacyPolicyScreen({super.key});
@@ -17,9 +16,6 @@ class AcceptPrivacyPolicyScreen extends ConsumerStatefulWidget {
 
 class _AcceptPrivacyPolicyScreenState
     extends ConsumerState<AcceptPrivacyPolicyScreen> {
-  bool _navigationCompleted = false;
-  bool _shouldShowAd = false;
-
   Future<void> _acceptPrivacyPolicy() async {
     final isLoading = ref.read(privacyPolicyLoadingProvider);
     if (isLoading) return;
@@ -44,20 +40,30 @@ class _AcceptPrivacyPolicyScreenState
             backgroundColor: AppColors.red,
           );
         }
+        ref.read(privacyPolicyLoadingProvider.notifier).state = false;
         return;
       }
 
       final remoteConfig = RemoteConfigService.instance;
 
       if (remoteConfig.showNativeAds) {
-        _shouldShowAd = true;
+        try {
+          final interstitialNotifier = ref.read(interstitialAdProvider);
+          final adShown = await interstitialNotifier.showInterstitialAd();
 
-        final adNotifier = ref.read(nativeAdProvider.notifier);
-        adNotifier.disposeAd();
-        await adNotifier.loadNativeAd();
-      } else {
-        _navigateToInterestScreen();
+          // Wait for ad to potentially show (timeout after 5 seconds)
+          if (adShown) {
+            await Future.delayed(const Duration(seconds: 5));
+          }
+        } catch (e) {
+          // If ad fails, continue anyway
+          print('Ad error: $e');
+        }
       }
+
+      // Navigate regardless of ad result
+      _navigateToInterestScreen();
+
     } catch (e) {
       if (mounted) {
         appSnackBar(
@@ -65,43 +71,16 @@ class _AcceptPrivacyPolicyScreenState
           'An error occurred. Please try again.',
           backgroundColor: AppColors.red,
         );
-      }
-    } finally {
-      if (mounted) {
         ref.read(privacyPolicyLoadingProvider.notifier).state = false;
       }
     }
   }
 
   void _navigateToInterestScreen() {
-    if (_navigationCompleted) return;
-
-    _navigationCompleted = true;
-
-    if (mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigation.pushNamedAndRemoveUntil(
-            InterestOnboardingScreen.routeName);
-      });
-    }
-  }
-
-  void _showAdDialog() {
-    if (!mounted) return;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.7),
-      builder: (context) {
-        return _AdDialogContent(
-          onClose: _navigateToInterestScreen,
-          onContinue: _navigateToInterestScreen,
-        );
-      },
-    ).then((_) {
-      if (!_navigationCompleted) {
-        _navigateToInterestScreen();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(privacyPolicyLoadingProvider.notifier).state = false;
+        Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreen.routeName);
       }
     });
   }
@@ -114,19 +93,6 @@ class _AcceptPrivacyPolicyScreenState
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
     final isLoading = ref.watch(privacyPolicyLoadingProvider);
-
-    // LISTEN TO NATIVE AD STATE HERE (correct Riverpod placement)
-    ref.listen<NativeAdState>(nativeAdProvider, (prev, next) {
-      if (!_navigationCompleted && next.isLoaded && _shouldShowAd) {
-        _showAdDialog();
-      }
-
-      if (!_navigationCompleted &&
-          next.errorMessage != null &&
-          _shouldShowAd) {
-        _navigateToInterestScreen();
-      }
-    });
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -243,8 +209,7 @@ class _AcceptPrivacyPolicyScreenState
                         ? []
                         : [
                       BoxShadow(
-                        color: theme.colorScheme.primary
-                            .withOpacity(0.3),
+                        color: theme.colorScheme.primary.withOpacity(0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
@@ -265,8 +230,7 @@ class _AcceptPrivacyPolicyScreenState
                       'Accept and Continue',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize:
-                        isSmallScreen ? 15 : 17,
+                        fontSize: isSmallScreen ? 15 : 17,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -276,125 +240,6 @@ class _AcceptPrivacyPolicyScreenState
               const SizedBox(height: 20),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AdDialogContent extends ConsumerWidget {
-  final VoidCallback onClose;
-  final VoidCallback onContinue;
-
-  const _AdDialogContent({
-    required this.onClose,
-    required this.onContinue,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final adState = ref.watch(nativeAdProvider);
-
-    return AlertDialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(20),
-      contentPadding: EdgeInsets.zero,
-      content: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-              spreadRadius: 5,
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(width: 40),
-                Text(
-                  'Advertisement',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color:
-                    Theme.of(context).colorScheme.onBackground,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: onClose,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey.shade200,
-                    ),
-                    child: Icon(
-                      Icons.close,
-                      size: 20,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 330,
-              child: adState.isLoaded && adState.nativeAd != null
-                  ? AdWidget(ad: adState.nativeAd!)
-                  : const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: onContinue,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    'Continue to App',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

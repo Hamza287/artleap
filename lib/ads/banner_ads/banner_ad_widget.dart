@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 class BannerAdWidget extends ConsumerStatefulWidget {
@@ -8,12 +9,25 @@ class BannerAdWidget extends ConsumerStatefulWidget {
 }
 
 class _BannerAdState extends ConsumerState<BannerAdWidget> {
+  bool _isMounted = false;
+  StreamSubscription? _adStateSubscription;
+
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(bannerAdStateProvider.notifier).initializeBannerAd();
+      if (_isMounted) {
+        ref.read(bannerAdStateProvider.notifier).initializeBannerAd();
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _isMounted = false;
+    _adStateSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -31,10 +45,5 @@ class _BannerAdState extends ConsumerState<BannerAdWidget> {
       alignment: Alignment.center,
       child: ref.read(bannerAdStateProvider.notifier).getBannerWidget(),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

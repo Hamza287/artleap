@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 final bannerAdStateProvider = StateNotifierProvider<BannerAdStateNotifier, BannerAdState>((ref) {
@@ -40,6 +41,7 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
   final Ref _ref;
   BannerAd? _bannerAd;
   bool _isDisposed = false;
+  Timer? _retryTimer;
 
   BannerAdStateNotifier(this._ref) : super(BannerAdState());
 
@@ -50,23 +52,26 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
 
     final showBannerAds = _ref.read(bannerAdsEnabledProvider);
     if (!showBannerAds) {
-      state = state.copyWith(isLoading: false, adLoaded: false);
+      if (!_isDisposed) {
+        state = state.copyWith(isLoading: false, adLoaded: false);
+      }
       return;
     }
 
     await _calculateAdSize();
-
     await _loadBannerAd();
   }
 
   Future<void> _calculateAdSize() async {
     try {
       final adaptiveAdSize = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(300);
-      if (adaptiveAdSize != null) {
+      if (adaptiveAdSize != null && !_isDisposed) {
         state = state.copyWith(adSize: adaptiveAdSize);
       }
     } catch (e) {
-      state = state.copyWith(adSize: AdSize.banner);
+      if (!_isDisposed) {
+        state = state.copyWith(adSize: AdSize.banner);
+      }
     }
   }
 
@@ -75,7 +80,9 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
 
     final showBannerAds = _ref.read(bannerAdsEnabledProvider);
     if (!showBannerAds) {
-      state = state.copyWith(isLoading: false, adLoaded: false);
+      if (!_isDisposed) {
+        state = state.copyWith(isLoading: false, adLoaded: false);
+      }
       return;
     }
 
@@ -98,6 +105,7 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
           }
         },
         onAdFailedToLoad: (Ad ad, AdError error) {
+          ad.dispose();
           if (!_isDisposed) {
             state = state.copyWith(
               isLoading: false,
@@ -105,16 +113,15 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
               retryCount: state.retryCount + 1,
             );
 
-            // Auto retry silently without showing error
+            _retryTimer?.cancel();
             if (state.retryCount < 3) {
-              Future.delayed(const Duration(seconds: 2), () {
+              _retryTimer = Timer(const Duration(seconds: 2), () {
                 if (!_isDisposed) {
                   _loadBannerAd();
                 }
               });
             }
           }
-          ad.dispose();
         },
         onAdOpened: (Ad ad) {},
         onAdClosed: (Ad ad) {},
@@ -123,7 +130,16 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
       request: const AdRequest(),
     );
 
-    await _bannerAd!.load();
+    try {
+      await _bannerAd!.load();
+    } catch (e) {
+      if (!_isDisposed) {
+        state = state.copyWith(
+          isLoading: false,
+          adLoaded: false,
+        );
+      }
+    }
   }
 
   void toggleExpand() {
@@ -156,6 +172,8 @@ class BannerAdStateNotifier extends StateNotifier<BannerAdState> {
   @override
   void dispose() {
     _isDisposed = true;
+    _retryTimer?.cancel();
+    _retryTimer = null;
     _bannerAd?.dispose();
     _bannerAd = null;
     super.dispose();

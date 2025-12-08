@@ -1,8 +1,5 @@
 import 'package:Artleap.ai/shared/route_export.dart';
 
-final interstitialAdProvider = Provider<InterstitialAdNotifier>((ref) {
-  return InterstitialAdNotifier(ref);
-});
 
 final interstitialAdStateProvider = StateNotifierProvider<InterstitialAdNotifier, InterstitialAdState>((ref) {
   return InterstitialAdNotifier(ref);

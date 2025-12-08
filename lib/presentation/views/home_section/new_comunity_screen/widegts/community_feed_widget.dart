@@ -1,7 +1,16 @@
-import '../components/communiry_header.dart';
-import '../components/post_card.dart';
-import 'no_image_widget.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
+
+enum ItemType { post, ad }
+
+class AdItem {
+  final ItemType type;
+  final int index;
+
+  AdItem({
+    required this.type,
+    required this.index,
+  });
+}
 
 class CommunityFeedWidget extends ConsumerStatefulWidget {
   const CommunityFeedWidget({super.key});
@@ -21,56 +30,95 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
   String? _previousFilter;
   bool _shouldRestoreFilterPosition = false;
   bool _isScrollControllerAttached = false;
-  final Set<int> _shownAdPostIndexes = {};
-  int? _currentFirstVisibleIndex;
+  final Set<int> _adPositions = {};
+  int _adFrequency = 4;
   bool _isFirstBuild = true;
+  bool _shouldLoadNewAd = false;
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ref.read(homeScreenProvider).page == 0) {
         ref.read(homeScreenProvider).getUserCreations();
       }
-      ref.read(interstitialAdProvider).loadInterstitialAd();
+      _loadNativeAd();
     });
 
     _scrollController.addListener(_onScroll);
   }
 
+  Future<void> _loadNativeAd() async {
+    if (RemoteConfigService.instance.showNativeAds) {
+      await ref.read(nativeAdProviderFeed.notifier).loadNativeAd();
+    }
+  }
+
   void _onScroll() {
     if (!_isScrollControllerAttached) return;
+
     final now = DateTime.now();
     if (_lastScrollTime != null &&
         now.difference(_lastScrollTime!) < _throttleDuration) {
       return;
     }
     _lastScrollTime = now;
+
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300 &&
         !ref.read(homeScreenProvider).isLoadingMore) {
       ref.read(homeScreenProvider).loadMoreImages();
     }
-    _checkAndShowAds();
+
+    _checkForAdLoad();
   }
 
-  void _checkAndShowAds() {
+  void _checkForAdLoad() {
     if (!_scrollController.hasClients || !_isScrollControllerAttached) return;
 
-    final firstVisibleIndex = _scrollController.position.pixels ~/ 400;
-    if (_currentFirstVisibleIndex == firstVisibleIndex) return;
+    final currentPosition = _scrollController.position.pixels;
+    final maxPosition = _scrollController.position.maxScrollExtent;
 
-    _currentFirstVisibleIndex = firstVisibleIndex;
-    final homeProvider = ref.read(homeScreenProvider);
-    final displayedImages = homeProvider.getDisplayedImages();
+    if (currentPosition > maxPosition * 0.7) {
+      _shouldLoadNewAd = true;
+    }
+  }
 
-    for (int i = firstVisibleIndex; i < firstVisibleIndex + 3 && i < displayedImages.length; i++) {
-      if ((i + 1) % 3 == 0 && !_shownAdPostIndexes.contains(i)) {
-        _shownAdPostIndexes.add(i);
-        _showInterstitialAd();
-        break;
+  List<dynamic> _getItemsWithAds(List<dynamic> posts) {
+    if (!RemoteConfigService.instance.showNativeAds || posts.isEmpty) {
+      return posts;
+    }
+
+    final adState = ref.read(nativeAdProviderFeed);
+
+    if (posts.length ~/ _adFrequency != _adPositions.length) {
+      _adPositions.clear();
+      for (int i = _adFrequency; i < posts.length; i += _adFrequency) {
+        _adPositions.add(i);
       }
     }
+
+    final List<dynamic> itemsWithAds = [];
+    int adIndex = 0;
+
+    for (int i = 0; i < posts.length; i++) {
+      itemsWithAds.add(posts[i]);
+
+      if (_adPositions.contains(i + 1)) {
+        if (adState.isLoaded && adState.nativeAd != null) {
+          itemsWithAds.add(AdItem(
+            type: ItemType.ad,
+            index: adIndex++,
+          ));
+        } else if (adState.errorMessage != null && _shouldLoadNewAd) {
+          _loadNativeAd();
+          _shouldLoadNewAd = false;
+        }
+      }
+    }
+
+    return itemsWithAds;
   }
 
   void _handleSearchStateChange(bool isSearching, String? searchQuery) {
@@ -138,17 +186,11 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     }
   }
 
-  Future<void> _showInterstitialAd() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    final interstitialNotifier = ref.read(interstitialAdProvider);
-    await interstitialNotifier.showInterstitialAd();
-    interstitialNotifier.loadInterstitialAd();
-  }
-
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    ref.read(nativeAdProviderFeed.notifier).disposeAd();
     super.dispose();
   }
 
@@ -160,6 +202,8 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     final displayedImages = homeProvider.getDisplayedImages();
     final hasActiveFilter = homeProvider.selectedStyleTitle != null;
 
+    final itemsWithAds = _getItemsWithAds(displayedImages);
+
     if (hasActiveFilter && _previousFilter != homeProvider.selectedStyleTitle) {
       _handleFilterStateChange(homeProvider.selectedStyleTitle);
     } else if (!hasActiveFilter && _previousFilter != null) {
@@ -170,7 +214,6 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
       _isScrollControllerAttached = _scrollController.hasClients;
       if (_isFirstBuild && _scrollController.hasClients) {
         _isFirstBuild = false;
-        _checkAndShowAds();
       }
     });
 
@@ -190,6 +233,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
               : RefreshIndicator(
             onRefresh: () async {
               await ref.read(homeScreenProvider).refreshUserCreations();
+              _loadNativeAd();
             },
             child: NotificationListener<ScrollNotification>(
               onNotification: (scrollNotification) {
@@ -203,10 +247,10 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 cacheExtent: 1000,
-                itemCount: displayedImages.length +
+                itemCount: itemsWithAds.length +
                     (homeProvider.isLoadingMore ? 1 : 0),
                 itemBuilder: (context, index) {
-                  if (index >= displayedImages.length) {
+                  if (index >= itemsWithAds.length) {
                     return const LoadingState(
                       useShimmer: true,
                       shimmerItemCount: 3,
@@ -214,11 +258,23 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                     );
                   }
 
-                  final image = displayedImages[index];
+                  final item = itemsWithAds[index];
 
-                  final posts = ref
-                      .read(homeScreenProvider)
-                      .communityImagesList;
+                  if (item is AdItem) {
+                    return NativeAdPostWidget(
+                      key: ValueKey('native_ad_${item.index}'),
+                      onAdDisposed: () {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _loadNativeAd();
+                        });
+                      },
+                    );
+                  }
+
+                  final image = item;
+
+                  final posts =
+                      ref.read(homeScreenProvider).communityImagesList;
                   final ids = posts
                       .map((p) => p.userId)
                       .whereType<String>()
@@ -230,8 +286,8 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                         .getProfilesForUserIds(ids);
                   });
 
-                  final profile = userProfileProviderWatch
-                      .getProfileById(image.userId);
+                  final profile =
+                  userProfileProviderWatch.getProfileById(image.userId);
                   final profileImage = profile?.user.profilePic;
 
                   return PostCard(

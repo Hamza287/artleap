@@ -1,7 +1,7 @@
 import 'package:Artleap.ai/shared/route_export.dart';
 
-final nativeAdProvider =
-StateNotifierProvider<NativeAdNotifier, NativeAdState>((ref) {
+// Native Ad State Notifier
+final nativeAdProvider = StateNotifierProvider<NativeAdNotifier, NativeAdState>((ref) {
   return NativeAdNotifier();
 });
 
