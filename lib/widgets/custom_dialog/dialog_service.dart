@@ -103,6 +103,7 @@ class DialogService {
     String? featureName,
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
+    Widget? widget,
   }) {
     showAppDialog(
       context: context,

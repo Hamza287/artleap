@@ -1,3 +1,5 @@
+import 'package:Artleap.ai/ads/rewarded_ads/rewarded_ad_repo.dart';
+import 'package:Artleap.ai/ads/rewarded_ads/rewarded_ad_repo_impl.dart';
 import 'package:Artleap.ai/domain/api_repos_abstract/prompt_enhancer_repo.dart';
 import 'package:Artleap.ai/domain/api_repos_impl/prompt_enhance_repo_impl.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
@@ -41,4 +43,7 @@ mixin BaseRepo {
 
   final PromptEnhancerRepo _promptEnhancerRepo = PromptEnhancerImpl();
   PromptEnhancerRepo get promptEnhancerRepo => _promptEnhancerRepo;
+
+  final RewardedAdRepo _rewardedRepo = RewardedAdRepoImpl();
+  RewardedAdRepo get rewardedRepo => _rewardedRepo;
 }
