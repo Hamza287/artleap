@@ -21,7 +21,7 @@ class _OtherUserProfileScreenState extends ConsumerState<OtherUserProfileScreen>
   @override
   void initState() {
     super.initState();
-    ref.read(userProfileProvider).getOtherUserProfileData(widget.params!.userId!);
+    ref.read(userProfileProvider.notifier).getOtherUserProfileData(widget.params!.userId!);
     AnalyticsService.instance.logScreenView(screenName: 'others profile screen');
   }
 
@@ -30,7 +30,7 @@ class _OtherUserProfileScreenState extends ConsumerState<OtherUserProfileScreen>
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      body: ref.watch(userProfileProvider).otherUserProfileData == null
+      body: ref.watch(userProfileProvider).value?.otherUserProfile == null
           ? Center(
         child: LoadingAnimationWidget.threeArchedCircle(
           color: theme.colorScheme.primary,
@@ -53,7 +53,7 @@ class _OtherUserProfileScreenState extends ConsumerState<OtherUserProfileScreen>
                   24.spaceY,
                   MyCreationsWidget(
                     userName: widget.params!.profileName,
-                    listofCreations: ref.watch(userProfileProvider).otherUserProfileData!.user.images,
+                    listofCreations: ref.watch(userProfileProvider).value?.otherUserProfile?.user.images ?? [],
                     userId: widget.params!.userId,
                   ),
                   20.spaceY,

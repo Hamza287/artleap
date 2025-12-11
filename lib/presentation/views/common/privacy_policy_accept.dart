@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:Artleap.ai/ads/interstitial_ads/interstitial_ad_provider.dart';
 import 'package:Artleap.ai/shared/theme/custom_theme_extension.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
@@ -43,25 +42,6 @@ class _AcceptPrivacyPolicyScreenState
         ref.read(privacyPolicyLoadingProvider.notifier).state = false;
         return;
       }
-
-      final remoteConfig = RemoteConfigService.instance;
-
-      if (remoteConfig.showNativeAds) {
-        try {
-          final interstitialNotifier = ref.read(interstitialAdProvider);
-          final adShown = await interstitialNotifier.showInterstitialAd();
-
-          // Wait for ad to potentially show (timeout after 5 seconds)
-          if (adShown) {
-            await Future.delayed(const Duration(seconds: 5));
-          }
-        } catch (e) {
-          // If ad fails, continue anyway
-          print('Ad error: $e');
-        }
-      }
-
-      // Navigate regardless of ad result
       _navigateToInterestScreen();
 
     } catch (e) {

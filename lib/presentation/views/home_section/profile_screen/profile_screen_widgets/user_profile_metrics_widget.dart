@@ -32,7 +32,7 @@ class UserProfileMatricsWidget extends ConsumerWidget {
               title: "Creations",
               count: ref
                   .watch(userProfileProvider)
-                  .userProfileData!
+                  .value!.userProfile!
                   .user
                   .images
                   .length
@@ -43,7 +43,7 @@ class UserProfileMatricsWidget extends ConsumerWidget {
             title: "Followers",
             count: ref
                 .watch(userProfileProvider)
-                .userProfileData!
+                .value!.userProfile!
                 .user
                 .followers
                 .length
@@ -55,7 +55,7 @@ class UserProfileMatricsWidget extends ConsumerWidget {
               title: "Followings",
               count: ref
                   .watch(userProfileProvider)
-                  .userProfileData!
+                  .value!.userProfile!
                   .user
                   .following
                   .length

@@ -14,7 +14,7 @@ class HomeScreenTopBar extends ConsumerWidget {
     final bool isFreePlan = userSubscription == null ||
         userSubscription.planSnapshot!.type == 'free' ||
         userSubscription.cancelledAt != null;
-    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final planName = ref.watch(userProfileProvider).value!.userProfile!.user.planName ?? 'Free';
 
 
 
@@ -107,7 +107,7 @@ class HomeScreenTopBar extends ConsumerWidget {
                           ),
                           SizedBox(width: screenWidth * 0.012),
                           Text(
-                            "${ref.watch(userProfileProvider).userProfileData?.user.totalCredits ?? 0}",
+                            "${ref.watch(userProfileProvider).value!.userProfile?.user.totalCredits ?? 0}",
                             style: AppTextstyle.interMedium(
                               color: Colors.orange,
                               fontSize: 13,

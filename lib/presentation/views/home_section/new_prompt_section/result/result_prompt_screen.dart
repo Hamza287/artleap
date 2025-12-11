@@ -19,7 +19,7 @@ class _ResultScreenRedesignState extends ConsumerState<ResultScreenRedesign> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userId = UserData.ins.userId;
       if (userId != null && userId.isNotEmpty) {
-        ref.read(userProfileProvider).getUserProfileData(userId);
+        ref.read(userProfileProvider.notifier).getUserProfileData(userId);
       } else {
         Navigator.pushReplacementNamed(context, LoginScreen.routeName);
       }

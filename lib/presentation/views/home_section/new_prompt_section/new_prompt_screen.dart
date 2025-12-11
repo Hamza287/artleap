@@ -15,19 +15,26 @@ class PromptScreen extends ConsumerStatefulWidget {
 class _PromptScreenState extends ConsumerState<PromptScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userProfileProvider).updateUserCredits();
+      Future.microtask(() {
+        if (mounted) {
+          ref.read(userProfileProvider.notifier).updateUserCredits();
+        }
+      });
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final currentNav = ref.watch(promptNavProvider);
     final isExpanded = ref.watch(isDropdownExpandedProvider);
-    final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
+    final userProfile = ref.watch(userProfileProvider).value!.userProfile!.user;
     ref.watch(keyboardVisibleProvider);
 
     return SafeArea(
@@ -35,9 +42,9 @@ class _PromptScreenState extends ConsumerState<PromptScreen> {
         backgroundColor: theme.colorScheme.surface,
         key: _scaffoldKey,
         drawer: ProfileDrawer(
-          profileImage: userProfile?.profilePic ?? '',
-          userName: userProfile?.username ?? 'User',
-          userEmail: userProfile?.email ?? 'guest@example.com',
+          profileImage: userProfile.profilePic ?? '',
+          userName: userProfile.username ?? 'User',
+          userEmail: userProfile.email ?? 'guest@example.com',
         ),
         body: GestureDetector(
           onTap: () {

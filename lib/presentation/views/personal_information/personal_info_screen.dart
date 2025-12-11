@@ -19,7 +19,7 @@ class _PersonalInformationScreenState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+      ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId ?? "");
     });
   }
 
@@ -27,7 +27,7 @@ class _PersonalInformationScreenState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final profileProvider = ref.watch(userProfileProvider);
-    final user = profileProvider.userProfileData?.user;
+    final user = profileProvider.value!.userProfile!.user;
     final isLoading = profileProvider.isLoading;
 
     return Scaffold(
@@ -41,13 +41,11 @@ class _PersonalInformationScreenState
                 expandedHeight: 280,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                    background: user != null
-                        ? ProfileHeader(
+                    background: ProfileHeader(
                       profilePic: user.profilePic,
                       username: user.username,
                       email: user.email,
-                    )
-                        : Container(color: theme.colorScheme.surfaceContainer)),
+                    )),
                 actions: [
                   // IconButton(
                   //   icon: const Icon(Icons.edit, color: Colors.white),

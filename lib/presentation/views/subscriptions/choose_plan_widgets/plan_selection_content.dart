@@ -18,7 +18,7 @@ class _PlanSelectionContentState extends ConsumerState<PlanSelectionContent> {
     Future.microtask(() {
       if (mounted) {
         ref.read(currentTabIndexProvider.notifier).state = 0;
-        ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+        ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId ?? "");
       }
     });
   }

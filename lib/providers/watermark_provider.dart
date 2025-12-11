@@ -46,7 +46,7 @@ class WatermarkNotifier extends StateNotifier<WatermarkState> {
   Future<void> initializeWatermarkState() async {
     try {
       // Access user profile data from UserProfileProvider
-      final userProfile = ref.read(userProfileProvider).userProfileData;
+      final userProfile = ref.read(userProfileProvider).value?.userProfile;
       print(userProfile);
       if (userProfile != null) {
         final isFreePlan = userProfile.user.watermarkEnabled == true;

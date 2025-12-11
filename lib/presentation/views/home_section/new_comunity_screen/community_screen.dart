@@ -18,7 +18,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(favouriteProvider).getUserFav(UserData.ins.userId ?? "");
-      ref.read(userProfileProvider).updateUserCredits();
+      ref.read(userProfileProvider.notifier).updateUserCredits();
       ref.read(homeScreenProvider).getUserInfo();
     });
 

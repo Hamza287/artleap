@@ -11,7 +11,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
     final userProfile = ref.watch(userProfileProvider);
     final currentUserId = UserData.ins.userId;
 
-    final isFollowing = userProfile.userProfileData?.user.following
+    final isFollowing = userProfile.value!.userProfile?.user.following
             .any((user) => user.id == userId) ??
         false;
 
@@ -140,7 +140,7 @@ class ProfileNameFollowWidget extends ConsumerWidget {
         child: InkWell(
           onTap: () {
             ref
-                .read(userProfileProvider)
+                .read(userProfileProvider.notifier)
                 .followUnfollowUser(currentUserId, userId!);
           },
           borderRadius: BorderRadius.circular(20),

@@ -24,8 +24,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
       }
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(userProfileProvider)
+      ref.read(userProfileProvider.notifier)
           .getUserProfileData(UserData.ins.userId ?? "");
     });
   }
@@ -35,7 +34,7 @@ class _CurrentPlanScreenState extends ConsumerState<CurrentPlanScreen> {
     final theme = Theme.of(context);
     final userId = UserData.ins.userId;
     final profileProvider = ref.watch(userProfileProvider);
-    final userPersonalData = profileProvider.userProfileData?.user;
+    final userPersonalData = profileProvider.value!.userProfile!.user;
 
     if (userId == null) {
       return Scaffold(

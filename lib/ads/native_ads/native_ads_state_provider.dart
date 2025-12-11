@@ -1,7 +1,8 @@
 import 'package:Artleap.ai/shared/route_export.dart';
 
 // Native Ad State Notifier
-final nativeAdProvider = StateNotifierProvider<NativeAdNotifier, NativeAdState>((ref) {
+final nativeAdProvider =
+StateNotifierProvider<NativeAdNotifier, NativeAdState>((ref) {
   return NativeAdNotifier();
 });
 
@@ -44,6 +45,7 @@ class NativeAdState {
 class NativeAdNotifier extends StateNotifier<NativeAdState> {
   NativeAdNotifier() : super(NativeAdState());
 
+  /// LOAD AD
   Future<void> loadNativeAd() async {
     final config = RemoteConfigService.instance;
 
@@ -93,14 +95,15 @@ class NativeAdNotifier extends StateNotifier<NativeAdState> {
     await ad.load();
   }
 
-  /// Cleanly dispose the current ad
+  /// ❌ DO NOT CALL THIS INSIDE WIDGET DISPOSE (it modifies provider state)
   void disposeAd() {
     state.nativeAd?.dispose();
-    state = state.copyWith(
-      nativeAd: null,
-      isLoaded: false,
-      isLoading: false,
-    );
+    state = state.copyWith(nativeAd: null, isLoaded: false, isLoading: false);
+  }
+
+  /// ✅ SAFE TO CALL IN WIDGET dispose()
+  void safeDisposeAd() {
+    state.nativeAd?.dispose();
   }
 
   @override

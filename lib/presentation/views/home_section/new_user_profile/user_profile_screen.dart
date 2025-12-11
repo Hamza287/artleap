@@ -16,7 +16,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (UserData.ins.userId != null) {
-        ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId!);
+        ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId!);
       } else {
         Navigator.pushReplacement(
           context,
@@ -32,7 +32,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final safeAreaBottom = MediaQuery.of(context).padding.bottom;
     final userProfile = ref.watch(userProfileProvider);
-    final userPersonalData = userProfile.userProfileData;
+    final userPersonalData = userProfile.value!.userProfile;
     final user = userPersonalData?.user;
     final profilePic = user?.profilePic;
     final userName = user?.username ?? 'User';

@@ -9,7 +9,7 @@ class ProfileInfoWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final userProfile = ref.watch(userProfileProvider);
-    final otherUser = userProfile.otherUserProfileData?.user;
+    final otherUser = userProfile.value!.otherUserProfile!.user;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -145,7 +145,7 @@ class ProfileInfoWidget extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            ref.read(userProfileProvider).followUnfollowUser(UserData.ins.userId!, userId!);
+            ref.read(userProfileProvider.notifier).followUnfollowUser(UserData.ins.userId!, userId!);
           },
           borderRadius: BorderRadius.circular(12),
           child: Container(

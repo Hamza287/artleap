@@ -16,21 +16,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     Future.microtask(() {
       if (mounted) {
-        ref.read(userProfileProvider).updateUserCredits();
+        ref.read(userProfileProvider.notifier).updateUserCredits();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProfile = ref.watch(userProfileProvider).userProfileData?.user;
+    final profileAsync = ref.watch(userProfileProvider);
+    if (profileAsync.isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    final userProfile = profileAsync.value?.userProfile?.user;
+
     final shouldRefresh = ref.watch(refreshProvider);
     ref.watch(bottomNavBarProvider);
     final theme = Theme.of(context);
 
     if (shouldRefresh && UserData.ins.userId != null) {
       Future.microtask(() {
-        ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId!);
+        ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId!);
       });
     }
     return Scaffold(

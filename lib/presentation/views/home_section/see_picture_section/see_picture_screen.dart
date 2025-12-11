@@ -18,7 +18,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userProfile = ref.read(userProfileProvider).userProfileData;
+      final userProfile = ref.read(userProfileProvider).value!.userProfile;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
         DialogService.showPremiumUpgrade(
             context: context,
@@ -39,7 +39,7 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final planName = ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+    final planName = ref.watch(userProfileProvider).value!.userProfile?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
     final cachedPrivacy = ref.watch(imagePrivacyForImageProvider(widget.params!.imageId ?? ''));
     final currentPrivacy = cachedPrivacy ?? _privacyFromString(widget.params!.privacy ?? 'Public');

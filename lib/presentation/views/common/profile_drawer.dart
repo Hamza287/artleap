@@ -27,7 +27,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+      ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId ?? "");
     });
   }
 
@@ -39,7 +39,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     final iconSize = screenSize.width * 0.06;
 
     final profileProvider = ref.watch(userProfileProvider);
-    final user = profileProvider.userProfileData?.user;
+    final user = profileProvider.value?.userProfile?.user;
     final isFreePlan = user?.planName.toLowerCase() == 'free';
 
     return Drawer(
@@ -333,7 +333,7 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
       message: 'Are you sure you want to permanently delete your account? This action cannot be undone and all your data will be lost.',
       confirmText: 'Delete Account',
       onConfirm: () {
-        ref.read(userProfileProvider).deActivateAccount(UserData.ins.userId!);
+        ref.read(userProfileProvider.notifier).deActivateAccount(UserData.ins.userId!);
       },
     );
   }

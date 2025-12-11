@@ -360,7 +360,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         final userName = userRes.data["user"]['username'];
         final userEmail = userRes.data["user"]['email'];
 
-        reference.read(userProfileProvider).getUserProfileData(userId);
+        reference.read(userProfileProvider.notifier).getUserProfileData(userId);
         AppLocal.ins.setUserData(Hivekey.userId, userId);
         AppLocal.ins.setUserData(Hivekey.userName, userName);
         AppLocal.ins.setUserData(Hivekey.userEmail, userEmail);
@@ -419,7 +419,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         }
 
         AppData.instance.setUserId(userId);
-        reference.read(userProfileProvider).getUserProfileData(userId);
+        reference.read(userProfileProvider.notifier).getUserProfileData(userId);
 
         AppLocal.ins.setUserData(Hivekey.userId, userId);
         AppLocal.ins.setUserData(Hivekey.userName, username);
@@ -455,7 +455,7 @@ class AuthProvider extends ChangeNotifier with BaseRepo {
         final userEmail = userRes.data["user"]['email'];
         final userPic = userRes.data["user"]['profilePic'] ?? profilePic;
 
-        reference.read(userProfileProvider).getUserProfileData(userId);
+        reference.read(userProfileProvider.notifier).getUserProfileData(userId);
         AppLocal.ins.setUserData(Hivekey.userId, userId);
         AppLocal.ins.setUserData(Hivekey.userName, username);
         AppLocal.ins.setUserData(Hivekey.userEmail, userEmail);

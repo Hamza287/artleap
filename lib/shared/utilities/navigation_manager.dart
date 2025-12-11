@@ -32,8 +32,8 @@ class ArtleapNavigationManager {
       userProfilePicture: userProfilePicture,
       userEmail: userEmail,
       hasSeenTutorial: hasSeenTutorial,
-      getUserProfile: () => ref.read(userProfileProvider).getUserProfileData(userId),
-      getUserProfileData: () => ref.read(userProfileProvider).userProfileData,
+      getUserProfile: () => ref.read(userProfileProvider.notifier).getUserProfileData(userId),
+      getUserProfileData: () => ref.read(userProfileProvider).value!.userProfile,
     );
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -60,8 +60,8 @@ class ArtleapNavigationManager {
       userProfilePicture: userProfilePicture,
       userEmail: userEmail,
       hasSeenTutorial: hasSeenTutorial,
-      getUserProfile: () => ref.read(userProfileProvider).getUserProfileData(userId),
-      getUserProfileData: () => ref.read(userProfileProvider).userProfileData,
+      getUserProfile: () => ref.read(userProfileProvider.notifier).getUserProfileData(userId),
+      getUserProfileData: () => ref.read(userProfileProvider).value?.userProfile,
     );
 
     Future.delayed(const Duration(seconds: 2), () {

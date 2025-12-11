@@ -16,7 +16,7 @@ class GenerationFooterRedesign extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final generateImageProviderState = ref.watch(generateImageProvider);
-    final userProfile = ref.watch(userProfileProvider).userProfileData;
+    final userProfile = ref.watch(userProfileProvider).value?.userProfile;
     final credits = userProfile?.user.totalCredits ?? 0;
 
     return Positioned(

@@ -54,7 +54,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
         }
         return;
       }
-      await ref.read(userProfileProvider).getUserProfileData(userId);
+      await ref.read(userProfileProvider.notifier).getUserProfileData(userId);
     });
   }
 

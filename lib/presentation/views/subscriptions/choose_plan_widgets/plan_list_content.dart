@@ -23,7 +23,7 @@ class _PlanListContentState extends ConsumerState<PlanListContent> {
       if (widget.plans.isNotEmpty) {
         ref.read(selectedPlanProvider.notifier).state = widget.plans.first;
       }
-      ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId ?? "");
+      ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId ?? "");
     });
   }
 

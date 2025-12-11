@@ -7,7 +7,7 @@ class ProfilePicAndInfoWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final userProfile = ref.watch(userProfileProvider);
-    final user = userProfile.userProfileData?.user;
+    final user = userProfile.value!.userProfile?.user;
     final profilePic = user?.profilePic;
     final userName = user?.username ?? 'Guest';
 

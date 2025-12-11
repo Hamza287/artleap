@@ -44,7 +44,7 @@ class _PromptCreateScreenRedesignState
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
-      final userProfile = ref.read(userProfileProvider).userProfileData;
+      final userProfile = ref.read(userProfileProvider).value!.userProfile;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
         DialogService.showPremiumUpgrade(
             context: context,
@@ -97,7 +97,7 @@ class _PromptCreateScreenRedesignState
 
   void _handleGenerate() async {
     final theme = Theme.of(context);
-    final userProfile = ref.watch(userProfileProvider).userProfileData;
+    final userProfile = ref.watch(userProfileProvider).value!.userProfile;
     final generateImageProviderState = ref.watch(generateImageProvider);
 
     if (userProfile == null || userProfile.user.totalCredits <= 0) {
@@ -203,13 +203,13 @@ class _PromptCreateScreenRedesignState
     final isLoading = ref.watch(isLoadingProvider);
     final screenSize = getScreenSizeCategory(context);
     final planName =
-        ref.watch(userProfileProvider).userProfileData?.user.planName ?? 'Free';
+        ref.watch(userProfileProvider).value!.userProfile!.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
     final isKeyboardVisible = ref.watch(keyboardVisibleProvider);
 
     if (shouldRefresh && UserData.ins.userId != null) {
       Future.microtask(() {
-        ref.read(userProfileProvider).getUserProfileData(UserData.ins.userId!);
+        ref.read(userProfileProvider.notifier).getUserProfileData(UserData.ins.userId!);
       });
     }
 

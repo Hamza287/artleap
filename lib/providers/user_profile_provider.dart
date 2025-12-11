@@ -4,231 +4,226 @@ import 'package:Artleap.ai/domain/base_repo/base_repo.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final userProfileProvider = ChangeNotifierProvider<UserProfileProvider>((ref) => UserProfileProvider());
+class UserProfileState {
+  final bool isLoading;
 
-class UserProfileProvider extends ChangeNotifier with BaseRepo {
-  // lifecycle / state
-  bool _disposed = false;
+  final UserProfileModel? userProfile;
+  final UserProfileModel? otherUserProfile;
 
-  // loader & data
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  final List<SubscriptionPlanModel>? subscriptionPlans;
+  final UserSubscriptionModel? currentSubscription;
 
-  UserProfileModel? _userProfileData;
-  UserProfileModel? get userProfileData => _userProfileData;
+  final int remainingImageCredits;
+  final int remainingPromptCredits;
+  final int dailyCredits;
 
-  UserProfileModel? _otherUserProfileData;
-  UserProfileModel? get otherUserProfileData => _otherUserProfileData;
+  final Map<String, UserProfileModel> profilesCache;
 
-  List<SubscriptionPlanModel>? _subscriptionPlans;
-  List<SubscriptionPlanModel>? get subscriptionPlans => _subscriptionPlans;
+  const UserProfileState({
+    this.isLoading = false,
+    this.userProfile,
+    this.otherUserProfile,
+    this.subscriptionPlans,
+    this.currentSubscription,
+    this.remainingImageCredits = 0,
+    this.remainingPromptCredits = 0,
+    this.dailyCredits = 0,
+    this.profilesCache = const {},
+  });
 
-  UserSubscriptionModel? _currentSubscription;
-  UserSubscriptionModel? get currentSubscription => _currentSubscription;
+  UserProfileState copyWith({
+    bool? isLoading,
+    UserProfileModel? userProfile,
+    UserProfileModel? otherUserProfile,
+    List<SubscriptionPlanModel>? subscriptionPlans,
+    UserSubscriptionModel? currentSubscription,
+    int? remainingImageCredits,
+    int? remainingPromptCredits,
+    int? dailyCredits,
+    Map<String, UserProfileModel>? profilesCache,
+  }) {
+    return UserProfileState(
+      isLoading: isLoading ?? this.isLoading,
+      userProfile: userProfile ?? this.userProfile,
+      otherUserProfile: otherUserProfile ?? this.otherUserProfile,
+      subscriptionPlans: subscriptionPlans ?? this.subscriptionPlans,
+      currentSubscription: currentSubscription ?? this.currentSubscription,
+      remainingImageCredits:
+      remainingImageCredits ?? this.remainingImageCredits,
+      remainingPromptCredits:
+      remainingPromptCredits ?? this.remainingPromptCredits,
+      dailyCredits: dailyCredits ?? this.dailyCredits,
+      profilesCache: profilesCache ?? this.profilesCache,
+    );
+  }
+}
 
-  int _remainingImageCredits = 0;
-  int get remainingImageCredits => _remainingImageCredits;
-
-  int _remainingPromptCredits = 0;
-  int get remainingPromptCredits => _remainingPromptCredits;
-
-  int _dailyCredits = 0;
-  int get dailyCredits => _dailyCredits;
-
-  final Map<String, UserProfileModel> _profilesCache = {};
-  Map<String, UserProfileModel> get profilesCache => _profilesCache;
-  UserProfileModel? getProfileById(String id) => _profilesCache[id];
-
+class UserProfileNotifier extends AsyncNotifier<UserProfileState>
+    with BaseRepo {
   @override
-  void dispose() {
-    _disposed = true;
-    super.dispose();
+  Future<UserProfileState> build() async {
+    // initial empty state
+    return const UserProfileState();
   }
 
-  // ----- internal safe notify -----
-  void safeNotify() {
-    if (_disposed) return;
+  UserProfileState get _current =>
+      state.valueOrNull ?? const UserProfileState();
 
-    try {
-      notifyListeners();
-    } catch (e) {
-      debugPrint("❌ notifyListeners() failed after dispose: $e");
-    }
+  void _setLoading(bool value) {
+    state = AsyncData(_current.copyWith(isLoading: value));
   }
 
-
-  // set loader safely
-  void setLoader(bool value) {
-    if (_disposed) return;
-    _isLoading = value;
-    safeNotify();
-  }
-
-  // -------------------------
-  // API methods (all await calls check _disposed after returning)
-  // -------------------------
 
   Future<void> followUnfollowUser(String uid, String followId) async {
-    if (_disposed) return;
-
-    setLoader(true);
+    _setLoading(true);
 
     final data = {"userId": uid, "followId": followId};
     final response = await userFollowingRepo.followUnFollowUser(data);
 
-    if (_disposed) return;
-
     if (response.status == Status.completed) {
-      // await result of getUserProfileData as it already performs disposed checks
       await getUserProfileData(uid);
     } else {
-      if (_disposed) return;
-      appSnackBar("Error", response.message ?? "Failed to follow/unfollow user", backgroundColor: AppColors.redColor);
+      appSnackBar(
+        "Error",
+        response.message ?? "Failed to follow/unfollow user",
+        backgroundColor: AppColors.redColor,
+      );
+      _setLoading(false);
     }
-
-    if (_disposed) return;
-    setLoader(false);
   }
 
   Future<void> getUserProfileData(String uid) async {
     final id = uid.trim();
     if (id.isEmpty) {
-      if (!_disposed) {
-        appSnackBar("Error", "User ID is empty", backgroundColor: AppColors.redColor);
-      }
+      appSnackBar(
+        "Error",
+        "User ID is empty",
+        backgroundColor: AppColors.redColor,
+      );
       return;
     }
 
-    if (_disposed) return;
-    setLoader(true);
+    _setLoading(true);
 
     final response = await userFollowingRepo.getUserProfileData(id);
 
-    if (_disposed) return;
-
     if (response.status == Status.completed) {
-      _userProfileData = response.data;
-      _dailyCredits = _userProfileData?.user.totalCredits ?? 0;
+      final profile = response.data;
+      state = AsyncData(
+        _current.copyWith(
+          isLoading: false,
+          userProfile: profile,
+          dailyCredits: profile?.user.totalCredits ?? 0,
+        ),
+      );
     } else {
-      if (!_disposed) {
-        appSnackBar("Error", response.message ?? "Failed to fetch user profile", backgroundColor: AppColors.redColor);
-        debugPrint('❌ Profile failed for "$id": ${response.message}');
-      }
+      appSnackBar(
+        "Error",
+        response.message ?? "Failed to fetch user profile",
+        backgroundColor: AppColors.redColor,
+      );
+      debugPrint('❌ Profile failed for "$id": ${response.message}');
+      _setLoading(false);
     }
-
-    if (_disposed) return;
-    setLoader(false);
   }
 
   Future<void> getProfilesForUserIds(List<String> ids) async {
-    if (_disposed) return;
+    final cache = Map<String, UserProfileModel>.from(_current.profilesCache);
 
     for (final id in ids) {
-      if (_disposed) return;
-      if (_profilesCache.containsKey(id)) continue;
+      if (cache.containsKey(id)) continue;
 
       final response = await userFollowingRepo.getOtherUserProfileData(id);
 
-      if (_disposed) return;
-
-      if (response.status == Status.completed) {
-        if (response.data != null) {
-          _profilesCache[id] = response.data!;
-        }
-      } else {
-        // optional: handle failure per id if needed
+      if (response.status == Status.completed && response.data != null) {
+        cache[id] = response.data!;
       }
     }
 
-    if (_disposed) return;
-    safeNotify();
+    state = AsyncData(_current.copyWith(profilesCache: cache));
   }
 
   Future<void> getOtherUserProfileData(String uid) async {
-    if (_disposed) return;
-    setLoader(true);
+    _setLoading(true);
 
     final response = await userFollowingRepo.getOtherUserProfileData(uid);
 
-    if (_disposed) return;
-
     if (response.status == Status.completed) {
-      _otherUserProfileData = response.data;
+      state = AsyncData(
+        _current.copyWith(
+          isLoading: false,
+          otherUserProfile: response.data,
+        ),
+      );
     } else {
-      if (!_disposed) {
-        appSnackBar("Error", response.message ?? "Failed to fetch other user profile", backgroundColor: AppColors.redColor);
-      }
+      appSnackBar(
+        "Error",
+        response.message ?? "Failed to fetch other user profile",
+        backgroundColor: AppColors.redColor,
+      );
+      _setLoading(false);
     }
-
-    if (_disposed) return;
-    setLoader(false);
   }
 
   Future<void> updateUserCredits() async {
-    if (_disposed) return;
-
-    setLoader(true);
+    _setLoading(true);
 
     final data = {"userId": UserData.ins.userId};
     final response = await userFollowingRepo.updateUserCredits(data);
 
-    if (_disposed) return;
-
     if (response.status == Status.completed) {
       await getUserProfileData(UserData.ins.userId ?? "");
     } else {
-      if (!_disposed) {
-        debugPrint("Failed to update credits: ${response.message}");
-      }
+      debugPrint("Failed to update credits: ${response.message}");
+      _setLoading(false);
     }
-
-    if (_disposed) return;
-    setLoader(false);
   }
 
-
   Future<void> deActivateAccount(String uid) async {
-    if (_disposed) return;
-    setLoader(true);
+    _setLoading(true);
 
     final response = await userFollowingRepo.deleteAccount(uid);
 
-    if (_disposed) return;
-
     if (response.status == Status.completed) {
-      // clear local data and navigate — do navigation BEFORE any further notify
+      // clear local data and navigate
       AppLocal.ins.clearUSerData(Hivekey.userId);
-
-      // navigate; navigation may dispose listeners synchronously
       Navigation.pushNamedAndRemoveUntil(LoginScreen.routeName);
 
-      // show snackbar only if still alive (often navigation will dispose current screen quickly)
-      if (!_disposed) {
-        appSnackBar("Success", "Your account has been deleted successfully", backgroundColor: AppColors.green);
-      }
-      // after navigation, provider may be disposed; avoid further state updates
-      setLoader(false);
+      appSnackBar(
+        "Success",
+        "Your account has been deleted successfully",
+        backgroundColor: AppColors.green,
+      );
+
+      // Don't modify state after navigation to avoid weird edge cases.
       return;
     } else {
-      if (!_disposed) {
-        appSnackBar("Error", response.message ?? "Something went wrong, please try again", backgroundColor: AppColors.redColor);
-      }
+      appSnackBar(
+        "Error",
+        response.message ?? "Something went wrong, please try again",
+        backgroundColor: AppColors.redColor,
+      );
+      _setLoading(false);
     }
-
-    if (_disposed) return;
-    setLoader(false);
   }
 
   Future<void> launchAnyUrl(String? url) async {
-    if (url == null || _disposed) return;
+    if (url == null) return;
+
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      if (_disposed) return;
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      if (!_disposed) {
-        appSnackBar("Error", "Could not launch $url", backgroundColor: AppColors.redColor);
-      }
+      appSnackBar(
+        "Error",
+        "Could not launch $url",
+        backgroundColor: AppColors.redColor,
+      );
     }
   }
 }
+
+final userProfileProvider =
+AsyncNotifierProvider<UserProfileNotifier, UserProfileState>(
+  UserProfileNotifier.new,
+);
