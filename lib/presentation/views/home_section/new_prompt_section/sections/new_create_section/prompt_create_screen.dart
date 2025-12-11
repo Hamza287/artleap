@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:Artleap.ai/providers/generate_image_provider.dart';
+import 'package:Artleap.ai/ads/rewarded_ads/rewarded_ad_button.dart';
 import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:flutter/rendering.dart';
 import '../../prompt_screen_widgets/prompt_top_bar.dart';
@@ -46,12 +46,7 @@ class _PromptCreateScreenRedesignState
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
       final userProfile = ref.read(userProfileProvider).value!.userProfile;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
-        DialogService.showPremiumUpgrade(
-            context: context,
-            featureName: 'Generate More Images',
-            onConfirm: () {
-              Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
-            });
+        _showCreditsDialog(ref, context);
       }
     });
 
@@ -290,6 +285,88 @@ class _PromptCreateScreenRedesignState
               animationController: _animationController,
               fadeAnimation: _fadeAnimation,
             ),
+        ],
+      ),
+    );
+  }
+
+  void _showCreditsDialog(WidgetRef ref, BuildContext context) {
+    final userProfile = ref.read(userProfileProvider).userProfileData;
+    final planName = userProfile?.user.planName ?? 'Free';
+    final isFreePlan = planName.toLowerCase() == 'free';
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Icons.workspace_premium,
+              color: Theme.of(context).colorScheme.primary,
+              size: 28,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Need More Credits?',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'You\'ve run out of credits!',
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isFreePlan
+                  ? 'Watch a short ad to earn free credits or upgrade to premium for unlimited credits.'
+                  : 'Upgrade your plan for unlimited credits.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
+            ),
+            const SizedBox(height: 24),
+            if (isFreePlan) const RewardedAdButton(),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Maybe Later',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Upgrade Plan'),
+          ),
         ],
       ),
     );
