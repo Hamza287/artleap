@@ -1,16 +1,9 @@
 import 'dart:io';
-import 'package:Artleap.ai/ads/rewarded_ads/rewarded_ad_button.dart';
-import 'package:Artleap.ai/providers/keyboard_provider.dart';
 import 'package:flutter/rendering.dart';
-import '../../prompt_screen_widgets/prompt_top_bar.dart';
-import 'components/generation_footer_redesign.dart';
-import 'components/image_control_section.dart';
-import 'components/loading_overlay_redesign.dart';
-import 'components/prompt_input_section.dart';
-import 'components/privacy_selection_section.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
+final adPreloadedProvider = StateProvider<bool>((ref) => false);
 
 ScreenSizeCategory getScreenSizeCategory(BuildContext context) {
   final width = MediaQuery.of(context).size.width;
@@ -37,16 +30,21 @@ class _PromptCreateScreenRedesignState
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool _adDialogShown = false;
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
+
+      // Preload ad when screen opens using AdHelper
+      await AdHelper.preloadRewardedAd(ref);
+
       final userProfile = ref.read(userProfileProvider).value!.userProfile;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
-        _showCreditsDialog(ref, context);
+        _showCreditsDialog();
       }
     });
 
@@ -96,13 +94,16 @@ class _PromptCreateScreenRedesignState
     final generateImageProviderState = ref.watch(generateImageProvider);
 
     if (userProfile == null || userProfile.user.totalCredits <= 0) {
-      appSnackBar(
-        "Oops!",
-        "You have reached your daily limit. Thank you!",
-        backgroundColor: theme.colorScheme.primary,
-      );
+      // If user has no credits, show the credits dialog
+      if (!_adDialogShown) {
+        _adDialogShown = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showCreditsDialog();
+        });
+      }
       return;
     }
+
     final isNetworkAvailable = await _checkNetworkAvailability();
     if (!isNetworkAvailable) {
       appSnackBar(
@@ -167,7 +168,7 @@ class _PromptCreateScreenRedesignState
 
     if (isTextToImage) {
       success =
-          await ref.read(generateImageProvider.notifier).generateTextToImage();
+      await ref.read(generateImageProvider.notifier).generateTextToImage();
       if (!success) {
         success = await ref
             .read(generateImageProvider.notifier)
@@ -191,9 +192,72 @@ class _PromptCreateScreenRedesignState
     }
   }
 
+  void _showCreditsDialog() {
+    final userProfile = ref.read(userProfileProvider).value!.userProfile;
+    final planName = userProfile?.user.planName ?? 'Free';
+    final isFreePlan = planName.toLowerCase() == 'free';
+
+    // Get ad state
+    final adState = ref.read(rewardedAdNotifierProvider);
+    final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
+
+    showCreditsDialog(
+      context: context,
+      ref: ref,
+      isFreePlan: isFreePlan,
+      adState: adState,
+      onWatchAd: () {
+        Navigator.of(context).pop();
+        _showRewardedAd();
+      },
+      onUpgrade: () {
+        Navigator.of(context).pop();
+        Navigation.pushNamed(ChoosePlanScreen.routeName);
+      },
+      onLater: () {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (context.mounted) Navigator.of(context).pop();
+        });
+
+      },
+      onLoadAd: () {
+        adNotifier.loadAd();
+      },
+      adDialogShown: _adDialogShown,
+      onDialogShownChanged: (value) {
+        _adDialogShown = value;
+      },
+    );
+  }
+
+  Future<void> _showRewardedAd() async {
+    await AdHelper.showRewardedAd(
+      ref: ref,
+      onRewardEarned: (coins) {
+        AdHelper.showRewardSuccessSnackbar(context, coins);
+        AdHelper.refreshUserProfileAfterReward(ref);
+      },
+      onAdDismissed: () {
+        final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
+        adNotifier.loadAd();
+      },
+      onAdFailed: () {
+        AdHelper.showAdErrorSnackbar(
+          context,
+          'Failed to show ad. Please try again.',
+        );
+
+        Future.delayed(const Duration(seconds: 2), () {
+          final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
+          adNotifier.loadAd();
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Theme.of(context);
+    final theme = Theme.of(context);
     final shouldRefresh = ref.watch(refreshProvider);
     final isLoading = ref.watch(isLoadingProvider);
     final screenSize = getScreenSizeCategory(context);
@@ -209,11 +273,11 @@ class _PromptCreateScreenRedesignState
     }
 
     final horizontalPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 16.0
         : 24.0;
     final topPadding = screenSize == ScreenSizeCategory.small ||
-            screenSize == ScreenSizeCategory.extraSmall
+        screenSize == ScreenSizeCategory.extraSmall
         ? 16.0
         : 24.0;
 
@@ -260,14 +324,14 @@ class _PromptCreateScreenRedesignState
                         onImageSelected: () {
                           AnalyticsService.instance.logButtonClick(
                             buttonName:
-                                'picking image from gallery button event',
+                            'picking image from gallery button event',
                           );
                         },
                         isPremiumUser: !isFreePlan,
                       ),
                       SizedBox(
                           height: screenSize == ScreenSizeCategory.small ||
-                                  screenSize == ScreenSizeCategory.extraSmall
+                              screenSize == ScreenSizeCategory.extraSmall
                               ? 100.0
                               : 120.0),
                     ],
@@ -285,88 +349,6 @@ class _PromptCreateScreenRedesignState
               animationController: _animationController,
               fadeAnimation: _fadeAnimation,
             ),
-        ],
-      ),
-    );
-  }
-
-  void _showCreditsDialog(WidgetRef ref, BuildContext context) {
-    final userProfile = ref.read(userProfileProvider).userProfileData;
-    final planName = userProfile?.user.planName ?? 'Free';
-    final isFreePlan = planName.toLowerCase() == 'free';
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Icons.workspace_premium,
-              color: Theme.of(context).colorScheme.primary,
-              size: 28,
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Need More Credits?',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'You\'ve run out of credits!',
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              isFreePlan
-                  ? 'Watch a short ad to earn free credits or upgrade to premium for unlimited credits.'
-                  : 'Upgrade your plan for unlimited credits.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-            const SizedBox(height: 24),
-            if (isFreePlan) const RewardedAdButton(),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Maybe Later',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Upgrade Plan'),
-          ),
         ],
       ),
     );

@@ -1,74 +1,115 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Artleap.ai/shared/route_export.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter/foundation.dart';
 
 class RewardedAdManager {
   RewardedAd? _rewardedAd;
   bool _isLoading = false;
-  int _retryCount = 0;
   bool _isAdLoaded = false;
+  int _retryCount = 0;
+  bool _disposed = false;
 
-  Future<bool> loadRewardedAd(WidgetRef ref) async {
-    debugPrint('Loading rewarded ad...');
+  void _log(String msg) {
+    debugPrint('[RewardedAdManager] $msg');
+  }
+
+  Future<bool> loadRewardedAd({
+    required bool rewardedAdsEnabled,
+    required String adUnitId,
+    required int maxRetryCount,
+    required Future<void> Function() initializeAds,
+    required bool isAdsInitialized,
+  }) async {
+    _log('loadRewardedAd called');
+    _log('State → disposed=$_disposed, enabled=$rewardedAdsEnabled, isLoading=$_isLoading, isLoaded=$_isAdLoaded, retry=$_retryCount/$maxRetryCount');
+    _log('AdUnitId → $adUnitId');
+
+    if (_disposed) {
+      _log('ABORT: manager disposed');
+      return false;
+    }
+
+    if (!rewardedAdsEnabled) {
+      _log('ABORT: rewardedAdsEnabled=false');
+      return false;
+    }
+
+    if (_rewardedAd != null) {
+      _log('ABORT: rewardedAd already exists');
+      return false;
+    }
+
+    if (_isLoading) {
+      _log('ABORT: already loading');
+      return false;
+    }
+
+    if (_isAdLoaded) {
+      _log('ABORT: ad already loaded');
+      return false;
+    }
+
+    if (_retryCount >= maxRetryCount) {
+      _log('ABORT: maxRetryCount reached → resetting retryCount');
+      _retryCount = 0;
+      return false;
+    }
+
+    if (!isAdsInitialized) {
+      _log('AdService not initialized → initializing');
+      try {
+        await initializeAds();
+        _log('AdService initialized successfully');
+      } catch (e) {
+        _log('ERROR: AdService initialization failed → $e');
+        return false;
+      }
+    }
+
+    _isLoading = true;
+    _isAdLoaded = false;
+
+    _log('Calling RewardedAd.load()');
 
     try {
-      final showRewardedAds = ref.read(rewardedAdsEnabledProvider);
-      if (!showRewardedAds) {
-        debugPrint('Rewarded ads disabled by config');
-        return false;
-      }
-
-      if (!AdService.instance.isInitialized) {
-        debugPrint('Initializing ad service...');
-        try {
-          await AdService.instance.initialize();
-        } catch (e) {
-          debugPrint('Failed to initialize ad service: $e');
-          return false;
-        }
-      }
-
-      if (_rewardedAd != null || _isLoading || _isAdLoaded) {
-        debugPrint('Ad already loading or loaded');
-        return false;
-      }
-
-      final maxRetryCount = ref.read(remoteConfigProvider).maxAdRetryCount;
-      if (_retryCount >= maxRetryCount) {
-        debugPrint('Max retry count reached: $_retryCount');
-        _retryCount = 0;
-        return false;
-      }
-
-      _isLoading = true;
-      _isAdLoaded = false;
-
-      final adUnitId = ref.read(remoteConfigProvider).rewardedAdUnit;
-      debugPrint('Loading ad with unit ID: $adUnitId');
-
       await RewardedAd.load(
         adUnitId: adUnitId,
         request: const AdRequest(),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (RewardedAd ad) {
-            debugPrint('Rewarded ad loaded successfully');
+          onAdLoaded: (ad) {
+            _log('onAdLoaded callback fired');
+
+            if (_disposed) {
+              _log('Ad loaded AFTER dispose → disposing ad');
+              ad.dispose();
+              return;
+            }
+
             _rewardedAd = ad;
             _isLoading = false;
             _isAdLoaded = true;
             _retryCount = 0;
+
+            _log('Ad loaded successfully!');
+            _log('ResponseInfo → ${ad.responseInfo}');
           },
-          onAdFailedToLoad: (LoadAdError error) {
-            debugPrint('Failed to load rewarded ad: ${error.message}');
+          onAdFailedToLoad: (error) {
+            if (_disposed) return;
+
+            _log('onAdFailedToLoad → code=${error.code}, message=${error.message}');
+            _rewardedAd = null;
             _isLoading = false;
             _isAdLoaded = false;
-            _rewardedAd = null;
             _retryCount++;
           },
         ),
       );
 
-      return _isAdLoaded;
+      await Future.delayed(const Duration(milliseconds: 300));
+      _log('Load result → isLoaded=$_isAdLoaded');
+      return !_disposed && _isAdLoaded;
     } catch (e) {
-      debugPrint('Error loading rewarded ad: $e');
+      if (_disposed) return false;
+      _log('EXCEPTION during load → $e');
       _isLoading = false;
       _isAdLoaded = false;
       _retryCount++;
@@ -77,79 +118,64 @@ class RewardedAdManager {
   }
 
   Future<bool> showRewardedAd({
-    required WidgetRef ref,
-    required OnUserEarnedRewardCallback onUserEarnedReward,
+    required void Function(int coins) onUserEarnedReward,
     void Function()? onAdDismissed,
-    void Function(AdError)? onAdFailedToShow,
-    void Function()? onAdShowed,
-    void Function()? onAdClicked,
+    void Function(String error)? onAdFailedToShow,
   }) async {
-    debugPrint('Showing rewarded ad...');
+    _log('showRewardedAd called');
+    _log('State → disposed=$_disposed, hasAd=${_rewardedAd != null}, isLoaded=$_isAdLoaded');
+
+    if (_disposed || _rewardedAd == null || !_isAdLoaded) {
+      _log('ABORT: ad not ready');
+      return false;
+    }
 
     try {
-      final showRewardedAds = ref.read(rewardedAdsEnabledProvider);
-      if (!showRewardedAds) {
-        debugPrint('Rewarded ads disabled, cannot show');
-        return false;
-      }
-
-      if (_rewardedAd == null || !_isAdLoaded) {
-        debugPrint('Ad not loaded, loading now...');
-        await loadRewardedAd(ref);
-        return false;
-      }
-
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdShowedFullScreenContent: (RewardedAd ad) {
-          debugPrint('Rewarded ad showed');
-          onAdShowed?.call();
-        },
-        onAdImpression: (RewardedAd ad) {
-          debugPrint('Rewarded ad impression');
-        },
-        onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-          debugPrint('Failed to show rewarded ad: ${error.message}');
+        onAdFailedToShowFullScreenContent: (_, error) {
+          if (_disposed) return;
+          _log('onAdFailedToShow → ${error.message}');
           _cleanupAd();
-          onAdFailedToShow?.call(error);
+          onAdFailedToShow?.call(error.message);
         },
-        onAdDismissedFullScreenContent: (RewardedAd ad) {
-          debugPrint('Rewarded ad dismissed');
+        onAdDismissedFullScreenContent: (_) {
+          if (_disposed) return;
+          _log('onAdDismissed');
           _cleanupAd();
           onAdDismissed?.call();
-        },
-        onAdClicked: (RewardedAd ad) {
-          debugPrint('Rewarded ad clicked');
-          onAdClicked?.call();
-        },
-        onAdWillDismissFullScreenContent: (RewardedAd ad) {
-          debugPrint('Rewarded ad will dismiss');
         },
       );
 
       _rewardedAd!.setImmersiveMode(true);
-      await _rewardedAd!.show(
-        onUserEarnedReward: onUserEarnedReward,
+
+      _log('Calling show()');
+      _rewardedAd!.show(
+        onUserEarnedReward: (_, reward) {
+          if (_disposed) return;
+          _log('User earned reward → ${reward.amount} ${reward.type}');
+          onUserEarnedReward(reward.amount.toInt());
+        },
       );
 
-      debugPrint('Rewarded ad shown successfully');
       return true;
     } catch (e) {
-      debugPrint('Error showing rewarded ad: $e');
+      if (_disposed) return false;
+      _log('EXCEPTION during show → $e');
       _cleanupAd();
       return false;
     }
   }
 
   void _cleanupAd() {
+    _log('cleanupAd called');
     _rewardedAd?.dispose();
     _rewardedAd = null;
     _isAdLoaded = false;
-    debugPrint('Ad cleaned up');
   }
 
-  bool get isAdLoaded => _isAdLoaded;
-
   void dispose() {
+    _log('dispose called');
+    _disposed = true;
     _cleanupAd();
     _isLoading = false;
     _retryCount = 0;

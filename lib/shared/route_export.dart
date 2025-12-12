@@ -175,3 +175,17 @@ export 'package:Artleap.ai/ads/native_ads/native_ad_post_widget.dart';
 export'package:Artleap.ai/ads/native_ads/native_ad_state_feed.dart';
 export 'package:Artleap.ai/presentation/views/home_section/new_comunity_screen/components/communiry_header.dart';
 export 'package:Artleap.ai/presentation/views/home_section/new_comunity_screen/components/post_card.dart';
+
+export 'package:Artleap.ai/ads/ad_services/ad_helper.dart';
+export 'package:Artleap.ai/ads/rewarded_ads/credits_dialog.dart';
+export 'package:Artleap.ai/ads/rewarded_ads/rewarded_ad_notifier.dart';
+
+export 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/prompt_screen_widgets/prompt_top_bar.dart';
+
+export 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/new_create_section/components/generation_footer_redesign.dart';
+export 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/new_create_section/components/image_control_section.dart';
+export 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/new_create_section/components/loading_overlay_redesign.dart';
+export 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/new_create_section/components/privacy_selection_section.dart';
+export 'package:Artleap.ai/presentation/views/home_section/new_prompt_section/sections/new_create_section/components/prompt_input_section.dart';
+
+export 'package:Artleap.ai/providers/keyboard_provider.dart';

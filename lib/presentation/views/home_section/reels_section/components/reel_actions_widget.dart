@@ -74,7 +74,7 @@ class ReelActionsWidget extends ConsumerWidget {
           child: CircleAvatar(
             radius: 22,
             backgroundColor: theme.colorScheme.surface,
-            backgroundImage: const NetworkImage('https://example.com/avatar.jpg'),
+            backgroundImage: const AssetImage('assets/images/cartoon.webp'),
             child: Icon(
               FeatherIcons.user,
               color: theme.colorScheme.onSurface.withOpacity(0.5),

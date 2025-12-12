@@ -1,6 +1,5 @@
 import 'package:Artleap.ai/ads/rewarded_ads/user_credits_notifier.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
-import 'rewarded_ad_notifier.dart';
 
 class RewardedAdButton extends ConsumerWidget {
   const RewardedAdButton({super.key});
@@ -10,7 +9,7 @@ class RewardedAdButton extends ConsumerWidget {
     final adState = ref.watch(rewardedAdNotifierProvider);
     final creditsState = ref.watch(userCreditsNotifierProvider);
     final userProfile = ref.watch(userProfileProvider);
-    final planName = userProfile.userProfileData?.user.planName ?? 'Free';
+    final planName = userProfile.value!.userProfile!.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
 
     // Only show button for free plan users

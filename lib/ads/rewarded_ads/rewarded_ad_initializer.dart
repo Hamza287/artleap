@@ -1,6 +1,6 @@
 import 'package:Artleap.ai/ads/rewarded_ads/user_credits_notifier.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:Artleap.ai/shared/route_export.dart';
+
 
 class RewardedAdInitializer extends ConsumerWidget {
   final Widget child;
