@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:flutter/foundation.dart';
 
 class RewardedAdManager {
   RewardedAd? _rewardedAd;
@@ -7,10 +7,13 @@ class RewardedAdManager {
   bool _isAdLoaded = false;
   int _retryCount = 0;
   bool _disposed = false;
+  Completer<bool>? _currentLoadCompleter;
+  bool _isAdShowing = false;
 
-  void _log(String msg) {
-    debugPrint('[RewardedAdManager] $msg');
-  }
+  // Store callbacks locally
+  void Function(int coins)? _onUserEarnedReward;
+  void Function()? _onAdDismissed;
+  void Function(String error)? _onAdFailedToShow;
 
   Future<bool> loadRewardedAd({
     required bool rewardedAdsEnabled,
@@ -19,68 +22,54 @@ class RewardedAdManager {
     required Future<void> Function() initializeAds,
     required bool isAdsInitialized,
   }) async {
-    _log('loadRewardedAd called');
-    _log('State → disposed=$_disposed, enabled=$rewardedAdsEnabled, isLoading=$_isLoading, isLoaded=$_isAdLoaded, retry=$_retryCount/$maxRetryCount');
-    _log('AdUnitId → $adUnitId');
-
     if (_disposed) {
-      _log('ABORT: manager disposed');
       return false;
     }
 
     if (!rewardedAdsEnabled) {
-      _log('ABORT: rewardedAdsEnabled=false');
       return false;
     }
 
-    if (_rewardedAd != null) {
-      _log('ABORT: rewardedAd already exists');
-      return false;
+    if (_currentLoadCompleter != null) {
+      return _currentLoadCompleter!.future;
     }
 
-    if (_isLoading) {
-      _log('ABORT: already loading');
-      return false;
-    }
-
-    if (_isAdLoaded) {
-      _log('ABORT: ad already loaded');
-      return false;
+    if (_isAdLoaded && _rewardedAd != null) {
+      return true;
     }
 
     if (_retryCount >= maxRetryCount) {
-      _log('ABORT: maxRetryCount reached → resetting retryCount');
       _retryCount = 0;
       return false;
     }
 
-    if (!isAdsInitialized) {
-      _log('AdService not initialized → initializing');
-      try {
-        await initializeAds();
-        _log('AdService initialized successfully');
-      } catch (e) {
-        _log('ERROR: AdService initialization failed → $e');
-        return false;
-      }
-    }
-
+    _currentLoadCompleter = Completer<bool>();
     _isLoading = true;
-    _isAdLoaded = false;
-
-    _log('Calling RewardedAd.load()');
 
     try {
+      if (!isAdsInitialized) {
+        try {
+          await initializeAds();
+        } catch (e) {
+          _currentLoadCompleter?.complete(false);
+          _currentLoadCompleter = null;
+          _isLoading = false;
+          return false;
+        }
+      }
+
       await RewardedAd.load(
         adUnitId: adUnitId,
-        request: const AdRequest(),
+        request: const AdRequest(
+          keywords: ['art', 'ai', 'creative'],
+          nonPersonalizedAds: true,
+        ),
         rewardedAdLoadCallback: RewardedAdLoadCallback(
-          onAdLoaded: (ad) {
-            _log('onAdLoaded callback fired');
-
+          onAdLoaded: (RewardedAd ad) {
             if (_disposed) {
-              _log('Ad loaded AFTER dispose → disposing ad');
               ad.dispose();
+              _currentLoadCompleter?.complete(false);
+              _currentLoadCompleter = null;
               return;
             }
 
@@ -89,30 +78,44 @@ class RewardedAdManager {
             _isAdLoaded = true;
             _retryCount = 0;
 
-            _log('Ad loaded successfully!');
-            _log('ResponseInfo → ${ad.responseInfo}');
-          },
-          onAdFailedToLoad: (error) {
-            if (_disposed) return;
+            // Set basic callbacks for tracking
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+              onAdShowedFullScreenContent: (ad) {
+                _isAdShowing = true;
+              },
+              onAdDismissedFullScreenContent: (RewardedAd ad) {
+                _isAdShowing = false;
+                _cleanupAd();
+                _onAdDismissed?.call();
+              },
+              onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+                _isAdShowing = false;
+                _cleanupAd();
+                _onAdFailedToShow?.call(error.message);
+              },
+            );
 
-            _log('onAdFailedToLoad → code=${error.code}, message=${error.message}');
-            _rewardedAd = null;
+            _currentLoadCompleter?.complete(true);
+            _currentLoadCompleter = null;
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            _cleanupAd();
             _isLoading = false;
-            _isAdLoaded = false;
             _retryCount++;
+
+            _currentLoadCompleter?.complete(false);
+            _currentLoadCompleter = null;
           },
         ),
       );
 
-      await Future.delayed(const Duration(milliseconds: 300));
-      _log('Load result → isLoaded=$_isAdLoaded');
-      return !_disposed && _isAdLoaded;
+      return await _currentLoadCompleter!.future;
     } catch (e) {
-      if (_disposed) return false;
-      _log('EXCEPTION during load → $e');
+      _cleanupAd();
       _isLoading = false;
-      _isAdLoaded = false;
       _retryCount++;
+      _currentLoadCompleter?.complete(false);
+      _currentLoadCompleter = null;
       return false;
     }
   }
@@ -122,62 +125,94 @@ class RewardedAdManager {
     void Function()? onAdDismissed,
     void Function(String error)? onAdFailedToShow,
   }) async {
-    _log('showRewardedAd called');
-    _log('State → disposed=$_disposed, hasAd=${_rewardedAd != null}, isLoaded=$_isAdLoaded');
-
-    if (_disposed || _rewardedAd == null || !_isAdLoaded) {
-      _log('ABORT: ad not ready');
+    if (_disposed) {
       return false;
     }
 
+    if (_rewardedAd == null || !_isAdLoaded) {
+      return false;
+    }
+
+    if (_isAdShowing) {
+      return false;
+    }
+
+    // Store callbacks
+    _onUserEarnedReward = onUserEarnedReward;
+    _onAdDismissed = onAdDismissed;
+    _onAdFailedToShow = onAdFailedToShow;
+
     try {
+      // Reset the fullScreenContentCallback to ensure fresh callbacks
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdFailedToShowFullScreenContent: (_, error) {
-          if (_disposed) return;
-          _log('onAdFailedToShow → ${error.message}');
-          _cleanupAd();
-          onAdFailedToShow?.call(error.message);
+        onAdShowedFullScreenContent: (ad) {
+          _isAdShowing = true;
         },
-        onAdDismissedFullScreenContent: (_) {
-          if (_disposed) return;
-          _log('onAdDismissed');
+        onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+          _isAdShowing = false;
           _cleanupAd();
-          onAdDismissed?.call();
+          _onAdFailedToShow?.call(error.message);
+          _clearCallbacks();
+        },
+        onAdDismissedFullScreenContent: (RewardedAd ad) {
+          _isAdShowing = false;
+          _cleanupAd();
+          _onAdDismissed?.call();
+          _clearCallbacks();
+        },
+        onAdClicked: (ad) {
+        },
+        onAdImpression: (ad) {
         },
       );
 
       _rewardedAd!.setImmersiveMode(true);
-
-      _log('Calling show()');
-      _rewardedAd!.show(
-        onUserEarnedReward: (_, reward) {
-          if (_disposed) return;
-          _log('User earned reward → ${reward.amount} ${reward.type}');
-          onUserEarnedReward(reward.amount.toInt());
-        },
-      );
+      _rewardedAd!.show(onUserEarnedReward: (ad, reward) {
+        _onUserEarnedReward?.call(reward.amount.toInt());
+      });
 
       return true;
     } catch (e) {
-      if (_disposed) return false;
-      _log('EXCEPTION during show → $e');
+      _isAdShowing = false;
       _cleanupAd();
+      _clearCallbacks();
       return false;
     }
   }
 
-  void _cleanupAd() {
-    _log('cleanupAd called');
-    _rewardedAd?.dispose();
-    _rewardedAd = null;
-    _isAdLoaded = false;
+  void _clearCallbacks() {
+    _onUserEarnedReward = null;
+    _onAdDismissed = null;
+    _onAdFailedToShow = null;
   }
 
-  void dispose() {
-    _log('dispose called');
-    _disposed = true;
-    _cleanupAd();
+  void _cleanupAd() {
+    // Only dispose if ad is not currently showing
+    if (!_isAdShowing && _rewardedAd != null) {
+      _rewardedAd?.dispose();
+      _rewardedAd = null;
+      _isAdLoaded = false;
+    }
     _isLoading = false;
+  }
+
+  bool get isAdLoaded => _isAdLoaded && _rewardedAd != null;
+
+  bool get isLoading => _isLoading;
+
+  bool get isAdShowing => _isAdShowing;
+
+  void dispose() {
+    _disposed = true;
+    _clearCallbacks();
+
+    // Don't dispose immediately if ad is showing
+    if (!_isAdShowing) {
+      _cleanupAd();
+    }
+
+    _currentLoadCompleter?.complete(false);
+    _currentLoadCompleter = null;
     _retryCount = 0;
   }
 }

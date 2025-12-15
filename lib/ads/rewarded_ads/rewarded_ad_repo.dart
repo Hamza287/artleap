@@ -4,4 +4,5 @@ import 'package:Artleap.ai/domain/base_repo/base.dart';
 abstract class RewardedAdRepo extends Base {
   Future<ApiResponse> sendRewardToBackend(Map<String, dynamic> data);
   Future<ApiResponse<Map<String, dynamic>>> getUserCredits();
+  Future<ApiResponse<Map<String, dynamic>>> getUserCreditsStatus();
 }

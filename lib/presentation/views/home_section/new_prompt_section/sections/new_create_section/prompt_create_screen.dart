@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/rendering.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 final adPreloadedProvider = StateProvider<bool>((ref) => false);
@@ -39,7 +40,6 @@ class _PromptCreateScreenRedesignState
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       AnalyticsService.instance.logScreenView(screenName: 'generating screen');
 
-      // Preload ad when screen opens using AdHelper
       await AdHelper.preloadRewardedAd(ref);
 
       final userProfile = ref.read(userProfileProvider).value!.userProfile;
@@ -94,7 +94,6 @@ class _PromptCreateScreenRedesignState
     final generateImageProviderState = ref.watch(generateImageProvider);
 
     if (userProfile == null || userProfile.user.totalCredits <= 0) {
-      // If user has no credits, show the credits dialog
       if (!_adDialogShown) {
         _adDialogShown = true;
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -197,15 +196,10 @@ class _PromptCreateScreenRedesignState
     final planName = userProfile?.user.planName ?? 'Free';
     final isFreePlan = planName.toLowerCase() == 'free';
 
-    // Get ad state
-    final adState = ref.read(rewardedAdNotifierProvider);
-    final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
-
     showCreditsDialog(
       context: context,
       ref: ref,
       isFreePlan: isFreePlan,
-      adState: adState,
       onWatchAd: () {
         Navigator.of(context).pop();
         _showRewardedAd();
@@ -215,13 +209,8 @@ class _PromptCreateScreenRedesignState
         Navigation.pushNamed(ChoosePlanScreen.routeName);
       },
       onLater: () {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (context.mounted) Navigator.of(context).pop();
-        });
-
-      },
-      onLoadAd: () {
-        adNotifier.loadAd();
+        Navigator.of(context).pop();
+        _adDialogShown = false;
       },
       adDialogShown: _adDialogShown,
       onDialogShownChanged: (value) {
@@ -236,16 +225,19 @@ class _PromptCreateScreenRedesignState
       onRewardEarned: (coins) {
         AdHelper.showRewardSuccessSnackbar(context, coins);
         AdHelper.refreshUserProfileAfterReward(ref);
+        _adDialogShown = false;
       },
       onAdDismissed: () {
         final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
         adNotifier.loadAd();
+        _adDialogShown = false;
       },
       onAdFailed: () {
         AdHelper.showAdErrorSnackbar(
           context,
           'Failed to show ad. Please try again.',
         );
+        _adDialogShown = false;
 
         Future.delayed(const Duration(seconds: 2), () {
           final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);

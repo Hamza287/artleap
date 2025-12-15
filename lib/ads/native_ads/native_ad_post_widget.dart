@@ -10,7 +10,7 @@ class NativeAdPostWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final adState = ref.watch(nativeAdProviderFeed);
+    final adState = ref.watch(nativeAdProvider);
     final theme = Theme.of(context);
 
     if (!adState.showAds) {

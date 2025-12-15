@@ -71,6 +71,10 @@ class AppApiPaths {
   static const String getUserPreferences = "${userPreferencesBase}preferences/";
   static const String checkPrivacyPolicyStatus = "${userPreferencesBase}privacy-policy/status/";
 
+  static const String rewardedAds = "rewarded_ads/";
+  static const String addRewardedCredits = "${rewardedAds}/rewarded-ad";
+  static const String getRewardedCredits = "${rewardedAds}/credits-status";
+
 
   static const String enhancePrompt = "/enhance-prompt";
 }

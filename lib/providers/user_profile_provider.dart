@@ -48,10 +48,8 @@ class UserProfileState {
       otherUserProfile: otherUserProfile ?? this.otherUserProfile,
       subscriptionPlans: subscriptionPlans ?? this.subscriptionPlans,
       currentSubscription: currentSubscription ?? this.currentSubscription,
-      remainingImageCredits:
-      remainingImageCredits ?? this.remainingImageCredits,
-      remainingPromptCredits:
-      remainingPromptCredits ?? this.remainingPromptCredits,
+      remainingImageCredits: remainingImageCredits ?? this.remainingImageCredits,
+      remainingPromptCredits: remainingPromptCredits ?? this.remainingPromptCredits,
       dailyCredits: dailyCredits ?? this.dailyCredits,
       profilesCache: profilesCache ?? this.profilesCache,
     );

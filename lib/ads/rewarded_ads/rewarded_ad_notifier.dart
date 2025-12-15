@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:Artleap.ai/domain/api_services/api_response.dart';
 import 'package:Artleap.ai/ads/rewarded_ads/rewarded_ad_repo_provider.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
@@ -9,14 +10,12 @@ class RewardedAdState {
   final int retryCount;
   final bool canShowAd;
   final String? errorMessage;
-  final String? debugInfo;
 
   const RewardedAdState({
     this.status = AdLoadStatus.idle,
     this.retryCount = 0,
     this.canShowAd = false,
     this.errorMessage,
-    this.debugInfo,
   });
 
   RewardedAdState copyWith({
@@ -24,58 +23,90 @@ class RewardedAdState {
     int? retryCount,
     bool? canShowAd,
     String? errorMessage,
-    String? debugInfo,
   }) {
     return RewardedAdState(
       status: status ?? this.status,
       retryCount: retryCount ?? this.retryCount,
       canShowAd: canShowAd ?? this.canShowAd,
       errorMessage: errorMessage ?? this.errorMessage,
-      debugInfo: debugInfo ?? this.debugInfo,
     );
   }
 }
 
 final rewardedAdNotifierProvider =
-StateNotifierProvider.autoDispose<RewardedAdNotifier, RewardedAdState>(
-      (ref) {
-    ref.keepAlive();
-    return RewardedAdNotifier(ref);
-  },
+StateNotifierProvider<RewardedAdNotifier, RewardedAdState>(
+      (ref) => RewardedAdNotifier(ref),
 );
 
 
 class RewardedAdNotifier extends StateNotifier<RewardedAdState> {
   final Ref ref;
   RewardedAdManager? _manager;
-  bool _initialized = false;
-  static const String _tag = 'RewardedAdNotifier';
+  bool _isDisposed = false;
+  Timer? _retryTimer;
+  bool _isProcessingReward = false;
 
   RewardedAdNotifier(this.ref) : super(const RewardedAdState()) {
-    _log('Constructor called');
     _init();
+
+    ref.listen<AppLifecycleState>(
+      appLifecycleStateProvider,
+          (previous, current) {
+        if (!_isDisposed) {
+          _handleLifecycleChange(current);
+        }
+      },
+    );
   }
 
-  void _log(String message) {
-    if (!mounted) return;
-    debugPrint('[$_tag][${DateTime.now().toIso8601String()}] $message');
-    state = state.copyWith(debugInfo: message);
+  void _handleLifecycleChange(AppLifecycleState state) {
+    if (_isProcessingReward &&
+        (state == AppLifecycleState.hidden ||
+            state == AppLifecycleState.inactive)) {
+      return;
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (!_isDisposed && this.state.status != AdLoadStatus.loaded) {
+          loadAd();
+        }
+      });
+    }
+  }
+
+  void _checkIfDisposed() {
+    if (_isDisposed) {
+      throw StateError('RewardedAdNotifier has been disposed');
+    }
   }
 
   Future<void> _init() async {
-    if (_initialized || !mounted) return;
-    _initialized = true;
+    if (_isDisposed) return;
     _manager = RewardedAdManager();
+
+    final appLifecycleState = ref.read(appLifecycleStateProvider);
+    if (appLifecycleState == AppLifecycleState.resumed) {
+      await _safeLoadAd();
+    }
+  }
+
+  Future<void> _safeLoadAd() async {
+    if (_isDisposed) return;
     await loadAd();
   }
 
   Future<void> loadAd() async {
-    if (!mounted) return;
-    if (state.status == AdLoadStatus.loading) return;
+    if (_isDisposed) return;
 
+    if (state.status == AdLoadStatus.loading) {
+      return;
+    }
+
+    _checkIfDisposed();
     state = state.copyWith(
       status: AdLoadStatus.loading,
-      debugInfo: 'Loading ad ${state.retryCount + 1}',
+      canShowAd: false,
     );
 
     try {
@@ -90,39 +121,47 @@ class RewardedAdNotifier extends StateNotifier<RewardedAdState> {
         isAdsInitialized: AdService.instance.isInitialized,
       );
 
-      if (!mounted) return;
+      if (_isDisposed) return;
 
       if (loaded) {
+        _checkIfDisposed();
         state = state.copyWith(
           status: AdLoadStatus.loaded,
           canShowAd: true,
           retryCount: 0,
-          debugInfo: 'Ad loaded',
+          errorMessage: null,
         );
       } else {
-        _retry();
+        _handleLoadFailure('Failed to load ad');
       }
     } catch (e) {
-      if (!mounted) return;
-      _retry(error: e.toString());
+      if (_isDisposed) return;
+      _handleLoadFailure(e.toString());
     }
   }
 
-  void _retry({String? error}) {
-    if (!mounted) return;
+  void _handleLoadFailure(String error) {
+    if (_isDisposed) return;
 
+    _retryTimer?.cancel();
+
+    _checkIfDisposed();
     state = state.copyWith(
       status: AdLoadStatus.failed,
       canShowAd: false,
       retryCount: state.retryCount + 1,
       errorMessage: error,
-      debugInfo: error ?? 'Retry scheduled',
     );
 
-    Future.delayed(const Duration(seconds: 10), () {
-      if (!mounted) return;
-      loadAd();
-    });
+    final remoteConfig = ref.read(remoteConfigProvider);
+    if (state.retryCount < remoteConfig.maxAdRetryCount) {
+      final retryDelay = Duration(seconds: 5 + (state.retryCount * 2));
+      _retryTimer = Timer(retryDelay, () {
+        if (!_isDisposed) {
+          loadAd();
+        }
+      });
+    }
   }
 
   Future<bool> showAd({
@@ -130,51 +169,125 @@ class RewardedAdNotifier extends StateNotifier<RewardedAdState> {
     void Function()? onAdDismissed,
     void Function()? onAdFailedToShow,
   }) async {
-    if (!mounted) return false;
-
-    if (!state.canShowAd || _manager == null) {
-      await loadAd();
+    if (_isDisposed) {
       return false;
     }
 
+    if (!state.canShowAd || _manager == null) {
+      await loadAd();
+      if (!state.canShowAd) {
+        return false;
+      }
+    }
+
+    _checkIfDisposed();
+    state = state.copyWith(
+      status: AdLoadStatus.loading,
+      canShowAd: false,
+    );
+
     final success = await _manager!.showRewardedAd(
       onUserEarnedReward: (coins) async {
-        if (!mounted) return;
-
+        _isProcessingReward = true;
         onRewardEarned(coins);
 
-        final repo = ref.read(rewardedAdRepoProvider);
-        final response = await repo.sendRewardToBackend({
-          'coins': coins,
-          'userId': UserData.ins.userId,
-        });
+        try {
+          final repo = ref.read(rewardedAdRepoProvider);
+          final userId = UserData.ins.userId;
 
-        if (!mounted) return;
+          if (userId == null) {
+            _isProcessingReward = false;
+            return;
+          }
 
-        if (response.status != Status.completed) {
-          state = state.copyWith(errorMessage: response.message);
+          final response = await repo.sendRewardToBackend({
+            'userId': userId,
+            'timestamp': DateTime.now().toIso8601String(),
+            'adCoins': coins,
+          }).timeout(const Duration(seconds: 10), onTimeout: () {
+            return ApiResponse.error('Request timeout');
+          });
+
+          if (response.status == Status.completed) {
+            _refreshUserProfile();
+          }
+        } catch (e) {
+        } finally {
+          _isProcessingReward = false;
         }
       },
       onAdDismissed: () {
-        if (!mounted) return;
-        state = state.copyWith(canShowAd: false, debugInfo: 'Ad dismissed');
+        if (_isDisposed || _isProcessingReward) {
+          return;
+        }
+
+        _checkIfDisposed();
+        state = state.copyWith(
+          status: AdLoadStatus.idle,
+          canShowAd: false,
+        );
+
         onAdDismissed?.call();
-        loadAd();
+
+        Future.delayed(const Duration(seconds: 2), () {
+          if (!_isDisposed && !_isProcessingReward) {
+            loadAd();
+          }
+        });
       },
-      onAdFailedToShow: (_) {
-        if (!mounted) return;
-        state = state.copyWith(canShowAd: false, debugInfo: 'Ad failed to show');
+      onAdFailedToShow: (error) {
+        if (_isDisposed) return;
+
+        _checkIfDisposed();
+        state = state.copyWith(
+          status: AdLoadStatus.failed,
+          canShowAd: false,
+          errorMessage: error,
+        );
         onAdFailedToShow?.call();
-        loadAd();
+
+        Future.delayed(const Duration(seconds: 3), () {
+          if (!_isDisposed) {
+            loadAd();
+          }
+        });
       },
     );
 
     return success;
   }
 
+  void _refreshUserProfile() {
+    final userId = UserData.ins.userId;
+    if (userId != null && !_isDisposed) {
+      Future.microtask(() {
+        ref.read(userProfileProvider.notifier).getUserProfileData(userId);
+      });
+    }
+  }
+
+  Future<void> forceReload() async {
+    if (_isDisposed) return;
+
+    _retryTimer?.cancel();
+    _manager?.dispose();
+    _manager = RewardedAdManager();
+    await loadAd();
+  }
+
   @override
   void dispose() {
+    if (_manager?.isAdShowing == true) {
+      return;
+    }
+
+    _isDisposed = true;
+    _retryTimer?.cancel();
     _manager?.dispose();
     super.dispose();
   }
 }
+
+final appLifecycleStateProvider = StateProvider<AppLifecycleState>(
+      (ref) => AppLifecycleState.resumed,
+);

@@ -1,4 +1,3 @@
-import 'package:Artleap.ai/ads/banner_ads/banner_ad_widget.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -73,7 +72,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-            const BannerAdWidget(),
           ],
         ),
       ),

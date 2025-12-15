@@ -127,7 +127,7 @@ class AdHelper {
   static void showRewardSuccessSnackbar(BuildContext context, int coins) {
     _showSnackbar(
       context,
-      message: '🎉 You earned $coins credits!',
+      message: '🎉 You earned 2 credits!',
       backgroundColor: Colors.green,
       duration: const Duration(seconds: 3),
     );

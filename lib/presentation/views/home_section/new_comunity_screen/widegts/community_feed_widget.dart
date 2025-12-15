@@ -76,25 +76,27 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     }
 
     final adState = ref.read(nativeAdProvider);
+    if (!adState.isLoaded || adState.nativeAd == null) {
+      return posts; // Don't insert any ad slots if not ready
+    }
+
     _adPositions.clear();
 
-    for (int i = _adFrequency; i < posts.length; i += _adFrequency) {
-      _adPositions.add(i);
+    // Only add ONE ad position (e.g., after 4th post)
+    if (posts.length >= _adFrequency) {
+      _adPositions.add(_adFrequency); // Only position 4
     }
 
     final List<dynamic> itemsWithAds = [];
     int adIndex = 0;
+    bool adInserted = false; // ← NEW: Track if we've already inserted an ad
 
     for (int i = 0; i < posts.length; i++) {
       itemsWithAds.add(posts[i]);
 
-      if (_adPositions.contains(i + 1)) {
-        if (adState.isLoaded && adState.nativeAd != null) {
-          itemsWithAds.add(AdItem(type: ItemType.ad, index: adIndex++));
-        } else if (adState.errorMessage != null && _shouldLoadNewAd) {
-          _loadNativeAd();
-          _shouldLoadNewAd = false;
-        }
+      if (_adPositions.contains(i + 1) && !adInserted) {
+        itemsWithAds.add(AdItem(type: ItemType.ad, index: adIndex++));
+        adInserted = true; // Prevent any more ads
       }
     }
 

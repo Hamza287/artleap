@@ -111,7 +111,7 @@ class User {
       V: json['__v'] ?? 0,
       lastCreditReset: json['lastCreditReset'] != null ? DateTime.parse(json['lastCreditReset']) : null,
       hiddenNotifications: List.castFrom<dynamic, String>(json['hiddenNotifications'] ?? []),
-      currentSubscription: json['currentSubscription']?.toString(),
+      currentSubscription: json['currentSubscription']?.toString() ?? "",
       subscriptionStatus: json['subscriptionStatus'] ?? 'none',
       planName: json['planName'] ?? 'Free',
       planType: json['planType'] ?? 'free',

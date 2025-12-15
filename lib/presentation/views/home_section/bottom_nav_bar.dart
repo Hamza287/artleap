@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:Artleap.ai/ads/banner_ads/banner_ad_widget.dart';
 import 'package:Artleap.ai/providers/bottom_nav_bar_provider.dart';
 import 'package:Artleap.ai/shared/route_export.dart';
 
@@ -84,12 +85,19 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
       bottomNavigationBar: isKeyboardOpen
           ? const SizedBox.shrink()
           : _buildModernNavBar(pageIndex, theme),
-      body: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
-          ? bottomNavBarState.widgets[pageIndex]
-          : Center(
-        child: CircularProgressIndicator(
-          color: theme.colorScheme.primary,
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: (pageIndex >= 0 && pageIndex < bottomNavBarState.widgets.length)
+                ? bottomNavBarState.widgets[pageIndex]
+                : Center(
+              child: CircularProgressIndicator(
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+          if (!isKeyboardOpen) const BannerAdWidget(),
+        ],
       ),
     );
   }
@@ -155,8 +163,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
                       ],
                     ),
                   ),
-
-                  // Center prominent item (Community)
                   _buildCenterNavigationItem(
                     icon: FeatherIcons.users,
                     label: 'Community',
@@ -164,8 +170,6 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> with SingleTickerPr
                     currentIndex: currentIndex,
                     theme: theme,
                   ),
-
-                  // Right side items (Reels, Profile)
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

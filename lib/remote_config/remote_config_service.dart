@@ -58,7 +58,7 @@ class RemoteConfigService {
         // iOS Ad Units
         'ios_banner_ad_unit': 'ca-app-pub-9762893813732933/7884426110',
         'ios_interstitial_ad_unit': 'ca-app-pub-3940256099942544/4411468910',
-        'ios_rewarded_ad_unit': 'ca-app-pub-3940256099942544/1712485360',
+        'ios_rewarded_ad_unit': 'ca-app-pub-3940256099942544/1712485313',
         'ios_native_ad_unit': 'ca-app-pub-3940256099942544/3986624511',
         'ios_app_open_ad_unit': '/21775744923/example/app-open',
 
