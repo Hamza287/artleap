@@ -1,7 +1,9 @@
 import 'package:Artleap.ai/shared/route_export.dart';
 
 class NativeAdWidget extends ConsumerWidget {
-  const NativeAdWidget({super.key});
+  final int? adIndex;
+
+  const NativeAdWidget({super.key, this.adIndex});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -9,21 +11,31 @@ class NativeAdWidget extends ConsumerWidget {
 
     if (!adState.showAds) return const SizedBox.shrink();
 
-    if (adState.isLoading) {
+    if (adState.isLoading && adState.nativeAds.isEmpty) {
       return const SizedBox(
         height: 330,
         child: Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (adState.errorMessage != null) {
+    if (adState.errorMessage != null && adState.nativeAds.isEmpty) {
       return const SizedBox(
         height: 330,
         child: Center(child: Text("Ad failed to load")),
       );
     }
 
-    if (!adState.isLoaded || adState.nativeAd == null) {
+    if (adState.nativeAds.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final nativeAd = adIndex != null && adIndex! < adState.nativeAds.length
+        ? adState.nativeAds[adIndex!]
+        : adState.nativeAds.isNotEmpty
+        ? adState.nativeAds[0]
+        : null;
+
+    if (nativeAd == null) {
       return const SizedBox.shrink();
     }
 
@@ -34,7 +46,7 @@ class NativeAdWidget extends ConsumerWidget {
         minWidth: 320,
         maxWidth: 500,
       ),
-      child: AdWidget(ad: adState.nativeAd!),
+      child: AdWidget(ad: nativeAd),
     );
   }
 }

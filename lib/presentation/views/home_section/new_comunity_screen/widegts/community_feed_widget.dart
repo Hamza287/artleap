@@ -41,15 +41,15 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
         ref.read(homeScreenProvider).getUserCreations();
       }
 
-      _loadNativeAd();
+      _loadMultipleAds();
     });
 
     _scrollController.addListener(_onScroll);
   }
 
-  Future<void> _loadNativeAd() async {
+  Future<void> _loadMultipleAds() async {
     if (RemoteConfigService.instance.showNativeAds) {
-      await _nativeAdNotifier.loadNativeAd();
+      await _nativeAdNotifier.loadMultipleAds();
     }
   }
 
@@ -76,27 +76,26 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     }
 
     final adState = ref.read(nativeAdProvider);
-    if (!adState.isLoaded || adState.nativeAd == null) {
-      return posts; // Don't insert any ad slots if not ready
+    if (adState.nativeAds.isEmpty) {
+      return posts;
     }
 
     _adPositions.clear();
 
-    // Only add ONE ad position (e.g., after 4th post)
-    if (posts.length >= _adFrequency) {
-      _adPositions.add(_adFrequency); // Only position 4
+    for (int i = _adFrequency; i <= posts.length; i += _adFrequency) {
+      _adPositions.add(i);
     }
 
     final List<dynamic> itemsWithAds = [];
     int adIndex = 0;
-    bool adInserted = false; // ← NEW: Track if we've already inserted an ad
 
     for (int i = 0; i < posts.length; i++) {
       itemsWithAds.add(posts[i]);
 
-      if (_adPositions.contains(i + 1) && !adInserted) {
-        itemsWithAds.add(AdItem(type: ItemType.ad, index: adIndex++));
-        adInserted = true; // Prevent any more ads
+      if (_adPositions.contains(i + 1)) {
+        if (adIndex < adState.nativeAds.length) {
+          itemsWithAds.add(AdItem(type: ItemType.ad, index: adIndex++));
+        }
       }
     }
 
@@ -108,7 +107,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
 
-    _nativeAdNotifier.safeDisposeAd(); // ✅ SAFE
+    _nativeAdNotifier.safeDisposeAds();
 
     super.dispose();
   }
@@ -146,7 +145,7 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
               : RefreshIndicator(
             onRefresh: () async {
               await ref.read(homeScreenProvider).refreshUserCreations();
-              _loadNativeAd();
+              _loadMultipleAds();
             },
             child: ListView.builder(
               controller: _scrollController,
@@ -168,9 +167,10 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
                 if (item is AdItem) {
                   return NativeAdPostWidget(
                     key: ValueKey('native_ad_${item.index}'),
+                    adIndex: item.index,
                     onAdDisposed: () {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (mounted) _loadNativeAd();
+                        if (mounted) _loadMultipleAds();
                       });
                     },
                   );
@@ -205,3 +205,4 @@ class _CommunityFeedWidgetState extends ConsumerState<CommunityFeedWidget> {
     );
   }
 }
+

@@ -7,6 +7,8 @@ class RouteGenerator {
         return route(const SplashScreen());
       case InterestOnboardingScreen.routeName:
         return route(const InterestOnboardingScreen());
+      case InterestOnboardingScreenWrapper.routeName:
+        return route(const InterestOnboardingScreenWrapper());
       case TutorialScreen.routeName:
         return route(const TutorialScreen());
       case AcceptPrivacyPolicyScreen.routeName:

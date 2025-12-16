@@ -1,10 +1,12 @@
 import 'package:Artleap.ai/shared/route_export.dart';
 
 class NativeAdPostWidget extends ConsumerWidget {
+  final int adIndex;
   final VoidCallback onAdDisposed;
 
   const NativeAdPostWidget({
     super.key,
+    required this.adIndex,
     required this.onAdDisposed,
   });
 
@@ -17,13 +19,15 @@ class NativeAdPostWidget extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    if (adState.isLoading) {
+    if (adState.isLoading && adState.nativeAds.isEmpty) {
       return _buildAdPlaceholder(context, theme);
     }
 
-    if (adState.errorMessage != null || !adState.isLoaded || adState.nativeAd == null) {
+    if (adIndex >= adState.nativeAds.length || adState.nativeAds.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    final nativeAd = adState.nativeAds[adIndex];
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -74,7 +78,7 @@ class NativeAdPostWidget extends ConsumerWidget {
                     color: theme.colorScheme.onSurface.withOpacity(0.5),
                   ),
                   onPressed: () {
-                    ref.read(nativeAdProviderFeed.notifier).disposeAd();
+                    ref.read(nativeAdProvider.notifier).safeDisposeAds();
                     onAdDisposed();
                   },
                   padding: EdgeInsets.zero,
@@ -83,11 +87,10 @@ class NativeAdPostWidget extends ConsumerWidget {
               ],
             ),
           ),
-          // Native Ad Widget
           Container(
             height: 320,
             padding: const EdgeInsets.all(12),
-            child: AdWidget(ad: adState.nativeAd!),
+            child: AdWidget(ad: nativeAd),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

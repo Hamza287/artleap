@@ -60,7 +60,7 @@ class _AcceptPrivacyPolicyScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         ref.read(privacyPolicyLoadingProvider.notifier).state = false;
-        Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreen.routeName);
+        Navigation.pushNamedAndRemoveUntil(InterestOnboardingScreenWrapper.routeName);
       }
     });
   }

@@ -15,6 +15,7 @@ class RewardedAdRepoImpl extends RewardedAdRepo {
         data,
         enableLocalPersistence: enableLocalPersistence,
       );
+      print("Here is Response coming from API: $res");
       return HandlingResponse.returnResponse(res);
     } on DioException catch (e) {
       return HandlingResponse.returnException(e);

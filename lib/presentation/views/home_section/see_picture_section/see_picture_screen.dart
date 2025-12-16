@@ -4,7 +4,7 @@ import 'package:Artleap.ai/shared/route_export.dart';
 class SeePictureScreen extends ConsumerStatefulWidget {
   static const routeName = "see_picture_screen";
   final SeePictureParams? params;
-  const SeePictureScreen({super.key, this.params,});
+  const SeePictureScreen({super.key, this.params});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -12,21 +12,21 @@ class SeePictureScreen extends ConsumerStatefulWidget {
 }
 
 class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
+  bool _adDialogShown = false;
+
   @override
   void initState() {
     super.initState();
     AnalyticsService.instance.logScreenView(screenName: 'see image screen');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Preload ad when screen loads
+      AdHelper.preloadRewardedAd(ref);
+
       final userProfile = ref.read(userProfileProvider).value!.userProfile;
       if (userProfile != null && userProfile.user.totalCredits == 0) {
-        DialogService.showPremiumUpgrade(
-            context: context,
-            featureName: 'Generate More Images',
-            onConfirm: (){
-              Navigator.of(context).pushNamed(ChoosePlanScreen.routeName);
-            }
-        );
+        // Show ads dialog instead of premium upgrade dialog
+        _showCreditsDialog();
       }
 
       final currentPrivacy = _privacyFromString(widget.params?.privacy ?? 'Public');
@@ -34,6 +34,61 @@ class _SeePictureScreenState extends ConsumerState<SeePictureScreen> {
     });
   }
 
+  void _showCreditsDialog() {
+    final userProfile = ref.read(userProfileProvider).value!.userProfile;
+    final planName = userProfile?.user.planName ?? 'Free';
+    final isFreePlan = planName.toLowerCase() == 'free';
+
+    showCreditsDialog(
+      context: context,
+      ref: ref,
+      isFreePlan: isFreePlan,
+      onWatchAd: () {
+        Navigator.of(context).pop();
+        _showRewardedAd();
+      },
+      onUpgrade: () {
+        Navigator.of(context).pop();
+        Navigation.pushNamed(ChoosePlanScreen.routeName);
+      },
+      onLater: () {
+        Navigator.of(context).pop();
+        _adDialogShown = false;
+      },
+      adDialogShown: _adDialogShown,
+      onDialogShownChanged: (value) {
+        _adDialogShown = value;
+      },
+    );
+  }
+
+  Future<void> _showRewardedAd() async {
+    await AdHelper.showRewardedAd(
+      ref: ref,
+      onRewardEarned: (coins) {
+        AdHelper.showRewardSuccessSnackbar(context, coins);
+        AdHelper.refreshUserProfileAfterReward(ref);
+        _adDialogShown = false;
+      },
+      onAdDismissed: () {
+        final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
+        adNotifier.loadAd();
+        _adDialogShown = false;
+      },
+      onAdFailed: () {
+        AdHelper.showAdErrorSnackbar(
+          context,
+          'Failed to show ad. Please try again.',
+        );
+        _adDialogShown = false;
+
+        Future.delayed(const Duration(seconds: 2), () {
+          final adNotifier = ref.read(rewardedAdNotifierProvider.notifier);
+          adNotifier.loadAd();
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
